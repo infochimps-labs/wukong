@@ -1,5 +1,5 @@
-require 'hadoop/extensions/hash'
-require 'hadoop/extensions/symbol'
+require 'wukong/extensions/hash'
+require 'wukong/extensions/symbol'
 
 #
 # extensions/struct

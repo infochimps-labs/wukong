@@ -1,6 +1,6 @@
 # require 'rubygems'
 # require 'faster_csv'
-# module HadoopUtils
+# module WukongUtils
 #   #
 #   # add a method exactly like +parse_csv+ but specifying a tab-separator
 #   #

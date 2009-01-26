@@ -1,4 +1,4 @@
-module Hadoop
+module Wukong
   class Streamer
     attr_accessor :sort_key_fields, :options
 
@@ -151,7 +151,7 @@ module Hadoop
   end
 
 
-  class CountingReducer < Hadoop::Streamer
+  class CountingReducer < Wukong::Streamer
     #
     #
     def sorting_by_freq_key freq

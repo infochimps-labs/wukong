@@ -1,4 +1,4 @@
-require 'hadoop/extensions'
-require 'hadoop/encoding'
-require 'hadoop/script'
-require 'hadoop/streamer'
+require 'wukong/extensions'
+require 'wukong/encoding'
+require 'wukong/script'
+require 'wukong/streamer'

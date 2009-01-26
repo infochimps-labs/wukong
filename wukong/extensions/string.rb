@@ -1,5 +1,5 @@
 #
-# String Monkeypatched for processing with hadoop: see hadoop/extensions/string
+# String Monkeypatched for processing with wukong: see wukong/extensions/string
 #
 String.class_eval do
   # By default, +camelize+ converts strings to UpperCamelCase. If the argument to +camelize+

@@ -1,5 +1,5 @@
 require 'pathname'
-module Hadoop
+module Wukong
   class Script
     attr_accessor :mapper_klass, :reducer_klass, :options
     def initialize mapper_klass, reducer_klass
@@ -109,8 +109,8 @@ module Hadoop
         reducer_klass.new(self.options).stream
       when options[:go]
         exec_hadoop_streaming
-      when options[:fake_hadoop]
-        exec_fake_hadoop
+      # when options[:fake]
+      #   exec_fake_hadoop
       else
         self.help # Normant Vincent Peale is proud of you
       end

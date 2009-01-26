@@ -1,7 +1,7 @@
 require 'htmlentities'
 require 'addressable/uri'
 
-module Hadoop
+module Wukong
   #
   # By default (or explicitly with the :xml strategy), convert string to
   # * XML-encoded ASCII,
@@ -22,7 +22,7 @@ module Hadoop
   #   The resulting string is thus XML- and URL-safe.
   #   http://addressable.rubyforge.org/api/classes/Addressable/URI.html#M000010
   #
-  # Hadoop.decode_str(Hadoop.encode_str(str)) returns the original str
+  # Wukong.decode_str(Wukong.encode_str(str)) returns the original str
   #
   #
   #
@@ -62,7 +62,7 @@ module Hadoop
   #
   def self.encode_components hsh, *fields
     fields.each do |field|
-      hsh[field] = hsh[field].to_s.hadoop_encode if hsh[field]
+      hsh[field] = hsh[field].to_s.wukong_encode if hsh[field]
     end
   end
 end
@@ -71,26 +71,26 @@ String.class_eval do
 
   #
   # Strip control characters that might harsh our buzz, TSV-wise
-  # See Hadoop.encode_str
+  # See Wukong.encode_str
   #
-  def hadoop_encode!
-    replace self.hadoop_encode
+  def wukong_encode!
+    replace self.wukong_encode
   end
 
-  def hadoop_encode
-    Hadoop.encode_str(self)
+  def wukong_encode
+    Wukong.encode_str(self)
   end
 
   #
   # Decode string into original (and possibly unsafe) form
-  # See Hadoop.encode_str and Hadoop.decode_str
+  # See Wukong.encode_str and Wukong.decode_str
   #
-  def hadoop_decode!
-    replace self.hadoop_decode
+  def wukong_decode!
+    replace self.wukong_decode
   end
 
-  def hadoop_decode
-    Hadoop.decode_str(self)
+  def wukong_decode
+    Wukong.decode_str(self)
   end
 end
 

@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'faster_csv'
 require 'imw' ; include IMW
-require 'hadoop_utils'; include HadoopUtils
+require 'wukong_utils'; include WukongUtils
 # as_dset __FILE__
 
 
