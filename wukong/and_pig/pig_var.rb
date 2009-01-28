@@ -1,4 +1,5 @@
-require 'wukong/and_pig/pig_var/file_methods'
+require 'wukong/and_pig/pig_var'
+require 'wukong/and_pig/variable_inflections'
 require 'wukong/and_pig/pig_var/file_methods'
 
 module Wukong
@@ -110,11 +111,12 @@ module Wukong
       end
 
 
-      def histogram dest_rel, attr, bin_expr=nil
-        bin_expr ||= attr
-        foreach(temp_rel(dest_rel), "GENERATE #{attr}").
-          group(temp_rel(dest_rel), :by => attr).
-          foreach(dest_rel,  "GENERATE COUNT(#{self.relation}.#{attr}) AS #{attr}_count")
+      def histogram dest_rel, bin_attr, bin_expr=nil
+        bin_expr ||= bin_attr
+        bin_name   = "#{bin_attr}_bin"
+        binned     = foreach(temp_rel(dest_rel), "GENERATE #{bin_expr} AS #{bin_name}")
+        binned.      group(  temp_rel(dest_rel), :by => bin_name).
+                     foreach(         dest_rel,  "GENERATE group AS #{bin_name}, COUNT(#{binned.relation}) AS #{bin_attr}_count")
       end
 
     end
