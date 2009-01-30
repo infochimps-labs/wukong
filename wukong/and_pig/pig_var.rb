@@ -110,7 +110,11 @@ module Wukong
           foreach( dest_rel,  "GENERATE COUNT(#{distincted.relation}.#{attr}) AS n_#{attr}")
       end
 
-
+      #
+      # Group a relation into bins, and return the counts for each bin
+      # * dest_rel - Relation to store
+      #   {bin,
+      #
       def histogram dest_rel, bin_attr, bin_expr=nil
         bin_expr ||= bin_attr
         bin_name   = "#{bin_attr}_bin"

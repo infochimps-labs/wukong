@@ -1,3 +1,4 @@
+require 'active_support'
 module Wukong
   class TypedStruct < Struct
     def self.unroll enum
