@@ -2,6 +2,67 @@ require 'wukong/and_pig/pig_var'
 require 'wukong/and_pig/variable_inflections'
 require 'wukong/and_pig/pig_var/file_methods'
 
+
+module Wukong
+  module AndPig
+    #
+    # Make a PigVar understand the struct it describes
+    #
+    class PigVar
+      attr_accessor :klass, :relation_base, :anon, :cmd
+      def initialize klass, relation_base, anon, cmd
+        self.klass         = klass
+        self.relation_base = relation_base
+        self.cmd           = cmd
+        self.anon          = anon
+      end
+
+      # Adds the given generator to the pig symbol table
+      def self.new_relation relation, rval
+        # rval = new *args
+        PIG_SYMBOLS[relation] = rval
+        rval.relation = relation
+        emit_setter relation, rval
+      end
+
+      # Sugar for PigVar.new_relation
+      def self.[]= relation, *args
+        new_relation relation, *args
+      end
+
+      def relation
+        anon ? "#{relation_base}_#{anon}" : relation_base
+      end
+      def relation= rel
+        self.anon = nil
+        self.relation_base = rel
+      end
+
+      #
+      # pig subexpression for the relation's aliases and types
+      #
+      def self.type_spec klass
+        klass.members_types.join(", ")
+      end
+
+      #
+      def new_in_chain l_klass, l_cmd
+        self.class.new l_klass, relation_base, (anon.to_i + 1), l_cmd
+      end
+
+      def for_gen *args
+        l_klass = Struct.new(*args)
+        new_in_chain l_klass, "FOREACH #{relation} GENERATE #{args.join(",")}"
+      end
+
+      def filter
+      end
+
+    end
+  end
+end
+
+
 module Wukong
   module AndPig
 
