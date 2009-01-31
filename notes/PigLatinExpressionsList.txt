@@ -1,0 +1,122 @@
+
+h2. RelationalOperators
+
+  * foreach
+
+  * cogroup
+  * group
+  * join
+
+  * cross
+  
+  * distinct
+  * filter
+  * limit
+  * order
+  * split
+  * union
+
+  * load
+  * store
+  
+h2. Streaming Operator
+  * stream
+
+h2. UDF Statements
+  * define
+  * register
+
+h2. Diagnostic Statements
+  * describe
+  * dump
+  * explain
+  * illustrate
+
+h2. Built-in Functions
+  * EvalFunctions
+  * AVG
+  * CONCAT
+  * COUNT
+  * DIFF
+  * MIN
+  * MAX
+  * SIZE
+  * SUM
+  * TOKENIZE
+  * Load/StoreFunctions
+  * BinaryDeserializer
+  * BinarySerializer
+  * BinStorage
+  * PigStorage
+  * PigDump
+  * TextLoader
+
+h1. Operators
+  * ArithmeticOperators
+    - addition+
+    - subtraction-
+    - multiplication*
+    - division/
+    - modulo%
+    - bincond?
+  * ComparisonOperators
+    - Equal==
+    - notequal!=
+    - lessthan<
+    - greaterthan>
+    - lessthanorequalto<=
+    - greaterthanorequalto>=
+    - patternmatchingmatches
+  * NullOperators
+    - isnull
+    - isnotnull
+  * BooleanOperators
+    - and
+    - or
+    - not
+  * DereferenceOperators
+    - tupledereference.
+    - mapdereference#
+  * SignOperators
+    - positive+
+    - negative-
+  * CastOperators
+    - (type)$0
+    - (type)alias
+    - Nulls
+    - Constants
+    - Expressions
+    - Schemas
+    - Keywords
+
+h1. DataTypes 
+  h2. SimpleDataTypes
+    - int
+    - long
+    - double
+    - arrays
+    - chararray
+    - bytearray
+  h2. ComplexDataTypes
+    - tuple
+    - bag
+    - map
+
+h1. FileCommands
+  * cat
+  * cd
+  * copyFromLocal
+  * copyToLocal
+  * cp
+  * ls
+  * mkdir
+  * mv
+  * pwd
+  * rm
+  * rmf
+
+h1. UtilityCommands
+  * help
+  * kill
+  * quit
+  * set
