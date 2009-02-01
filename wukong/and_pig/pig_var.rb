@@ -1,7 +1,3 @@
-require 'wukong/and_pig/pig_var'
-require 'wukong/and_pig/variable_inflections'
-require 'wukong/and_pig/pig_var/file_methods'
-
 
 module Wukong
   module AndPig
@@ -91,15 +87,6 @@ module Wukong
 
       def path
         "%s/%s" % [path_base, name]
-      end
-
-      def emit cmd
-        puts cmd + ';'
-        self
-      end
-
-      def emit_set var, cmd
-        emit "%-23s\t= %s" % [var, cmd]
       end
 
       # ===========================================================================

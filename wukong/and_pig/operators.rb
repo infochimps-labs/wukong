@@ -1,0 +1,6 @@
+require 'operators/evaluators'
+require 'operators/foreach'
+require 'operators/groupies'
+require 'operators/load_store'
+require 'operators/meta'
+require 'operators/relational'

@@ -11,6 +11,18 @@ module Wukong
     class PigVar
       #===========================================================================
       #
+      # The "LOAD" pig expression:
+      #   MyRelation = LOAD 'my_relation.tsv' AS (attr_a: int, attr_b: chararray) ;
+      #
+      # The AS type spec is generated from klass
+      #
+      def self.load filename, klass
+        relation = filename.gsub(/\..*$/, '').gsub(/\W+/, '_').to_sym
+        self.new klass, relation, 0, "LOAD '#{filename}' AS #{type_spec(klass)}"
+      end
+
+      #===========================================================================
+      #
       #
       # The "STORE" pig imperative:
       #   STORE Relation INTO 'filename'
@@ -21,6 +33,7 @@ module Wukong
         self.class.emit "STORE #{relation} INTO '#{filename}'"
         self
       end
+
     end
   end
 end

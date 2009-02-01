@@ -1,3 +1,4 @@
+require 'wukong/and_pig/generate/variable_inflections'
 
 module Wukong
   module AndPig
@@ -6,6 +7,16 @@ module Wukong
     # All the embarrassing magick to pretend ruby symbols are pig relations
     #
     class PigVar
+
+      # def emit cmd
+      #   puts cmd + ';'
+      #   self
+      # end
+      #
+      # def emit_set var, cmd
+      #   emit "%-23s\t= %s" % [var, cmd]
+      # end
+
       def self.emit cmd
         puts cmd + ' ;'
       end
