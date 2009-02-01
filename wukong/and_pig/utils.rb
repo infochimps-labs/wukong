@@ -1,4 +1,3 @@
-
 def in_groups_of arr, n
   grouped = []
   while ! arr.empty? do
@@ -8,4 +7,4 @@ def in_groups_of arr, n
   end
   grouped
 end
-1
+

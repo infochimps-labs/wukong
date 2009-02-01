@@ -5,6 +5,9 @@ require 'wukong/and_pig/pig_var/file_methods'
 
 module Wukong
   module AndPig
+
+    PIG_VARS = { }
+
     #
     # Make a PigVar understand the struct it describes
     #
@@ -97,10 +100,6 @@ module Wukong
 
       def emit_set var, cmd
         emit "%-23s\t= %s" % [var, cmd]
-      end
-
-      def illustrate
-        emit "ILLUSTRATE #{relation}"
       end
 
       # ===========================================================================
