@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # == RelationalOperators
 #
 # GROUP, COGROUP, JOIN see groupies.rb
@@ -21,9 +22,17 @@ module Wukong
 
       # ===========================================================================
       #
+      # Options
+      #
+      def parallelize! str, options
+        str << " PARALLEL #{options[:parallel]}" if options[:parallel]
+      end
+
+      # ===========================================================================
+      #
       # CROSS
       #
-      def cross
+      def cross options={}
         new_in_chain klass, "CROSS #{relation}"
       end
 
@@ -31,7 +40,7 @@ module Wukong
       #
       # DISTINCT
       #
-      def DISTINCT
+      def distinct options={}
         new_in_chain klass, "DISTINCT #{relation}"
       end
 
@@ -39,7 +48,7 @@ module Wukong
       #
       # FILTER
       #
-      def FILTER
+      def filter options={}
         new_in_chain klass, "FILTER #{relation}"
       end
 
@@ -47,23 +56,15 @@ module Wukong
       #
       # LIMIT
       #
-      def limit
+      def limit options={}
         new_in_chain klass, "LIMIT #{relation}"
-      end
-
-      # ===========================================================================
-      #
-      # LOAD
-      #
-      def load
-        new_in_chain klass, "LOAD #{relation}"
       end
 
       # ===========================================================================
       #
       # ORDER
       #
-      def order
+      def order options={}
         new_in_chain klass, "ORDER #{relation}"
       end
 
@@ -71,32 +72,24 @@ module Wukong
       #
       # SPLIT
       #
-      def SPLIT
+      # SPLIT alias INTO alias IF expression, alias IF expression [, alias IF expression …];
+      #
+      #
+      def split options={}
         new_in_chain klass, "SPLIT #{relation}"
-      end
-
-      # ===========================================================================
-      #
-      # STORE
-      #
-      def store
-        new_in_chain klass, "STORE #{relation}"
-      end
-
-      # ===========================================================================
-      #
-      # STREAM
-      #
-      def stream
-        new_in_chain klass, "STREAM #{relation}"
       end
 
       # ===========================================================================
       #
       # UNION
       #
-      def union
+      def self.union *relations
         new_in_chain klass, "UNION #{relation}"
+      end
+
+      # UNION as method
+      def union *relations
+        self.class.union self, *relations
       end
 
     end

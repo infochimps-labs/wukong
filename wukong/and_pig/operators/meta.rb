@@ -10,11 +10,6 @@
 module Wukong
   module AndPig
     class PigVar
-      def simple_operation op
-        self.class.emit  "#{op.to_s.upcase} #{relation}"
-        self
-      end
-
       # DESCRIBE pig imperative
       def describe()   simple_operation :describe    end
 

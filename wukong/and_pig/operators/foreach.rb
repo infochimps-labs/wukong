@@ -13,6 +13,11 @@ module Wukong
         new_in_chain klass, "FOREACH #{relation}"
       end
 
+      def for_gen *args
+        l_klass = Struct.new(*args)
+        new_in_chain l_klass, "FOREACH #{relation} GENERATE #{args.join(",")}"
+      end
+
     end
   end
 end
