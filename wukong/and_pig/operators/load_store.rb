@@ -34,6 +34,19 @@ module Wukong
         self
       end
 
+      # Store the relation, removing the existing file
+      def store! filename=nil
+        filename ||= relation
+        rmf!  filename
+        store filename
+      end
+
+      # Force a store to disk, then load (so all calculations proceed from there)
+      def checkpoint!
+        store!
+        load
+      end
+
     end
   end
 end

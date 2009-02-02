@@ -30,42 +30,42 @@ module Wukong
 
       # ===========================================================================
       #
-      # CROSS
-      #
-      def cross options={}
-        new_in_chain klass, "CROSS #{relation}"
-      end
-
-      # ===========================================================================
-      #
       # DISTINCT
       #
       def distinct options={}
-        new_in_chain klass, "DISTINCT #{relation}"
+        result = new_in_chain klass, "DISTINCT #{relation}"
+        parallelize! result.cmd, options
+        result
       end
 
       # ===========================================================================
       #
       # FILTER
       #
-      def filter options={}
-        new_in_chain klass, "FILTER #{relation}"
+      def filter by_str
+        new_in_chain klass, "FILTER BY #{by_str}"
       end
 
       # ===========================================================================
       #
       # LIMIT
       #
-      def limit options={}
-        new_in_chain klass, "LIMIT #{relation}"
+      def limit n
+        new_in_chain klass, "LIMIT #{relation} #{n}"
       end
 
       # ===========================================================================
       #
       # ORDER
       #
-      def order options={}
-        new_in_chain klass, "ORDER #{relation}"
+      # alias = ORDER alias BY { * [ASC|DESC] |
+      #           field_alias [ASC|DESC] [, field_alias [ASC|DESC] …]
+      #           } [PARALLEL n];
+      #
+      def order cmd_str, options={}
+        result = new_in_chain klass, "ORDER #{relation} BY #{cmd_str}"
+        parallelize! result.cmd, options
+        result
       end
 
       # ===========================================================================
@@ -75,23 +75,44 @@ module Wukong
       # SPLIT alias INTO alias IF expression, alias IF expression [, alias IF expression …];
       #
       #
-      def split options={}
-        new_in_chain klass, "SPLIT #{relation}"
+      def split relation_tests={}
+        split_str = relation_tests.map do |out_rel, test|
+          "#{out_rel} IF #{test}"
+        end.join(", ")
+        new_in_chain klass, "SPLIT #{relation} INTO #{split_str}"
+      end
+
+      # ===========================================================================
+      #
+      # CROSS
+      #
+      def cross *relations
+        options = relations.extract_options!
+        raise CrossArgumentError unless relations.length >= 1
+        relations_str = [self, *relations].map(&:relation).join(", ")
+        result = new_in_chain relations.first.klass, "CROSS #{relations_str}"
+        parallelize! result.cmd, options
+        result
       end
 
       # ===========================================================================
       #
       # UNION
       #
-      def self.union *relations
-        new_in_chain klass, "UNION #{relation}"
-      end
+      # def self.union *relations
+      #   raise UnionArgumentError unless relations.length >= 2
+      #   new_in_chain relations.first.klass, "UNION #{relations}"
+      # end
 
       # UNION as method
       def union *relations
-        self.class.union self, *relations
+        raise UnionArgumentError unless relations.length >= 1
+        relations_str = [self, *relations].map(&:relation).join(", ")
+        new_in_chain relations.first.klass, "UNION #{relations_str}"
       end
 
     end
+    CrossArgumentError = ArgumentError.new("CROSS requires at least two relations. Heh heh: relations.")
+    UnionArgumentError = ArgumentError.new("UNION requires at least two relations. Heh heh: relations.")
   end
 end

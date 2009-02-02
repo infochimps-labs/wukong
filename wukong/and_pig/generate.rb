@@ -7,23 +7,14 @@ module Wukong
     # All the embarrassing magick to pretend ruby symbols are pig relations
     #
     class PigVar
-
-      # def emit cmd
-      #   puts cmd + ';'
-      #   self
-      # end
-      #
-      # def emit_set var, cmd
-      #   emit "%-23s\t= %s" % [var, cmd]
-      # end
-
+      # Output a command
       def self.emit cmd
         puts cmd + ' ;'
       end
 
       # generate the code
       def self.emit_setter relation, rval
-        emit "%-23s\t= %s" % [relation, rval]
+        emit "%-23s\t= %s" % [relation, rval.cmd]
         relation
       end
     end
@@ -34,18 +25,6 @@ end
 
 module Wukong
   module AndPig
-    #
-    # Load the main class definitions
-    #
-    def self.init_load
-      puts File.open(PIG_DEFS_DIR+"/init_load.pig").read
-    end
-
-    class AS
-      def self.[] klass
-        klass.as
-      end
-    end
 
     module PigEmitter
       module ClassMethods
@@ -63,19 +42,7 @@ module Wukong
         def [] relation
           pig_rel relation
         end
-
-        #
-        # OK we're going to cheat here:
-        # just cat the file in, and treat it as a scalar
-        #
-        def load_scalar path
-          # var = `hadoop dfs -cat '#{path}/part-*' | head -n1 `.chomp
-          var = "636"
-
-        end
       end
-
-
 
       def self.included base
         base.extend ClassMethods
