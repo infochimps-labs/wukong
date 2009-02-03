@@ -1,4 +1,3 @@
-
 module Wukong
   module AndPig
 
@@ -11,15 +10,15 @@ module Wukong
       #
 
       #
-      def dfs cmd, path
+      def dfs cmd, filename
         # note == no '' on path
-        emit "%-23s\t        %s" % [cmd, path]
+        self.class.emit "%-23s\t           %s" % [cmd, filename]
       end
       #
       # remove the stored file
       #
-      def rmf!
-        dfs :rmf, path
+      def rmf! filename
+        dfs :rmf, filename
       end
     end
   end

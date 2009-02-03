@@ -160,7 +160,7 @@ module Wukong
       def group group_by
         l_klass   = l_klass_for_group group_by
         by_clause = self.class.by_clause(group_by)
-        new_in_chain l_klass, "GROUP #{relation} #{by_clause}"
+        new_in_chain l_klass, "GROUP    #{relation} #{by_clause}"
       end
 
       #
@@ -173,7 +173,7 @@ module Wukong
         pred = in_groups_of(args, 2).map do |relation, group_by|
           "%s %s" % [relation.relation, by_clause(group_by)]
         end
-        new l_klass, l_klass.to_s, 1, "COGROUP #{pred.join(", ")}"
+        new l_klass, l_klass.to_s, 1, "COGROUP   #{pred.join(", ")}"
       end
 
       def cogroup *args

@@ -1,41 +1,44 @@
-
 module Wukong
   module AndPig
-
-    PIG_VARS = { }
 
     #
     # Make a PigVar understand the struct it describes
     #
     class PigVar
-      attr_accessor :klass, :relation_base, :anon, :cmd
-      def initialize klass, relation_base, anon, cmd
-        self.klass         = klass
-        self.relation_base = relation_base
-        self.cmd           = cmd
-        self.anon          = anon
+      attr_accessor :klass, :basename, :anon, :cmd
+      cattr_accessor :working_dir
+      def initialize klass, basename, cmd
+        self.klass    = klass
+        self.basename = basename
+        self.cmd      = cmd
+        self.anon     = ( Wukong::AndPig.anon_var_idx += 1 )
       end
 
       # Adds the given generator to the pig symbol table
-      def self.new_relation relation, rval
+      def self.new_relation name, rval
         # rval = new *args
-        PIG_SYMBOLS[relation] = rval
-        rval.relation = relation
-        emit_setter relation, rval
+        PIG_SYMBOLS[name] = rval
+        rval.name = name
+        emit_setter rval.relation, rval
       end
 
       # Sugar for PigVar.new_relation
-      def self.[]= relation, *args
-        new_relation relation, *args
+      def self.[]= name, *args
+        new_relation name, *args
+      end
+
+      def name
+        anon ? "#{basename}_#{anon}".to_sym : basename
+      end
+      def name= rel
+        self.anon = nil
+        self.basename = rel
       end
 
       def relation
-        anon ? "#{relation_base}_#{anon}" : relation_base
+        name.relationize
       end
-      def relation= rel
-        self.anon = nil
-        self.relation_base = rel
-      end
+      alias_method :relationize, :relation
 
       #
       # pig subexpression for the relation's aliases and types
@@ -46,7 +49,7 @@ module Wukong
 
       #
       def new_in_chain l_klass, l_cmd
-        self.class.new l_klass, relation_base, (anon.to_i + 1), l_cmd
+        self.class.new l_klass, basename, l_cmd
       end
 
       #
@@ -56,8 +59,6 @@ module Wukong
         self.class.emit  "#{op.to_s.upcase} #{relation}"
         self
       end
-
-
     end
   end
 end
@@ -74,49 +75,6 @@ end
 #         self.path_base = path_base || self.class.default_path
 #       end
 #
-#       # ===========================================================================
-#       #
-#       # As a variable
-#       #
-#
-#       # variable's name in relation form
-#       def relation
-#         name.relationize
-#       end
-#       alias_method :relationize, :relation
-#
-#       def path
-#         "%s/%s" % [path_base, name]
-#       end
-#
-#
-#       # ===========================================================================
-#       #
-#       # As a variable
-#       #
-#
-#       # http://wiki.apache.org/pig-data/attachments/FrontPage/attachments/plrm.htm#_DISTINCT
-#       def distinct dest_rel, *args
-#         options = args.extract_options!
-#         str = "DISTINCT #{relation}"
-#         parallelize! str, options
-#         emit_set dest_rel.relationize, str
-#         PigVar.new dest_rel, klass
-#       end
-#
-#       # http://wiki.apache.org/pig-data/attachments/FrontPage/attachments/plrm.htm#_DISTINCT
-#       def group dest_rel, *args
-#         options = args.extract_options!
-#         by      = case
-#                   when options[:by] == :all then 'ALL'
-#                   when options[:by]         then "BY #{[options[:by]].flatten.join(", ")}"
-#                   else                           "BY #{args.join(", ")}"
-#                   end
-#         str     = "GROUP #{relation} #{by}"
-#         parallelize! str, options
-#         emit_set dest_rel.relationize, str
-#         PigVar.new dest_rel, klass
-#       end
 #
 #       def foreach dest_rel, *args
 #         case
@@ -138,29 +96,6 @@ end
 #         REL_COUNTERS[rel]  += 1
 #         "#{rel}_#{REL_COUNTERS[rel]}"
 #       end
-#
-#       def count_distinct dest_rel, attr, group_by
-#         distincted =
-#           generate(temp_rel(dest_rel), attr).
-#           distinct(temp_rel(dest_rel), :parallel => 10)
-#         distincted.
-#           group(   temp_rel(dest_rel), group_by).
-#           foreach( dest_rel,  "GENERATE COUNT(#{distincted.relation}.#{attr}) AS n_#{attr}")
-#       end
-#
-#       #
-#       # Group a relation into bins, and return the counts for each bin
-#       # * dest_rel - Relation to store
-#       #   {bin,
-#       #
-#       def histogram dest_rel, bin_attr, bin_expr=nil
-#         bin_expr ||= bin_attr
-#         bin_name   = "#{bin_attr}_bin"
-#         binned     = foreach(temp_rel(dest_rel), "GENERATE #{bin_expr} AS #{bin_name}")
-#         binned.      group(  temp_rel(dest_rel), :by => bin_name).
-#                      foreach(         dest_rel,  "GENERATE group AS #{bin_name}, COUNT(#{binned.relation}) AS #{bin_attr}_count")
-#       end
-#
 #     end
 #   end
 # end

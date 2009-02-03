@@ -1,7 +1,7 @@
 
 Struct.class_eval do
   def self.pig_load filename
-    Wukong::AndPig::PigVar.load filename, self
+    Wukong::AndPig::PigVar.pig_load filename, self
   end
 
   def self.relationize

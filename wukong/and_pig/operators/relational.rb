@@ -43,7 +43,7 @@ module Wukong
       # FILTER
       #
       def filter by_str
-        new_in_chain klass, "FILTER BY #{by_str}"
+        new_in_chain klass, "FILTER   #{relation} BY #{by_str}"
       end
 
       # ===========================================================================
@@ -51,7 +51,7 @@ module Wukong
       # LIMIT
       #
       def limit n
-        new_in_chain klass, "LIMIT #{relation} #{n}"
+        new_in_chain klass, "LIMIT   #{relation} #{n}"
       end
 
       # ===========================================================================
@@ -63,7 +63,7 @@ module Wukong
       #           } [PARALLEL n];
       #
       def order cmd_str, options={}
-        result = new_in_chain klass, "ORDER #{relation} BY #{cmd_str}"
+        result = new_in_chain klass, "ORDER    #{relation} BY #{cmd_str}"
         parallelize! result.cmd, options
         result
       end
@@ -79,7 +79,7 @@ module Wukong
         split_str = relation_tests.map do |out_rel, test|
           "#{out_rel} IF #{test}"
         end.join(", ")
-        new_in_chain klass, "SPLIT #{relation} INTO #{split_str}"
+        new_in_chain klass, "SPLIT    #{relation} INTO #{split_str}"
       end
 
       # ===========================================================================
@@ -90,7 +90,7 @@ module Wukong
         options = relations.extract_options!
         raise CrossArgumentError unless relations.length >= 1
         relations_str = [self, *relations].map(&:relation).join(", ")
-        result = new_in_chain relations.first.klass, "CROSS #{relations_str}"
+        result = new_in_chain relations.first.klass, "CROSS    #{relations_str}"
         parallelize! result.cmd, options
         result
       end
@@ -108,7 +108,7 @@ module Wukong
       def union *relations
         raise UnionArgumentError unless relations.length >= 1
         relations_str = [self, *relations].map(&:relation).join(", ")
-        new_in_chain relations.first.klass, "UNION #{relations_str}"
+        new_in_chain relations.first.klass, "UNION    #{relations_str}"
       end
 
     end

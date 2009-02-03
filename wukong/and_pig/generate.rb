@@ -2,7 +2,6 @@ require 'wukong/and_pig/generate/variable_inflections'
 
 module Wukong
   module AndPig
-    PIG_SYMBOLS = { }
     #
     # All the embarrassing magick to pretend ruby symbols are pig relations
     #
@@ -15,7 +14,11 @@ module Wukong
       # generate the code
       def self.emit_setter relation, rval
         emit "%-23s\t= %s" % [relation, rval.cmd]
-        relation
+        rval
+      end
+
+      def set!
+        self.class.emit_setter(relation, self)
       end
     end
   end
