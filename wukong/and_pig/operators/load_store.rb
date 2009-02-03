@@ -18,7 +18,7 @@ module Wukong
       #
       def self.pig_load filename, klass
         relation = filename.gsub(/\..*$/, '').gsub(/\W+/, '_').to_sym
-        self.new klass, relation, "LOAD    '#{filename}' AS #{type_spec(klass)}"
+        self.new klass, relation, "LOAD    '#{filename}' AS (#{type_spec(klass)})"
       end
 
       #===========================================================================

@@ -12,8 +12,5 @@ require 'wukong/and_pig/utils'
 
 module Wukong
   module AndPig
-    def pig_comment comment
-      puts comment.gsub(/(^|\n)(#([\t ]|$))?/, "\n--  ")
-    end
   end
 end

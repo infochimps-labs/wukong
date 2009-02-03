@@ -2,13 +2,33 @@ require 'wukong/and_pig/generate/variable_inflections'
 
 module Wukong
   module AndPig
+
+    mattr_accessor :comments
+    self.comments = true
+    # send output to stdout or to captured pig instance
+    mattr_accessor :emit_dest
+    # full pathname to the pig executable
+    PIG_EXECUTABLE = '/usr/local/bin/pig'
+
+    def self.finish
+      PigVar.pig_in_poke.close if PigVar.pig_in_poke.respond_to?(:close)
+    end
+
     #
     # All the embarrassing magick to pretend ruby symbols are pig relations
     #
     class PigVar
+
       # Output a command
       def self.emit cmd
-        puts cmd + ' ;'
+        case Wukong::AndPig.emit_dest
+        when :captured
+          pig_in_poke.puts(cmd + ' ;')
+          pig_in_poke.flush
+          puts pig_in_poke.gets
+        else
+          puts(cmd + ' ;')
+        end
       end
 
       # generate the code
@@ -17,10 +37,28 @@ module Wukong
         rval
       end
 
+      def self.pig_in_poke
+        return @pig_in_poke if @pig_in_poke
+        case Wukong::AndPig.emit_dest
+        when :captured then @pig_in_poke = IO.popen(PIG_EXECUTABLE, "w+")
+        else @pig_in_poke = $stdout
+        end
+      end
+
       def set!
         self.class.emit_setter(relation, self)
       end
     end
+
+    #
+    # Emit a comment
+    # skips if Wukong::AndPig.comments is false
+    #
+    def pig_comment comment
+      return unless Wukong::AndPig.comments
+      PigVar.emit comment.gsub(/(^|\n)(#([\t ]|$))?/, "\n--  ")
+    end
+
   end
 end
 
