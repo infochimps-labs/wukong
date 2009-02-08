@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ "$1" == "-r" ] ; then
+    shift
+    flag=rmr
+else
+    flag=rm
+fi
+echo hadoop dfs -$flag "$@"
+# read -p "Hit ctrl-C to abort or enter to do this...."
+hadoop dfs -$flag "$@"

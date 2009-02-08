@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+args=`echo "$@" | ruby -ne 'a = $_.split(/\s+/); puts a.map{|arg| arg+"/part-*" }.join(" ")'`
+hadoop dfs -cat $args

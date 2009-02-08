@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+
+OPTIONS={}
+
+#
+# grok options
+#
+if ARGV[0] =~ /-[a-z]+/
+  ARGV.shift
+  OPTIONS[:summary]  = flags.include?('s')
+  OPTIONS[:humanize] = flags.include?('h')
+end
+
+#
+# Prepare command
+#
+def prepare_command
+  dfs_cmd  = OPTIONS[:summary] ? 'dus' : 'du'
+  dfs_args = "'" + ARGV.join("' '") + "'"
+  %Q{ hadoop dfs -#{dfs_cmd} #{dfs_args} } 
+end
+
+Numeric.class_eval do
+  def bytes()       self                    ; end
+  alias :byte :bytes
+  def kilobytes()   self * 1024             ; end
+  alias :kilobyte :kilobytes
+  def megabytes()   self * 1024.kilobytes   ; end
+  alias :megabyte :megabytes
+  def gigabytes()   self * 1024.megabytes   ; end
+  alias :gigabyte :gigabytes
+  def terabytes()   self * 1024.gigabytes   ; end
+  alias :terabyte :terabytes  
+  def petabytes()   self * 1024.terabytes   ; end
+  alias :petabyte :petabytes  
+  def exabytes()    self * 1024.petabytes   ; end
+  alias :exabyte :exabytes
+end
+
+# Formats the bytes in +size+ into a more understandable representation
+# (e.g., giving it 1500 yields 1.5 KB). This method is useful for 
+# reporting file sizes to users. This method returns nil if
+# +size+ cannot be converted into a number. You can change the default
+# precision of 1 using the precision parameter +precision+.
+#
+# ==== Examples
+#  number_to_human_size(123)           # => 123 Bytes
+#  number_to_human_size(1234)          # => 1.2 KB
+#  number_to_human_size(12345)         # => 12.1 KB
+#  number_to_human_size(1234567)       # => 1.2 MB
+#  number_to_human_size(1234567890)    # => 1.1 GB
+#  number_to_human_size(1234567890123) # => 1.1 TB
+#  number_to_human_size(1234567, 2)    # => 1.18 MB
+#  number_to_human_size(483989, 0)     # => 4 MB
+def number_to_human_size(size, precision=1)
+  size = Kernel.Float(size)
+  case
+  when size.to_i == 1;    "1 Byte"
+  when size < 1.kilobyte; "%d Bytes" % size
+  when size < 1.megabyte; "%.#{precision}f KB"  % (size / 1.0.kilobyte)
+  when size < 1.gigabyte; "%.#{precision}f MB"  % (size / 1.0.megabyte)
+  when size < 1.terabyte; "%.#{precision}f GB"  % (size / 1.0.gigabyte)
+  else                    "%.#{precision}f TB"  % (size / 1.0.terabyte)
+  end.sub(/([0-9]\.\d*?)0+ /, '\1 ' ).sub(/\. /,' ')
+rescue
+  nil
+end
+
+def format_output file, size
+  human_size = number_to_human_size(size) || 3
+  
+  "%-87s\t%15d\t%15s" % [file, size.to_i, human_size]
+end
+
+
+%x{ #{prepare_command} }.split("\n").each do |line|
+  puts line if line =~ /^Found \d+ items$/
+  info = line.split(/\s+/)
+  if OPTIONS[:summary] then file, size = info else size, file = info end
+  puts format_output(file, size)
+end

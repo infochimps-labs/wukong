@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# hadoop dfs -rmr out/parsed-followers
+
+input_file=${1} 		; shift
+output_file=${1} 		; shift
+map_script=${1-/bin/cat}	; shift
+reduce_script=${1-/usr/bin/uniq}	; shift
+fields=${1-2} 			; shift
+
+if [ "$reduce_script" == "" ] ; then echo "$0 input_file output_file [sort_fields] [mapper] [reducer] [args]" ; exit ; fi
+
+hadoop jar /home/flip/hadoop/h/contrib/streaming/hadoop-*-streaming.jar			\
+    -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			\
+    -jobconf    map.output.key.field.separator='\t'					\
+    -jobconf    num.key.fields.for.partition=1 						\
+    -jobconf 	stream.map.output.field.separator='\t'					\
+    -jobconf 	stream.num.map.output.key.fields="$fields"				\
+    -mapper  	"$map_script"  								\
+    -reducer	"$reduce_script"							\
+    -input      "$input_file"								\
+    -output  	"$output_file"								\
+    "$@"
+
+
+# -jobconf mapred.map.tasks=3                                                       \
+# -jobconf mapred.reduce.tasks=3                                                    \
