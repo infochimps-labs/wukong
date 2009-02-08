@@ -40,9 +40,20 @@ module Wukong
       def self.pig_in_poke
         return @pig_in_poke if @pig_in_poke
         case Wukong::AndPig.emit_dest
-        when :captured then @pig_in_poke = IO.popen(PIG_EXECUTABLE, "w+")
+        when :captured
+          @pig_in_poke = IO.popen(PIG_EXECUTABLE, "w+")
+          @pig_in_poke.sync = true
+          @pig_in_poke
         else @pig_in_poke = $stdout
         end
+      end
+
+      #
+      # Reset the captured pig instance
+      #
+      def self.reset_pig_in_poke!
+        begin pig_in_poke.close ; rescue nil ; end
+        @pig_in_poke = nil
       end
 
       def set!
@@ -63,31 +74,3 @@ module Wukong
 end
 
 
-
-module Wukong
-  module AndPig
-
-    module PigEmitter
-      module ClassMethods
-
-        def as
-          members.zip(mtypes).map do |attr, mtype|
-            "%s: %s" % [attr, mtype.typify]
-          end.join(',')
-        end
-
-        def pig_rel relation
-          PigVar.new relation, self
-        end
-
-        def [] relation
-          pig_rel relation
-        end
-      end
-
-      def self.included base
-        base.extend ClassMethods
-      end
-    end
-  end
-end

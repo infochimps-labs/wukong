@@ -22,12 +22,15 @@ module Wukong
         end
       end
 
+      def types_for_fields field
+        klass.members_types[field]
+      end
+
       def l_klass_for_group group_by
-        # TypedStruct.new([
-        #     :group,     types_for_fields(group_by),
-        #     relation,   self.klass
-        #     ])
-        Struct.new(:group, relation)
+        TypedStruct.new(
+            [:group,     types_for_fields(group_by)],
+            [relation,   klass]
+            )
       end
 
       #

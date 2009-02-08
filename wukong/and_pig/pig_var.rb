@@ -6,7 +6,7 @@ module Wukong
     #
     class PigVar
       attr_accessor :klass, :basename, :anon, :cmd
-      cattr_accessor :working_dir
+      cattr_accessor :working_dir ; self.working_dir = '.'
       def initialize klass, basename, cmd
         self.klass    = klass
         self.basename = basename
@@ -39,13 +39,6 @@ module Wukong
         name.relationize
       end
       alias_method :relationize, :relation
-
-      #
-      # pig subexpression for the relation's aliases and types
-      #
-      def self.type_spec klass
-        klass.members_types.join(", ")
-      end
 
       #
       def new_in_chain l_klass, l_cmd

@@ -17,8 +17,8 @@ module Wukong
       # The AS type spec is generated from klass
       #
       def self.pig_load filename, klass
-        relation = filename.gsub(/\..*$/, '').gsub(/\W+/, '_').to_sym
-        self.new klass, relation, "LOAD    '#{filename}' AS (#{type_spec(klass)})"
+        relation = File.basename(filename).gsub(/\.[^\.]+?$/, '').gsub(/\W+/, '_').to_sym
+        self.new klass, relation, "LOAD    '#{filename}' AS #{klass.typify}"
       end
 
       #===========================================================================
@@ -45,7 +45,7 @@ module Wukong
       def checkpoint! filename=nil
         filename ||= default_filename
         store!   filename
-        self.name << self.class.pig_load(filename, self.klass)
+        self.name << self.class.pig_load(filename, klass)
         self.name
       end
 

@@ -1,5 +1,15 @@
 require 'active_support'
 module Wukong
+
+  module TypedStructMethods
+    module ClassMethods
+    end
+    def self.included base
+      base.extend ClassMethods
+    end
+  end
+
+
   class TypedStruct < Struct
     def self.unroll enum
       l_arr, r_arr = [ [] , [] ]
@@ -7,16 +17,17 @@ module Wukong
       [ l_arr, r_arr ]
     end
 
-    def self.new members_types
-      members, mtypes = self.unroll(members_types)
+    def self.new *members_types
+      members, mtypes = members_types.transpose
       klass        = Struct.new *members
       klass.class_eval do
+        include TypedStructMethods
         cattr_accessor :mtypes, :members_types
         self.mtypes = mtypes
-        self.members_types = Hash.new(members_types.flatten)
+        self.members_types = Hash.zip(members, mtypes)
       end
       klass
     end
-  end
 
+  end
 end
