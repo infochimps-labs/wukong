@@ -13,7 +13,7 @@
      # Make sure you don't have the bad luck, bad judgement or bad approach to
      # accumulate more data than your box can hold before finalizing.
      #
-     class AccumulatingReducer < Streamer
+     class AccumulatingReducer < Wukong::Streamer::Base
        attr_accessor :last_key
        def initialize options
          super options
