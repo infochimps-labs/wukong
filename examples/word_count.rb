@@ -70,5 +70,5 @@ end
 # Execute the script
 Wukong::Script.new(
   WordCount::Mapper,
-  WordCount::Reducer3,
+  WordCount::Reducer3
   ).run
