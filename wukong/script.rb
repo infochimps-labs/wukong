@@ -147,16 +147,18 @@ module Wukong
       self.options[:sort_fields] || 2
     end
 
-    def map_tasks()     options[:map_tasks]  end
-    def reduce_tasks()  options[:reduce_tasks]  end
+    def map_tasks()      options[:map_tasks]      end
+    def reduce_tasks()   options[:reduce_tasks]   end
+    def partition_keys() options[:partition_keys] end
+    def sort_keys()      options[:sort_keys]      end
 
     def extra_args
       a = []
-      a << "-jobconf mapred.map.tasks=#{map_tasks}"                                    if map_tasks
-      a << "-jobconf mapred.reduce.tasks=#{options[:reduce_tasks]}"                    if reduce_tasks
+      a << "-jobconf mapred.map.tasks=#{map_tasks}"                          if map_tasks
+      a << "-jobconf mapred.reduce.tasks=#{reduce_tasks}"                    if reduce_tasks
       a << "-jobconf mapred.tasktracker.map.tasks.maximum=#{options[:map_tasks_max]}"  if options[:map_tasks_max]
-      a << "-jobconf num.key.fields.for.partition=#{options[:partition_keys]}"         if options[:partition_keys]
-      a << "-jobconf stream.num.map.output.key.fields=#{options[:sort_keys]}"          if options[:sort_keys]
+      a << "-jobconf num.key.fields.for.partition=#{partition_keys}"         if partition_keys
+      a << "-jobconf stream.num.map.output.key.fields=#{sort_keys}"          if sort_keys
       a.join(" ")
     end
 

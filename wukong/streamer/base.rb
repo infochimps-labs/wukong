@@ -28,7 +28,7 @@ module Wukong
       end
 
       def emit record
-        puts record.join("\t")
+        puts record.to_flat.join("\t")
       end
       
       #

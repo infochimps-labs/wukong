@@ -1,6 +1,6 @@
 
-Fixnum.class_eval do
-  alias_method :to_flat, :to_s
+Object.class_eval do
+  def to_flat() to_s end
 end
 
 module Enumerable
