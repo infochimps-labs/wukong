@@ -129,7 +129,6 @@ or if your test data lies on the HDFS,
 
   hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
 
-
 h2. What's up with Wukong::AndPig?
 
 @Wukong::AndPig@ is a small library to more easily generate code for the

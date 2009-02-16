@@ -1,0 +1,12 @@
+
+
+Example example scripts: 
+
+   1. Find the [number of] hits by 5 minute timeslot for a website given its access logs.
+   2. Find the pages with over 1 million hits in day for a website given its access logs.
+   3. Find the pages that link to each page in a collection of webpages.
+   4. Calculate the proportion of lines that match a given regular expression for a collection of documents.
+   5. Sort tabular data by a primary and secondary column.
+   6. Find the most popular pages for a website given its access logs.
+
+   (from http://www.cloudera.com/resources/learning-mapreduce)
