@@ -48,6 +48,8 @@ h3. Structured data stream
 
 You can also use structs to treat your dataset as a stream of objects:
 
+  <code>
+  <pre>
   require 'wukong'
   require 'my_blog' #defines the blog models
   # structs for our input objects
@@ -93,7 +95,7 @@ You can also use structs to treat your dataset as a stream of objects:
     end
   end
   Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
-
+  </pre></code>
 
 h3. More info
     
