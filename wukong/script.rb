@@ -1,7 +1,87 @@
 require 'pathname'
 module Wukong
+
+
+
+  # == How to run a Wukong script
+  #
+  #   your/script.rb --go path/to/input_files path/to/output_dir
+  #
+  # All of the file paths are HDFS paths ; your script path, of course, is on the local filesystem.
+  #
+  # == Command-line options
+  #
+  # If you'd like to listen for any command-line options, specify them at the
+  # command line:
+  #
+  #   your/script.rb --my_bool_opt --my_val_taking_opt=val \
+  #     --go path/to/input_files path/to/output_dir
+  #
+  # In this case the options hash for both Mapper and Reducer will contain
+  #
+  #   :my_bool_opt       => true,
+  #   :my_val_taking_opt => 'val'
+  #
+  # == Complicated input paths
+  #
+  # To use more than one file as input, you can use normal * ? [] wildcards or
+  # give a comma-separated list -- see the hadoop documentation for syntax.
+  #
+  # == Run locally (--fake)
+  #
+  # To run your script locally, supply the --fake argument:
+  #
+  #   your/script.rb --fake path/to/input_files path/to/output_dir
+  #
+  # This will pipe the contents of path/to/input_files through first your
+  # mapper, then sort, then the reducer, storing the results in the given output
+  # directory.
+  #
+  # All paths refer to the /local/ filesystem -- hadoop is never involved and in
+  # fact doesn't even have to be installed.
+  #
+  # == How to test your scripts
+  #
+  # You can supply the --map argument in place of --go to run the mapper on its
+  # own (and similarly, --reduce to run the reducer standalone):
+  #
+  #   cat ./local/test/input.tsv | ./examples/word_count.rb --map | more
+  #
+  # or, if your test data lies on the HDFS,
+  #
+  #   hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
+  #
+  #
   class Script
     attr_accessor :mapper_klass, :reducer_klass, :options
+
+    #
+    # Instantiate the Script with the Mapper and the Reducer class (each a
+    # Wukong::Streamer) it should call back.
+    #
+    #
+    # == Identity or External program as map or reduce
+    #
+    # To use the identity reducer ('cat'), instantiate your Script class with
+    # +nil+ as the reducer class. (And similarly to use an identity mapper,
+    # supply +nil+ for the mapper class.)
+    #
+    # To use an external program as your reducer (mapper), subclass the
+    # reduce_command (map_command) method to return the full command line
+    # expression to call.
+    #
+    #   class MyMapper < Wukong::Streamer::Base
+    #     # ... awesome stuff ...
+    #   end
+    #
+    #   class MyScript < Wukong::Script
+    #     # prefix each unique line with the count of its occurrences.
+    #     def reduce_command
+    #       '/usr/bin/uniq -c'
+    #     end
+    #   end
+    #   MyScript.new(MyMapper, nil).run
+    #
     def initialize mapper_klass, reducer_klass
       process_argv!
       self.mapper_klass  = mapper_klass

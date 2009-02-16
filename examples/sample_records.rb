@@ -7,8 +7,8 @@ require 'wukong'
 #
 # Set the sampling fraction at the command line using the
 #   --sampling_fraction=
-# option.
-#
+# option: for example, to take a random 1/1000th of the lines in huge_files,
+#  ./examples/sample_records.rb --sampling_fraction=0.001 --go huge_files sampled_files
 #
 
 module SampleRecords
