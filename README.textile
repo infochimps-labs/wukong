@@ -1,7 +1,7 @@
 
 Wukong makes using Hadoop so easy a chimpanzee can use it.
 
-== How to run a Wukong script
+h2. How to run a Wukong script
 
   your/script.rb --go path/to/input_files path/to/output_dir
 
@@ -16,7 +16,7 @@ syntax to specify more than one input file:
     --go "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
 
 
-== How to test your scripts
+h2. How to test your scripts
 
 To run mapper on its own:
   cat ./local/test/input.tsv | ./examples/word_count.rb --map | more
@@ -24,22 +24,22 @@ or if your test data lies on the HDFS,
   hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
 
 
-== What's up with Wukong::AndPig?
+h2. What's up with Wukong::AndPig?
 
 Wukong::AndPig is a small library to more easily generate code for the
-"Pig":http://hadoop.apache.org/pig data analysis language.  See
-wukong/and_pig/README.textile for more.
+"Pig":http://hadoop.apache.org/pig data analysis language.  See its
+"README":wukong/and_pig/README.textile for more.
 
-== Why is it called Wukong?
+h2. Why is it called Wukong?
 
 Hadoop, as you may know, is "named after a stuffed
-elephant."http://en.wikipedia.org/wiki/Hadoop Wukong the Monkey King, known for
-his power and agility, is hero of a famous Chinese Fairytale in which he
+elephant."http://en.wikipedia.org/wiki/Hadoop Wukong (the Monkey King), known
+for his power and agility, is hero of a famous Chinese Fairytale in which he
 journeys to the land of the Elephant:
 
-Quoting the "Wikipedia page on Wukong:":http://en.wikipedia.org/wiki/Wukong
+Quoting "Sun Wukong's Wikipedia entry:":http://en.wikipedia.org/wiki/Wukong
 
-bq..::http://en.wikipedia.org/wiki/Wukong Sun Wukong (traditional Chinese: 孫悟空;
+bq. Sun Wukong (traditional Chinese: 孫悟空;
 simplified Chinese: 孙悟空; pinyin: Sūn Wùkōng; Wade-Giles: Sun1 Wu4-k'ung1;
 Japanese 孫悟空 (Son Gokū?)), known in the West as the Monkey King, is the main
 character in the classical Chinese epic novel Journey to the West. In the novel,
