@@ -20,11 +20,11 @@ module WordCount
     def tokenize str
       return [] unless str
       str = str.downcase;
-      # kill off all punctuation except 's
+      # kill off all punctuation except [stuff]'s or [stuff]'t
       # this includes hyphens (words are split)
       str = str.
         gsub(/[^a-zA-Z0-9\']+/, ' ').
-        gsub(/\'([st])\b/, '!\1').gsub(/\'/, ' ').gsub(/!/, "'")
+        gsub(/(\w)\'([st])\b/, '\1!\2').gsub(/\'/, ' ').gsub(/!/, "'")
       # Busticate at whitespace
       words = str.strip.split(/\s+/)
       words.reject!{|w| w.blank? }
@@ -36,6 +36,7 @@ module WordCount
     #
     def stream
       $stdin.each do |line|
+        line.chomp!
         tokenize(line).each{|word| puts [word, 1].join("\t") }
       end
     end
