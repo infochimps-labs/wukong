@@ -15,7 +15,7 @@ Here's a super-script to count words in a text stream:
       end
     end
   end
-  # Execute the script
+  \# Execute the script
   Wukong::Script.new(WordCount::Mapper, Wukong::Streamer::UniqCountKeysReducer).run
 
 There are many useful examples (including an actually-useful version of this
