@@ -14,7 +14,7 @@
      # accumulate more data than your box can hold before finalizing.
      #
      class AccumulatingReducer < Wukong::Streamer::Base
-       attr_accessor :last_key
+       attr_accessor :curr_key
        def initialize options
          super options
          reset!
@@ -36,12 +36,12 @@
        def process *vals
          key = get_key(*vals)
          # if we've seen nothing, adopt key
-         self.last_key ||= key
+         self.curr_key ||= key
          # if this is a new key,
-         if key != self.last_key
+         if key != self.curr_key
            finalize                # process what we've collected so far
            reset!                  # then forget about that key
-           self.last_key = key     # and start a new one
+           self.curr_key = key     # and start a new one
          end
          # collect the current line
          accumulate *vals
@@ -53,7 +53,7 @@
        # Make sure to call +super+ if you override
        #
        def reset!
-         self.last_key = nil
+         self.curr_key = nil
        end
 
        #

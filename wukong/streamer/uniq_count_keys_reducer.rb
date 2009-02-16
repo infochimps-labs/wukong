@@ -3,24 +3,27 @@ module Wukong
     #
     # Emit each unique key and the count of its occurrences
     #
-    class UniqueCountLinesReducer < Wukong::Streamer::AccumulatingReducer
-      def format_freq freq
-        "%010d"%freq.to_i
+    class UniqCountKeysReducer < Wukong::Streamer::AccumulatingReducer
+      attr_accessor :key_count
+
+      def formatted_key_count
+        "%010d"%key_count.to_i
       end
 
       # reset the counter to zero
       def reset!
-        self.count = 0
+        super
+        self.key_count = 0
       end
 
       # record one more for this key
-      def accumulate
-        self.count += 1
+      def accumulate *vals
+        self.key_count += 1
       end
 
       # emit each key field and the count, tab-separated.
       def finalize
-        puts [key, format_count(count)].flatten.join("\t")
+        puts [curr_key, formatted_key_count].flatten.join("\t")
       end
     end
 

@@ -71,10 +71,11 @@ module Wukong
 
     def extra_args
       a = []
-      a << "-jobconf mapred.map.tasks=#{map_tasks}"       if map_tasks
-      a << "-jobconf mapred.reduce.tasks=#{options[:reduce_tasks]}" if options[:reduce_tasks]
-      a << "-jobconf num.key.fields.for.partition=#{options[:partition_keys]}" if options[:partition_keys]
-      a << "-jobconf stream.num.map.output.key.fields=#{options[:sort_keys]}"   if options[:sort_keys]
+      a << "-jobconf mapred.map.tasks=#{map_tasks}"                                    if map_tasks
+      a << "-jobconf mapred.reduce.tasks=#{options[:reduce_tasks]}"                    if options[:reduce_tasks]
+      a << "-jobconf mapred.tasktracker.map.tasks.maximum=#{options[:map_tasks_max]}"  if options[:map_tasks_max]
+      a << "-jobconf num.key.fields.for.partition=#{options[:partition_keys]}"         if options[:partition_keys]
+      a << "-jobconf stream.num.map.output.key.fields=#{options[:sort_keys]}"          if options[:sort_keys]
       a.join(" ")
     end
 
@@ -86,7 +87,7 @@ module Wukong
       case
       when options[:fake]
         $stderr.puts "Reading STDIN / Writing STDOUT"
-        command = %Q{ #{map_command} | sort | #{reduce_command} }
+        command = %Q{ cat '#{input_path}' | #{map_command} | sort | #{reduce_command} > '#{output_path}'}
       when options[:nopartition]
         command = %Q{ hdp-stream-flat '#{input_path}' '#{output_path}' '#{map_command}' '#{reduce_command}' #{extra_args} }
       else

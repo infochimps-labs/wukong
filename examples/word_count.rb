@@ -2,10 +2,8 @@
 $: << File.dirname(__FILE__)+'/../wukong'
 require 'wukong'
 
-
-
 module WordCount
-  class Mapper < Wukong::Streamer
+  class Mapper < Wukong::Streamer::Base
 
     #
     # Split a string into its constituent words.
@@ -43,7 +41,7 @@ module WordCount
     end
   end
 
-  class Reducer < Wukong::CountingReducer
+  class Reducer < Wukong::Streamer::UniqCountKeysReducer
   end
 
   #
@@ -55,7 +53,7 @@ end
 #
 # Executes the script
 #
-WordFreq::Script.new(
-  WordFreq::Mapper,
-  WordFreq::Reducer
+WordCount::Script.new(
+  WordCount::Mapper,
+  WordCount::Reducer
   ).run

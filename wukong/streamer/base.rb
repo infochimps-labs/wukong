@@ -2,6 +2,13 @@ module Wukong
   module Streamer
     class Base
       #
+      # Accepts option hash from script runner
+      #
+      def initialize options={}
+      end
+
+
+      #
       # itemize and process each line
       #
       def stream
