@@ -48,7 +48,6 @@ h3. Structured data stream
 
 You can also use structs to treat your dataset as a stream of objects:
 
-  @@@
   require 'wukong'
   require 'my_blog' #defines the blog models
   # structs for our input objects
@@ -71,30 +70,30 @@ You can also use structs to treat your dataset as a stream of objects:
       #
       def process record
         case record
-	when TwitterUser
-	  user     = MyBlog::User.new.merge(record) # grab the fields in common
-	  user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
-	  yield user
-	  yield user_loc
-	when Tweet
-	  if record.twitter_user_id == MY_USER_ID
-	    post = MyBlog::Post.new.merge record
-	    post.link = "http://twitter.com/statuses/show/#{record.id}"
-	    post.body = record.text
-	    post.title = record.text[0..65] + "..."
-	    yield post
-	  else
-   	    comment = MyBlog::Comment.new.merge record
-	    comment.body    = record.text
-	    comment.post_id = record.in_reply_to_status_id
-	    yield comment
-	  end
-	end
+        when TwitterUser
+          user     = MyBlog::User.new.merge(record) # grab the fields in common
+          user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
+          yield user
+          yield user_loc
+        when Tweet
+          if record.twitter_user_id == MY_USER_ID
+            post = MyBlog::Post.new.merge record
+            post.link = "http://twitter.com/statuses/show/#{record.id}"
+            post.body = record.text
+            post.title = record.text[0..65] + "..."
+            yield post
+          else
+            comment = MyBlog::Comment.new.merge record
+            comment.body    = record.text
+            comment.post_id = record.in_reply_to_status_id
+            yield comment
+          end
+        end
       end
     end
   end
   Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
-  @@@
+
 
 h3. More info
     
