@@ -1,6 +1,7 @@
 h1. Wukong
 
-Wukong makes Hadoop so easy a chimpanzee can use it.
+Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use
+it.
 
 Treat your dataset like a
 * stream of lines when it's efficient to process by lines
@@ -42,14 +43,14 @@ The first class, the Mapper, eats lines and craps @[word, count]@ records: word
 is the /key/, its count is the /value/.
 
 In the reducer, the values for each key are stacked up into a list; then the
-record(s) yielded by @#finalize@ are emitted.
+record(s) yielded by @#finalize@ are emitted. There are many other ways to write
+the reducer (most of them are better) -- see the ["examples":examples/] 
 
 h3. Structured data stream
 
 You can also use structs to treat your dataset as a stream of objects:
 
-  <code>
-  <pre>
+  <code><pre>
   require 'wukong'
   require 'my_blog' #defines the blog models
   # structs for our input objects
@@ -138,7 +139,7 @@ h2. What's up with Wukong::AndPig?
 h2. Why is it called Wukong?
 
 Hadoop, as you may know, is "named after a stuffed
-elephant,"http://en.wikipedia.org/wiki/Hadoop and since Wukong was started by
+elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by
 the "infochimps":http://infochimps.org team, we needed a simian analog. Wukong
 (the Monkey King), known for his power and agility, is hero of a famous Chinese
 Fairytale in which he journeys to the land of the Elephant:
@@ -158,13 +159,12 @@ holding his own against the best generals of heaven. Each of his hairs possesses
 magical properties, and is capable of transforming into a clone of the Monkey
 King himself, or various weapons, animals, and other objects. He also knows
 various spells in order to command wind, part water, conjure protective circles
-against demons, freeze humans, demons, and gods alike. (Journey to the West, Wu
-Cheng'en (1500-1582), Translated by Foreign Languages Press, Beijing 1993.) --
-/["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]/
+against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's
+Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
 
-p. Sounds about right to us :) The "BBC-produced Jaime Hewlett / Damon Albarn
-short,":http://news.bbc.co.uk/sport1/hi/olympics/monkey made for the 2008
-Olympics, gives the general idea.
+p. Seems to fit the bill :) The "BBC-produced Jaime Hewlett / Damon Albarn
+short":http://news.bbc.co.uk/sport1/hi/olympics/monkey made for the 2008
+Olympics gives the general idea.
 
 h2. What tools does Wukong work with?
 
