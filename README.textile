@@ -1,25 +1,27 @@
 
-Wukong makes using Hadoop so easy a chimpanzee can use it.
+Wukong makes Hadoop so easy a chimpanzee can use it.
 
 h2. How to write a Wukong script
+
+Here's a super-script to count words in a text stream:
 
   #!/usr/bin/env ruby
   require 'wukong'
 
   module WordCount
     class Mapper < Wukong::Streamer::LineStreamer
-      # Emit each word in each line.
+      # Emit each word in the line.
       def process line
-  	yield line.strip.split(/\W+/).
+        words = line.strip.split(/\W+/).reject(&:blank?)
+        words.each{|word| yield [word, 1] }
       end
-    end
-
-    class Reducer < Wukong::Streamer::UniqCountLinesReducer
     end
   end
   # Execute the script
-  Script.new(WordCount::Mapper, WordCount::Reducer).run
+  Wukong::Script.new(WordCount::Mapper, Wukong::Streamer::UniqCountKeysReducer).run
 
+There are many useful examples (including an actually-useful version of this
+WordCount script) in examples/ directory.
 
 h2. How to run a Wukong script
 
