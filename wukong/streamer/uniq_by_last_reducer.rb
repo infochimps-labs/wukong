@@ -23,14 +23,14 @@ module Wukong
       # Adopt each value in turn: the last one's the one you want.
       #
       def accumulate *vals
-        self.final_value = *vals
+        self.final_value = vals
       end
 
       #
       # Emit the last-seen value
       #
       def finalize
-        puts final_value.join("\t") if final_value
+        yield final_value if final_value
       end
 
       #

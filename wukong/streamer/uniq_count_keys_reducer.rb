@@ -7,7 +7,7 @@ module Wukong
       attr_accessor :key_count
 
       def formatted_key_count
-        "%010d"%key_count.to_i
+        "%10d"%key_count.to_i
       end
 
       # reset the counter to zero
@@ -23,7 +23,7 @@ module Wukong
 
       # emit each key field and the count, tab-separated.
       def finalize
-        puts [curr_key, formatted_key_count].flatten.join("\t")
+        yield [key, formatted_key_count]
       end
     end
 

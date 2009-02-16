@@ -1,30 +1,48 @@
 module Wukong
   module Streamer
     #
+    # Mix StructRecordizer into any streamer to make it accept a stream of
+    # objects -- the first field in each line is turned into a class and used to
+    # instantiate an object using the remaining fields on that line.
     #
-    #
-    class StructStreamer < Wukong::Streamer::Base
-      def itemize line
-        StructItemizer.itemize *super(line)
-      end
-    end
-
-    #
-    #
-    #
-    module StructItemizer
+    module StructRecordizer
       def self.class_from_resource klass_name
-        begin klass = klass_name.to_s.camelize.constantize
+        # kill off all but class name
+        klass_name = klass_name.gsub(/-.*$/, '')
+        begin
+          # convert it to class name
+          klass = klass_name.to_s.camelize.constantize
         rescue ; warn "Bogus class name '#{klass_name}'" ; return ; end
       end
 
-      def self.itemize klass_name, *vals
+      #
+      # Turned the first field into a class name, then use the remaining fields
+      # on that line to instantiate the object to process.
+      #
+      def self.recordize klass_name, *fields
         return if klass_name =~ /^(?:bogus-|bad_record)/
-        klass_name.gsub!(/-.*$/, '') # kill off all but class name
-        klass = self.class_from_resource(klass_name) or return
-        [ klass.new(*vals) ]
+        klass = class_from_resource(klass_name) or return
+        # instantiate the class using the remaining fields on that line
+        [ klass.new(*fields) ]
+      end
+
+      #
+      #
+      #
+      def recordize line
+        StructRecordizer.recordize line.split("\t")
       end
     end
 
+    #
+    # Processes file as a stream of objects -- the first field in each line is
+    # turned into a class and used to instantiate an object using the remaining
+    # fields on that line.
+    #
+    # See [StructRecordizer] for more.
+    #
+    class StructStreamer < Wukong::Streamer::Base
+      include StructRecordizer
+    end
   end
 end

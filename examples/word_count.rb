@@ -41,20 +41,10 @@ module WordCount
       end
     end
   end
-
-  class Reducer < Wukong::Streamer::UniqCountKeysReducer
-  end
-
-  #
-  #
-  class Script < Wukong::Script
-  end
 end
 
-#
-# Executes the script
-#
-WordCount::Script.new(
+# Execute the script
+Wukong::Script.new(
   WordCount::Mapper,
-  WordCount::Reducer
+  Wukong::Streamer::UniqCountKeysReducer
   ).run

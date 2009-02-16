@@ -8,26 +8,35 @@ module Wukong
       end
 
       #
-      # itemize and process each line
+      # Pass each record to +#process+
       #
       def stream
         $stdin.each do |line|
-          item = itemize(line) ; next if item.blank?
-          process(*item)
+          record = recordize(line.chomp)
+          next if record.nil?
+          process(*record) do |output_record|
+            emit output_record
+          end
         end
       end
-
+      
       #
-      # Default itemizer: process each record as an array of fields by splitting
-      # at field separator
+      # Default recordizer: returns array of fields by splitting at tabs
       #
-      def itemize line
-        line.chomp.split("\t")
+      def recordize line
+        line.split("\t")
       end
 
+      def emit record
+        puts record.join("\t")
+      end
+      
       #
-      # Implement your own [process] method
+      # Process each record in turn, yielding the records to emit
       #
+      def process *args, &block
+        raise "override the process method in your implementation: it should process each record."
+      end
 
       #
       # To track processing errors inline,
@@ -35,7 +44,7 @@ module Wukong
       #
       def bad_record! *args
         warn "Bad record #{args.inspect[0..400]}"
-        puts ["bad_record", args].flatten.join("\t")
+        puts ["bad_record", *args].join("\t")
       end
     end
   end

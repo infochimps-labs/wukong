@@ -14,7 +14,7 @@
      # accumulate more data than your box can hold before finalizing.
      #
      class AccumulatingReducer < Wukong::Streamer::Base
-       attr_accessor :curr_key
+       attr_accessor :key
        def initialize options
          super options
          reset!
@@ -23,28 +23,26 @@
        #
        # override for multiple-field keys, etc.
        #
-       def get_key *vals
-         vals.first
+       def get_key *record
+         record.first
        end
 
        #
-       # Accumulate all values for a given key.
+       # Accumulate all records for a given key.
        #
-       # When the last value for the key is seen, finalize processing and adopt the
+       # When the last record for the key is seen, finalize processing and adopt the
        # new key.
        #
-       def process *vals
-         key = get_key(*vals)
-         # if we've seen nothing, adopt key
-         self.curr_key ||= key
-         # if this is a new key,
-         if key != self.curr_key
-           finalize                # process what we've collected so far
+       def process *args, &block
+         this_key = get_key(*args)
+         self.key ||= this_key
+         if this_key != self.key   # if this is a new key,
+           finalize(&block)        # process what we've collected so far
            reset!                  # then forget about that key
-           self.curr_key = key     # and start a new one
+           self.key = this_key     # and start a new one
          end
-         # collect the current line
-         accumulate *vals
+         # collect the current record
+         accumulate *args
        end
 
        #
@@ -53,11 +51,11 @@
        # Make sure to call +super+ if you override
        #
        def reset!
-         self.curr_key = nil
+         self.key = nil
        end
 
        #
-       # Override this to accumulate each value for the given key in turn.
+       # Override this to accumulate each record for the given key in turn.
        #
        def accumulate
          raise "override the accumulate method in your subclass"
@@ -76,7 +74,7 @@
        #
        def stream
          super
-         finalize
+         finalize(){|record| emit record }
        end
      end
 

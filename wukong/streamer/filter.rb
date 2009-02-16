@@ -3,18 +3,17 @@ module Wukong
     #
     # emit only some records, as dictated by the #emit? method
     #
-    class Filter < Wukong::Streamer::Base
-
+    # This is a mixin: including this module in your streamer
+    # implements its +#process+ method.
+    #
+    module Filter
       #
       # Filter out a subset of record/lines
       #
       # Subclass and re-define the emit? method
       #
-      def stream
-        $stdin.each do |line|
-          line.chomp!
-          puts line if emit?(line)
-        end
+      def process *record, &block
+        yield record if emit?(record)
       end
     end
   end
