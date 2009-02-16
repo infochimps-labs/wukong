@@ -5,9 +5,7 @@ h2. How to write a Wukong script
 
 Here's a super-script to count words in a text stream:
 
-  #!/usr/bin/env ruby
   require 'wukong'
-
   module WordCount
     class Mapper < Wukong::Streamer::LineStreamer
       # Emit each word in the line.
