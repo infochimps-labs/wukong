@@ -3,7 +3,7 @@ module Wukong
     #
     # Emit each unique key and the count of its occurrences
     #
-    class UniqCountKeysReducer < Wukong::Streamer::AccumulatingReducer
+    class CountKeys < Wukong::Streamer::AccumulatingReducer
       attr_accessor :key_count
 
       def formatted_key_count

@@ -4,7 +4,6 @@ require 'wukong'
 
 module WordCount
   class Mapper < Wukong::Streamer::Base
-
     #
     # Split a string into its constituent words.
     #
@@ -34,17 +33,42 @@ module WordCount
     #
     # Emit each word in each line.
     #
-    def stream
-      $stdin.each do |line|
-        line.chomp!
-        tokenize(line).each{|word| puts [word, 1].join("\t") }
-      end
+    def process line
+      tokenize(line).each{|word| yield [word, 1] }
     end
   end
+
+  #
+  # You can stack up all the values in a list then sum them at once:
+  #
+  class Reducer1 < Wukong::Streamer::ListReducer
+    def finalize
+      yield [ key, values.map(&:last).map(&:to_i).sum ]
+    end
+  end
+
+  #
+  # A bit kinder to your memory manager: accumulate the sum record-by-record:
+  #
+  class Reducer2 < Wukong::Streamer::AccumulatingReducer
+    attr_accessor :key_count
+    def reset!()           self.key_count =  0 end
+    def accumulate(*args)  self.key_count += 1 end
+    def finalize
+      yield [ key, key_count ]
+    end
+  end
+
+  #
+  # ... easiest of all, though: this is common enough that it's already included
+  #
+  class Reducer3 < Wukong::Streamer::CountKeys
+  end
+
 end
 
 # Execute the script
 Wukong::Script.new(
   WordCount::Mapper,
-  Wukong::Streamer::UniqCountKeysReducer
+  WordCount::Reducer3,
   ).run

@@ -6,7 +6,7 @@ module Wukong
     #
     # (This is the functional equivalent of +'uniq -c'+)
     #
-    class UniqCountLinesReducer < Wukong::Streamer::Base
+    class CountLines < Wukong::Streamer::Base
       def formatted_key_count key_count
         "%010d"%key_count.to_i
       end

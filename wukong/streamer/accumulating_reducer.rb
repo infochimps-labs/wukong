@@ -57,7 +57,7 @@
        #
        # Override this to accumulate each record for the given key in turn.
        #
-       def accumulate
+       def accumulate *args
          raise "override the accumulate method in your subclass"
        end
 
