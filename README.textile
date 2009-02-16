@@ -39,7 +39,7 @@ journeys to the land of the Elephant:
 
 Quoting "Sun Wukong's Wikipedia entry:":http://en.wikipedia.org/wiki/Wukong
 
-bq. Sun Wukong (traditional Chinese: 孫悟空;
+bq.. Sun Wukong (traditional Chinese: 孫悟空;
 simplified Chinese: 孙悟空; pinyin: Sūn Wùkōng; Wade-Giles: Sun1 Wu4-k'ung1;
 Japanese 孫悟空 (Son Gokū?)), known in the West as the Monkey King, is the main
 character in the classical Chinese epic novel Journey to the West. In the novel,
