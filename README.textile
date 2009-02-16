@@ -26,14 +26,14 @@ Here's a script to count words in a text stream:
         words.each{|word| yield [word, 1] }
       end
     end
-
+    
     class Reducer < Wukong::Streamer::ListReducer
       def finalize
         yield [ key, values.map(&:last).map(&:to_i).sum ]
       end
     end
   end
-
+  
   Wukong::Script.new(
     WordCount::Mapper,
     WordCount::Reducer
@@ -139,10 +139,9 @@ h2. What's up with Wukong::AndPig?
 h2. Why is it called Wukong?
 
 Hadoop, as you may know, is "named after a stuffed
-elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by
-the "infochimps":http://infochimps.org team, we needed a simian analog. Wukong
-(the Monkey King), known for his power and agility, is hero of a famous Chinese
-Fairytale in which he journeys to the land of the Elephant:
+elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by the
+"infochimps":http://infochimps.org team, we needed a simian analog.  A Monkey
+King who journeyed to the land of the Elephant seems to fit the bill:
 
 bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main
 character in the classical Chinese epic novel Journey to the West. In the novel,
@@ -162,9 +161,9 @@ various spells in order to command wind, part water, conjure protective circles
 against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's
 Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
 
-p. Seems to fit the bill :) The "BBC-produced Jaime Hewlett / Damon Albarn
-short":http://news.bbc.co.uk/sport1/hi/olympics/monkey made for the 2008
-Olympics gives the general idea.
+The "Jaime Hewlett / Damon Albarn
+short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for
+their 2008 Olympics coverage gives the general idea.
 
 h2. What tools does Wukong work with?
 
