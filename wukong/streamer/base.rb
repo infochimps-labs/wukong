@@ -7,7 +7,6 @@ module Wukong
       def initialize options={}
       end
 
-
       #
       # itemize and process each line
       #

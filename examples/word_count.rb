@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../wukong'
+$: << File.dirname(__FILE__)+'/..'
 require 'wukong'
 
 module WordCount
