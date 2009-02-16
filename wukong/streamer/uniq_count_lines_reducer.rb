@@ -6,9 +6,9 @@ module Wukong
     #
     # (This is the functional equivalent of +'uniq -c'+)
     #
-    class UniqueCountLinesReducer < Wukong::Streamer::Base
-      def freq_key freq
-        "%010d"%freq.to_i
+    class UniqCountLinesReducer < Wukong::Streamer::Base
+      def formatted_key_count key_count
+        "%010d"%key_count.to_i
       end
 
       #
@@ -16,8 +16,8 @@ module Wukong
       #
       def stream
         %x{/usr/bin/uniq -c}.split("\n").each do |line|
-          freq, item = line.chomp.strip.split(/\s+/, 2)
-          puts [item, freq_key(freq)].join("\t")
+          key_count, item = line.chomp.strip.split(/\s+/, 2)
+          puts [item, formatted_key_count(key_count)].join("\t")
         end
       end
     end
