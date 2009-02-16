@@ -48,51 +48,51 @@ h3. Structured data stream
 
 You can also use structs to treat your dataset as a stream of objects:
 
-  require 'wukong'
-  require 'my_blog' #defines the blog models
-  # structs for our input objects
-  Tweet = Struct.new( :id, :created_at, :twitter_user_id,
-    :in_reply_to_user_id, :in_reply_to_status_id, :text )
-  TwitterUser  = Struct.new( :id, :username, :fullname,
-    :homepage, :location, :description )
-  module TwitBlog
-    class Mapper < Wukong::Streamer::RecordStreamer
-      # Watch for tweets by me
-      MY_USER_ID = 24601
-      #
-      # If this is a tweet is by me, convert it to a Post.
-      #
-      # If it is a tweet not by me, convert it to a Comment that 
-      # will be paired with the correct Post.
-      #
-      # If it is a TwitterUser, convert it to a User record and
-      # a user_location record
-      #
-      def process record
-        case record
-	when TwitterUser
-	  user     = MyBlog::User.new.merge(record) # grab the fields in common
-	  user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
-	  yield user
-	  yield user_loc
-	when Tweet
-	  if record.twitter_user_id == MY_USER_ID
-	    post = MyBlog::Post.new.merge record
-	    post.link = "http://twitter.com/statuses/show/#{record.id}"
-	    post.body = record.text
-	    post.title = record.text[0..65] + "..."
-	    yield post
-	  else
-   	    comment = MyBlog::Comment.new.merge record
-	    comment.body    = record.text
-	    comment.post_id = record.in_reply_to_status_id
-	    yield comment
+	require 'wukong'
+	require 'my_blog' #defines the blog models
+	# structs for our input objects
+	Tweet = Struct.new( :id, :created_at, :twitter_user_id,
+	  :in_reply_to_user_id, :in_reply_to_status_id, :text )
+	TwitterUser  = Struct.new( :id, :username, :fullname,
+	  :homepage, :location, :description )
+	module TwitBlog
+	  class Mapper < Wukong::Streamer::RecordStreamer
+	    # Watch for tweets by me
+	    MY_USER_ID = 24601
+	    #
+	    # If this is a tweet is by me, convert it to a Post.
+	    #
+	    # If it is a tweet not by me, convert it to a Comment that 
+	    # will be paired with the correct Post.
+	    #
+	    # If it is a TwitterUser, convert it to a User record and
+	    # a user_location record
+	    #
+	    def process record
+	      case record
+		when TwitterUser
+		  user     = MyBlog::User.new.merge(record) # grab the fields in common
+		  user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
+		  yield user
+		  yield user_loc
+		when Tweet
+		  if record.twitter_user_id == MY_USER_ID
+		    post = MyBlog::Post.new.merge record
+		    post.link = "http://twitter.com/statuses/show/#{record.id}"
+		    post.body = record.text
+		    post.title = record.text[0..65] + "..."
+		    yield post
+		  else
+		    comment = MyBlog::Comment.new.merge record
+		    comment.body    = record.text
+		    comment.post_id = record.in_reply_to_status_id
+		    yield comment
+		  end
+		end
+	    end
 	  end
 	end
-      end
-    end
-  end
-  Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
+	Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
 
 h3. More info
     
