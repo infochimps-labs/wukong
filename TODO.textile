@@ -1,4 +1,25 @@
 
+Improvements:
+
+* combiners
+
+* JobStarter / JobSteps
+
+* Talk to hdfs
+
+* Make it not call hdp-stream
+* rename --fake and --go to --run=local and --run=hadoop, or --run to use default
+* make it hdp-rm the destination
+* provide for a defaults file
+* add more standard options
+* DRY up the options and method overrides
+* might as well take dumbo's command line args
+
+* Make this a Gem
+
+* Stats reducer
+
+
 
 Example example scripts: 
 
