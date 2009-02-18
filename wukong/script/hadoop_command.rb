@@ -8,23 +8,15 @@ module Wukong
     #
 
     #
-    # Number of fields for the KeyBasedPartitioner
-    # to sort on.
-    #
-    def sort_fields
-      self.options[:sort_fields] || 2
-    end
-
-    #
     # Translate the simplified args to their hairy-assed hadoop equivalents
     #
     HADOOP_OPTIONS_MAP = {
       :max_map_tasks          => 'mapred.tasktracker.map.tasks.maximum',
       :map_tasks              => 'mapred.map.tasks',
       :reduce_tasks           => 'mapred.reduce.tasks',
-      :sort_keys              => 'stream.num.map.output.key.fields',
+      :sort_fields            => 'stream.num.map.output.key.fields',
       :key_field_separator    => 'map.output.key.field.separator',
-      :partition_keys         => 'num.key.fields.for.partition',
+      :partition_fields         => 'num.key.fields.for.partition',
       :output_field_separator => 'stream.map.output.field.separator'
     }
 
@@ -40,17 +32,17 @@ module Wukong
     def hadoop_sort_args
       [
         jobconf(:key_field_separator),
-        jobconf(:sort_keys),
+        jobconf(:sort_fields),
       ]
     end
 
     # Define what fields hadoop should use to distribute records to reducers
     def hadoop_partition_args
-      if options[:partition_keys]
+      if options[:partition_fields]
         [
           '-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner',
           jobconf(:output_field_separator),
-          jobconf(:partition_keys),
+          jobconf(:partition_fields),
         ]
       end
     end

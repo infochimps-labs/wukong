@@ -112,7 +112,13 @@ module Wukong
     # Parse the command-line args into the options hash.
     #
     # I should not reinvent the wheel.
-    # Yet here we are.
+    # Yet: here we are.
+    #
+    # '--foo=foo_val'  produces :foo => 'foo_val' in the options hash.
+    # '--'             After seeing a non-'--' flag, or a '--' on its own, no further flags are parsed
+    #
+    # options[:all_args] contains all arguments that are not in std_options
+    # options[:rest]     contains all arguments following the first non-flag (or the '--')
     #
     def process_argv!
       options[:all_args] = []
@@ -120,14 +126,16 @@ module Wukong
       while args do
         arg = args.shift
         case
-        when arg == '--'                    then break
+        when arg == '--'
+          break
         when arg =~ /\A--(\w+)(?:=(.+))?\z/
           opt, val = [$1, $2]
           opt = opt.to_sym
           val ||= true
           self.options[opt] = val
           options[:all_args] << arg unless std_options.include?(opt)
-        else args.unshift(arg) ; break
+        else
+          args.unshift(arg) ; break
         end
       end
       options[:all_args] = options[:all_args].join(" ")
@@ -187,20 +195,23 @@ module Wukong
       # input / output paths
       input_path, output_path = options[:rest][0..1]
       raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:fake]) && (input_path.blank? || output_path.blank?)
+      [input_path, output_path]
+    end
+
+    def maybe_overwrite_output_paths! output_path
       if (options[:overwrite] || options[:rm]) && (run_mode != 'local')
         $stderr.puts "Removing output file #{output_path}"
-        `hdp-rm '#{output_path}'`
+        `hdp-rm -r '#{output_path}'`
       end
-      [input_path, output_path]
     end
 
     #
     # Execute the runner phase
     #
     def exec_hadoop_streaming
-      input_path, output_path = input_output_paths
-      #
       $stderr.puts "Streaming on self"
+      input_path, output_path = input_output_paths
+      maybe_overwrite_output_paths! output_path
       command = runner_command(input_path, output_path)
       $stderr.puts command
       if ! options[:fake]
