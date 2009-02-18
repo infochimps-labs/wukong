@@ -46,4 +46,5 @@ TODO (Autosaved).taskpaper
 nohup.out
 twitter_pass.rb
 have_screen_names.rb
-config/private.yaml
+config/*private.yaml
+config/*site.yaml

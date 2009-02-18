@@ -14,7 +14,6 @@ command line.
 
 h2. How to write a Wukong script
 
-
 Here's a script to count words in a text stream:
 
   require 'wukong'
@@ -103,10 +102,24 @@ h3. More info
 There are many useful examples (including an actually-useful version of the
 WordCount script) in examples/ directory.
 
+h2. Setup
+
+1. Allow Wukong to discover where his elephant friend lives: either
+
+  * set a $HADOOP_HOME environment variable,
+  
+  * or create a file 'config/wukong-site.yaml' with a line that points to the
+    top-level directory of your hadoop install:
+
+      :hadoop_home: /usr/local/share/hadoop
+
+2. Add wukong's @bin/@ directory to your $PATH, so that you may use its
+   filesystem shortcuts.
+
 
 h2. How to run a Wukong script
 
-  your/script.rb --go path/to/input_files path/to/output_dir
+  your/script.rb --run path/to/input_files path/to/output_dir
 
 All of the file paths are HDFS paths except your script path, of course, which
 is on the local filesystem.
@@ -116,7 +129,7 @@ in the options path your mapper and reducer receive), and you can use the hadoop
 syntax to specify more than one input file:
 
   ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
-    --go "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
+    --run "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
 
 
 h2. How to test your scripts
