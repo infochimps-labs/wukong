@@ -7,26 +7,31 @@ require 'wukong'
 #
 module CountKeys
 
+  # Identity Mapper
+
+  #
   class Reducer < Wukong::Streamer::CountLines
   end
 
   #
   class Script < Wukong::Script
     def map_command
+      # Use `cut` to extract the first field
       %Q{ cut -d"\t" -f1 }
     end
 
     #
-    # There's just the one key
+    # There's just the one field
     #
-    def sort_fields()    1 end
-    def partition_keys() 1 end
+    def default_options
+      super.merge :sort_fields => 1
+    end
   end
 end
 
 #
 # Executes the script only if run from command line
 #
-if __FILE__ == $0 
-  CountKeys::Script.new(nil, CountKeys::Reducer).run 
-end 
+if __FILE__ == $0
+  CountKeys::Script.new(nil, CountKeys::Reducer).run
+end

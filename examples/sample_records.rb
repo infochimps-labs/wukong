@@ -13,14 +13,14 @@ require 'wukong'
 class Mapper < Wukong::Streamer::LineStreamer
   include Wukong::Streamer::Filter
 
-  # number between 0 and 1 giving the fraction of lines to emit
-  attr_accessor :sampling_fraction
   #
-  # Use the command-line option to get the sampling fraction
+  # floating-point number between 0 and 1 giving the fraction of lines to emit:
+  # at sampling_fraction=1 all records are emitted, at 0 none are.
   #
-  def initialize options, *args
-    super options, *args
-    self.sampling_fraction = options[:sampling_fraction].to_f or
+  # Takes its value from a mandatory command-line option
+  #
+  def sampling_fraction
+    @sampling_fraction ||= ( options[:sampling_fraction] && options[:sampling_fraction].to_f ) or
       raise "Please supply a --sampling_fraction= argument, a decimal number between 0 and 1"
   end
 
@@ -32,7 +32,10 @@ class Mapper < Wukong::Streamer::LineStreamer
   end
 end
 
+class Script < Wukong::Script
+end
+
 #
 # Executes the script
 #
-Wukong::Script.new( Mapper, nil ).run
+Script.new( Mapper, nil ).run

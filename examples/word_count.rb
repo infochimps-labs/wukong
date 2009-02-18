@@ -3,7 +3,7 @@ $: << File.dirname(__FILE__)+'/..'
 require 'wukong'
 
 module WordCount
-  class Mapper < Wukong::Streamer::Base
+  class Mapper < Wukong::Streamer::LineStreamer
     #
     # Split a string into its constituent words.
     #
@@ -70,5 +70,5 @@ end
 # Execute the script
 Wukong::Script.new(
   WordCount::Mapper,
-  WordCount::Reducer3
+  WordCount::Reducer1
   ).run

@@ -15,14 +15,13 @@ module Size
     def map_command
       '/usr/bin/wc'
     end
-    
+
     # Make all records go to one reducer
-    def initialize *args
-      super *args
-      self.options[:reduce_tasks] = 1
+    def default_options
+      super.merge :reduce_tasks => 1
     end
   end
-  
+
   #
   # Sums the numeric value of each column in its input
   #
@@ -36,14 +35,14 @@ module Size
     def recordize line
       line.strip.split(/\s+/)
     end
-    
+
     #
     # add each corresponding column in the input
     #
     def process *vals
-      self.sums = vals.zip(sums||[]).map{|a,b| a.to_i + b.to_i }
-    end 
-    
+      self.sums = vals.zip( sums || [] ).map{|val,sum| val.to_i + sum.to_i }
+    end
+
     #
     # run through the whole reduction input and then output the total
     #
