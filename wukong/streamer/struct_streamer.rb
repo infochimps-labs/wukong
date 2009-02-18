@@ -12,7 +12,10 @@ module Wukong
         begin
           # convert it to class name
           klass = klass_name.to_s.camelize.constantize
-        rescue ; warn "Bogus class name '#{klass_name}'" ; return ; end
+        rescue Exception => e
+          warn "Bogus class name '#{klass_name}'? #{e}"
+          return
+        end
       end
 
       #
@@ -23,14 +26,18 @@ module Wukong
         return if klass_name =~ /^(?:bogus-|bad_record)/
         klass = class_from_resource(klass_name) or return
         # instantiate the class using the remaining fields on that line
-        [ klass.new(*fields) ]
+        begin
+          [ klass.new(*fields) ]
+        rescue Exception => e
+          raise [e, klass_name, fields].inspect
+        end
       end
 
       #
       #
       #
       def recordize line
-        StructRecordizer.recordize line.split("\t")
+        StructRecordizer.recordize *line.split("\t")
       end
     end
 

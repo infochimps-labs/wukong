@@ -1,10 +1,16 @@
 module Wukong
   module Streamer
     class Base
+
+      # Options, initially set from the command-line args -- see
+      # Script#process_argv!
+      attr_accessor :options
+
       #
       # Accepts option hash from script runner
       #
       def initialize options={}
+        self.options = options
       end
 
       #
@@ -13,13 +19,13 @@ module Wukong
       def stream
         $stdin.each do |line|
           record = recordize(line.chomp)
-          next if record.nil?
+          next unless record
           process(*record) do |output_record|
             emit output_record
           end
         end
       end
-      
+
       #
       # Default recordizer: returns array of fields by splitting at tabs
       #
@@ -30,7 +36,7 @@ module Wukong
       def emit record
         puts record.to_flat.join("\t")
       end
-      
+
       #
       # Process each record in turn, yielding the records to emit
       #
@@ -42,9 +48,9 @@ module Wukong
       # To track processing errors inline,
       # pass the line back to bad_record!
       #
-      def bad_record! *args
+      def bad_record! key, *args
         warn "Bad record #{args.inspect[0..400]}"
-        puts ["bad_record", *args].join("\t")
+        puts ["bad_record-"+key, *args].join("\t")
       end
     end
   end
