@@ -1,7 +1,7 @@
 require 'pathname'
+require 'wukong/script/hadoop_command'
+require 'wukong/script/local_command'
 module Wukong
-
-
 
   # == How to run a Wukong script
   #
@@ -53,6 +53,8 @@ module Wukong
   #
   #
   class Script
+    include Wukong::HadoopCommand
+    include Wukong::LocalCommand
     attr_accessor :mapper_klass, :reducer_klass, :options
 
     #
@@ -83,9 +85,22 @@ module Wukong
     #   MyScript.new(MyMapper, nil).run
     #
     def initialize mapper_klass, reducer_klass
+      self.options = default_options
       process_argv!
       self.mapper_klass  = mapper_klass
       self.reducer_klass = reducer_klass
+    end
+
+
+    #
+    # Gives default options.  Command line parameters take precedence
+    #
+    # MAKE SURE YOU CALL SUPER: write your script according to the patter
+    #
+    #   super.merge :my_option => :val
+    #
+    def default_options
+      CONFIG[:runner_defaults]
     end
 
     #
@@ -95,7 +110,6 @@ module Wukong
     # Yet here we are.
     #
     def process_argv!
-      self.options = { }
       options[:all_args] = ARGV - ['--go']
       args = ARGV.dup
       while args do
@@ -125,7 +139,7 @@ module Wukong
       case
       when mapper_klass
         "#{this_script_filename} --map " + options[:all_args].join(" ")
-      else '/bin/cat' end
+      else CONFIG[:default_mapper] end
     end
 
     #
@@ -136,49 +150,35 @@ module Wukong
       case
       when reducer_klass
         "#{this_script_filename} --reduce " + options[:all_args].join(" ")
-      else '/bin/cat' end
+      else CONFIG[:default_reducer] end
     end
 
     #
-    # Number of fields for the KeyBasedPartitioner
-    # to sort on.
+    # Execute the runner phase
     #
-    def sort_fields
-      self.options[:sort_fields] || 2
-    end
-
-    def map_tasks()      options[:map_tasks]      end
-    def reduce_tasks()   options[:reduce_tasks]   end
-    def partition_keys() options[:partition_keys] end
-    def sort_keys()      options[:sort_keys]      end
-
-    def extra_args
-      a = []
-      a << "-jobconf mapred.map.tasks=#{map_tasks}"                          if map_tasks
-      a << "-jobconf mapred.reduce.tasks=#{reduce_tasks}"                    if reduce_tasks
-      a << "-jobconf mapred.tasktracker.map.tasks.maximum=#{options[:map_tasks_max]}"  if options[:map_tasks_max]
-      a << "-jobconf num.key.fields.for.partition=#{partition_keys}"         if partition_keys
-      a << "-jobconf stream.num.map.output.key.fields=#{sort_keys}"          if sort_keys
-      a.join(" ")
-    end
-
     def exec_hadoop_streaming
       slug = Time.now.strftime("%Y%m%d")
       input_path, output_path = options[:rest][0..1]
       raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:fake]) && (input_path.blank? || output_path.blank?)
-      $stderr.puts "Launching hadoop streaming on self"
-      case
-      when options[:fake]
-        $stderr.puts "Reading STDIN / Writing STDOUT"
-        command = %Q{ cat '#{input_path}' | #{map_command} | sort | #{reduce_command} > '#{output_path}'}
-      when options[:nopartition]
-        command = %Q{ hdp-stream-flat '#{input_path}' '#{output_path}' '#{map_command}' '#{reduce_command}' #{extra_args} }
+
+      $stderr.puts "Streaming on self"
+      # if only --run is given, assume default run mode
+      options[:run] = CONFIG[:default_run_mode] if (options[:run] == true)
+      # run as either local or hadoop
+      case options[:run].to_s
+      when 'local'
+        $stderr.puts "  Reading STDIN / Writing STDOUT"
+        command = local_command input_path, output_path
+      when 'hadoop', 'mapred'
+        $stderr.puts "  Launching hadoop as"
+        command = hadoop_command input_path, output_path
       else
-        command = %Q{ hdp-stream '#{input_path}' '#{output_path}' '#{map_command}' '#{reduce_command}' #{sort_fields} #{extra_args} }
+        raise "Need to use --run=local or --run=hadoop; or to use the :default_run_mode in config.yaml just say --run "
       end
-      # $stderr.puts options.inspect
       $stderr.puts command
-      $stdout.puts `#{command}`
+      if ! options[:fake]
+        $stdout.puts `#{command}`
+      end
     end
 
     #
@@ -191,10 +191,8 @@ module Wukong
         mapper_klass.new(self.options).stream
       when options[:reduce]
         reducer_klass.new(self.options).stream
-      when options[:go]
+      when options[:run]
         exec_hadoop_streaming
-      # when options[:fake]
-      #   exec_fake_hadoop
       else
         self.help # Normant Vincent Peale is proud of you
       end
