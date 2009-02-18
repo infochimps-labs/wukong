@@ -7,8 +7,8 @@ module Wukong
     # (This is the functional equivalent of +'uniq -c'+)
     #
     class CountLines < Wukong::Streamer::Base
-      def formatted_key_count key_count
-        "%010d"%key_count.to_i
+      def formatted_count item, key_count
+        "%s\t%010d" % [item, key_count.to_i]
       end
 
       #
@@ -17,7 +17,7 @@ module Wukong
       def stream
         %x{/usr/bin/uniq -c}.split("\n").each do |line|
           key_count, item = line.chomp.strip.split(/\s+/, 2)
-          puts [item, formatted_key_count(key_count)].join("\t")
+          puts formatted_count(item, key_count)
         end
       end
     end

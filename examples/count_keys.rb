@@ -2,15 +2,19 @@
 $: << File.dirname(__FILE__)+'/..'
 require 'wukong'
 
-
 #
 #
 module CountKeys
-
   # Identity Mapper
-
-  #
   class Reducer < Wukong::Streamer::CountLines
+    require 'active_support'
+    require 'action_view/helpers/number_helper'; include ActionView::Helpers::NumberHelper
+
+    # Override to look nice
+    def formatted_count item, key_count
+      key_count_str = number_with_delimiter(key_count.to_i, :delimiter => ',')
+      "%-25s\t%12s" % [item, key_count_str]
+    end
   end
 
   #
