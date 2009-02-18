@@ -1,33 +1,44 @@
+Utility
 
-Improvements:
+* Make this a Gem
+* Set up with JRuby
+* Allow for direct HDFS operations
+* Make the dfs commands slightly less stupid
 
-* combiners
-
+* provide for a defaults file
+* add more standard options
+* Allow for combiners
 * JobStarter / JobSteps
+* DRY up the options and method overrides
+* might as well take dumbo's command line args
 
-* Talk to hdfs
+Places where I've just been lazy:
 
 * Make it not call hdp-stream
 * rename --fake and --go to --run=local and --run=hadoop, or --run to use default
 * make it hdp-rm the destination
-* provide for a defaults file
-* add more standard options
-* DRY up the options and method overrides
-* might as well take dumbo's command line args
-
-* Make this a Gem
-
-* Stats reducer
+* in local mode, make it warn on 
 
 
+Patterns to implement:
 
-Example example scripts: 
+* Stats reducer (takes sum, avg, max, min, std.dev of a numeric field)
+* Make StructRecordizer work generically with other reducers (spec. AccumulatingReducer)
 
-   1. Find the [number of] hits by 5 minute timeslot for a website given its access logs.
-   2. Find the pages with over 1 million hits in day for a website given its access logs.
-   3. Find the pages that link to each page in a collection of webpages.
-   4. Calculate the proportion of lines that match a given regular expression for a collection of documents.
-   5. Sort tabular data by a primary and secondary column.
-   6. Find the most popular pages for a website given its access logs.
+Example graph scripts:
 
-   (from http://www.cloudera.com/resources/learning-mapreduce)
+* Pagerank 		(done)
+* Breadth-first search  (mostly done)
+* Triangle enumeration  (mostly done)
+* Clustering
+
+Example example scripts (from http://www.cloudera.com/resources/learning-mapreduce): 
+
+1. Find the [number of] hits by 5 minute timeslot for a website given its access logs.
+2. Find the pages with over 1 million hits in day for a website given its access logs.
+3. Find the pages that link to each page in a collection of webpages.
+4. Calculate the proportion of lines that match a given regular expression for a collection of documents.
+5. Sort tabular data by a primary and secondary column.
+6. Find the most popular pages for a website given its access logs.
+
+/can use
