@@ -5,7 +5,7 @@ module Wukong
 
   # == How to run a Wukong script
   #
-  #   your/script.rb --go path/to/input_files path/to/output_dir
+  #   your/script.rb --run path/to/input_files path/to/output_dir
   #
   # All of the file paths are HDFS paths ; your script path, of course, is on the local filesystem.
   #
@@ -15,7 +15,7 @@ module Wukong
   # command line:
   #
   #   your/script.rb --my_bool_opt --my_val_taking_opt=val \
-  #     --go path/to/input_files path/to/output_dir
+  #     --run path/to/input_files path/to/output_dir
   #
   # In this case the options hash for both Mapper and Reducer will contain
   #
@@ -27,11 +27,11 @@ module Wukong
   # To use more than one file as input, you can use normal * ? [] wildcards or
   # give a comma-separated list -- see the hadoop documentation for syntax.
   #
-  # == Run locally (--fake)
+  # == Run locally (--run=local)
   #
-  # To run your script locally, supply the --fake argument:
+  # To run your script locally, use --run=local
   #
-  #   your/script.rb --fake path/to/input_files path/to/output_dir
+  #   your/script.rb --run=local path/to/input_files path/to/output_dir
   #
   # This will pipe the contents of path/to/input_files through first your
   # mapper, then sort, then the reducer, storing the results in the given output
@@ -42,7 +42,7 @@ module Wukong
   #
   # == How to test your scripts
   #
-  # You can supply the --map argument in place of --go to run the mapper on its
+  # You can supply the --map argument in place of --run to run the mapper on its
   # own (and similarly, --reduce to run the reducer standalone):
   #
   #   cat ./local/test/input.tsv | ./examples/word_count.rb --map | more
@@ -103,6 +103,11 @@ module Wukong
       CONFIG[:runner_defaults]
     end
 
+    # Options that don't need to go in the :all_args hash
+    def std_options
+      @std_options ||= [:run, :map, :reduce, ] + HADOOP_OPTIONS_MAP.keys
+    end
+
     #
     # Parse the command-line args into the options hash.
     #
@@ -110,22 +115,24 @@ module Wukong
     # Yet here we are.
     #
     def process_argv!
-      options[:all_args] = ARGV - ['--go']
+      options[:all_args] = []
       args = ARGV.dup
       while args do
         arg = args.shift
         case
-        when arg == '--' then break
+        when arg == '--'                    then break
         when arg =~ /\A--(\w+)(?:=(.+))?\z/
           opt, val = [$1, $2]
           opt = opt.to_sym
           val ||= true
           self.options[opt] = val
+          options[:all_args] << arg unless std_options.include?(opt)
         else args.unshift(arg) ; break
         end
       end
-      self.options[:rest] = args
-      # $stderr.puts [ self.options, this_script_filename.to_s ].inspect
+      options[:all_args] = options[:all_args].join(" ")
+      options[:rest]     = args
+      $stderr.puts self.options.inspect
     end
 
     def this_script_filename
@@ -138,7 +145,7 @@ module Wukong
     def map_command
       case
       when mapper_klass
-        "#{this_script_filename} --map " + options[:all_args].join(" ")
+        "#{this_script_filename} --map " + options[:all_args]
       else CONFIG[:default_mapper] end
     end
 
@@ -149,23 +156,16 @@ module Wukong
     def reduce_command
       case
       when reducer_klass
-        "#{this_script_filename} --reduce " + options[:all_args].join(" ")
+        "#{this_script_filename} --reduce " + options[:all_args]
       else CONFIG[:default_reducer] end
     end
 
     #
-    # Execute the runner phase
+    # Shell command to re-run in mapreduce mode using --map and --reduce
     #
-    def exec_hadoop_streaming
-      slug = Time.now.strftime("%Y%m%d")
-      input_path, output_path = options[:rest][0..1]
-      raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:fake]) && (input_path.blank? || output_path.blank?)
-
-      $stderr.puts "Streaming on self"
-      # if only --run is given, assume default run mode
-      options[:run] = CONFIG[:default_run_mode] if (options[:run] == true)
+    def runner_command input_path, output_path
       # run as either local or hadoop
-      case options[:run].to_s
+      case run_mode
       when 'local'
         $stderr.puts "  Reading STDIN / Writing STDOUT"
         command = local_command input_path, output_path
@@ -175,6 +175,33 @@ module Wukong
       else
         raise "Need to use --run=local or --run=hadoop; or to use the :default_run_mode in config.yaml just say --run "
       end
+    end
+
+    def run_mode
+      # if only --run is given, assume default run mode
+      options[:run] = CONFIG[:default_run_mode] if (options[:run] == true)
+      options[:run].to_s
+    end
+
+    def input_output_paths
+      # input / output paths
+      input_path, output_path = options[:rest][0..1]
+      raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:fake]) && (input_path.blank? || output_path.blank?)
+      if (options[:overwrite] || options[:rm]) && (run_mode != 'local')
+        $stderr.puts "Removing output file #{output_path}"
+        `hdp-rm '#{output_path}'`
+      end
+      [input_path, output_path]
+    end
+
+    #
+    # Execute the runner phase
+    #
+    def exec_hadoop_streaming
+      input_path, output_path = input_output_paths
+      #
+      $stderr.puts "Streaming on self"
+      command = runner_command(input_path, output_path)
       $stderr.puts command
       if ! options[:fake]
         $stdout.puts `#{command}`
@@ -204,9 +231,13 @@ module Wukong
     def help
       $stderr.puts "#{self.class} script"
       $stderr.puts %Q{
-        #{__FILE__} --go input_hdfs_path output_hdfs_dir     # run the script with hadoop streaming
-        #{__FILE__} --map,
+        #{__FILE__} --run=hadoop input_hdfs_path output_hdfs_dir    # run the script with hadoop streaming
+        #{__FILE__} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
+        #{__FILE__} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
+        #{__FILE__} --map
         #{__FILE__} --reduce                                 # dispatch to the mapper or reducer
+
+      You can specify as well arbitrary script-specific command line flags; they are added to your options[] hash.
       }
     end
   end
