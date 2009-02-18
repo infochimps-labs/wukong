@@ -119,10 +119,20 @@ h2. Setup
 
 h2. How to run a Wukong script
 
-  your/script.rb --run path/to/input_files path/to/output_dir
+To run your script using local files and no connection to a hadoop cluster,
 
-All of the file paths are HDFS paths except your script path, of course, which
-is on the local filesystem.
+  your/script.rb --run=local path/to/input_files path/to/output_dir
+
+To run the command across a Hadoop cluster,
+  
+  your/script.rb --run=hadoop path/to/input_files path/to/output_dir
+
+You can set the default in the config/wukong-site.yaml file, and then just use
+@--run@ instead of @--run=something@ --it will just use the default run mode.
+
+If you're running @--run=hadoop@, all file paths are HDFS paths. If you're
+running @--run=local@, all file paths are local paths.  (Your script path, of
+course, lives on the local filesystem).
 
 You can supply arbitrary command line arguments (they wind up as key-value pairs
 in the options path your mapper and reducer receive), and you can use the hadoop
@@ -141,6 +151,9 @@ To run mapper on its own:
 or if your test data lies on the HDFS,
 
   hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
+
+Next graduate to running @--run=local@ mode so you can inspect the reducer.
+  
 
 h2. What's up with Wukong::AndPig?
 
