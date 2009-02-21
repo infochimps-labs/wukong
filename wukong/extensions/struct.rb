@@ -64,7 +64,7 @@ Struct.class_eval do
   end
   def merge! hsh, &block
     raise "can't handle block arg yet" if block
-    hsh.each_pair{|key, val| self[key] = val }
+    hsh.each_pair{|key, val| self[key] = val if self.members.include?(key.to_s) }
     self
   end
   alias_method :update, :merge!
