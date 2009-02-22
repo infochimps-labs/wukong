@@ -28,6 +28,9 @@ module Wukong
         # instantiate the class using the remaining fields on that line
         begin
           [ klass.new(*fields) ]
+        rescue ArgumentError => e
+          warn "Couldn't instantiate: #{e} (#{[klass_name, fields].inspect})"
+          return
         rescue Exception => e
           raise [e, klass_name, fields].inspect
         end
