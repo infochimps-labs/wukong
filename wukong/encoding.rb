@@ -92,5 +92,20 @@ String.class_eval do
   def wukong_decode
     Wukong.decode_str(self)
   end
+
+  #
+  # Takes an XML-encoded or plaintext string and forces it into canonical encoding
+  #
+  def wukong_recode!
+    replace self.wukong_decode.wukong_encode
+  end
+  def wukong_recode
+    Wukong.encode_str(Wukong.decode_str(self))
+  end
 end
 
+Struct.class_eval do
+  def recode!
+    each_pair{|k,v| v.wukong_recode! if (v && v.respond_to?(:wukong_recode!)) }
+  end
+end

@@ -38,3 +38,13 @@ Hash.class_eval do
     end
   end
 end
+
+DateTime.class_eval do
+  def to_flat
+    strftime("%Y%m%d%H%M%S")
+  end
+
+  def self.parse_and_flatten str
+    DateTime.parse(str, true).to_flat
+  end
+end
