@@ -176,7 +176,7 @@ module Wukong
         pred = in_groups_of(args, 2).map do |relation, group_by|
           "%s %s" % [relation.relation, by_clause(group_by)]
         end
-        new l_klass, l_klass.to_s, 1, "COGROUP   #{pred.join(", ")}"
+        new l_klass, l_klass.to_s, "COGROUP   #{pred.join(", ")}"
       end
 
       def cogroup *args
@@ -188,8 +188,19 @@ module Wukong
       #
       # JOIN
       #
-      def join
-        new_in_chain klass, "JOIN #{relation}"
+      def self.klass_from_join by
+        klasses = by.map(&:first)
+        TypedStruct.new(*klasses.zip(klasses.map(&:klass)))
+      end
+
+
+      def self.join lval, by
+        parallel = by.delete(:parallel)
+        cmd  = "JOIN " + by.map{|rel, field| "#{rel.relationize} BY #{field}" }.join(", ")
+        parallelize! cmd, :parallel => parallel
+        l_klass = klass_from_join(by)
+        rval = new(l_klass, lval, cmd)
+        set lval, rval
       end
 
     end

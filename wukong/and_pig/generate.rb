@@ -20,14 +20,15 @@ module Wukong
     class PigVar
 
       # Output a command
-      def self.emit cmd
+      def self.emit cmd, semicolon=true
+        cmd = cmd + ' ;' if semicolon
         case Wukong::AndPig.emit_dest
         when :captured
-          pig_in_poke.puts(cmd + ' ;')
+          pig_in_poke.puts(cmd)
           pig_in_poke.flush
           puts pig_in_poke.gets
         else
-          puts(cmd + ' ;')
+          puts(cmd)
         end
       end
 
@@ -59,15 +60,15 @@ module Wukong
       def set!
         self.class.emit_setter(relation, self)
       end
-    end
 
-    #
-    # Emit a comment
-    # skips if Wukong::AndPig.comments is false
-    #
-    def pig_comment comment
-      return unless Wukong::AndPig.comments
-      PigVar.emit comment.gsub(/(^|\n)(#([\t ]|$))?/, "\n--  ")
+      #
+      # Emit a comment
+      # skips if Wukong::AndPig.comments is false
+      #
+      def self.rem comment
+        return unless Wukong::AndPig.comments
+        PigVar.emit comment.gsub(/(^|\n)(#([\t ]|$))?/, "\n--  "), false
+      end
     end
 
   end

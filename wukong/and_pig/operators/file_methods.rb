@@ -1,9 +1,6 @@
 module Wukong
   module AndPig
-
     class PigVar
-
-
       # ===========================================================================
       #
       # Pig expressions
@@ -19,6 +16,13 @@ module Wukong
       #
       def rmf! filename
         dfs :rmf, filename
+      end
+
+      #
+      #
+      #
+      def mkdir filename
+        dfs :mkdir, filename
       end
     end
   end

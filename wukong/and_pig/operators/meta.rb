@@ -11,9 +11,13 @@ module Wukong
   module AndPig
     class PigVar
       # DESCRIBE pig imperative
-      def describe()
-        self.class.emit %Q{ -- PREDICTED: #{klass.typify} }
-        simple_operation :describe
+      def describe
+        self.class.describe self
+      end
+      def self.describe rel
+        emit %Q{ -- PREDICTED: #{rel.klass.typify} }
+        simple_declaration :describe, rel.relationize
+        rel
       end
 
       # DUMP pig imperative

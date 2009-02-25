@@ -24,7 +24,7 @@ module Wukong
       #
       # Options
       #
-      def parallelize! str, options
+      def self.parallelize! str, options
         str << " PARALLEL #{options[:parallel]}" if options[:parallel]
       end
 
@@ -32,10 +32,14 @@ module Wukong
       #
       # DISTINCT
       #
-      def distinct options={}
-        result = new_in_chain klass, "DISTINCT #{relation}"
-        parallelize! result.cmd, options
-        result
+      def distinct lval, options={}
+        self.class.distinct lval, self, options
+      end
+
+      def self.distinct lval, rel, options={ }
+        cmd_str = rel.relationize
+        parallelize! cmd_str, options
+        simple_operation lval, rel, :distinct, cmd_str
       end
 
       # ===========================================================================
@@ -44,6 +48,9 @@ module Wukong
       #
       def filter by_str
         new_in_chain klass, "FILTER   #{relation} BY #{by_str}"
+      end
+      def self.filter lval, rel, by_str
+        simple_operation    lval, rel, "FILTER", "#{rel.relation} BY #{by_str}"
       end
 
       # ===========================================================================
@@ -105,10 +112,14 @@ module Wukong
       # end
 
       # UNION as method
-      def union *relations
-        raise UnionArgumentError unless relations.length >= 1
-        relations_str = [self, *relations].map(&:relation).join(", ")
-        new_in_chain relations.first.klass, "UNION    #{relations_str}"
+      def union lval, *relations
+        self.class.union lval, [self]+relations
+      end
+
+      def self.union lval, *relations
+        raise UnionArgumentError unless relations.length >= 2
+        relations_str = relations.map(&:relation).join(", ")
+        simple_operation lval, relations.first, :union, relations_str
       end
 
     end

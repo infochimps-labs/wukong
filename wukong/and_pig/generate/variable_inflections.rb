@@ -16,7 +16,13 @@ Symbol.class_eval do
   end
 end
 
-Object.class_eval do  ; def typify() self.class ; end ; end
+Object.class_eval do
+  def typify() self.class ; end
+
+  def symbolize
+    self.to_s.underscore.gsub(%r{.*/}, '').to_sym
+  end
+end
 
 class << Integer ; def typify() 'int'           end ; end
 class << Bignum  ; def typify() 'long'          end ; end

@@ -16,9 +16,14 @@ module Wukong
       #
       # The AS type spec is generated from klass
       #
-      def self.pig_load filename, klass
-        relation = File.basename(filename).gsub(/\.[^\.]+?$/, '').gsub(/\W+/, '_').to_sym
-        self.new klass, relation, "LOAD    '#{filename}' AS #{klass.typify}"
+      def self.pig_load rel, klass, options={ }
+        filename = options[:filename] || default_filename(rel)
+        self.set rel, self.new(klass, rel, "LOAD    '#{filename}' AS #{klass.typify(options[:has_rsrc])}")
+        if options[:has_rsrc]
+          lval = self[rel]
+          lval.generate lval, *lval.fields
+        end
+        rel
       end
 
       #===========================================================================
@@ -38,6 +43,7 @@ module Wukong
       def store! filename=nil
         filename ||= default_filename
         rmf!  filename
+        mkdir File.dirname(filename)
         store filename
       end
 
@@ -45,14 +51,15 @@ module Wukong
       def checkpoint! filename=nil
         filename ||= default_filename
         store!   filename
-        self.name << self.class.pig_load(filename, klass)
-        self.name
+        self.class.pig_load(self.name, filename, klass)
       end
 
       def default_filename
-        File.join(self.class.working_dir, name.to_s)
+        self.class.default_filename self.name
       end
-
+      def self.default_filename name
+        File.join(working_dir, name.to_s)
+      end
     end
   end
 end
