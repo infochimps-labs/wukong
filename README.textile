@@ -131,7 +131,7 @@ You can set the default in the config/wukong-site.yaml file, and then just use
 @--run@ instead of @--run=something@ --it will just use the default run mode.
 
 If you're running @--run=hadoop@, all file paths are HDFS paths. If you're
-running @--run=local@, all file paths are local paths.  (Your script path, of
+running @--run=local@, all file paths are local paths.  (your/script path, of
 course, lives on the local filesystem).
 
 You can supply arbitrary command line arguments (they wind up as key-value pairs
@@ -141,6 +141,7 @@ syntax to specify more than one input file:
   ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
     --run "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
 
+Note that all @--options@ must precede (in any order) all non-options.
 
 h2. How to test your scripts
 

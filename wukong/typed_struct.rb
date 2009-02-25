@@ -12,6 +12,7 @@ end
 
 
 class TypedStruct < Struct
+  include Wukong::TypedStructMethods
   def self.unroll enum
     l_arr, r_arr = [ [] , [] ]
     enum.each{|l, r| l_arr << l ; r_arr << r}
@@ -29,4 +30,5 @@ class TypedStruct < Struct
     end
     klass
   end
+
 end

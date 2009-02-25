@@ -140,7 +140,6 @@ module Wukong
       end
       options[:all_args] = options[:all_args].join(" ")
       options[:rest]     = args
-      $stderr.puts self.options.inspect
     end
 
     def this_script_filename

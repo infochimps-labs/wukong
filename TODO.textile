@@ -12,13 +12,9 @@ Utility
 * DRY up the options and method overrides
 * might as well take dumbo's command line args
 
-Places where I've just been lazy:
+BUGS:
 
-* Make it not call hdp-stream
-* rename --fake and --go to --run=local and --run=hadoop, or --run to use default
-* make it hdp-rm the destination
-* in local mode, make it warn on 
-
+* Can't do multiple input files in local mode
 
 Patterns to implement:
 

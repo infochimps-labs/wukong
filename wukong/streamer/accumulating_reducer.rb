@@ -42,7 +42,7 @@
            self.key = this_key     # and start a new one
          end
          # collect the current record
-         accumulate *args
+         accumulate *args, &block
        end
 
        #
@@ -57,7 +57,7 @@
        #
        # Override this to accumulate each record for the given key in turn.
        #
-       def accumulate *args
+       def accumulate *args, &block
          raise "override the accumulate method in your subclass"
        end
 
