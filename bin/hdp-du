@@ -7,7 +7,7 @@ OPTIONS={}
 # grok options
 #
 if ARGV[0] =~ /-[a-z]+/
-  ARGV.shift
+  flags = ARGV.shift
   OPTIONS[:summary]  = flags.include?('s')
   OPTIONS[:humanize] = flags.include?('h')
 end
@@ -69,13 +69,13 @@ end
 
 def format_output file, size
   human_size = number_to_human_size(size) || 3
-
-  "%-87s\t%15d\t%15s" % [file, size.to_i, human_size]
+  file = file.gsub(%r{hdfs://[^/]+/}, '/') # kill off hdfs paths, otherwise leave it alone
+  "%-71s\t%15d\t%15s" % [file, size.to_i, human_size]
 end
 
 
 %x{ #{prepare_command} }.split("\n").each do |line|
-  puts line if line =~ /^Found \d+ items$/
+  if line =~ /^Found \d+ items$/ then puts line ; next end
   info = line.split(/\s+/)
   if OPTIONS[:summary] then file, size = info else size, file = info end
   puts format_output(file, size)
