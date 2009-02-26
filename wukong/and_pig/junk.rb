@@ -10,11 +10,6 @@ module Wukong
       puts File.open(PIG_DEFS_DIR+"/init_load.pig").read
     end
 
-    class AS
-      def self.[] klass
-        klass.as
-      end
-    end
 
 
 

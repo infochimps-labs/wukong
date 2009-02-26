@@ -36,14 +36,20 @@ module Wukong
       #
       # Create a name for a new anonymous relation
       #
-      def self.anon sym
+      def self.anon slug
         idx = (Wukong::AndPig.anon_var_idx += 1)
-        "#{sym}_#{idx}".to_sym
+        "_#{slug}_#{idx}_".to_sym
+      end
+      # Create a name building off this one
+      def anon
+        slug = name.to_s.gsub(/^_/,'').gsub(/_\d+_$/,'')
+        self.class.anon slug
       end
 
       #
-      def new_in_chain l_klass, l_cmd
-        self.class.new l_klass, name, l_cmd
+      def new_in_chain lval, l_klass, l_cmd
+        rval = self.class.new l_klass, lval, l_cmd
+        self.class.set lval, rval
       end
 
       # Delegate to klass

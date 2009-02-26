@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/lib'
+$: << File.dirname(__FILE__)+'/..'
 
 require 'wukong'                       ; include Wukong
 
@@ -27,7 +27,7 @@ module ExportPackager
 
   #
   #
-  class Reducer < Wukong::UniqByLastReducer
+  class Reducer < Wukong::Streamer::Base
 
     def remove_target_filename output_filename
       puts "Removing target file #{output_filename}"

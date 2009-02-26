@@ -26,10 +26,10 @@ module Wukong
       def field_type field
         case field
         when Symbol             then members_types[field]
-        when Array
-          if field.length > 1   then members_types[field.first].field_type(field[1..-1])
-          else                       field_type field.first
-          end
+        # when Array
+        #   if field.length > 1   then members_types[field.first].field_type(field[1..-1])
+        #   else                       field_type field.first
+        #   end
         end
       end
 
@@ -46,26 +46,3 @@ Struct.class_eval do
     members
   end
 end
-
-
-# module Wukong
-#   module AndPig
-#
-#     module PigEmitter
-#       module ClassMethods
-#
-#         def pig_rel relation
-#           PigVar.new relation, self
-#         end
-#
-#         def [] relation
-#           pig_rel relation
-#         end
-#       end
-#
-#       def self.included base
-#         base.extend ClassMethods
-#       end
-#     end
-#   end
-# end

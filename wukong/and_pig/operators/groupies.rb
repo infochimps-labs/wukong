@@ -11,28 +11,6 @@ module Wukong
       # GROUP and COGROUP
       #
 
-      def self.by_clause by_spec
-        case by_spec
-        when Array      then 'BY ' + by_spec.join(", ")
-        when :all       then 'ALL'
-        when Symbol     then 'BY ' + by_spec.to_s
-        when String     then by_spec
-        when Hash       then by_clause(by_spec[:by])
-        else raise "Don't know how to group on #{by_spec.inspect}"
-        end
-      end
-
-      def types_for_fields field
-        klass.members_types[field]
-      end
-
-      def l_klass_for_group group_by
-        TypedStruct.new(
-            [:group,     types_for_fields(group_by)],
-            [relation,   klass]
-            )
-      end
-
       #
       # COGROUP - Groups the data in two or more relations.
       #
@@ -163,16 +141,36 @@ module Wukong
       def group group_by
         l_klass   = l_klass_for_group group_by
         by_clause = self.class.by_clause(group_by)
-        new_in_chain l_klass, "GROUP    #{relation} #{by_clause}"
+        rval = new_in_chain l_klass, "GROUP    #{relation} #{by_clause}"
+      end
+
+      def self.by_clause by_spec
+        case by_spec
+        when Array      then 'BY ' + by_spec.join(", ")
+        when :all       then 'ALL'
+        when Symbol     then "BY #{by_spec}"
+        when String     then by_spec
+        when Hash       then by_clause(by_spec[:by])
+        else raise "Don't know how to group on #{by_spec.inspect}"
+        end
+      end
+
+      def types_for_fields field
+        klass.members_types[field]
+      end
+
+      def l_klass_for_group group_by
+        TypedStruct.new(
+            [:group,     types_for_fields(group_by)],
+            [relation,   klass]
+            )
       end
 
       #
       # COGROUP pig expression:
       #   UserPosts = COGROUP Posts BY user_id, Users BY user_id ;
       #
-      def self.cogroup *args
-        # FIXME
-        l_klass = args.first.klass
+      def self.cogroup by
         pred = in_groups_of(args, 2).map do |relation, group_by|
           "%s %s" % [relation.relation, by_clause(group_by)]
         end
@@ -193,10 +191,13 @@ module Wukong
         TypedStruct.new(*klasses.zip(klasses.map(&:klass)))
       end
 
+      def self.join_by_clause by
+        by.map{|rel, field| "#{rel.relationize} BY #{field}" }.join(", ")
+      end
 
       def self.join lval, by
         parallel = by.delete(:parallel)
-        cmd  = "JOIN " + by.map{|rel, field| "#{rel.relationize} BY #{field}" }.join(", ")
+        cmd  = "JOIN " + join_by_clause(by)
         parallelize! cmd, :parallel => parallel
         l_klass = klass_from_join(by)
         rval = new(l_klass, lval, cmd)

@@ -19,7 +19,7 @@ module Wukong
       #
       def self.isolate lval, on, on_field, from, from_field, options={ }
         joined   = join anon(lval), on => on_field, from => from_field, :parallel => options.delete(:parallel)
-        isolated = joined.generate lval, *PV[from].fields.map{|field| [from, field]}
+        isolated = joined.generate lval, { "'#{from}'" => :rsrc}, *PV[from].fields.map{|field| [from, field]}
         isolated.klass = from.klass
         isolated
       end

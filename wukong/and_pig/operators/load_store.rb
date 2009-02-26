@@ -48,10 +48,10 @@ module Wukong
       end
 
       # Force a store to disk, then load (so all calculations proceed from there)
-      def checkpoint! filename=nil
-        filename ||= default_filename
-        store!   filename
-        self.class.pig_load(self.name, filename, klass)
+      def checkpoint! options={}
+        options = options.reverse_merge :filename => default_filename
+        store!   options[:filename]
+        self.class.pig_load(self.name, klass, options)
       end
 
       def default_filename
