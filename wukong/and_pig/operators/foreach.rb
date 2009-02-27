@@ -9,8 +9,8 @@ module Wukong
       #
       # FOREACH
       #
-      def generate lval,  *field_spec
-        gen_clauses = field_spec.map{|field_spec| parse_gen_clause(field_spec)}
+      def generate lval,  *field_specs
+        gen_clauses = field_specs.map{|field_spec| parse_gen_clause(field_spec)}.flatten
         l_klass     = TypedStruct.new(* gen_clauses.map(&:name_type))
         l_cmd       = "FOREACH  #{self.relation} GENERATE\n  #{gen_clauses.join(",\n  ")}"
         new_in_chain(lval, l_klass, l_cmd)
@@ -45,10 +45,11 @@ module Wukong
           alias_in, field_in, name, type = field_spec
           name      ||= field_in
           type        = alias_in.field_type(field_in)
-          AS[field_in, name, type, alias_in]
+          AS[field_in, name, type, alias_in.relationize]
         when Hash
-          field_in, field_out = field_spec.to_a.first
-          AS[field_in, field_out, field_type(field_in)]
+          field_spec.map do |field_in, field_out|
+            AS[field_in, field_out, field_type(field_in)]
+          end
         else raise "Don't know how to specify type for #{field_specs.inspect}"
         end
       end

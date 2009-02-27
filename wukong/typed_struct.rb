@@ -9,8 +9,6 @@ module Wukong
   end
 end
 
-
-
 class TypedStruct < Struct
   include Wukong::TypedStructMethods
   def self.unroll enum

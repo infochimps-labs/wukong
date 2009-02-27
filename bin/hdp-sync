@@ -8,7 +8,7 @@ dest_files  = Wukong::Dfs.list_files dest_dir
 Wukong::Dfs.compare_listings(src_files, dest_files) do |comparison, src_file, dest_file|
   case comparison
   when :missing
-    dest_filename = src_file.gsub(%r{bundled/(\w+)/(\w+)/([^/]+)}, 'tw0224/bundled/bundled_bundled\1/\3')
+    dest_filename = src_file.gsub(%r{^.*bundled/(\w+)/(\w+)/([^/]+)}, 'tw0226/bundled/bundled_bundled\1/\3')
     puts "Copying #{src_file} #{dest_filename}"
     puts `hadoop dfs -put #{src_file} #{dest_filename}`
   when :differ

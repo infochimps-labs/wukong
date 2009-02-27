@@ -22,6 +22,13 @@ module Wukong
         PIG_SYMBOLS[name]
       end
 
+      # extract a field from an alias
+      def _ field
+        as_name = [name, field].join("_").to_sym
+        AS["#{relationize}.(#{field})", as_name, Bag.new([field, field_type(field)]), nil, :skip_type]
+      end
+
+
       def self.set name, rval
         PIG_SYMBOLS[name] = rval
         rval.name = name
@@ -38,11 +45,11 @@ module Wukong
       #
       def self.anon slug
         idx = (Wukong::AndPig.anon_var_idx += 1)
-        "_#{slug}_#{idx}_".to_sym
+        "anon_#{slug}_#{idx}_".to_sym
       end
       # Create a name building off this one
       def anon
-        slug = name.to_s.gsub(/^_/,'').gsub(/_\d+_$/,'')
+        slug = name.to_s.gsub(/^anon_/,'').gsub(/_\d+_$/,'')
         self.class.anon slug
       end
 

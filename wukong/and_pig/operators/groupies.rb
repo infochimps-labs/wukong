@@ -140,11 +140,11 @@ module Wukong
       #
       def group group_by
         l_klass   = l_klass_for_group group_by
-        by_clause = self.class.by_clause(group_by)
-        rval = new_in_chain l_klass, "GROUP    #{relation} #{by_clause}"
+        by_clause = self.class.make_by_clause(group_by)
+        new_in_chain anon, l_klass, "GROUP    #{relation} #{by_clause}"
       end
 
-      def self.by_clause by_spec
+      def self.make_by_clause by_spec
         case by_spec
         when Array      then 'BY ' + by_spec.join(", ")
         when :all       then 'ALL'
@@ -154,27 +154,30 @@ module Wukong
         else raise "Don't know how to group on #{by_spec.inspect}"
         end
       end
-
       def types_for_fields field
         klass.members_types[field]
       end
-
       def l_klass_for_group group_by
+        self.class.l_klass_for_group group_by, self
+      end
+      def self.l_klass_for_group group_by, *rels
         TypedStruct.new(
-            [:group,     types_for_fields(group_by)],
-            [relation,   klass]
-            )
+          [:group,       rels.first.types_for_fields(group_by)],
+          *rels.map{|rel| [rel.relation, rel.klass] }
+          )
       end
 
       #
       # COGROUP pig expression:
       #   UserPosts = COGROUP Posts BY user_id, Users BY user_id ;
       #
-      def self.cogroup by
-        pred = in_groups_of(args, 2).map do |relation, group_by|
-          "%s %s" % [relation.relation, by_clause(group_by)]
-        end
-        new l_klass, l_klass.to_s, "COGROUP   #{pred.join(", ")}"
+      def self.cogroup lval, *by
+        by_clause = by.map do |relation, group_by, as|
+          "%s %s" % [relation.relation, make_by_clause(group_by)]
+        end.join(", ")
+        l_klass  = l_klass_for_group by[0][1], *by.map(&:first)
+        rval = new l_klass, lval, "COGROUP    #{by_clause}"
+        set lval, rval
       end
 
       def cogroup *args

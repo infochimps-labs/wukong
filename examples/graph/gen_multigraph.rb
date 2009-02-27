@@ -9,6 +9,8 @@ class MultiEdge < Struct.new(
     :src,           :dest,
     :a_follows_b,   :b_follows_a,
     :a_replies_b,   :b_replies_a,
+    :a_atsigns_b,   :b_atsigns_a,
+    :a_retweets_b,  :b_retweets_a,
     :a_favorites_b, :b_favorites_a
     )
 end
@@ -16,10 +18,13 @@ end
 module CombineEdges
   class Mapper < Wukong::Streamer::Base
     def process rsrc, src, dest, *_
-      m = /^a_([a-z]+)_b/.match(rsrc) or return
+      # note that a_retweets_b_id matches here
+      m = /^a_([a-z]+)_b.*/.match(rsrc) or return
       rel = m.captures.first
-      yield ["%010d"%src.to_i,  "%010d"%dest.to_i, "a_#{rel}_b"]
-      yield ["%010d"%dest.to_i, "%010d"%src.to_i, "b_#{rel}_a"]
+      src = src.to_i ; dest = dest.to_i
+      return if ((src == 0) || (dest == 0))
+      yield ["%010d"%src,  "%010d"%dest, "a_#{rel}_b"]
+      yield ["%010d"%dest, "%010d"%src,  "b_#{rel}_a"]
     end
   end
 
