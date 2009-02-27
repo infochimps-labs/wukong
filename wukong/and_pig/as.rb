@@ -1,17 +1,27 @@
 class AS
-  attr_accessor :expr, :name, :type, :ref
-  def new expr, name=nil, type=nil, ref=nil
-    self.expr = expr
-    self.name = name
-    self.type = type
-    self.ref  = ref
+  attr_accessor :expr, :name, :type, :ref, :options
+  def initialize expr, name=nil, type=nil, ref=nil, *option_flags
+    case expr
+    when AS
+      self.expr = expr.expr
+      self.name = expr.name
+      self.type = expr.type
+      self.ref  = expr.ref
+      self.options = expr.options
+    end
+    self.expr ||= expr
+    self.name = name if name
+    self.type = type if type
+    self.ref  = ref  if ref
+    self.options ||= { }
+    option_flags.each{|option| self.options[option] = true }
   end
 
   def to_s
     clause  = "%-32s" % [ref, expr].compact.join('::')
     if name
-      clause << "AS #{name}"
-      clause << ": #{type}" if type
+      clause << "AS #{name}"      unless options[:skip_name]
+      clause << ":#{type.typify}" unless ((!type) || options[:skip_type])
     end
     clause
   end
