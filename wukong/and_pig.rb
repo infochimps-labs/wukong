@@ -42,6 +42,20 @@ module Wukong
   #   Q4ReportsCustomers38    = FOREACH  Q4ReportsCustomers37 GENERATE
   #       group AS postal_code,
   #       COUNT(Q4ReportsCustomers36) AS customers_per_zip ;
+  #
+  # ---------------------------------------------------------------------------
+  #
+  # Note on pig:
+  #
+  # 1) Reverse the order of your tables in your join statement. Pig always
+  #    streams the keys of the last input, (materializing in memory the keys of
+  #    the first), so if one of your inputs has less instances of of a given key
+  #    this may help.
+  #
+  # 2) Reduce the number of maps and reducers per machine and give it all the
+  #    memory you can.
+  #
+  #
   module AndPig
   end
 end

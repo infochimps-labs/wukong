@@ -27,7 +27,7 @@ Struct.class_eval do
     else
       sort_key = resource_name
     end
-    [sort_key, to_a]
+    [sort_key, *to_a]
   end
 end
 

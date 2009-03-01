@@ -23,6 +23,12 @@
        #
        # override for multiple-field keys, etc.
        #
+       # Note that get_key is called by +process+ -- so the arguments have
+       # already been +recordize+d. In particular, if you are using
+       # StructRecordizer (or StructStreamer), you can write this as
+       #
+       #   def get_key(thing) thing.id.to_i ; end
+       #
        def get_key *record
          record.first
        end

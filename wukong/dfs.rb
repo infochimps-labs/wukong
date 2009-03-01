@@ -7,7 +7,7 @@ module Wukong
     end
 
     def self.compare_listings src_files, dest_files, &block
-      src_files.each do |src_file|
+      src_files.sort.each do |src_file|
         dest_file = dest_files.find{|df| File.basename(src_file) == df.basename }
         case
         when (! dest_file)                       then yield :missing, src_file, nil
@@ -27,7 +27,7 @@ module Wukong
         [:path,     String]
         )
       def self.new_from_ls ls_line
-        mode, ic, o, g, sz, dt, tm, path = ls_line.split(/\s+/)
+        mode, ic, o, g, sz, dt, tm, path = ls_line.chomp.split(/\s+/)
         date = DateTime.parse_and_flatten("#{dt} #{tm}")
         new mode, ic.to_i, o, g, sz.to_i, date, path
       end
