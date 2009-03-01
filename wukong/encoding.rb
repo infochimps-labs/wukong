@@ -30,7 +30,7 @@ module Wukong
     begin
       case strategy
       when :xml        then self.html_encoder.encode(str, :basic, :named, :decimal).gsub(/\\/, '&#x5C;')
-      when :url        then Addressable::URI.encode_component(str, /[\w]/)
+      when :url        then Addressable::URI.encode_component(str, /[^\w]/)
       else raise "Don't know how to encode with strategy #{strategy}"
       end
     rescue ArgumentError => e
