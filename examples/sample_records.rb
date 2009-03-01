@@ -33,6 +33,9 @@ class Mapper < Wukong::Streamer::LineStreamer
 end
 
 class Script < Wukong::Script
+  def default_options
+    super.merge :reduce_tasks => 0
+  end
 end
 
 #
