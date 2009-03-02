@@ -43,7 +43,7 @@ module Wukong
       #
       def kinda_equal file
         (self.size == File.size(file)) &&
-        (self.date >= File.mtime(file).strftime("%Y%m%d%H%M00"))
+        (self.date >= File.mtime(file).to_flat)
       end
       def to_s
         to_a.join("\t")

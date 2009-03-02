@@ -15,7 +15,6 @@ Struct.class_eval do
   def resource_name
     @resource_name ||= self.class.to_s.underscore.gsub(%r{.*/([^/]+)\z}, '\1')
   end
-
   #
   # Flatten for packing as resource name followed by all fields
   #
@@ -39,12 +38,29 @@ Hash.class_eval do
   end
 end
 
-DateTime.class_eval do
+class Time
+  # strftime() format to flatten a date
+  FLAT_FORMAT = "%Y%m%d%H%M%S"
+  # Flatten
   def to_flat
-    strftime("%Y%m%d%H%M%S")
+    strftime(FLAT_FORMAT)
   end
+end
 
-  def self.parse_and_flatten str
-    DateTime.parse(str, true).to_flat
+class Date
+  # strftime() format to flatten a date
+  FLAT_FORMAT = "%Y%m%d"
+  # Flatten
+  def to_flat
+    strftime(FLAT_FORMAT)
+  end
+end
+
+class DateTime < Date
+  # strftime() format to flatten a date
+  FLAT_FORMAT = "%Y%m%d%H%M%S"
+  # Flatten
+  def to_flat
+    strftime(FLAT_FORMAT)
   end
 end
