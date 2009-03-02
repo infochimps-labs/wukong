@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 $: << File.dirname(__FILE__)+'/..'
 require 'wukong'
+require 'wukong/streamer/count_keys'
+require 'wukong/streamer/count_lines'
 
 #
 #
