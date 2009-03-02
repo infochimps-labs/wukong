@@ -45,22 +45,17 @@
            unless self.key == :__first_pass__
              finalize(&block)         # process what we've collected so far
            end
-           reset! *args               # then forget about that key
-           self.key = this_key        # and start a new one
+           self.key = this_key        # adopt the new key
+           start! *args               # and set up for the next accumulation
          end
          # collect the current record
          accumulate *args, &block
        end
 
        #
-       # reset! is called after finalizing a batch of key sightings
+       # start! is called on the the first record of the new key
        #
-       # Make sure to call +super+ if you override
-       #
-       # Passed the first record of the new key, if that helps you at all.
-       #
-       def reset! *args
-         self.key = nil
+       def start! *args
        end
 
        #
