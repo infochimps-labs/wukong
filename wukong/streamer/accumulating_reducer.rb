@@ -17,7 +17,7 @@
        attr_accessor :key
        def initialize options
          super options
-         reset!
+         self.key = :__first_pass__
        end
 
        #
@@ -41,11 +41,12 @@
        #
        def process *args, &block
          this_key = get_key(*args)
-         self.key ||= this_key
-         if this_key != self.key   # if this is a new key,
-           finalize(&block)        # process what we've collected so far
-           reset!                  # then forget about that key
-           self.key = this_key     # and start a new one
+         if this_key != self.key      # if this is a new key,
+           unless self.key == :__first_pass__
+             finalize(&block)         # process what we've collected so far
+           end
+           reset! *args               # then forget about that key
+           self.key = this_key        # and start a new one
          end
          # collect the current record
          accumulate *args, &block
@@ -56,7 +57,9 @@
        #
        # Make sure to call +super+ if you override
        #
-       def reset!
+       # Passed the first record of the new key, if that helps you at all.
+       #
+       def reset! *args
          self.key = nil
        end
 
