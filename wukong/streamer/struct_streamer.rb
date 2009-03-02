@@ -8,7 +8,7 @@ module Wukong
     module StructRecordizer
       def self.class_from_resource klass_name
         # kill off all but class name
-        klass_name = klass_name.gsub(/-.*$/, '')
+        klass_name = klass_name.to_s.gsub(/-.*$/, '')
         begin
           # convert it to class name
           klass = klass_name.to_s.camelize.constantize

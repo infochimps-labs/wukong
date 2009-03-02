@@ -13,7 +13,7 @@ Struct.class_eval do
   # note memoization
   #
   def resource_name
-    @resource_name ||= self.class.to_s.underscore.gsub(%r{.*/([^/]+)\z}, '\1')
+    @resource_name ||= self.class.to_s.underscore.gsub(%r{.*/([^/]+)\z}, '\1').to_sym
   end
   #
   # Flatten for packing as resource name followed by all fields
