@@ -56,6 +56,8 @@
        # start! is called on the the first record of the new key
        #
        def start! *args
+         raise %Q{start! is the new reset! -- it has args now, namely the first
+         record of the new key.  It doesn\'t want #super either}
        end
 
        #

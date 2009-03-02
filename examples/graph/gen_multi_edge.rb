@@ -13,15 +13,15 @@ require 'wukong/models/graph'; include Wukong::Models
 #
 # For instance, suppose you have a social network with edges like
 #
-#   a_follows_b   user_a_id  user_b_id  
+#   a_follows_b   user_a_id  user_b_id
 #   a_messages_b  user_a_id  user_b_id  message_id date
 #   a_favorites_b user_a_id  user_b_id  message_id date
 #
 # Your MultiEdge class might look like
-# 
+#
 #   class MultiEdge < Struct(
-#     :src, :dest, 
-#     :a_follows_b,   :b_follows_a, 
+#     :src, :dest,
+#     :a_follows_b,   :b_follows_a,
 #     :a_messages_b,   :b_messages_a,
 #     :a_favorites_b, :b_favorites_a
 #     )
@@ -33,7 +33,7 @@ require 'wukong/models/graph'; include Wukong::Models
 # indicating there is no text in that slot):
 #
 #   ...
-#   24601	8675309	1	1	57	62	5	[blank]
+#   24601       8675309 1       1       57      62      5       [blank]
 #   ...
 #
 module GenMultiEdge
@@ -59,15 +59,15 @@ module GenMultiEdge
   end
 
   #
-  # Aggregate all sightings of relations for each pair into 
-  # a single combined 
+  # Aggregate all sightings of relations for each pair into
+  # a single combined
   #
   # Note that [a,b] and [b,a] /each/ have a listing, with the a->b and b<-a
   # relations repeated for each.  That is, if there is an "a_messages_b"
   # relation, you'll have edges
-  #   
-  #    x	y	...	a_messages_b(x,y)	b_messages_a(y,x)  ...
-  #    y	x	...	a_messages_b(y,x)	b_messages_a(x,y)  ...
+  #
+  #    x        y       ...     a_messages_b(x,y)       b_messages_a(y,x)  ...
+  #    y        x       ...     a_messages_b(y,x)       b_messages_a(x,y)  ...
   #
   #
   class Reducer < Wukong::Streamer::AccumulatingReducer
@@ -75,7 +75,7 @@ module GenMultiEdge
     def get_key src, dest, rel
       [src, dest]
     end
-    def reset!
+    def start! *args
       self.multi_edge = MultiEdge.new
     end
     def accumulate src, dest, rel
@@ -97,7 +97,7 @@ module GenMultiEdge
       super.merge :sort_fields => 2
     end
   end
-  
+
   # Execute the script
   Script.new(Mapper, Reducer).run
 end

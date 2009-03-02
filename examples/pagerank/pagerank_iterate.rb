@@ -59,7 +59,7 @@ module PageRank
     # start with an empty destinations list and
     # no incoming pagerank shares
     #
-    def reset!
+    def start! *args
       self.pagerank = 0.0
       self.dests    = nil
     end
@@ -95,7 +95,7 @@ end
 # Execute the script
 Wukong::Script.new(
   PageRank::Mapper,
-  PageRank::Reducer,
+  PageRank::Reducer
   ).run
 
 

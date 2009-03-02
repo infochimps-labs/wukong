@@ -36,7 +36,7 @@ module Wukong
       #
       # Clear state on reset
       #
-      def reset!
+      def start! *args
         self.final_value = nil
       end
     end

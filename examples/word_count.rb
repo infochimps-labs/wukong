@@ -52,7 +52,7 @@ module WordCount
   #
   class Reducer2 < Wukong::Streamer::AccumulatingReducer
     attr_accessor :key_count
-    def reset!()           self.key_count =  0 end
+    def start!(*args)      self.key_count =  0 end
     def accumulate(*args)  self.key_count += 1 end
     def finalize
       yield [ key, key_count ]

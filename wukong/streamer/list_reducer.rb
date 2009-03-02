@@ -7,8 +7,7 @@ module Wukong
       attr_accessor :values
 
       # reset the counter to zero
-      def reset!
-        super
+      def start! *args
         self.values = []
       end
 

@@ -14,14 +14,13 @@ module PageRank
       fields = super(line)
       src, dest, *_ = fields
     end
-    
+
     #
     # Launch each relation towards each of its stakeholders,
     # who will aggregate them in the +reduce+ phase
     #
     def process src, dest
-        yield [src, dest]
-      end
+      yield [src, dest]
     end
   end
 
@@ -31,15 +30,15 @@ module PageRank
   class Reducer < Wukong::Streamer::AccumulatingReducer
     attr_accessor :dests
     #
-    def reset!
+    def start! *args
       self.dests = []
     end
-    
-    # 
+
+    #
     def accumulate src, dest
       dests << dest
     end
-    
+
     # emit relationship for heretrix pagerank code
     def finalize
       dests = ['dummy'] if dests.blank?
@@ -51,7 +50,7 @@ end
 # Execute the script
 Wukong::Script.new(
   PageRank::Mapper,
-  PageRank::Reducer,
+  PageRank::Reducer
   ).run
 
 

@@ -11,8 +11,7 @@ module Wukong
       end
 
       # reset the counter to zero
-      def reset!
-        super
+      def start! *args
         self.key_count = 0
       end
 

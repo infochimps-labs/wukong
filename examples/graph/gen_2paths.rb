@@ -7,8 +7,8 @@ end
 
 class MultiEdge < Struct.new(
     :src,           :dest,
-    :a_follows_b,   :b_follows_a, 
-    :a_replies_b,   :b_replies_a, 
+    :a_follows_b,   :b_follows_a,
+    :a_replies_b,   :b_replies_a,
     :a_favorites_b, :b_favorites_a
     )
 end
@@ -26,17 +26,17 @@ module Gen1HoodEdges
   #
   class Reducer < Wukong::Streamer::AccumulatingReducer
     attr_accessor :ins
-    def reset!
+    def start! *args
       self.ins  = []
     end
     def accumulate mid, dir, node
       case dir.to_sym
-      when :i  
+      when :i
         self.ins << node
         if (self.ins.length % 1000 == 0) && (self.ins.length > 10000)
           $stderr.puts ["Accumulating:", mid, self.ins.length].join("\t")
         end
-      when :o 
+      when :o
         ins.each do |inn|
           yield ['path_2', inn, mid, node]
         end
@@ -48,7 +48,7 @@ module Gen1HoodEdges
       mid
     end
   end
-  
+
   class Script < Wukong::Script
     def default_options
       super.merge :sort_fields => 2, :partition_fields => 1

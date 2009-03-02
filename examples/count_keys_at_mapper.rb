@@ -5,7 +5,7 @@ require 'wukong'
 #
 #
 module CountKeys
-  # 
+  #
   class Mapper < Wukong::Streamer::Base
     attr_accessor :keys_count
     def initialize *args
@@ -34,7 +34,7 @@ module CountKeys
       key_count_str = number_with_delimiter(key_count.to_i, :delimiter => ',')
       "%-25s\t%12s" % [item, key_count_str]
     end
-    def reset!
+    def start!  *args
       self.key_count = 0
     end
     def accumulate key, count

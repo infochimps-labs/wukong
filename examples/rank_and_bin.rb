@@ -101,7 +101,6 @@ module RankAndBinAttrs
     end
     
     def start! rsrc_abbr, id, *args
-      super rsrc_abbr, id, args
       klass = klass_from_abbr(rsrc_abbr)
       self.thing = klass.new id
     end
