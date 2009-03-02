@@ -1,171 +1,161 @@
 #!/usr/bin/env ruby
 $: << File.dirname(__FILE__)+'/..'
 require 'wukong'
+require 'wukong/streamer/rank_and_bin_reducer'
 
-module RankAndBin
-  class CutMapper
-    def process
+#
+# This example uses the classes from http://github.com/mrflip/twitter_friends
+# (That's sloppy, and I apologize. I'm building this script for that, but it
+# seems broadly useful and I'm not maintaining two copies. Once this script is
+# more worky we'll make it standalone.  Anyway you should get the picture.)
+#
+$: << File.dirname(__FILE__)+'/../../projects/twitter_friends/lib'
+require 'twitter_friends'; 
+require 'twitter_friends/struct_model' ; include TwitterFriends::StructModel
 
-    end
-  end
 
-  module PreprocessPipeStreamer
+#
+# attrs to bin
+#
+BINNABLE_ATTRS = { 
+  :twitter_user => [
+    [:followers_count,  :fo   ], 
+    [:friends_count,    :fr   ], 
+    [:statuses_count,   :st   ],
+    [:favourites_count, :fv   ],
+    [:created_at,       :crat ]
+    ]
+}
+RESOURCE_ALIASES = { 
+  :twitter_user => :u,
+}
+#
+# KLUDGE This is not DRY at all but  let's get it working first
+#
+BinTwitterUser = TypedStruct.new(
+  [:id, Integer],
+  *[:fo, :fr, :st, :fv, :crat].map{|attr| [attr, Integer] }
+  )
+BINNED_RESOURCE_ALIASES = { 
+  :u => BinTwitterUser
+}
+
+module RankAndBinAttrs
+  class ExplodeResourceMapper < Wukong::Streamer::StructStreamer
     #
+    # The data expansion of this mapper is large enough that it makes sense to
+    # be a little responsible with what we emit.  We'll use the RESOURCE_ALIASES
+    # and BINNABLE_ATTRS hashes, above, to dump a more parsimonious
+    # representation. 
     #
-    # You must provide the preprocess_pipe_command method, giving
-    # a shell command to run the input through.
-    #
-    # For an example, see RankAndBinReducer
-    #
-    def stream
-      `#{preprocess_pipe_command}`.readlines do |line|
-        item = itemize(line) ; next if item.blank?
-        process(*item)
+    def process thing, &block
+      attr_abbrs = BINNABLE_ATTRS[thing.resource_name]
+      return unless attr_abbrs
+      attr_abbrs.each do |attr, abbr|
+        yield [
+          RESOURCE_ALIASES[thing.resource_name], 
+          abbr, 
+          thing.send(attr), 
+          thing.id.to_i
+        ]
       end
     end
   end
 
-  #
-  # For each record, appends a
-  # 
-  # * numbering, from 0..(n-1).  Each element gets a distinct numbering based on
-  #   the order seen at the reducer; elements with identical keys might have
-  #   different numbering on different runs.
-  #
-  # * rank, a number within 1..n giving the "place" of each value. Each element
-  #   receives a successive (and thus unique) numbering, but all elements with
-  #   the same key share the same rank. The first element for a given rank has
-  #
-  #     (rank == numbering + 1)
-  #
-  # * bin, a number assigning keys by rank into a smaller number of groups.  You
-  #   must supply command line arguments
-  #
-  #     --bins=[number] --total_count=[number]
-  #   
-  #   giving the number of groups and predicting in advance the total number of
-  #   records. (Or override the bin assignment method to use your own damn
-  #   strategy).
-  #
-  # If your data looked (in order) as follows, and 4 bins were requested:
-  #
-  #   data:       1   1   1 2.3   7  69  79  79  80  81  81
-  #   numbering:  0   1   2   3   4   5   6   7   8   9  10
-  #   rank:       1   1   1   4   5   6   7   7   9  10  10
-  #   4-bin:      1   1   1   2   2   3   3   3   4   4   4
-  #
-  # If instead 100 bins were requested, 
-  #
-  #   data:       1   1   1 2.3   7  69  79  79  80  81  81
-  #   numbering:  0   1   2   3   4   5   6   7   8   9  10
-  #   rank:       1   1   1   4   5   6   7   7   9  10  10
-  #   100-bin:    1   1   1  28  37  46  55  55  73  82  91
-  #
-  # Note most of the bins are empty, and that the 
-  #
-  # --------------------------------------------------------------------------
-  #
-  # Note that in this implementation you have to set @:reduce_tasks => 1@ in
-  # your Script's Script#default_options 
-  # 
-  # It would surely be best to use a total sort and supply each reducer with the
-  # initial rank of its run.
-  #
-  class RankAndBinReducer < Wukong::Streamer::Base
-    def initialize options
-      super options
-      configure_bins! options
-      @last_key  = nil
-      @numbering = 0
-      @rank      = 1
+  class BinAttrReducer < Wukong::Streamer::RankAndBinReducer
+    attr_accessor :last_rsrc_attr
+    #
+    # Note that we might get several different resources at the same reducer
+    #
+    def get_key rsrc, attr, val, *args
+      if [rsrc, attr] != self.last_rsrc_attr
+        # Note: since each partition has the same cardinality, we don't need to
+        # fiddle around with the bin_size, etc -- just reset the order
+        # parameters' state.
+        reset_order_params!
+        self.last_rsrc_attr = [rsrc, attr]
+      end
+      val
     end
-
-    # ===========================================================================
+    
     #
-    #  
-    #
-
-    #
-    # The value to rank by
-    #
-    def get_key *args
-      args.first
-    end
-
+    # Note well -- we are rearranging the field order to 
     # 
-    # The ranking is the "place" of each value: each element receives a
-    # successive (and thus unique) numbering, but all elements with the same key
-    # share the same rank. The first element for a given rank has
+    #   resource_abbr id  attr_abbr  bin
     #
-    #   (rank == numbering + 1)
+    # for proper sorting to the re-assembler
     #
-    # If your data looked (in order) as follows, and 4 bins were requested:
-    #
-    #   data:       1   1   1 2.3   7  69  79  79  80  81  81
-    #   numbering:  0   1   2   3   4   5   6   7   8   9  10
-    #   rank:       1   1   1   4   5   6   7   7   9  10  10
-    #   4-bin:      1   1   1   2   2   3   3   3   4   4   4
-    #
-    #
-    def get_rank key
-      if @last_key != key
-        @rank       = @numbering + 1
-        @last_key   = key
-      end
-      @rank
+    def emit record
+      rsrc, attr, val, id, numbering, rank, bin = record
+      super [rsrc, id, attr, bin]
     end
+  end
 
-    #
-    # Set the bin from the value and the current rank
-    #
-    def get_bin rank
-      ((rank-0.5) / bin_size ).round
+  class ReassembleObjectReducer < Wukong::Streamer::AccumulatingReducer
+    attr_accessor :thing
+    def klass_from_abbr rsrc_abbr
+      BINNED_RESOURCE_ALIASES[rsrc_abbr.to_sym]
     end
-
-    #
-    # Return the numbering, rank and bin for the given key
-    #
-    def get_order_params key
-      numbering   = @numbering # use un-incremented value
-      rank        = get_rank key
-      bin         = get_bin  rank      
-      @numbering += 1
-      [numbering, rank, bin]
+    def get_key rsrc_abbr, id, *args
+      [rsrc_abbr, id]
     end
+    
+    def reset! rsrc_abbr, id, *args
+      super rsrc_abbr, id, args
+      klass = klass_from_abbr(rsrc_abbr)
+      self.thing = klass.new id
+    end
+    
+    def accumulate rsrc, id, attr, bin
+      thing.send("#{attr}=", bin)
+    end
+    
+    def finalize 
+      yield thing
+    end
+  end
 
-    attr_accessor :bin_size
-    def configure_bins! options
-      case
-      when options[:bins]
-        total_count = options[:total_count].to_f
-        bins        = options[:bins].to_i
-        unless total_count && (total_count != 0) then raise "To set the bin (%ile) size using --bins, we need to know the total count in advance. Please supply the total_count option." end
-        self.bin_size = (total_count / bins)
-        $stderr.puts "Splitting %s records into %s bins of size %f. First element gets bin %d, last gets bin %d, median gets bin %d/%d" %
-          [total_count, bins, bin_size, get_bin(1), get_bin(total_count), get_bin(((total_count+1)/2.0).floor), get_bin(((total_count+1)/2.0).ceil)]
+  #
+  # Two-phase script
+  #
+  # FIXME -- We need a runner class to manage this.
+  #
+  class Script < Wukong::Script
+    attr_accessor :phase
+    # KLUDGE !!
+    def initialize 
+      super nil, nil
+      case options[:phase].to_i
+      when 1
+        # Phase 1 -- Steal underpants.  Also, disassemble each object, and find
+        # the bin for each binnable attribute's value
+        self.phase = 1
+        self.mapper_klass, self.reducer_klass = [ExplodeResourceMapper, BinAttrReducer]
+      when 2
+        # Phase 2 -- ????
+        raise "Phase 2 : ????"
+      when 3
+        # Phase 3 -- profit. In this case, put records back together.
+        self.phase = 3
+        self.mapper_klass, self.reducer_klass = [nil, ReassembleObjectReducer]
       else
-        raise "Please specify a number of --bins= and a --total_count= or your own strategy to bin the ranked items."
+        raise "Please run me with a --phase= option"
       end
+    end    
+    
+    def default_options
+      extra_options = 
+        case self.phase
+        # partition on [rsrc, attr]; sort on [rsrc, attr, val]
+        when 1  then { :sort_fields => 3, :partition_fields => 2 }
+        # sort on [rsrc, id]
+        when 3  then { :sort_fields => 2 }
+        else { }
+        end
+      super.merge extra_options
     end
-
-    #
-    # Prepare 
-    #
-    def format_binned_record fields, numbering, rank, bin
-      fields.to_flat + ["%10d"%numbering, "%10d"%rank, "%7d"%bin]
-    end
-
-    def process *fields
-      numbering, rank, bin = get_order_params(get_key(*fields))
-      yield format_binned_record(fields, numbering, rank, bin)
-    end
-
   end
   
-  class Script < Wukong::Script
-    def default_options
-      super.merge :reduce_tasks => 1
-    end
-  end
-  Script.new(nil, RankAndBinReducer).run
+  # execute script
+  Script.new.run
 end
