@@ -1,7 +1,7 @@
 DateTime.class_eval do
   def self.parse_safely dt
     begin
-      parse(dt)
+      parse(dt, true)
     rescue
       nil
     end
@@ -9,6 +9,6 @@ DateTime.class_eval do
 
 
   def self.parse_and_flatten str
-    parse_safely(str, true).to_flat
+    parse_safely(str).to_flat
   end
 end

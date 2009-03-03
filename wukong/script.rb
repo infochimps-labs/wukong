@@ -91,7 +91,6 @@ module Wukong
       self.reducer_klass = reducer_klass
     end
 
-
     #
     # Gives default options.  Command line parameters take precedence
     #
