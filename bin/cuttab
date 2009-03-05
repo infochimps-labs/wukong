@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+fields=${1-"1-"}
+shift
+cut  -d'	' -f"$fields" "$@"
