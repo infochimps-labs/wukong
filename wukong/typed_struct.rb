@@ -3,7 +3,7 @@ require 'active_support'
 class TypedStruct < Struct
   def self.new *members_types
     members, mtypes = members_types.transpose
-    klass           = Struct.new *members
+    klass           = Struct.new *members.map(&:to_sym)
     klass.class_eval do
       cattr_accessor :mtypes, :members_types
       self.mtypes        = mtypes

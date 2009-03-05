@@ -18,7 +18,7 @@ class AS
   end
 
   def to_s
-    clause  = "%-32s" % [ref, expr].compact.join('::')
+    clause  = "%-30s \t" % [ref, expr].compact.join('::')
     if name
       clause << "AS #{name}"      unless options[:skip_name]
       clause << ":#{type.typify}" unless ((!type) || options[:skip_type])

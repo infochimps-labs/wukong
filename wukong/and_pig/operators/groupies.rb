@@ -150,7 +150,7 @@ module Wukong
         when :all       then 'ALL'
         when Symbol     then "BY #{by_spec}"
         when String     then by_spec
-        when Hash       then by_clause(by_spec[:by])
+        when Hash       then make_by_clause(by_spec[:by])
         else raise "Don't know how to group on #{by_spec.inspect}"
         end
       end
