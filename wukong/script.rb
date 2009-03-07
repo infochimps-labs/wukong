@@ -84,11 +84,14 @@ module Wukong
     #   end
     #   MyScript.new(MyMapper, nil).run
     #
-    def initialize mapper_klass, reducer_klass
-      self.options = default_options
+    def initialize mapper_klass, reducer_klass, extra_options={}
+      self.options = default_options.merge(extra_options)
       process_argv!
       self.mapper_klass  = mapper_klass
       self.reducer_klass = reducer_klass
+      # Should reducer_klass == nil mean 'a default reducer' or
+      # 'no reduce phase'?
+      # self.options[:reduce_tasks] = 0 if (! reducer_klass)
     end
 
     #
