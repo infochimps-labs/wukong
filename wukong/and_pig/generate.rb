@@ -38,6 +38,14 @@ module Wukong
         rval
       end
 
+      # generate the code
+      def self.emit_imperative imperative, *rest
+        cmd_part = "%-14s \t" % imperative
+        arg_part = rest.map{|s| "%14s" % s.to_s }.join(" \t")
+        emit cmd_part+arg_part
+        rest.first
+      end
+
       def self.pig_in_poke
         return @pig_in_poke if @pig_in_poke
         case Wukong::AndPig.emit_dest
