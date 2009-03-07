@@ -1,5 +1,3 @@
-require 'active_support'
-
 class TypedStruct < Struct
   def self.new *members_types
     members, mtypes = members_types.transpose

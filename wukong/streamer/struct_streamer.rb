@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module Wukong
   module Streamer
     #
@@ -6,33 +7,45 @@ module Wukong
     # instantiate an object using the remaining fields on that line.
     #
     module StructRecordizer
-      def self.class_from_resource klass_name
-        # kill off all but class name
-        klass_name = klass_name.to_s.gsub(/-.*$/, '')
+      RESOURCE_CLASS_MAP = { }
+
+      #
+      # Find the class from its underscored name. Note the klass is non-modularized.
+      # You can also pre-seed RESOURCE_CLASS_MAP
+      #
+      def self.class_from_resource rsrc
+        #
+        # This method has been profiled, so don't go making it more elegant
+        # unless you're doing same.
+        #
+        rsrc = rsrc.to_s
+        return RESOURCE_CLASS_MAP[rsrc] if RESOURCE_CLASS_MAP.include?(rsrc)
+        # kill off all but the non-modularized class name and camelize
+        klass_name = rsrc.gsub(/-.*$/, '').gsub(/(?:^|_)(.)/){ $1.upcase }
         begin
           # convert it to class name
-          klass = klass_name.to_s.camelize.constantize
+          klass = klass_name.constantize
         rescue Exception => e
           warn "Bogus class name '#{klass_name}'? #{e}"
-          return
+          klass = nil
         end
+        RESOURCE_CLASS_MAP[rsrc] = klass
       end
 
       #
       # Turned the first field into a class name, then use the remaining fields
       # on that line to instantiate the object to process.
       #
-      def self.recordize klass_name, *fields
-        return if klass_name =~ /^(?:bogus-|bad_record)/
-        klass = class_from_resource(klass_name) or return
+      def self.recordize rsrc, *fields
+        klass = class_from_resource(rsrc) or return
         # instantiate the class using the remaining fields on that line
         begin
           [ klass.new(*fields) ]
         rescue ArgumentError => e
-          warn "Couldn't instantiate: #{e} (#{[klass_name, fields].inspect})"
+          warn "Couldn't instantiate: #{e} (#{[rsrc, fields].inspect})"
           return
         rescue Exception => e
-          raise [e, klass_name, fields].inspect
+          raise [e, rsrc, fields].inspect
         end
       end
 
