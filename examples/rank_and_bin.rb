@@ -62,11 +62,11 @@ module RankAndBinAttrs
     # representation.
     #
     def process thing, &block
-      attr_abbrs = BINNABLE_ATTRS[thing.resource_name]
+      attr_abbrs = BINNABLE_ATTRS[thing.class.resource_name]
       return unless attr_abbrs
       attr_abbrs.each do |attr, abbr|
         yield [
-          RESOURCE_ALIASES[thing.resource_name],
+          RESOURCE_ALIASES[thing.class.resource_name],
           abbr,
           get_and_format_attr(thing, attr),
           thing.id.to_i

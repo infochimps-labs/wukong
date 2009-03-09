@@ -29,6 +29,14 @@ module Wukong
       # ILLUSTRATE pig imperative
       def illustrate() simple_operation :illustrate  end
 
+
+      def self.define pig_alias, *args
+        emit_imperative :DEFINE, pig_alias, args
+      end
+
+      def self.register path_to_jar
+        emit_imperative :REGISTER, path_to_jar
+      end
     end
   end
 end

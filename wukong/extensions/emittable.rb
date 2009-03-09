@@ -12,8 +12,8 @@ Struct.class_eval do
   # The last portion of the class in underscored form
   # note memoization
   #
-  def resource_name
-    @resource_name ||= self.class.to_s.underscore.gsub(%r{.*/([^/]+)\z}, '\1').to_sym
+  def self.resource_name
+    @resource_name ||= self.to_s.gsub(%r{.*::}, '').underscore.to_sym
   end
   #
   # Flatten for packing as resource name followed by all fields
@@ -22,9 +22,9 @@ Struct.class_eval do
     if include_key.is_a? Proc
       sort_key = include_key.call(self)
     elsif include_key && respond_to?(:key)
-      sort_key = [resource_name, key].flatten.join("-")
+      sort_key = [self.class.resource_name, key].flatten.join("-")
     else
-      sort_key = resource_name
+      sort_key = self.class.resource_name
     end
     [sort_key, *to_a]
   end
