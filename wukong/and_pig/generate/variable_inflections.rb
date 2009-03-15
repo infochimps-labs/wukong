@@ -29,6 +29,7 @@ class << Bignum  ; def typify() 'long'          end ; end
 class << Float   ; def typify() 'float'         end ; end
 class << String  ; def typify() 'chararray'     end ; end
 class << Symbol  ; def typify() self            end ; end
+class << Date    ; def typify() 'long'          end ; end
 
 # Array.class_eval do
 #   def typify()
