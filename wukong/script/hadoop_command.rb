@@ -61,7 +61,9 @@ module Wukong
     end
 
     def hadoop_other_args
-      [:map_speculative, :timeout].map{|opt| jobconf(opt)  }
+      extra_str_args = [ options[:extra_args] ]
+      extra_hsh_args = [:map_speculative, :timeout].map{|opt| jobconf(opt)  }
+      extra_str_args + extra_hsh_args
     end
 
     #
