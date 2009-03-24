@@ -33,7 +33,7 @@
 # Script defaults
 :runner_defaults:
     # field separator for sorting 
-    :key_field_separator:           "'\\t'"
+    # :key_field_separator:           "'\\t'"
     # field separator for partitioning (distributing among reducers)
-    :output_field_separator:        "'\\t'"
+    # :output_field_separator:        "'\\t'"
     

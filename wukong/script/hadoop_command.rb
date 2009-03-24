@@ -11,13 +11,16 @@ module Wukong
     # Translate the simplified args to their hairy-assed hadoop equivalents
     #
     HADOOP_OPTIONS_MAP = {
-      :max_map_tasks          => 'mapred.tasktracker.map.tasks.maximum',
+      :max_node_map_tasks     => 'mapred.tasktracker.map.tasks.maximum',
+      :max_node_reduce_tasks  => 'mapred.tasktracker.reduce.tasks.maximum',
       :map_tasks              => 'mapred.map.tasks',
       :reduce_tasks           => 'mapred.reduce.tasks',
       :sort_fields            => 'stream.num.map.output.key.fields',
       :key_field_separator    => 'map.output.key.field.separator',
-      :partition_fields         => 'num.key.fields.for.partition',
-      :output_field_separator => 'stream.map.output.field.separator'
+      :partition_fields       => 'num.key.fields.for.partition',
+      :output_field_separator => 'stream.map.output.field.separator',
+      :map_speculative        => 'mapred.map.tasks.speculative.execution',
+      :timeout                => 'mapred.task.timeout',
     }
 
     # emit a -jobconf hadoop option if the simplified command line arg is present
@@ -47,15 +50,20 @@ module Wukong
       end
     end
 
-    # Emit options for setting the number of mappers and reducers.  The
-    # asymmetry of :max_map_tasks and :reduce_tasks is purposeful --
-    # mapred.map.tasks doesn't really do what you think it does.
+    # Emit options for setting the number of mappers and reducers.
     def hadoop_num_tasks_args
       [
-        jobconf(:max_map_tasks),
+        jobconf(:max_node_map_tasks),
+        jobconf(:max_node_reduce_tasks),
         jobconf(:map_tasks),
         jobconf(:reduce_tasks)
       ]
+    end
+
+    def hadoop_other_args
+      extra_str_args = [ options[:extra_args] ]
+      extra_hsh_args = [:map_speculative, :timeout].map{|opt| jobconf(opt)  }
+      extra_str_args + extra_hsh_args
     end
 
     #
@@ -72,7 +80,8 @@ module Wukong
         "-mapper  '#{map_command}'",
         "-reducer '#{reduce_command}'",
         "-input   '#{input_path}'",
-        "-output  '#{output_path}'"
+        "-output  '#{output_path}'",
+        hadoop_other_args,
       ].flatten.compact.join(" \t\\\n  ")
     end
 

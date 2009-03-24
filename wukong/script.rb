@@ -102,7 +102,7 @@ module Wukong
     #   super.merge :my_option => :val
     #
     def default_options
-      CONFIG[:runner_defaults]
+      CONFIG[:runner_defaults] || {}
     end
 
     # Options that don't need to go in the :all_args hash

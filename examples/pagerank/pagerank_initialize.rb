@@ -1,56 +1,46 @@
 #!/usr/bin/env ruby
-# -*- coding: utf-8 -*-
-require 'set'
-require 'pathname'
-
+$: << File.dirname(__FILE__)+'/../..'
+require 'wukong'
+require 'wukong/streamer/set_reducer'
 
 module PageRank
-  class Mapper < Wukong::Streamer::Base
-
+  class Script < Wukong::Script
     #
-    # All we want from the line are its src and dest IDs
+    # Input format is
     #
-    def recordize line
-      fields = super(line)
-      src, dest, *_ = fields
+    #   rsrc    src_id  dest_id  [... junk ...]
+    #
+    # All we want from the line are its src and dest IDs.
+    #
+    def map_command
+      %Q{/usr/bin/cut -d"\t" -f2,3}
     end
 
-    #
-    # Launch each relation towards each of its stakeholders,
-    # who will aggregate them in the +reduce+ phase
-    #
-    def process src, dest
-      yield [src, dest]
+    def default_options
+      super.merge :extra_args => ' -jobconf io.sort.record.percent=0.25 '
     end
   end
 
   #
-  # You can stack up all the values in a list then sum them at once:
+  # Accumulate the dests list in memory, dump as a whole. Multiple edges between
+  # any two nodes are permitted, and will accumulate pagerank according to the
+  # edge's multiplicity.
   #
-  class Reducer < Wukong::Streamer::AccumulatingReducer
-    attr_accessor :dests
-    #
-    def start! *args
-      self.dests = []
-    end
-
-    #
+  class Reducer < Wukong::Streamer::ListReducer
     def accumulate src, dest
-      dests << dest
+      self.values << dest
     end
 
-    # emit relationship for heretrix pagerank code
+    # Emit src, initial pagerank, and flattened dests list
     def finalize
-      dests = ['dummy'] if dests.blank?
-      yield [src, 1.0, dests.join(",")]
+      self.values = ['dummy'] if self.values.blank?
+      yield [key, 1.0, self.values.to_a.join(",")]
     end
   end
+
+  # Execute the script
+  Script.new(nil, PageRank::Reducer).run
 end
 
-# Execute the script
-Wukong::Script.new(
-  PageRank::Mapper,
-  PageRank::Reducer
-  ).run
 
 

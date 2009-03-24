@@ -1,3 +1,4 @@
+require 'time' # ain't it always that way
 module Wukong
   module Dfs
     def self.list_files dfs_path
@@ -28,7 +29,7 @@ module Wukong
         )
       def self.new_from_ls ls_line
         mode, ic, o, g, sz, dt, tm, path = ls_line.chomp.split(/\s+/)
-        date = DateTime.parse_and_flatten("#{dt} #{tm}")
+        date = Time.parse("#{dt} #{tm}").utc.to_flat
         new mode, ic.to_i, o, g, sz.to_i, date, path
       end
       def dirname
@@ -42,8 +43,12 @@ module Wukong
       # the hdfs version is later than the filesystem version.
       #
       def kinda_equal file
-        (self.size == File.size(file)) &&
-        (self.date >= File.mtime(file).to_flat)
+        ke = (self.size == File.size(file)) &&
+          (self.date >= File.mtime(file).utc.to_flat)
+        if !ke 
+          p [self.date, File.mtime(file).utc.to_flat]
+        end
+        ke
       end
       def to_s
         to_a.join("\t")
