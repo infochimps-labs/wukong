@@ -1,6 +1,6 @@
 require 'yaml'
 module Wukong
-  CONFIG_FILE_LOCATION=File.dirname(__FILE__)+'/../config'
+  CONFIG_FILE_LOCATION=File.dirname(__FILE__)+'/../../config'
   CONFIG      = { }
   def self.config_options
 
