@@ -2,7 +2,6 @@ Utility
 
 * columnizing / reconstituting
 
-* Make this a Gem
 * Set up with JRuby
 * Allow for direct HDFS operations
 * Make the dfs commands slightly less stupid
