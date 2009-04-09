@@ -243,11 +243,11 @@ module Wukong
     def help
       $stderr.puts "#{self.class} script"
       $stderr.puts %Q{
-        #{__FILE__} --run=hadoop input_hdfs_path output_hdfs_dir    # run the script with hadoop streaming
-        #{__FILE__} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
-        #{__FILE__} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
-        #{__FILE__} --map
-        #{__FILE__} --reduce                                 # dispatch to the mapper or reducer
+        #{$0} --run=hadoop input_hdfs_path output_hdfs_dir    # run the script with hadoop streaming
+        #{$0} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
+        #{$0} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
+        #{$0} --map
+        #{$0} --reduce                                 # dispatch to the mapper or reducer
 
       You can specify as well arbitrary script-specific command line flags; they are added to your options[] hash.
       }
