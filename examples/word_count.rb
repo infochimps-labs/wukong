@@ -41,6 +41,7 @@ module WordCount
   #
   # You can stack up all the values in a list then sum them at once:
   #
+  require 'active_support/core_ext/enumerable'
   class Reducer1 < Wukong::Streamer::ListReducer
     def finalize
       yield [ key, values.map(&:last).map(&:to_i).sum ]
