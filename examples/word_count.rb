@@ -62,6 +62,7 @@ module WordCount
   #
   # ... easiest of all, though: this is common enough that it's already included
   #
+  require 'wukong/streamer/count_keys'
   class Reducer3 < Wukong::Streamer::CountKeys
   end
 
