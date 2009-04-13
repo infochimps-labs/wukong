@@ -2,6 +2,10 @@
 $: << File.dirname(__FILE__)+'/../..'
 require 'wukong'
 
+#
+#
+#
+
 module PageRank
   #
   # Damping factor (prob. of a 'random' jump)
@@ -23,7 +27,9 @@ module PageRank
       # Send pagerank to each page, and send the dests list back to self
       #
       def process src, pagerank, dests_str, &block
-        dests = dests_str.split(",")
+        # This lets us use Pig to generate the input
+        dests_str = dests_str.gsub(/[\(\{\}\)]/, '')
+        dests     = dests_str.split(",")
         yield_pagerank_shares src, pagerank, dests, &block
         yield_own_dest_list   src, dests_str,       &block
       end
