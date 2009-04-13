@@ -43,12 +43,7 @@ module Wukong
       # the hdfs version is later than the filesystem version.
       #
       def kinda_equal file
-        ke = (self.size == File.size(file)) &&
-          (self.date >= File.mtime(file).utc.to_flat)
-        if !ke 
-          p [self.date, File.mtime(file).utc.to_flat]
-        end
-        ke
+        (self.size == File.size(file)) && (self.date >= File.mtime(file).utc.to_flat)
       end
       def to_s
         to_a.join("\t")
