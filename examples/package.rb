@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/..'
+$: << File.dirname(__FILE__)+'/../lib'
 
-require 'wukong'                       ; include Wukong
+require 'wukong'
+include Wukong
 
 #
 # This is so very very kludgey

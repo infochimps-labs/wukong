@@ -29,6 +29,7 @@ instiki/*
 log/searchd*.pid
 *.org
 .project
+pkg
 /public/ac/*
 .pydevproject
 REVISION

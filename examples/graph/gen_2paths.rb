@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../..'
+$: << File.dirname(__FILE__)+'/../../lib'
 require 'wukong'
 
 class Edge < Struct.new(:src, :dest)

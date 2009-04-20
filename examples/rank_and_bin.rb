@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/..'
+$: << File.dirname(__FILE__)+'/../lib'
 require 'wukong'
 require 'wukong/streamer/rank_and_bin_reducer'
 

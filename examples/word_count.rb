@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/..'
+$: << File.dirname(__FILE__)+'/../lib'
 require 'wukong'
 
 module WordCount
@@ -41,6 +41,7 @@ module WordCount
   #
   # You can stack up all the values in a list then sum them at once:
   #
+  require 'active_support/core_ext/enumerable'
   class Reducer1 < Wukong::Streamer::ListReducer
     def finalize
       yield [ key, values.map(&:last).map(&:to_i).sum ]
@@ -62,6 +63,7 @@ module WordCount
   #
   # ... easiest of all, though: this is common enough that it's already included
   #
+  require 'wukong/streamer/count_keys'
   class Reducer3 < Wukong::Streamer::CountKeys
   end
 
