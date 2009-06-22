@@ -7,6 +7,10 @@ module Wukong
       listing.map{|ls_line| HFile.new_from_ls(ls_line)}
     end
 
+    #
+    # FIXME -- this will fail if multiple files in a listing have the
+    # same basename. Sorry.
+    #
     def self.compare_listings src_files, dest_files, &block
       src_files.sort.each do |src_file|
         dest_file = dest_files.find{|df| File.basename(src_file) == df.basename }
@@ -43,7 +47,7 @@ module Wukong
       # the hdfs version is later than the filesystem version.
       #
       def kinda_equal file
-        (self.size == File.size(file)) && (self.date >= File.mtime(file).utc.to_flat)
+        (self.size == File.size(file)) # && (self.date >= File.mtime(file).utc.to_flat)
       end
       def to_s
         to_a.join("\t")
