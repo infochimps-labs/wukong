@@ -1,0 +1,52 @@
+
+
+
+h2. There's lots of data
+
+
+h2. Wukong + Hadoop can help
+
+
+h2. Map|Reduce
+
+h3. cat input.tsv | mapper.sh | sort | reducer.sh > output.tsv
+
+* Bobo histogram:
+
+  cat twitter_users.tsv | cuttab 3 | cutc 1-6 | sort | uniq -c > histogram.tsv
+
+  cat twitter_users.tsv | \
+    cuttab 3 |                  # extract the date column               \
+    cutc 1-6 |                  # chop off all but the yearmonth        \
+    sort     |                  # sort, to ensure locality              \
+    uniq -c  >                  # roll up lines, along with their count \
+    histogram.tsv               # save into output file
+  
+  
+h3. Word Count
+
+
+h3. Word Count by Person
+
+* Partition Keys vs. Reduce Keys
+
+- reduce by [word, <total>, count] and [word, user_id, count]
+
+
+h2. Global Structure
+
+h3. Enumerating neighborhood
+
+* adjacency list
+
+* join on center link
+
+* list of 3-paths == 
+
+
+
+h2. Mechanics, HDFS
+
+
+x M _
+_ M y
