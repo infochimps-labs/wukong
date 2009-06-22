@@ -4,6 +4,15 @@
 h2. There's lots of data
 
 
+There are two disruptive
+
+* We're instrumenting every realm of human activity
+*
+
+* We have linearly scaling multiprocessing
+** Old frontier computing: expensive, N log N, SUUUUUUCKS
+** It's cheap, it's scaleable and it's fun
+
 h2. Wukong + Hadoop can help
 
 
@@ -24,6 +33,17 @@ h3. cat input.tsv | mapper.sh | sort | reducer.sh > output.tsv
   
   
 h3. Word Count
+
+mapper:
+
+    # output each word on its own line
+    @readlines.each{|line| puts line.split(/[^\w]+/) }@
+
+reducer:
+
+    # every word is _guaranteed_ to land in the same place and next to its
+    # friends, so we can just output the repetition count for each distinct line.
+    uniq -c
 
 
 h3. Word Count by Person
