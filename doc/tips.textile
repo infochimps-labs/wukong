@@ -1,0 +1,32 @@
+
+
+
+h3. For Big Data, instead of "ACID" you use "ACID*"
+
+* A -- Associative
+* C -- Commutative
+* I -- Idempotent
+* D -- Distributed
+* (*) -- (and where possible, left in sort order)
+
+
+Finally, where possible leave things in sort order by some appropriate index. Clearly I'm not talking about introducing extra unnecessary sorts on ephemeral data.  For things that will be read (and experimented with) much more often than they're written, though, it's worth running a final sort.  Now you can
+
+* Efficiently index into a massive dataset with binary search
+* Do a direct merge sort on two files with the same sort order
+* Run a reducer directly across the data
+* Assign a synthetic key by just serially numbering lines (either distribute a unique prefix to each mapper 
+
+Note: for files that will live on the DFS, you should usually *not* do a total sort, 
+
+h3. Encode once, and carefully.
+
+Encoding violates idempotence.
+
+Is there a lightweight, mostly-transparent, ASCII-compatible *AND* idempotent encoding scheme lurking in a back closet of some algorithms book?
+
+
+
+h3. Epistemology and exeption handling
+
+something that goes wrong 1/1000 time will happen
