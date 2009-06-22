@@ -81,7 +81,6 @@ module Wukong
     end
 
     def self.included base
-      p base
       base.class_eval do
         extend ClassMethods
       end
