@@ -11,7 +11,7 @@ require 'wukong'
 #    2     9
 #    7     2
 #
-# It produces an adjacency list representation:
+# It produces an "adjacency list":http://en.wikipedia.org/wiki/Adjacency_list representation:
 #
 #    1  >   2   7
 #    2  >   7   9
