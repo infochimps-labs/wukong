@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../lib'
+$: << File.dirname(__FILE__)+'/..'
 
-require 'wukong'
-include Wukong
+require 'wukong'                       ; include Wukong
 
 #
 # This is so very very kludgey
@@ -29,6 +28,10 @@ module ExportPackager
   #
   #
   class Reducer < Wukong::Streamer::Base
+    def announce str
+      $stderr.puts str
+      $stdout.puts str
+    end
 
     def remove_target_filename output_filename
       puts "Removing target file #{output_filename}"
@@ -45,7 +48,7 @@ module ExportPackager
 
     def bzip_into_pkgd_file input_filename, output_filename
       puts "bzip'ing into #{output_filename}"
-      puts `hadoop dfs -cat #{input_filename} | bzip2 -c | hadoop dfs -put - #{output_filename}`
+      puts `hadoop dfs -cat #{input_filename}/[^_]\\* | bzip2 -c | hadoop dfs -put - #{output_filename}`
     end
 
     def gen_output_filename input_filename
@@ -63,12 +66,16 @@ module ExportPackager
         # handle ls or straight file list, either
         input_filename = input_filename.chomp.split(/\s/).last
         output_filename = gen_output_filename input_filename
+        announce "Packaging #{input_filename} into #{output_filename}"
         process input_filename, output_filename
       end
     end
   end
 
   class Script < Wukong::Script
+    def default_options
+      super.merge :timeout => (24 * 60 * 60 * 1000)  # milliseconds in one day
+    end
   end
 end
 
