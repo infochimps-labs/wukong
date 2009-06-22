@@ -1,4 +1,4 @@
-
+http://cluster-fork.info/index.php?title=Main_Page
 
 
 h3. For Big Data, instead of "ACID" you use "ACID*"
@@ -27,6 +27,39 @@ Is there a lightweight, mostly-transparent, ASCII-compatible *AND* idempotent en
 
 
 
+h3. Keys
+
+Natural keys are right for big data
+
+Synthetic keys suck. They demand locality or a central keymaster.
+
+See About Keys
+
+* Use the natural key
+* Hash the natural key. This has some drawbacks
+
+OK, fine. you need a synthetic key
+
+* Do a total sort, and use nl
+* Generate
+* Use a single reducer to reduce locality. YUCK.
+* have each mapper generate a unique prefix; number each line as "prefix#{line_number}" or whatever.
+
+How do you get a unique prefix?
+
+* Distribute a unique prefix to each mapper out-of-band. People using Streaming are out of luck.
+
+* Use a UUID -- that's what they're for. Drawback: ridiculously long
+
+* Hash the machine name, PID and timestamp to something short. Check after the
+  fact that uniqueness was achieved. Use the birthday party formula to find out
+  how often this will happen. (In practice, almost never.)
+
 h3. Epistemology and exeption handling
 
 something that goes wrong 1/1000 time will happen
+
+
+h3. Real hackers use the command line as an IDE
+
+
