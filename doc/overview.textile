@@ -50,3 +50,50 @@ h2. Mechanics, HDFS
 
 x M _
 _ M y
+
+
+module FreqWholeCorpus
+  class Mapper < Wukong::Streamer::StructStreamer
+    #
+    # collect each [user, word] pair
+    #
+    def process thing, &block
+      next unless thing.is_a? TweetToken
+      yield [thing.user_id, thing.word]
+    end
+  end
+
+  class Reducer < Wukong::Streamer::CountLines
+  end
+
+  # Execute the script
+  Wukong::Script.new(
+    Mapper,
+    Reducer,
+    :partition_fields => 2,
+    :sort_fields      => 2
+    ).run
+end
+
+module WordCount
+  class Mapper < Wukong::Streamer::StructStreamer
+    #
+    # Extract all the semantic items (smilies, hashtags, etc)
+    # and all the remaining words from each tweet
+    #
+    def process thing, &block
+      next unless thing.is_a? Tweet
+      thing.tokenize(true).each do |token|
+        yield token
+      end
+    end
+  end
+
+  # Execute the script
+  Wukong::Script.new(
+    Mapper,
+    nil # WordFreq::Reducer,
+   :reduce_tasks => 0
+  ).run
+end
+
