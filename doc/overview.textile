@@ -1,13 +1,22 @@
 
-
-
 h2. There's lots of data
 
+
+There are two disruptive
+
+* We're instrumenting every realm of human activity
+** Conversation
+** Relationships
+** 
+
+* We have linearly scaling multiprocessing
+** Old frontier computing: expensive, N log N, SUUUUUUCKS
+** It's cheap, it's scaleable and it's fun
 
 h2. Wukong + Hadoop can help
 
 
-h2. Map|Reduce
+h2. == Map|Reduce ==
 
 h3. cat input.tsv | mapper.sh | sort | reducer.sh > output.tsv
 
@@ -25,6 +34,18 @@ h3. cat input.tsv | mapper.sh | sort | reducer.sh > output.tsv
   
 h3. Word Count
 
+mapper:
+
+    # output each word on its own line
+    @readlines.each{|line| puts line.split(/[^\w]+/) }@
+
+reducer:
+
+    # every word is _guaranteed_ to land in the same place and next to its
+    # friends, so we can just output the repetition count for each
+    # distinct line.
+    uniq -c
+
 
 h3. Word Count by Person
 
@@ -33,7 +54,7 @@ h3. Word Count by Person
 - reduce by [word, <total>, count] and [word, user_id, count]
 
 
-h2. Global Structure
+h2. == Global Structure ==
 
 h3. Enumerating neighborhood
 
@@ -43,15 +64,14 @@ h3. Enumerating neighborhood
 
 * list of 3-paths == 
 
-
-
-h2. Mechanics, HDFS
+h2. == Mechanics, HDFS ==
 
 
 x M _
 _ M y
 
 
+<<<<<<< HEAD:doc/overview.textile
 module FreqWholeCorpus
   class Mapper < Wukong::Streamer::StructStreamer
     #
@@ -97,3 +117,24 @@ module WordCount
   ).run
 end
 
+=======
+h2. == More Reading ==
+
+h3. Hadoop 
+
+* "Hadoop, The Definitive Guide":http://www.amazon.com/Hadoop-Definitive-Guide-Tom-White/dp/0596521979
+* "":
+
+* "Cloudera Blog":http://www.cloudera.com/blog/
+
+h3. Hadoop|Streaming Frameworks
+
+* infochimps.org's "Wukong":http://github.com/mrflip/wukong -- ruby; object-oriented *and* record-oriented
+* NYTimes' "MRToolkit":http://code.google.com/p/mrtoolkit/ -- ruby; much more log-oriented
+* Freebase's "Happy":http://code.google.com/p/happy/ -- python; the most performant, as it can use Jython to make direct API calls.
+* Last.fm's "Dumbo":http://wiki.github.com/klbostee/dumbo -- python
+
+h3. Hadoop Infrastructure
+
+Even if you have a bunch of machines with spare cycles, lots of RAM, and a shared filesystem... do yourself a favor and start out using the "Cloudera AMIs on Amazon's EC2 cloud.":http://www.cloudera.com/hadoop-ec2 There are an overwhelming number of fiddly little parameters and you'll be glad for the user experience before you get into server setup. Actually, if it's still June 2009 when you read this, profile your scripts with Wukong on the command line and kill some time before Hadoop 0.20 comes out.  It will be a) more fun, b) much more robust (trust me, at "v0.20" you want to live on the bleeding edge), and c) you won't have to suffer through migrating your HDFS two weeks after setup.
+>>>>>>> 93ecff9ec2a2601a6fa14e4b8ed69992ccdd6ba0:doc/overview.textile
