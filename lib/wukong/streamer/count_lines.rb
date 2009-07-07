@@ -8,7 +8,7 @@ module Wukong
     #
     class CountLines < Wukong::Streamer::Base
       def formatted_count item, key_count
-        "%s\t%010d" % [item, key_count.to_i]
+        "%s\t%10d" % [item, key_count.to_i]
       end
 
       #

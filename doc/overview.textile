@@ -70,8 +70,6 @@ h2. == Mechanics, HDFS ==
 x M _
 _ M y
 
-
-
 h2. == More Reading ==
 
 h3. Hadoop

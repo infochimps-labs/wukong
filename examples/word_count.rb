@@ -39,6 +39,25 @@ module WordCount
   end
 
   #
+  # Accumulate the sum record-by-record:
+  #
+  class Reducer0 < Wukong::Streamer::Base
+    attr_accessor :key_count
+    def process word, count
+      @last_word ||= word
+      if (@last_word == word)
+        self.key_count += 1
+      else
+        yield [ @last_word, key_count ]
+        @last_word = word
+      end
+    end
+    def stream
+      emit @last_word, key_count
+    end
+  end
+
+  #
   # You can stack up all the values in a list then sum them at once:
   #
   require 'active_support/core_ext/enumerable'

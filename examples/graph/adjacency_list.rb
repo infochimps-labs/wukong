@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << ENV['WUKONG_PATH']
+$: << '/home/flip/ics/wukong/lib' # ENV['WUKONG_PATH']
 require 'wukong'
 
 #
@@ -31,9 +31,10 @@ require 'wukong'
 #
 module Gen1HoodEdges
   class Mapper < Wukong::Streamer::Base
-    def process rsrc, src, dest
-      yield [ src +'>', dest ]
-      yield [ dest+'<', src  ]
+    def process rsrc, src, dest, *_
+      src = src.to_i ; dest = dest.to_i
+      yield [ src,  '>', dest ]
+      yield [ dest, '<', src  ]
     end
   end
 
@@ -48,11 +49,10 @@ module Gen1HoodEdges
   #
   class Reducer < Wukong::Streamer::AccumulatingReducer
     # clear the list of incoming paths
-    def start! target, *args
-      @dir = target.slice!(-1)   # remove last character: it's the direction
-      print target + "\t" + @dir # start line with target and list type
+    def start! target, dir, *args
+      print target + "\t" + dir  # start line with target and list type
     end
-    def accumulate target, neighbor
+    def accumulate target, dir, neighbor
       print "\t" + neighbor      # append neighbor to output, same line
     end
     def finalize

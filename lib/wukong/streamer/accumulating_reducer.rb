@@ -29,6 +29,7 @@
        #
        #   def get_key(thing) thing.id.to_i ; end
        #
+       # or whatever
        def get_key *record
          record.first
        end
