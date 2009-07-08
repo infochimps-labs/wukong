@@ -43,3 +43,6 @@
 * printf                - formatted output
 * cksum, sum            - display file checksums and block counts
 * md5sum
+
+* diff
+* comm
