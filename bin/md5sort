@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+""" sorts lines (or tab-sep records) by md5.  (e.g. for train/test splits).
+optionally prepends with the md5 id too. 
+brendan o'connor - anyall.org - gist.github.com/brendano """
+
+import hashlib,sys,optparse
+p = optparse.OptionParser()
+p.add_option('-k',  type='int', default=False)
+p.add_option('-p', action='store_true')
+opts,args=p.parse_args()
+
+lines = sys.stdin.readlines()
+getter=lambda s: hashlib.md5(s[:-1]).hexdigest()
+if opts.k:
+  getter=lambda s: hashlib.md5(s[:-1].split("\t")[opts.k-1]).hexdigest()
+
+lines.sort(key=lambda s: getter(s))
+for line in lines:
+  if opts.p:  line = getter(line) + "\t" + line
+  print line,
