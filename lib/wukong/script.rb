@@ -89,9 +89,8 @@ module Wukong
       process_argv!
       self.mapper_klass  = mapper_klass
       self.reducer_klass = reducer_klass
-      # Should reducer_klass == nil mean 'a default reducer' or
-      # 'no reduce phase'?
-      # self.options[:reduce_tasks] = 0 if (! reducer_klass)
+      # If no reducer_klass and no reduce_command, then skip the reduce phase
+      options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
     end
 
     #
@@ -166,7 +165,7 @@ module Wukong
       case
       when reducer_klass
         "#{this_script_filename} --reduce " + options[:all_args]
-      else CONFIG[:default_reducer] end
+      else options[:reduce_command] || CONFIG[:default_reducer] end
     end
 
     #
