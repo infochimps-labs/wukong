@@ -54,3 +54,8 @@ Add statistics helpers
 ---------------------------------------------------------------------------
 
 Make wutils: tsv-oriented implementations of the coreutils (eg uniq, sort, cut, nl, wc, split, ls, df and du) to instrinsically accept and emit tab-separated records.
+
+More example hadoop algorithms:
+Bigram counts: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/bigrams.html
+* Inverted index construction: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/indexer.html
+* Pagerank : http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/pagerank.html
