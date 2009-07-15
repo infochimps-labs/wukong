@@ -26,7 +26,7 @@ Struct.class_eval do
     else
       sort_key = self.class.resource_name
     end
-    [sort_key, *to_a.map(&:to_flat)]
+    [sort_key, *to_a] # .map(&:to_flat).flatten
   end
 end
 
