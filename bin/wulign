@@ -31,7 +31,8 @@ rows       = []
 skip_col   = []
 ARGV.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
 1000.times do
-  line = $stdin.readline or break
+  line = $stdin.readline rescue nil
+  break unless line
   cols = line.chomp.split("\t").map{|s| s.strip }
   col_widths = cols.map{|col| col.length }
   col_widths.each_with_index{|cw,i| maxw[i] = [[cw,maxw[i]].compact.max, MAX_MAX_WIDTH].min }
