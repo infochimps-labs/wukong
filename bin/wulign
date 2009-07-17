@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+
+def consensus_type val, alltype
+  return :mixed if alltype == :mixed
+  case
+  when val == ''            then type = nil
+  when val.to_i.to_s == val then type = :int
+  when (val.to_f != 0)      then type = :float
+  else                           type = :str end
+  return if ! type
+  case
+  when alltype.nil?    then type
+  when alltype == type then type
+  when ( ((alltype==:float) && (type == :int)) || ((alltype == :int) && (type == :float)) )
+    :float
+  else :mixed
+  end
+end
+
+def f_width str
+  str =~ /\A(\d+)(?:\.(\d*))\z/ or return 0
+  [$1.length, $2 ? $2.length : 0]
+end
+
+MAX_MAX_WIDTH = 100
+maxw       = []
+col_types  = []
+col_minmag = []
+col_maxmag = []
+rows       = []
+skip_col   = []
+ARGV.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
+1000.times do
+  line = $stdin.readline or break
+  cols = line.chomp.split("\t").map{|s| s.strip }
+  col_widths = cols.map{|col| col.length }
+  col_widths.each_with_index{|cw,i| maxw[i] = [[cw,maxw[i]].compact.max, MAX_MAX_WIDTH].min }
+  cols.each_with_index{|col,i|
+    next if skip_col[i]
+    col_types[i] = consensus_type(col, col_types[i])
+    if col_types[i] == :float
+      mantissa, radix = f_width(col)
+      col_minmag[i] = [radix,    col_minmag[i]].compact.max
+      col_maxmag[i] = [mantissa, col_maxmag[i]].compact.max
+    end
+  }
+  # p [maxw, col_types, col_minmag, col_maxmag, col_widths, cols]
+  rows << cols
+end
+
+format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, minmag, maxmag, default|
+  next(default) if default.to_s != ''
+  case type
+  when :mixed, nil then "%-#{width}s"
+  when :str        then "%-#{width}s"
+  when :int        then "%#{width}d"
+  when :float      then "%#{maxmag+minmag+1}.#{minmag}f"
+  else raise "oops type #{type}"  end
+end
+# p [maxw, col_types, col_minmag, col_maxmag, format]
+
+pad = [''] * maxw.length
+rows.each do |row|
+  # note -- strips trailing columns
+  puts row.zip(format).map{|c,f| (c == '') ? '' : (f%c) }.join("\t")
+end
+$stdin.readlines.each do |row|
+  # note -- strips trailing columns
+  puts row.zip(format).map{|c,f| (c == '') ? '' : (f%c) }.join("\t")
+end
