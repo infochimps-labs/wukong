@@ -1,10 +1,11 @@
 require 'rubygems'
 require 'wukong/boot'
 require 'wukong/extensions'
-require 'wukong/typed_struct'
-require 'wukong/dfs'
-require 'wukong/script'
-require 'wukong/streamer'
-
+require 'wukong/datatypes'
 module Wukong
+  autoload :TypedStruct, 'wukong/typed_struct'
+  autoload :Dfs,         'wukong/dfs'
+  autoload :Script,      'wukong/script'
+  autoload :Streamer,    'wukong/streamer'
+
 end

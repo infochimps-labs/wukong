@@ -1,7 +1,7 @@
 DateTime.class_eval do
   def self.parse_safely dt
     begin
-      parse(dt, true)
+      parse(dt+'Z', true)
     rescue
       nil
     end

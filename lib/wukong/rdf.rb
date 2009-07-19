@@ -21,11 +21,7 @@ module Wukong
     # RDF-formatted date
     #
     def self.encode_datetime dt
-      begin
-        DateTime.parse(dt).to_s
-      rescue ArgumentError => e
-        nil
-      end
+      DateTime.parse_safely(dt).xmlschema
     end
 
     #
