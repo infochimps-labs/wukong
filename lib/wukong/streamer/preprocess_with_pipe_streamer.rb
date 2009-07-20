@@ -11,7 +11,8 @@ module Wukong
       # command to run the input through.
       #
       def stream
-        `#{preprocess_pipe_command}`.readlines do |line|
+        #
+        `#{preprocess_pipe_command}`.each do |line|
           item = itemize(line) ; next if item.blank?
           process(*item)
         end
