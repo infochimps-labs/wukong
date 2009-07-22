@@ -4,7 +4,7 @@ def consensus_type val, alltype
   return :mixed if alltype == :mixed
   case
   when val == ''            then type = nil
-  when val.to_i.to_s == val then type = :int
+  when val =~ /\A\d+\z/     then type = :int
   when (val.to_f != 0)      then type = :float
   else                           type = :str end
   return if ! type
@@ -41,8 +41,8 @@ ARGV.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
     col_types[i] = consensus_type(col, col_types[i])
     if col_types[i] == :float
       mantissa, radix = f_width(col)
-      col_minmag[i] = [radix,    col_minmag[i]].compact.max
-      col_maxmag[i] = [mantissa, col_maxmag[i]].compact.max
+      col_minmag[i] = [radix,    col_minmag[i], 1].compact.max
+      col_maxmag[i] = [mantissa, col_maxmag[i], 1].compact.max
     end
   }
   # p [maxw, col_types, col_minmag, col_maxmag, col_widths, cols]
@@ -50,12 +50,12 @@ ARGV.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
 end
 
 format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, minmag, maxmag, default|
-  next(default) if default.to_s != ''
+  next(lambda{ default }) if default.to_s != ''
   case type
-  when :mixed, nil then "%-#{width}s"
-  when :str        then "%-#{width}s"
-  when :int        then "%#{width}d"
-  when :float      then "%#{maxmag+minmag+1}.#{minmag}f"
+  when :mixed, nil then lambda{|s| "%-#{width}s" % s }
+  when :str        then lambda{|s| "%-#{width}s" % s }
+  when :int        then lambda{|s| "%#{width}d"  % s.to_i }
+  when :float      then lambda{|s| "%#{maxmag+minmag+1}.#{minmag}f" % s.to_f }
   else raise "oops type #{type}"  end
 end
 # p [maxw, col_types, col_minmag, col_maxmag, format]
@@ -63,9 +63,9 @@ end
 pad = [''] * maxw.length
 rows.each do |row|
   # note -- strips trailing columns
-  puts row.zip(format).map{|c,f| (c == '') ? '' : (f%c) }.join("\t")
+  puts row.zip(format).map{|c,f| f.call(c) }.join("\t")
 end
 $stdin.readlines.each do |row|
   # note -- strips trailing columns
-  puts row.zip(format).map{|c,f| (c == '') ? '' : (f%c) }.join("\t")
+  puts row.zip(format).map{|c,f| f.call(c) }.join("\t")
 end
