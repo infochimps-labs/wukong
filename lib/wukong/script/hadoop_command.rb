@@ -70,10 +70,13 @@ module Wukong
     # Assemble the hadoop command to execute
     #
     def hadoop_command input_path, output_path
-      hadoop_program = CONFIG[:hadoop_home]+'/bin/hadoop'
+      # If this is wrong, create a config/wukong-site.rb or
+      # otherwise set Wukong::CONFIG[:hadoop_home] to the
+      # root of your config install.
+      hadoop_program = Wukong::CONFIG[:hadoop_home]+'/bin/hadoop'
       [
         hadoop_program,
-        "jar #{CONFIG[:hadoop_home]}/contrib/streaming/hadoop-*-streaming.jar",
+        "jar #{Wukong::CONFIG[:hadoop_home]}/contrib/streaming/hadoop-*-streaming.jar",
         hadoop_partition_args,
         hadoop_sort_args,
         hadoop_num_tasks_args,

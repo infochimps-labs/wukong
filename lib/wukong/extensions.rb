@@ -1,6 +1,9 @@
-require 'rubygems'
-require 'active_support/core_ext/class/attribute_accessors.rb'
-require 'active_support/core_ext/blank.rb'
+#
+# These pull in the minimal functionality of the extlib|activesupport family of
+# gems.
+#
+require 'wukong/extensions/blank'
+require 'wukong/extensions/class'
 require 'wukong/extensions/symbol'
 require 'wukong/extensions/hash'
 require 'wukong/extensions/hash_like'

@@ -101,7 +101,7 @@ module Wukong
     #   super.merge :my_option => :val
     #
     def default_options
-      CONFIG[:runner_defaults] || {}
+      Wukong::CONFIG[:runner_defaults] || {}
     end
 
     # Options that don't need to go in the :all_args hash
@@ -154,7 +154,7 @@ module Wukong
       case
       when mapper_klass
         "#{this_script_filename} --map " + options[:all_args]
-      else CONFIG[:default_mapper] end
+      else Wukong::CONFIG[:default_mapper] end
     end
 
     #
@@ -165,7 +165,7 @@ module Wukong
       case
       when reducer_klass
         "#{this_script_filename} --reduce " + options[:all_args]
-      else options[:reduce_command] || CONFIG[:default_reducer] end
+      else options[:reduce_command] || Wukong::CONFIG[:default_reducer] end
     end
 
     #
@@ -187,7 +187,7 @@ module Wukong
 
     def run_mode
       # if only --run is given, assume default run mode
-      options[:run] = CONFIG[:default_run_mode] if (options[:run] == true)
+      options[:run] = Wukong::CONFIG[:default_run_mode] if (options[:run] == true)
       options[:run].to_s
     end
 
