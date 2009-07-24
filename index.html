@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>mrflip/wukong @ GitHub</title>
+	
+	<style type="text/css">
+		body {
+  		margin-top: 1.0em;
+  		background-color: #e3eff7;
+		  font-family: "helvetica"; 
+  		color: #000000;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+		h1 { font-size: 3.8em; color: #1c1008; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 { font-size: 1.5em; color: #1c1008; }
+    h3 { text-align: center; color: #1c1008; }
+    a { color: #1c1008; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+		pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+	</style>
+	
+</head>
+
+<body>
+  <a href="http://github.com/mrflip/wukong"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  
+  <div id="container">
+
+    <div class="download">
+      <a href="http://github.com/mrflip/wukong/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/mrflip/wukong/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    </div>
+      
+    <h1><a href="http://github.com/mrflip/wukong">wukong</a> 
+      <span class="small">by <a href="http://github.com/mrflip">mrflip</a></span></h1>
+
+    <div class="description">
+      Ruby libraries for efficient, effective Hadoop streaming
+    </div>
+
+    <p>Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.
+
+Treat your dataset like a
+* stream of lines when it's efficient to process by lines
+* stream of field arrays when it's efficient to deal directly with fields
+* stream of lightweight objects when it's efficient to deal with objects
+
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
+
+h2. How to write a Wukong script
+
+Here's a script to count words in a text stream:
+
+<pre><code>
+    require 'wukong'
+    module WordCount
+      class Mapper < Wukong::Streamer::LineStreamer
+        # Emit each word in the line.
+        def process line
+          words = line.strip.split(/\W+/).reject(&:blank?)
+          words.each{|word| yield [word, 1] }
+        end
+      end
+      
+      class Reducer < Wukong::Streamer::ListReducer
+        def finalize
+          yield [ key, values.map(&:last).map(&:to_i).sum ]
+        end
+      end
+    end
+    
+    Wukong::Script.new(
+      WordCount::Mapper,
+      WordCount::Reducer
+      ).run # Execute the script
+</code></pre>
+
+The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the /key/, its count is the /value/.
+
+In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["examples":examples/]
+
+h3. Structured data stream
+
+You can also use structs to treat your dataset as a stream of objects:
+
+<pre><code>
+    require 'wukong'
+    require 'my_blog' #defines the blog models
+    # structs for our input objects
+    Tweet = Struct.new( :id, :created_at, :twitter_user_id,
+      :in_reply_to_user_id, :in_reply_to_status_id, :text )
+    TwitterUser  = Struct.new( :id, :username, :fullname,
+      :homepage, :location, :description )
+    module TwitBlog
+      class Mapper < Wukong::Streamer::RecordStreamer
+        # Watch for tweets by me
+        MY_USER_ID = 24601
+        #
+        # If this is a tweet is by me, convert it to a Post.
+        #
+        # If it is a tweet not by me, convert it to a Comment that
+        # will be paired with the correct Post.
+        #
+        # If it is a TwitterUser, convert it to a User record and
+        # a user_location record
+        #
+        def process record
+          case record
+          when TwitterUser
+            user     = MyBlog::User.new.merge(record) # grab the fields in common
+            user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
+            yield user
+            yield user_loc
+          when Tweet
+            if record.twitter_user_id == MY_USER_ID
+              post = MyBlog::Post.new.merge record
+              post.link = "http://twitter.com/statuses/show/#{record.id}"
+              post.body = record.text
+              post.title = record.text[0..65] + "..."
+              yield post
+            else
+              comment = MyBlog::Comment.new.merge record
+              comment.body    = record.text
+              comment.post_id = record.in_reply_to_status_id
+              yield comment
+            end
+          end
+        end
+      end
+    end
+    Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
+</code></pre>
+
+h3. More info
+
+There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.
+
+h2. Setup
+
+1. Allow Wukong to discover where his elephant friend lives: either
+
+  * set a $HADOOP_HOME environment variable,
+
+  * or create a file 'config/wukong-site.yaml' with a line that points to the top-level directory of your hadoop install:
+
+      :hadoop_home: /usr/local/share/hadoop
+
+2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
+
+
+h2. How to run a Wukong script
+
+To run your script using local files and no connection to a hadoop cluster,
+
+  your/script.rb --run=local path/to/input_files path/to/output_dir
+
+To run the command across a Hadoop cluster,
+
+  your/script.rb --run=hadoop path/to/input_files path/to/output_dir
+
+You can set the default in the config/wukong-site.yaml file, and then just use @--run@ instead of @--run=something@ --it will just use the default run mode.
+
+If you're running @--run=hadoop@, all file paths are HDFS paths. If you're running @--run=local@, all file paths are local paths.  (your/script path, of course, lives on the local filesystem).
+
+You can supply arbitrary command line arguments (they wind up as key-value pairs in the options path your mapper and reducer receive), and you can use the hadoop syntax to specify more than one input file:
+
+  ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
+    --run "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
+
+Note that all @--options@ must precede (in any order) all non-options.
+
+h2. How to test your scripts
+
+To run mapper on its own:
+
+  cat ./local/test/input.tsv | ./examples/word_count.rb --map | more
+
+or if your test data lies on the HDFS,
+
+  hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
+
+Next graduate to running @--run=local@ mode so you can inspect the reducer.
+
+
+h2. What's up with Wukong::AndPig?
+
+@Wukong::AndPig@ is a small library to more easily generate code for the
+"Pig":http://hadoop.apache.org/pig data analysis language.  See its
+"README":wukong/and_pig/README.textile for more.
+
+h2. Why is it called Wukong?
+
+Hadoop, as you may know, is "named after a stuffed elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by the "infochimps":http://infochimps.org team, we needed a simian analog.  A Monkey King who journeyed to the land of the Elephant seems to fit the bill:
+
+bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main character in the classical Chinese epic novel Journey to the West. In the novel, he accompanies the monk Xuanzang on the journey to retrieve Buddhist sutras from India.
+
+bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn (8,100 kg) Ruyi Jingu Bang with ease. He also has superb speed, traveling 108,000 li (54,000 kilometers) in one somersault. Sun knows 72 transformations, which allows him to transform into various animals and objects; he is, however, shown with slight problems transforming into other people, since he is unable to complete the transformation of his tail. He is a skilled fighter, capable of holding his own against the best generals of heaven. Each of his hairs possesses magical properties, and is capable of transforming into a clone of the Monkey King himself, or various weapons, animals, and other objects. He also knows various spells in order to command wind, part water, conjure protective circles against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
+
+The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
+
+h2. What tools does Wukong work with?
+
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  We're looking forward to being friends with "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord down the road.
+</p><h2>Dependencies</h2>
+<p>* Hadoop
+* active_support, YAML, JSON
+* Optional gems: trollop, addressable/uri, htmlentities</p>
+<h2>Install</h2>
+<p>
+1. Allow Wukong to discover where his elephant friend lives: either
+
+  * set a $HADOOP_HOME environment variable,
+
+  * or create a file 'config/wukong-site.yaml' with a line that points to the top-level directory of your hadoop install:
+
+      :hadoop_home: /usr/local/share/hadoop
+
+2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
+</p>
+<h2>License</h2>
+<p>
+                              Apache License
+                        Version 2.0, January 2004
+                     http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+   "License" shall mean the terms and conditions for use, reproduction,
+   and distribution as defined by Sections 1 through 9 of this document.
+
+   "Licensor" shall mean the copyright owner or entity authorized by
+   the copyright owner that is granting the License.
+
+   "Legal Entity" shall mean the union of the acting entity and all
+   other entities that control, are controlled by, or are under common
+   control with that entity. For the purposes of this definition,
+   "control" means (i) the power, direct or indirect, to cause the
+   direction or management of such entity, whether by contract or
+   otherwise, or (ii) ownership of fifty percent (50%) or more of the
+   outstanding shares, or (iii) beneficial ownership of such entity.
+
+   "You" (or "Your") shall mean an individual or Legal Entity
+   exercising permissions granted by this License.
+
+   "Source" form shall mean the preferred form for making modifications,
+   including but not limited to software source code, documentation
+   source, and configuration files.
+
+   "Object" form shall mean any form resulting from mechanical
+   transformation or translation of a Source form, including but
+   not limited to compiled object code, generated documentation,
+   and conversions to other media types.
+
+   "Work" shall mean the work of authorship, whether in Source or
+   Object form, made available under the License, as indicated by a
+   copyright notice that is included in or attached to the work
+   (an example is provided in the Appendix below).
+
+   "Derivative Works" shall mean any work, whether in Source or Object
+   form, that is based on (or derived from) the Work and for which the
+   editorial revisions, annotations, elaborations, or other modifications
+   represent, as a whole, an original work of authorship. For the purposes
+   of this License, Derivative Works shall not include works that remain
+   separable from, or merely link (or bind by name) to the interfaces of,
+   the Work and Derivative Works thereof.
+
+   "Contribution" shall mean any work of authorship, including
+   the original version of the Work and any modifications or additions
+   to that Work or Derivative Works thereof, that is intentionally
+   submitted to Licensor for inclusion in the Work by the copyright owner
+   or by an individual or Legal Entity authorized to submit on behalf of
+   the copyright owner. For the purposes of this definition, "submitted"
+   means any form of electronic, verbal, or written communication sent
+   to the Licensor or its representatives, including but not limited to
+   communication on electronic mailing lists, source code control systems,
+   and issue tracking systems that are managed by, or on behalf of, the
+   Licensor for the purpose of discussing and improving the Work, but
+   excluding communication that is conspicuously marked or otherwise
+   designated in writing by the copyright owner as "Not a Contribution."
+
+   "Contributor" shall mean Licensor and any individual or Legal Entity
+   on behalf of whom a Contribution has been received by Licensor and
+   subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   copyright license to reproduce, prepare Derivative Works of,
+   publicly display, publicly perform, sublicense, and distribute the
+   Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   (except as stated in this section) patent license to make, have made,
+   use, offer to sell, sell, import, and otherwise transfer the Work,
+   where such license applies only to those patent claims licensable
+   by such Contributor that are necessarily infringed by their
+   Contribution(s) alone or by combination of their Contribution(s)
+   with the Work to which such Contribution(s) was submitted. If You
+   institute patent litigation against any entity (including a
+   cross-claim or counterclaim in a lawsuit) alleging that the Work
+   or a Contribution incorporated within the Work constitutes direct
+   or contributory patent infringement, then any patent licenses
+   granted to You under this License for that Work shall terminate
+   as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the
+   Work or Derivative Works thereof in any medium, with or without
+   modifications, and in Source or Object form, provided that You
+   meet the following conditions:
+
+   (a) You must give any other recipients of the Work or
+       Derivative Works a copy of this License; and
+
+   (b) You must cause any modified files to carry prominent notices
+       stating that You changed the files; and
+
+   (c) You must retain, in the Source form of any Derivative Works
+       that You distribute, all copyright, patent, trademark, and
+       attribution notices from the Source form of the Work,
+       excluding those notices that do not pertain to any part of
+       the Derivative Works; and
+
+   (d) If the Work includes a "NOTICE" text file as part of its
+       distribution, then any Derivative Works that You distribute must
+       include a readable copy of the attribution notices contained
+       within such NOTICE file, excluding those notices that do not
+       pertain to any part of the Derivative Works, in at least one
+       of the following places: within a NOTICE text file distributed
+       as part of the Derivative Works; within the Source form or
+       documentation, if provided along with the Derivative Works; or,
+       within a display generated by the Derivative Works, if and
+       wherever such third-party notices normally appear. The contents
+       of the NOTICE file are for informational purposes only and
+       do not modify the License. You may add Your own attribution
+       notices within Derivative Works that You distribute, alongside
+       or as an addendum to the NOTICE text from the Work, provided
+       that such additional attribution notices cannot be construed
+       as modifying the License.
+
+   You may add Your own copyright statement to Your modifications and
+   may provide additional or different license terms and conditions
+   for use, reproduction, or distribution of Your modifications, or
+   for any such Derivative Works as a whole, provided Your use,
+   reproduction, and distribution of the Work otherwise complies with
+   the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise,
+   any Contribution intentionally submitted for inclusion in the Work
+   by You to the Licensor shall be under the terms and conditions of
+   this License, without any additional terms or conditions.
+   Notwithstanding the above, nothing herein shall supersede or modify
+   the terms of any separate license agreement you may have executed
+   with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade
+   names, trademarks, service marks, or product names of the Licensor,
+   except as required for reasonable and customary use in describing the
+   origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or
+   agreed to in writing, Licensor provides the Work (and each
+   Contributor provides its Contributions) on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+   implied, including, without limitation, any warranties or conditions
+   of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+   PARTICULAR PURPOSE. You are solely responsible for determining the
+   appropriateness of using or redistributing the Work and assume any
+   risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory,
+   whether in tort (including negligence), contract, or otherwise,
+   unless required by applicable law (such as deliberate and grossly
+   negligent acts) or agreed to in writing, shall any Contributor be
+   liable to You for damages, including any direct, indirect, special,
+   incidental, or consequential damages of any character arising as a
+   result of this License or out of the use or inability to use the
+   Work (including but not limited to damages for loss of goodwill,
+   work stoppage, computer failure or malfunction, or any and all
+   other commercial damages or losses), even if such Contributor
+   has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing
+   the Work or Derivative Works thereof, You may choose to offer,
+   and charge a fee for, acceptance of support, warranty, indemnity,
+   or other liability obligations and/or rights consistent with this
+   License. However, in accepting such obligations, You may act only
+   on Your own behalf and on Your sole responsibility, not on behalf
+   of any other Contributor, and only if You agree to indemnify,
+   defend, and hold each Contributor harmless for any liability
+   incurred by, or claims asserted against, such Contributor by reason
+   of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+APPENDIX: How to apply the Apache License to your work.
+
+   To apply the Apache License to your work, attach the following
+   boilerplate notice, with the fields enclosed by brackets "[]"
+   replaced with your own identifying information. (Don't include
+   the brackets!)  The text should be enclosed in the appropriate
+   comment syntax for the file format. We also recommend that a
+   file or class name and description of purpose be included on the
+   same "printed page" as the copyright notice for easier
+   identification within third-party archives.
+
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</p>
+<h2>Authors</h2>
+<p>Philip (flip) Kromer (flip@infochimps.org)<br/>Ben Woosley (ben.woosley@gmail.com)<br/><br/>      </p>
+<h2>Contact</h2>
+<p>Philip (flip) Kromer (flip@infochimps.org)</p>
+
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="http://github.com/mrflip/wukong/zipball/master">zip</a> or
+      <a href="http://github.com/mrflip/wukong/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/mrflip/wukong</pre>
+    </p>
+      
+    <div class="footer">
+      get the source code on GitHub : <a href="http://github.com/mrflip/wukong">mrflip/wukong</a>
+    </div>
+    
+  </div>
+
+  <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-3828631-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
