@@ -157,7 +157,7 @@ locality, and map/reduce's remarkable scaling comes from not assuming
 locality. In general, write your map/reduce scripts to use natural keys (the scre
 
 h1. More info
-    
+
 There are many useful examples (including an actually-useful version of this
 WordCount script) in examples/ directory.
 
