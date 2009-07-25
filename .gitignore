@@ -15,7 +15,6 @@ nohup.out
 /**/cache/*
 /**/db/*.sqlite3
 /**/*DONTVERSION*
-config/*private.yaml
 *.sw?
 coverage
 rdoc
@@ -27,3 +26,4 @@ pkg
 *.tmproj
 TODO (Autosaved).taskpaper
 twitter_pass.rb
+config/wukong-site.rb

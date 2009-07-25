@@ -1,5 +1,3 @@
-require 'active_support/core_ext/class/inheritable_attributes'
-require 'active_support/core_ext/duplicable'
 module Wukong
   module Datatypes
     #
@@ -8,9 +6,19 @@ module Wukong
     #
     Infinity = 1.0/0
 
+
+    #
+    # A simple enumerated class
+    #
+    #   class MyEnum < Enum
+    #     enumerates :firefox, :safari, :ie, :chrome, :other
+    #   end
+    #   MyEnum[1].to_s # => "safari"
+    #
+    #
     class Enum
       attr_accessor            :val
-      class_inheritable_reader :names
+      class_inheritable_accessor :names
       def initialize val
         self.val = val
       end
@@ -41,13 +49,13 @@ module Wukong
       # Use enumerates to set the class' names
       #
       #   class MyEnum < Enum
-      #     enumerates :one, :two, :three
+      #     enumerates :firefox, :safari, :ie, :chrome, :other
       #   end
-      #   MyEnum[1].to_s # => 'one'
+      #   MyEnum[1].to_s # => "safari"
       #
       #
       def self.enumerates *names
-        write_inheritable_attribute :names, names.map(&:to_s)
+        self.names = names.map(&:to_s)
       end
 
       def self.to_sql_str

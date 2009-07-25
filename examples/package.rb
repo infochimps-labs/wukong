@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/..'
-
+$: << ENV['WUKONG_PATH'] if ENV['WUKONG_PATH']
+require 'rubygems'
 require 'wukong'                       ; include Wukong
 
 #
