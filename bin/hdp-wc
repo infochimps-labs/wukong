@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+$: << File.dirname(__FILE__)+'/../lib'
+require 'wukong'
+NEWLINE_LENGTH = $/.length # KLUDGE
+
+#
+#
+#
+# !! The +words+ count comes out higher than that of +wc+ -- don't know
+# why. (It's close: a 10GB, 1M line dataset it showed 367833839 vs. 367713271)
+#
+class WcMapper < Wukong::Streamer::LineStreamer
+  attr_accessor :lines, :fields, :words, :chars, :bytes
+
+  def before_stream
+    self.lines, self.fields, self.words, self.chars, self.bytes = [0,0,0,0,0]
+  end
+
+  def process line
+    return unless line
+    self.lines  += 1
+    self.fields += 1 + line.count("\t")
+    self.words  += 1 + line.strip.scan(/\s+/).length unless line.blank?
+    self.chars  += line.chars.to_a.length + NEWLINE_LENGTH
+    self.bytes  += line.bytesize          + NEWLINE_LENGTH
+    $stderr.puts line if (line.chars.to_a.length != line.bytesize)
+  end
+
+  def after_stream
+    emit [lines, fields, words, chars,  bytes]
+  end
+end
+
+#
+#
+class WcReducer < Wukong::Streamer::Base
+  attr_accessor :lines, :fields, :words, :chars, :bytes
+
+  def before_stream
+    self.lines, self.fields, self.words, self.chars, self.bytes = [0,0,0,0,0]
+  end
+
+  def process m_lines, m_fields, m_words, m_chars, m_bytes
+    self.lines  += m_lines.to_i
+    self.fields += m_fields.to_i
+    self.words  += m_words.to_i
+    self.chars  += m_chars.to_i
+    self.bytes  += m_bytes.to_i
+  end
+
+  def after_stream
+    emit [lines, fields, words, chars,  bytes]
+  end
+end
+
+Wukong::Script.new(WcMapper, WcReducer, :reduce_tasks => 1).run
+
+# class FooScript < Wukong::Script
+#   def map_command
+#     '/usr/bin/wc'
+#   end
+#   def reduce_command
+#     '/bin/cat'
+#   end
+# end
+# FooScript.new(nil, nil, :reduce_tasks => 1).run
+#
+#  ruby -ne 'wc_v = `echo "#{$_.chomp}" | wc`; gr_v=($_.strip.empty? ? 0 : $_.strip.scan(/\s+/).length + 1 ) ; puts [wc_v.chomp, " ", gr_v, $_.chomp].join("\t")'
