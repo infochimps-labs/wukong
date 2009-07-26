@@ -44,7 +44,7 @@ Wukong handles the first and last steps through its StructStreamer and the stand
 
 In practice, all you need to know is that a StructStreamer gets a stream of objects to parse.  Here's an outline of its internals. The Wukong StructStreamer:
 
-#takes each flattened line:
+# takes each flattened line:
 
     "twitter_friends_request	http://.... 	20090701123456	...fields...	[{...}, {...}, ...json..., {...}]"
 
@@ -63,40 +63,47 @@ h4. Parsing
 
 Since each requests' contents are handled in a slightly (and brittle-ly) different manner, we just ask each request object to parse itself and feed out all the TwitterXXXX objects it generates.
 
-The TwitterXXXRequest objects consist of one or many hashes with (a raw user hash, and possibly its latest raw tweet hash) or (a raw tweet hash and its raw user hash).  The user hash might have only the fields for a TwitterPartialUser or it might have the fields for a full set of TwitterUser, TwitterUserProfile, TwitterUserStyle. 
+    class TwitterFollowersRequest
+        # ...
 
-Anyway we hide all that within a JsonUserWithTweet or JsonTweetWithUser (as appropriate) adapter pattern:
+        def parse &block
+          return unless healthy?
+          # for each raw user/tweet pair in the parsed JSON contents,
+          parsed_contents.each do |hsh|
+            json_obj = JsonUserWithTweet.new(hsh, 'scraped_at' => scraped_at)
+            next unless json_obj && json_obj.healthy?
+            # Extract user, tweet and relationship
+            yield AFollowsB.new(json_obj.user.id, self.twitter_user_id) if json_obj.user
+            json_obj.each(&block)
+          end
+        end
+        
+        # ...
+     end
 
-    class JsonUserWithTweet < JsonUserTweetPair
+The TwitterXXXRequest objects consist of one or many hashes with (a raw user hash, and possibly its latest raw tweet hash) or (a raw tweet hash and its raw user hash).  The user hash might have only the fields for a TwitterPartialUser or it might have the fields for a full set of TwitterUser, TwitterUserProfile, TwitterUserStyle. Besides which, the fields themselves need some massaging to be compatible with Wukong and other tools in our Map/Reduce toolkit (details explained in a later section).
+
+The fiddly little details are handled by a JsonUserWithTweet or JsonTweetWithUser (as appropriate) adapter pattern:
+
+    class JsonUserTweetPair
       def initialize raw, moreinfo
-        # clean up entries
+        # clean up fields in entries (flatten date, true/false -> 1/0, etc)
         fix_raw_user!
         fix_raw_tweet!
       end
-
-      # create TwitterUser object from raw info
-      def user
-      end
-
-      # create Tweet object from raw tweet hash
-      def tweet
-      end
-
-      # ... and so forth
 
       # generate all the contained TwitterXXX objects
       def each
         # 
       end
-      
-    protected
-      # Standardize the raw user hash's fields
-      def fix_raw_user!
-      end
 
-      # Standardize the raw tweet hash's fields
-      def fix_raw_tweet!
+      # create TwitterUser object from raw info
+      def user
       end
+      # create Tweet object from raw tweet hash
+      def tweet
+      end
+      # ... and so forth
     end
       
 I'll ignore the gory details; view the source if you're interested.
@@ -106,19 +113,20 @@ h4. Running the script
 
 Here, again, is the code (in full!) for the twitter_request_parser.rb script.
 
-        #
-        # Instantiate each incoming request.
-        # Stream out the contained classes it generates.
-        #
-        class TwitterRequestParser < Wukong::Streamer::StructStreamer
-          def process request
-            request.parse do |obj|
-              yield obj
-            end
-          end
+    #
+    # Instantiate each incoming request.
+    # Stream out the contained classes it generates.
+    #
+    class TwitterRequestParser < Wukong::Streamer::StructStreamer
+      def process request
+        request.parse do |obj|
+          yield obj
         end
+      end
+    end
 
-        # This makes the script go.
-        Wukong::Script.new(TwitterRequestParser, nil).run
+    # This makes the script go.
+    Wukong::Script.new(TwitterRequestParser, nil).run
 
-That last line is the runner: it makes this a Wukong script with a map phase only
+That last line is the runner: it makes this a Wukong script with a map phase only.  (We'll add in a reducer later on.)
+
