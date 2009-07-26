@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+"/.."
+$: << ENV['WUKONG_PATH'] if ENV['WUKONG_PATH']
 require 'wukong'
 
 src_dir, dest_dir = ARGV[0..1]
