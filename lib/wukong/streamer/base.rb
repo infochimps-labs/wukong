@@ -17,6 +17,7 @@ module Wukong
       # Pass each record to +#process+
       #
       def stream
+        before_stream
         $stdin.each do |line|
           record = recordize(line.chomp)
           next unless record
@@ -24,6 +25,15 @@ module Wukong
             emit output_record
           end
         end
+        after_stream
+      end
+
+      # Called exactly once, before streaming begins
+      def before_stream
+      end
+
+      # Called exactly once, after streaming completes
+      def after_stream
       end
 
       #
@@ -33,6 +43,15 @@ module Wukong
         line.split("\t")
       end
 
+      #
+      # Serializes the record to output.
+      #
+      # Emits a single line of tab-separated fields created by calling #to_flat
+      # on the record and joining with "\t".
+      #
+      # Does no escaping or processing of the record -- that's to_flat's job, or
+      # yours if you override this method.
+      #
       def emit record
         puts record.to_flat.join("\t")
       end
