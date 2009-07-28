@@ -61,7 +61,7 @@ module RankAndBinAttrs
     # and BINNABLE_ATTRS hashes, above, to dump a more parsimonious
     # representation.
     #
-    def process thing, &block
+    def process thing, *args, &block
       attr_abbrs = BINNABLE_ATTRS[thing.class.resource_name]
       return unless attr_abbrs
       attr_abbrs.each do |attr, abbr|

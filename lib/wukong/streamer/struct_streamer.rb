@@ -13,10 +13,11 @@ module Wukong
       # on that line to instantiate the object to process.
       #
       def self.recordize rsrc, *fields
+        klass_name, suffix = rsrc.split('-', 2)
         klass = Wukong.class_from_resource(rsrc) or return
         # instantiate the class using the remaining fields on that line
         begin
-          [ klass.new(*fields) ]
+          [ klass.new(*fields), suffix ]
         rescue ArgumentError => e
           warn "Couldn't instantiate: #{e} (#{[rsrc, fields].inspect})"
           return

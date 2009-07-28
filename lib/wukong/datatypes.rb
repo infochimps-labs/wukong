@@ -10,7 +10,7 @@ module Wukong
     rsrc = rsrc.to_s
     return RESOURCE_CLASS_MAP[rsrc] if RESOURCE_CLASS_MAP.include?(rsrc)
     # kill off all but the non-modularized class name and camelize
-    klass_name = rsrc.gsub(/-.*$/, '').gsub(/(?:^|_)(.)/){ $1.upcase }
+    klass_name = klass_name.gsub(/(?:^|_)(.)/){ $1.upcase }
     begin
       # convert it to class name
       klass = klass_name.constantize
