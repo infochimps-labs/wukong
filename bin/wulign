@@ -99,7 +99,7 @@ end
 # simply reformatted according to the consensus of the initial
 # FORMAT_GUESSING_LINES.
 #
-FORMAT_GUESSING_LINES = 1000
+FORMAT_GUESSING_LINES = 500
 # widest column to set
 MAX_MAX_WIDTH = 70
 
@@ -170,7 +170,8 @@ rows.each do |row|
   # note -- strips trailing columns
   puts row.zip(format).map{|c,f| f.call(c) }.join("\t")
 end
-$stdin.readlines.each do |row|
+$stdin.each do |line|
+  cols = line.chomp.split("\t").map{|s| s.strip }
   # note -- strips trailing columns
-  puts row.zip(format).map{|c,f| f.call(c) }.join("\t")
+  puts cols.zip(format).map{|c,f| f.call(c) rescue c }.join("\t")
 end
