@@ -2,7 +2,7 @@ require 'time' # ain't it always that way
 module Wukong
   module Dfs
     def self.list_files dfs_path
-      $stderr.puts "listing #{dfs_path}"
+      Wukong.logger.info{ "DFS: listing #{dfs_path}" }
       listing = `hadoop dfs -ls #{dfs_path}`.split("\n").reject{|ls_line| ls_line =~ /Found \d+ items/i}
       listing.map{|ls_line| HFile.new_from_ls(ls_line)}
     end
@@ -52,6 +52,29 @@ module Wukong
       def to_s
         to_a.join("\t")
       end
+
+      #
+      # These will be very slow.
+      # If some kind soul will integrate JRuby callouts the bards shall
+      # celebrate your name evermore.
+      #
+
+      # rename the file on the HDFS
+      def mv new_filename
+        self.class.run_dfs_command :mv, path, new_filename
+      end
+
+      def self.mkdir dirname
+        run_dfs_command :mkdir, dirname
+      end
+      def self.mkdir_p(*args) self.mkdir *args ; end # HDFS is always -p
+
+      def self.run_dfs_command *args
+        cmd = 'hadoop dfs -'+ args.flatten.compact.join(" ")
+        Wukong.logger.debug{ "DFS: Running #{cmd}" }
+        Wukong.logger.info{ `#{cmd} 2>&1`.gsub(/[\r\n\t]+/, " ") }
+      end
+
     end
   end
 end
