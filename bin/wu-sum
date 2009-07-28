@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'wukong'
+require 'wukong/streamer/summing_reducer'
+
+#
+#
+class Summer < Wukong::Streamer::SummingReducer
+  attr_accessor :sample_line
+
+  def initialize *args
+    self.summing_elements = [0]
+    super *args
+  end
+
+  def start! *args
+    self.sample_line = args
+    super *args
+  end
+
+  def get_key *fields
+    fields.values_at(2,3)
+  end
+
+  def finalize
+    summing_elements.each{|idx| sample_line[idx] = sums[idx]}
+    yield sample_line
+  end
+end
+
+Wukong::Script.new(Summer, nil).run
