@@ -2,10 +2,10 @@
 
 if [ "$1" == "-r" ] ; then
     shift
-    flag=rmr
+    action=rmr
 else
-    flag=rm
+    action=rm
 fi
-echo hadoop dfs -$flag "$@"
+echo hadoop dfs -$action "$@"
 # read -p "Hit ctrl-C to abort or enter to do this...."
-hadoop dfs -$flag "$@"
+hadoop dfs -$action "$@"

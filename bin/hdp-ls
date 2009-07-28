@@ -1,3 +1,10 @@
 #!/usr/bin/env bash
 
-hadoop dfs -ls "$@"
+if [ "$1" == "-r" ] || [ "$1" == "-R" ] ; then
+    shift
+    action=lsr
+else
+    action=ls
+fi
+
+hadoop dfs -$action "$@"
