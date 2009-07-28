@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-$: << ENV['WUKONG_PATH'] if ENV['WUKONG_PATH']
 require 'wukong'
 
 src_dir, dest_dir = ARGV[0..1]
