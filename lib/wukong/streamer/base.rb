@@ -40,7 +40,7 @@ module Wukong
       # Default recordizer: returns array of fields by splitting at tabs
       #
       def recordize line
-        line.split("\t")
+        line.split("\t") rescue nil
       end
 
       #

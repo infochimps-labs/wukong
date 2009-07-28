@@ -14,7 +14,7 @@ module Wukong
       #
       def self.recordize rsrc, *fields
         klass_name, suffix = rsrc.split('-', 2)
-        klass = Wukong.class_from_resource(rsrc) or return
+        klass = Wukong.class_from_resource(klass_name) or return
         # instantiate the class using the remaining fields on that line
         begin
           [ klass.new(*fields), suffix ]

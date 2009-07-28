@@ -9,6 +9,8 @@ fields=${1-2} 			; shift
 
 if [ "$reduce_script" == "" ] ; then echo "$0 input_file output_file [sort_fields] [mapper] [reducer] [args]" ; exit ; fi
 
+HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
+
 ${HADOOP_HOME}/bin/hadoop \
      jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		\
     -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			\
