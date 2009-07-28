@@ -31,3 +31,12 @@ h3. Setting up your cluster:
 ** "Mapreduce Algorithms":http://www.cloudera.com/hadoop-training-mapreduce-algorithms
 ** "Exercise: Getting started with Hadoop":http://www.cloudera.com/hadoop-training-exercise-getting-started-with-hadoop
 ** "Exercise: Writing mapreduce programs":http://www.cloudera.com/hadoop-training-exercise-writing-mapreduce-programs
+
+
+
+
+---------------------------------------------------------------------------
+
+* "Hadoop Wiki: Hadoop Streaming":http://wiki.apache.org/hadoop/HadoopStreaming
+* "Hadoop Docs: Hadoop Streaming":http://hadoop.apache.org/common/docs/current/streaming.html
+

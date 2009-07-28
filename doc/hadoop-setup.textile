@@ -1,0 +1,21 @@
+
+h2. Hadoop on EC2
+
+* http://www.cloudera.com/hadoop-ec2
+* http://www.cloudera.com/hadoop-ec2-ebs-beta
+
+
+h4. Setup NFS within the cluster
+
+* 
+* http://nfs.sourceforge.net/nfs-howto/ar01s03.html
+
+
+
+h4. Tools for EC2 and S3 Management
+
+* http://s3sync.net/wiki
+* http://jets3t.s3.amazonaws.com/applications/applications.html#uploader
+* "ElasticFox"
+* "S3Fox (S3 Organizer)":
+* "FoxyProxy":
