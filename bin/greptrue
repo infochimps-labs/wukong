@@ -1,0 +1,6 @@
+# runs grep but always returns a true exit status. (Otherwise hadoop vomits)
+grep "$@"
+true
+# runs grep but always returns a true exit status. (Otherwise hadoop vomits)
+egrep "$@"
+true
