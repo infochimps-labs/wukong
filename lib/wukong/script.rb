@@ -154,7 +154,7 @@ module Wukong
       case
       when mapper_klass
         "#{this_script_filename} --map " + options[:all_args]
-      else Wukong::CONFIG[:default_mapper] end
+      else options[:map_command] || Wukong::CONFIG[:default_mapper] end
     end
 
     #
