@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+uniq -c | ruby -ne 'puts $_.chomp.gsub(/^\s+(\d+)\s+/){ "%15s\t" % $1 }'
