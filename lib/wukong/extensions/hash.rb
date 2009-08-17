@@ -41,7 +41,7 @@ class Hash
 
   # lambda for recursive merges
   Hash::DEEP_MERGER = proc do |key,v1,v2|
-    (v1.respond_to?(:merge) && v2.respond_to?(:merge)) ? v1.merge(v2, &Hash::DEEP_MERGER) : v2
+    (v1.respond_to?(:merge) && v2.respond_to?(:merge)) ? v1.merge(v2.compact, &Hash::DEEP_MERGER) : (v2.nil? ? v1 : v2)
   end
 
   #
@@ -54,6 +54,15 @@ class Hash
   #     => {:subhash=>{1=>:val_from_y, 222=>:only_in_x, 333=>:only_in_x, 999=>:only_in_y}, :scalar=>:scalar_from_y}
   #     y.deep_merge x
   #     => {:subhash=>{1=>:val_from_x, 222=>:only_in_x, 333=>:only_in_x, 999=>:only_in_y}, :scalar=>:scalar_from_x}
+  #
+  # Nil values always lose.
+  #
+  #     x = {:subhash=>{:nil_in_x=>nil, 1=>:val1,}, :nil_in_x=>nil}
+  #     y = {:subhash=>{:nil_in_x=>5},              :nil_in_x=>5}
+  #     y.deep_merge x
+  #     => {:subhash=>{1=>:val1, :nil_in_x=>5}, :nil_in_x=>5}
+  #     x.deep_merge y
+  #     => {:subhash=>{1=>:val1, :nil_in_x=>5}, :nil_in_x=>5}
   #
   def deep_merge hsh2
     merge hsh2, &Hash::DEEP_MERGER
