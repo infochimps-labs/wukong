@@ -66,6 +66,21 @@ module Wukong
     end
     alias_method :update, :merge!
 
+    #
+    # Merge hashes recursively.
+    # Nothing special happens to array values
+    #
+    #     x = { :subhash => { 1 => :val_from_x, 222 => :only_in_x, 333 => :only_in_x }, :scalar => :scalar_from_x}
+    #     y = { :subhash => { 1 => :val_from_y, 999 => :only_in_y },                    :scalar => :scalar_from_y }
+    #     x.deep_merge y
+    #     => {:subhash=>{1=>:val_from_y, 222=>:only_in_x, 333=>:only_in_x, 999=>:only_in_y}, :scalar=>:scalar_from_y}
+    #     y.deep_merge x
+    #     => {:subhash=>{1=>:val_from_x, 222=>:only_in_x, 333=>:only_in_x, 999=>:only_in_y}, :scalar=>:scalar_from_x}
+    #
+    def deep_merge hsh2
+      merge hsh2, &Hash::DEEP_MERGER
+    end
+
     module ClassMethods
       #
       # Instantiate an instance of the struct from a hash

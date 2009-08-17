@@ -39,6 +39,52 @@ class Hash
     hash
   end
 
+  # lambda for recursive merges
+  Hash::DEEP_MERGER = proc do |key,v1,v2|
+    (v1.respond_to?(:merge) && v2.respond_to?(:merge)) ? v1.merge(v2, &Hash::DEEP_MERGER) : v2
+  end
+
+  #
+  # Merge hashes recursively.
+  # Nothing special happens to array values
+  #
+  #     x = { :subhash => { 1 => :val_from_x, 222 => :only_in_x, 333 => :only_in_x }, :scalar => :scalar_from_x}
+  #     y = { :subhash => { 1 => :val_from_y, 999 => :only_in_y },                    :scalar => :scalar_from_y }
+  #     x.deep_merge y
+  #     => {:subhash=>{1=>:val_from_y, 222=>:only_in_x, 333=>:only_in_x, 999=>:only_in_y}, :scalar=>:scalar_from_y}
+  #     y.deep_merge x
+  #     => {:subhash=>{1=>:val_from_x, 222=>:only_in_x, 333=>:only_in_x, 999=>:only_in_y}, :scalar=>:scalar_from_x}
+  #
+  def deep_merge hsh2
+    merge hsh2, &Hash::DEEP_MERGER
+  end
+
+  def deep_merge! hsh2
+    merge! hsh2, &Hash::DEEP_MERGER
+  end
+
+
+  #
+  # Treat hash as tree of hashes:
+  #
+  #     x = { 1 => :val, :subhash => { 1 => :val1 } }
+  #     x.deep_set(:subhash, 3, 4)
+  #     # => { 1 => :val, :subhash => { 1 => :val1,   3 => 4 } }
+  #     x.deep_set(:subhash, 1, :newval)
+  #     # => { 1 => :val, :subhash => { 1 => :newval, 3 => 4 } }
+  #
+  #
+  def deep_set *args
+    hsh = self
+    head_keys = args[0..-3]
+    last_key  = args[-2]
+    val       = args[-1]
+    # grab last subtree (building out if necessary)
+    head_keys.each{|key| hsh = (hsh[key] ||= {}) }
+    # set leaf value
+    hsh[last_key] = val
+  end
+
   # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
   def reverse_merge(other_hash)
     other_hash.merge(self)
