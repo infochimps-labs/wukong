@@ -24,6 +24,14 @@ module Wukong
       self.send("#{key}=", val)
     end
 
+    def to_a
+      values_of(*members)
+    end
+
+    def to_flat
+      to_a.map(&:to_flat).flatten
+    end
+
     def self.included base
       base.class_eval do
         extend ClassMethods

@@ -93,6 +93,13 @@ module Wukong
         keys = keys.map(&:to_sym) if has_symbol_keys
         self.new *hsh.values_of(*keys)
       end
+      #
+      # The last portion of the class in underscored form
+      # note memoization
+      #
+      def self.resource_name
+        @resource_name ||= self.to_s.gsub(%r{.*::}, '').underscore.to_sym
+      end
     end
 
     def self.included base

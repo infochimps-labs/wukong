@@ -30,6 +30,22 @@ Struct.class_eval do
   end
 end
 
+module HashLike
+  #
+  # Flatten for packing as resource name followed by all fields
+  #
+  def to_flat include_key=true
+    if include_key.is_a? Proc
+      sort_key = include_key.call(self)
+    elsif include_key && respond_to?(:key)
+      sort_key = [self.class.resource_name, key].flatten.join("-")
+    else
+      sort_key = self.class.resource_name
+    end
+    [sort_key, *to_a] # .map(&:to_flat).flatten
+  end
+end
+
 Hash.class_eval do
   def to_flat
     map do |k, v|
