@@ -180,3 +180,10 @@ class Class
     class_inheritable_writer(*syms)
   end
 end
+
+
+class Fixnum
+  def try_dup
+    self
+  end
+end
