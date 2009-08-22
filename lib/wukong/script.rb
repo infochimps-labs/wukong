@@ -1,6 +1,7 @@
 require 'pathname'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
+require 'rbconfig'
 module Wukong
 
   # == How to run a Wukong script
@@ -147,13 +148,21 @@ module Wukong
       Pathname.new($0).realpath
     end
 
+    def ruby_interpreter_path
+      Pathname.new(
+                   File.join(Config::CONFIG["bindir"],
+                             Config::CONFIG["RUBY_INSTALL_NAME"]+
+                             Config::CONFIG["EXEEXT"])
+                   ).realpath
+    end
+
     #
     # by default, call this script in --map mode
     #
     def map_command
       case
       when mapper_klass
-        "#{this_script_filename} --map " + options[:all_args]
+        "#{ruby_interpreter_path} #{this_script_filename} --map " + options[:all_args]
       else options[:map_command] || Wukong::CONFIG[:default_mapper] end
     end
 
@@ -164,7 +173,7 @@ module Wukong
     def reduce_command
       case
       when reducer_klass
-        "#{this_script_filename} --reduce " + options[:all_args]
+        "#{ruby_interpreter_path} #{this_script_filename} --reduce " + options[:all_args]
       else options[:reduce_command] || Wukong::CONFIG[:default_reducer] end
     end
 
