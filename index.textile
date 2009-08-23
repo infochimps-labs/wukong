@@ -1,0 +1,46 @@
+---
+layout: default
+title:  mrflip.github.com/wukong
+collapse: false
+---
+{% include gemheader.html %}
+
+h1(gemheader). wukong %(small):: mrflip.github.com%
+
+
+p(description). {{ site.description }}
+
+"Edamame":http://bit.ly/edamame combines the "Beanstalk priority queue":http://bit.ly/beanstalkd with a "Tokyo Tyrant database"::http://bit.ly/ttyrant and "God monitoring":http://bit.ly/godmonitor to produce a persistent distributed priority job queue system.
+
+* "Description":#description
+* "Installation instructions":INSTALL.html
+* "Usage notes":usage.html
+* "Alternatives to Edamame, Beanstalk, Tokyo Tyrant or God":alternatives.html
+* "License":LICENSE.html
+
+<div class="toggle">
+h2(boundary#description). Description
+
+p(heavy). Like beanstalk, edamame:
+* is *fast*, scalable, lightweight and distributed
+* is a job queue, not just a messaging queue: it offers *priority job scheduling* (not just FIFO) and *reliable scheduling* (jobs that time out are re-assigned)
+* supports multiple queues ('tubes')
+
+p(heavy). Additionally, its lightweight backing store and monitoring scripts mean edamame:
+* is *persistent* and recoverable
+* allows you to query and enumerate jobs
+* allows named jobs
+* provides reasonably-good availability.
+
+p(heavy). Edamame includes a few nifty toys:
+* Scripts for "God":http://bit.ly/godmonitor to monitor and restart the daemons
+* Command-line management scripts to load. enumerate, empty, and show stats for the db+queue
+* The start of a lightweight web frontend in Sinatra.
+
+h3(boundary#authors). Authors
+
+Philip (flip) Kromer (flip@infochimps.org) 
+</div>
+
+
+{% include news.html %}

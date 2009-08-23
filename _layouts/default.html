@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>{{ site.title }} - {{ page.title }}</title>
+   <meta name="author"      content="mrflip" />
+   <meta name="viewport"    content="width=940" />
+   <meta name="keywords"    content="{{ page.keywords | join:"," }},{{ site.keywords | join:"," }},ruby,gem"/>
+   <meta name="description" content="{{ site.description }}"/>
+   <!-- <link rel="alternate" type="application/atom+xml" href="http://feeds.feedburner.com/{{ site.gemuser }}-github-com/{{ site.gemname }}" title="{{ site.gemuser }}/{{ site.gemname }} news" />  -->
+   <link rel="alternate" type="application/atom+xml" href="atom.xml" title="{{ site.gemuser }}/{{ site.gemname }} news" />
+   <link rel="shortcut icon"              href="/favicon.ico" />
+   <!--[if IE]>
+   <link rel="stylesheet" type="text/css" href="/css/ie.css"     media="screen, projection" />
+   <![endif]-->
+   <link rel="stylesheet" type="text/css" href="/css/print.css"  media="print" />
+   <link rel="stylesheet" type="text/css" href="/css/main.css"   media="screen, projection" />
+   <link rel="stylesheet" type="text/css" href="/css/syntax.css" />
+   <link rel="stylesheet" type="text/css" href="gem.css"   media="screen, projection" />
+</head>
+<body>
+
+<div id="container">
+  <div id="header">
+    <a href="/">{{ site.gemuser }}/{{ site.gemname }}</a>
+    &middot; <a class="extra" href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}">source code</a>
+    {% for segment in site.header_files %}
+    &middot; <a class="extra" href="{{ segment }}{{ site.header_ref }}">{{ segment | downcase }}</a> 
+    {% endfor %}
+  </div> 
+
+  <div class="download"><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/zipball/master"><img border="0" width="72" src="/images/zip.png"></a><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/tarball/master"><img border="0" width="72" src="/images/tar.png"></a><a href="http://gems.github.com/gems/{{ site.gemuser }}-{{ site.gemname }}-{{ site.gemversion }}.gem"><img border="0" width="72" src="/images/gem.png"></a></div>
+  {{ content | textilize }}
+
+  <br class="clear">
+      
+  <div id="footer">
+    <div class="contact list aligned">
+      <p>
+      <a href="http://infochimps.org/"   >infochimps.org</a>            | find, share or sell any dataset in the world<br />
+      <a href="http://github.com/mrflip/">github/mrflip</a>         | mrflip's code on github.com <br />
+      </p>
+    </div>
+    <div class="contact list aligned">
+      <p>
+      <a href="http://github.com/mrflip/wukong"       >wukong</a>       | hadoop made easy          <br />
+      <a href="http://github.com/mrflip/edamame"      >edamame</a>      | fast persistent job queue <br />
+      <a href="http://github.com/mrflip/monkeyshines" >monkeyshines</a> | api scraper               <br />
+      <a href="http://github.com/mrflip/wuclan"       >wuclan</a>       | social media scraper
+      </p>
+    </div>
+    <div class="rss">
+      <!-- http://feeds.feedburner.com/{{ site.gemuser }}-github-com-{{ site.gemname }} -->
+      <!-- <a href="http://feeds.feedburner.com/{{ site.gemuser }}-github-com/{{ site.gemname }}" title="{{ site.gemuser }}/{{ site.gemname }} news" /> -->
+      <a href="atom.xml"><img src="/images/rss.png" alt="Subscribe to RSS Feed" /></a> 
+    </div>
+    <br class="clear">
+    <div class="credits">
+      {{ site.credits }}
+      <p >Thanks to <a href="http://github.com/mojombo/">github.com/mojombo</a> for the swanky HTML layout.</p>
+    </div>
+  </div>
+</div>
+
+<a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/images/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"      type="text/javascript" ></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js" type="text/javascript" ></script>
+<script src="/javascripts/application.js"                                          type="text/javascript" ></script>
+
+{% if page.collapse %}<script type="text/javascript">$(".toggle h2").accordion(); </script>{% endif %}
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-3828631-3");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+---
+permalink:      none
+markdown:       rdiscount
+pygments:       true
+auto:           true
+server:         true
+server_port:    4000
+maruku:
+  use_tex:      false
+  use_divs:     false
+  png_dir:      images/latex
+  png_url:      /images/latex
+
+header_ref:     '.html'    # .html for subdirs, / for main.
+
+gemuser:        mrflip
+gemname:        wukong
+gemversion:     0.1.1
+title:          mrflip.github.com/wukong
+
+keywords:       [ 'wukong,hadoop,ruby,mrflip,infochimps,map,reduce,streaming,dumbo,happy,mrtoolkit,script,simple' ]
+description:    "Wukong: Hadoop made so easy a Chimpanzee could run it."
+header_files:
+  - INSTALL
+  - usage
+  - LICENSE
+
+credits:
+  <p>Wukong image courtesy
+  <a href="http://www.curtbusse.com/okavango/page1/oka1.html">Curt Busse</a> under
+  an <a href="http://www.curtbusse.com/copyright.html">open license</a>.
+  It's a Chacma Baboon from the Okavango site. Make sure to read the
+  <a href="http://www.curtbusse.com/okavango/page1/oka1.html#note3">story at the bottom of that page</a>.
+  </p>
+
