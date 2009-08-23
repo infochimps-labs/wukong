@@ -3,7 +3,6 @@ layout: default
 title:  mrflip.github.com/wukong
 collapse: false
 ---
-{% include gemheader.html %}
 
 h1(gemheader). wukong %(small):: mrflip.github.com%
 

@@ -1,0 +1,18 @@
+---
+layout: default
+title:  edamame news
+collapse: true
+---
+<h1 class="gemheader">{{ site.gemname }}<span class="small">:: news</span></h1>
+
+<div id="news">
+  {% for post in site.posts %}
+  <div class="toggle" id="news-{{ post.id }}">
+    
+    <h2><a href="{{ post.url }}">{{ post.title }}</a><span class="small"> &raquo; {{ post.date | date_to_string }}</span></h2>
+    
+    {{ post.content }}
+    
+  </div>
+  {% endfor %}
+</div>
