@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # runs grep but always returns a true exit status. (Otherwise hadoop vomits)
 grep "$@"
 true

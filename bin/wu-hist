@@ -1,2 +1,3 @@
+#!/usr/bin/env bash
 
 sort | uniq -c | sort -rn | ruby -ne 'puts $_.chomp.gsub(/^\s+(\d+)\s+/){ $1+"\t" }'
