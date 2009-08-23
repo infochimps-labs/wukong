@@ -26,8 +26,7 @@ Gem::Specification.new do |s|
      "README.textile"
   ]
   s.files = [
-    "config/private.yaml",
-     "doc/README-wulign.textile",
+    "doc/README-wulign.textile",
      "doc/README-wutils.textile",
      "doc/UsingWukong-part1.textile",
      "doc/UsingWukong-part2.textile",

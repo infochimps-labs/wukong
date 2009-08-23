@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'jeweler'
 Jeweler::Tasks.new do |s|
   s.name = "wukong"
@@ -15,5 +16,5 @@ Jeweler::Tasks.new do |s|
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
 DESC
   s.authors = ["Philip (flip) Kromer"]
-  s.files =  FileList["\w*", "{config,doc,examples,spec,lib}/**/*"]
+  s.files =  FileList["\w*", "{config,doc,examples,spec,lib}/**/*"].reject{|file| file.to_s =~ %r{config/private\.yaml} }
 end
