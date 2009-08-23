@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<h1 class="gemheader">{{ site.gemname }}<span class="small">:: news</span></h1>
+<h1 class="gemheader">{% if site.gemname %}{{ site.gemname }}{% else %}mrflip{% endif %}<span class="small">:: news</span></h1>
 
 <h1>{{ page.title }}</h1>
 
