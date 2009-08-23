@@ -12,6 +12,7 @@ maruku:
   png_url:      /images/latex
 
 header_ref:     '.html'    # .html for subdirs, / for main.
+assets_path:    '/'        # http://github.mrflip.com
 
 gemuser:        mrflip
 gemname:        wukong
