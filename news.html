@@ -3,7 +3,7 @@ layout: default
 title:  edamame news
 collapse: true
 ---
-<h1 class="gemheader">{{ site.gemname }}<span class="small">:: news</span></h1>
+<h1 class="gemheader">{% if site.gemname %}{{ site.gemname }}{% else %}mrflip{% endif %}<span class="small">:: news</span></h1>
 
 <div id="news">
   {% for t in site.posts %} {% assign has_posts = true %}{% endfor %}{% if has_posts %}
