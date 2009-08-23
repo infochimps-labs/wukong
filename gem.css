@@ -16,6 +16,8 @@ h1.gemheader {
   background:   url('/images/wukong.png') no-repeat 0px 0px ;
   }
 
+pre, code { border-color:     #70e0d0 ; }
+pre, code { background-color: #88f0e7; }
 
 /* #container   {  background-color: #efe ; }
 h1.gemheader {  background-color: #fee ; } */
