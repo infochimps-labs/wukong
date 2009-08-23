@@ -1,4 +1,6 @@
+
   <div class="toggle" id="news">
+  {% for t in site.posts %} {% assign has_posts = true %}{% endfor %}{% if has_posts %}
   <h2>{{ site.gemname | capitalize }} News</h2>
   <ul class="posts">
     Posts go here
@@ -6,4 +8,5 @@
       <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
   </ul>
+  {% endif %}
   </div>
