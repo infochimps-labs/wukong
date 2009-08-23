@@ -1,5 +1,5 @@
 ---
-permalink:      none
+permalink:      ":year-:month/:title.html"
 markdown:       rdiscount
 pygments:       true
 auto:           true
@@ -24,6 +24,7 @@ description:    "Wukong: Hadoop made so easy a Chimpanzee could run it."
 header_files:
   - INSTALL
   - usage
+  - news
   - LICENSE
 
 credits:

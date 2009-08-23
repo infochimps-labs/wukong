@@ -111,7 +111,7 @@ h2. More info
 
 There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.
 
-h3(boundary#authors). Authors
+h3. Authors
 
 Philip (flip) Kromer (flip@infochimps.org)
 

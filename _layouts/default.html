@@ -32,7 +32,10 @@
     {% endfor %}
   </div> 
 
+  {% if site.gemname %}
   <div class="download"><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/zipball/master"><img border="0" width="72" src="/images/zip.png"></a><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/tarball/master"><img border="0" width="72" src="/images/tar.png"></a><a href="http://gems.github.com/gems/{{ site.gemuser }}-{{ site.gemname }}-{{ site.gemversion }}.gem"><img border="0" width="72" src="/images/gem.png"></a></div>
+  {% endif %}
+  
   {{ content | textilize }}
 
   <br class="clear">

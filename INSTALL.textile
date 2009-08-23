@@ -8,7 +8,7 @@ h1(gemheader). {{ site.gemname }} %(small):: install%
 
 <div class="toggle">
 
-h2(boundary). Get the code
+h2. Get the code
 
 This code is available as a gem:
 
@@ -22,7 +22,7 @@ pre. $ git clone git://github.com/mrflip/{{ site.gemname }}
 
 </div><div class="toggle">
 
-h2(boundary). Get the Dependencies
+h2. Get the Dependencies
 
 * Hadoop, pig
 * extlib, YAML, JSON
