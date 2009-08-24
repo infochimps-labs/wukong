@@ -1,6 +1,3 @@
-require 'rubygems'
-require 'active_support'
-
 String.class_eval do
   #
   # Generate relation name from a handle

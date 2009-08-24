@@ -1,5 +1,3 @@
-require 'rubygems'
-require 'extlib'
 module Wukong
   #
   # Export model's structure for other data frameworks:
