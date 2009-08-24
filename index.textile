@@ -4,7 +4,7 @@ title:  mrflip.github.com/wukong
 collapse: false
 ---
 
-h1(gemheader). wukong %(small):: mrflip.github.com%
+h1(gemheader). wukong %(small):: hadoop made easy%
 
 
 p(description). {{ site.description }}
