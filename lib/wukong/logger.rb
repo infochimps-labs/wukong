@@ -3,17 +3,23 @@ module Wukong
   #
   # Set your own at any time with
   #   Wukong.logger = YourAwesomeLogger.new(...)
-  # If you don't have log4r installed call
-  #   Wukong.logger = Wukong.default_ruby_logger
+  # If you have log4r installed you can use
+  #   Wukong.logger = Wukong.default_log4r_logger
+  #
+  # If Wukong.logger is too much typing for you,
+  # use the Log constant
   #
   # Default format:
   #     I, [2009-07-26T19:58:46-05:00 #12332]: Up to 2000 char message
   #
   def self.logger
-    @logger ||= default_log4r_logger
+    @logger ||= default_ruby_logger
   end
 
-
+  #
+  # Log4r logger, set up to produce tab-delimited (and thus, wukong|hadoop
+  # friendly) output lines
+  #
   def self.default_log4r_logger logger_handle='wukong'
     require 'log4r'
     lgr       = Log4r::Logger.new logger_handle
@@ -38,3 +44,10 @@ module Wukong
     @logger = logger
   end
 end
+
+#
+# A convenient logger.
+#
+# Define NO_WUKONG_LOG (or define Log yourself) to prevent its creation
+#
+Log = Wukong.logger unless (defined?(Log) || defined?(NO_WUKONG_LOG))

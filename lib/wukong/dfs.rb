@@ -2,7 +2,7 @@ require 'time' # ain't it always that way
 module Wukong
   module Dfs
     def self.list_files dfs_path
-      Wukong.logger.info{ "DFS: listing #{dfs_path}" }
+      Log.info{ "DFS: listing #{dfs_path}" }
       listing = `hadoop dfs -ls #{dfs_path}`.split("\n").reject{|ls_line| ls_line =~ /Found \d+ items/i}
       listing.map{|ls_line| HFile.new_from_ls(ls_line)}
     end
@@ -71,8 +71,8 @@ module Wukong
 
       def self.run_dfs_command *args
         cmd = 'hadoop dfs -'+ args.flatten.compact.join(" ")
-        Wukong.logger.debug{ "DFS: Running #{cmd}" }
-        Wukong.logger.info{ `#{cmd} 2>&1`.gsub(/[\r\n\t]+/, " ") }
+        Log.debug{ "DFS: Running #{cmd}" }
+        Log.info{ `#{cmd} 2>&1`.gsub(/[\r\n\t]+/, " ") }
       end
 
     end
