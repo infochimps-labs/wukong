@@ -49,8 +49,15 @@ module Wukong
     #
     # Analagous to Hash#each_pair
     #
+    def pairs
+      self.class.members.map{|attr| [attr, self[attr]] }
+    end
+
+    #
+    # Analagous to Hash#each_pair
+    #
     def each_pair *args, &block
-      self.to_hash.each_pair(*args, &block)
+      pairs.each(*args, &block)
     end
 
     #
