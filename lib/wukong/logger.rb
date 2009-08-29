@@ -37,7 +37,7 @@ module Wukong
 
   def self.default_ruby_logger
     require 'logger'
-    Log4r::Logger.new STDERR
+    Logger.new STDERR
   end
 
   def self.logger= logger
