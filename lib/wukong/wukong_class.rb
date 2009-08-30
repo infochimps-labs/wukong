@@ -1,4 +1,5 @@
-require 'active_support/core_ext/class/inheritable_attributes.rb'
+# require 'active_support/core_ext/class/inheritable_attributes.rb'
+require 'extlib/class'
 
 module Wukong
   #
