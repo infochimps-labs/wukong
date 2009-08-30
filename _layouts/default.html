@@ -33,12 +33,13 @@
   </div> 
 
   {% if site.gemname %}
-  <div class="download"><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/zipball/master"><img border="0" width="72" src="/images/zip.png"></a><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/tarball/master"><img border="0" width="72" src="/images/tar.png"></a><a href="http://gems.github.com/gems/{{ site.gemuser }}-{{ site.gemname }}-{{ site.gemversion }}.gem"><img border="0" width="72" src="/images/gem.png"></a></div>
+  <!-- border="0"  -->
+  <div class="download"><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/zipball/master"><img alt="download sourceball as .zip" width="72" src="/images/zip.png" /></a><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/tarball/master"><img alt="download sourceball as .tar" width="72" src="/images/tar.png" /></a><a href="http://gems.github.com/gems/{{ site.gemuser }}-{{ site.gemname }}-{{ site.gemversion }}.gem"><img alt="download sourceball as static gem" width="72" src="/images/gem.png" /></a></div>
   {% endif %}
   
   {{ content | textilize }}
 
-  <br class="clear">
+  <br class="clear" />
       
   <div id="footer">
     <div class="contact list aligned">
@@ -58,9 +59,9 @@
     <div class="rss">
       <!-- http://feeds.feedburner.com/{{ site.gemuser }}-github-com-{{ site.gemname }} -->
       <!-- <a href="http://feeds.feedburner.com/{{ site.gemuser }}-github-com/{{ site.gemname }}" title="{{ site.gemuser }}/{{ site.gemname }} news" /> -->
-      <a href="atom.xml"><img src="/images/rss.png" alt="Subscribe to RSS Feed" /></a> 
+      <a href="atom.xml"><img alt="Subscribe to RSS Feed" src="/images/rss.png" /></a> 
     </div>
-    <br class="clear">
+    <br class="clear" />
     <div class="credits">
       {{ site.credits }}
       <p >Thanks to <a href="http://github.com/mojombo/">github.com/mojombo</a> for the swanky HTML layout.</p>
@@ -68,7 +69,7 @@
   </div>
 </div>
 
-<a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}"><img style="position: absolute; top: 0; right: 0; border: 0;" src="/images/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<address><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}"><img alt="Fork me on GitHub" style="position: absolute; top: 0; right: 0; border: 0;" src="/images/forkme_right_red_aa0000.png" /></a></address>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"      type="text/javascript" ></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js" type="text/javascript" ></script>
