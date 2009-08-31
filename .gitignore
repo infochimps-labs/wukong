@@ -13,7 +13,6 @@ nohup.out
 /**/cache/*
 /**/db/*.sqlite3
 tmp
-*DONTVERSION*
 config/*private*
 a.out
 *.sw?
@@ -21,6 +20,7 @@ a.out
 *.so
 *.stackdump
 *.pyc
+/**/*DONTVERSION*
 coverage
 rdoc
 pkg
@@ -29,9 +29,8 @@ pkg
 .settings
 .tasks-cache
 *.tmproj
-
-_drafts/
-_site/
+/**/*private*
 css
-images
-javascripts
+/images
+/javascripts
+/_site
