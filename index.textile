@@ -17,7 +17,7 @@ Treat your dataset like a
 
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
 
-<div class="toggle">
+<notextile><div class="toggle"></notextile>
 
 h2. How to write a Wukong script
 
@@ -51,7 +51,7 @@ The first class, the Mapper, eats lines and craps @[word, count]@ records: word 
 
 In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["examples":examples/]
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. Structured data stream
 
@@ -105,7 +105,7 @@ You can also use structs to treat your dataset as a stream of objects:
     Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
 </code></pre>
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. More info
 
@@ -119,6 +119,6 @@ Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)
 * ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui@masuidrive.jp - http://blog.masuidrive.jp/
 
-</div>
+<notextile></div></notextile>
 
 {% include news.html %}
