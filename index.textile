@@ -17,11 +17,15 @@ Treat your dataset like a
 
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
 
-h3. full index
+h2. full index of pages
+
+There is some major duplication -- we're consolidating the documentation into the single gh-pages site within the repo.
 
 * "Tutorial":README-tutorial.html
 * "Overview of wukong":overview.html
 * "Original README":README.html
+* "Tips for working with big data":tips.html
+* "Usage notes & Getting Started":usage.textile
 * Wutils -- command-line utilies for working with data from the command line
 ** "overview of wutils":README-wutils.html
 ** "docs for the wu-lign command":README-wulign.html
