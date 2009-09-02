@@ -1,0 +1,48 @@
+
+<something to tab and align table>
+
+
+* uniq                  - report or filter out repeated lines in a file
+**  -c                    produces line<tab>count
+**  --ignore f1,f2,...    discards given fields from consideration. field syntax same as for cut, etc.
+
+* sort                  - sort lines of text files
+** columns indexed as tab-separated
+** can specify any column order, uses same field spec as cut
+* tsort                 - topological sort of a directed graph
+
+* cut                   - select portions of each line of a file
+** can reorder columns
+* nl                    - line numbering filter
+** takes prefix, suffix
+** count \t line -OR- line \t count 
+
+* wc                    - word, line, character, and byte count
+** field count (tab-separated fields)
+* paste                 - merge corresponding or subsequent lines of files
+* expand, unexpand      - expand tabs to spaces, and vice versa
+* seq
+* simple row, column sums
+* join                  - relational database operator
+* tac
+
+* cat                   - concatenate and print files
+* head                  - display first lines of a file
+* tail                  - display the last part of a file
+* shuf
+* split                 - split a file into pieces
+* csplit                - split files based on context
+* tee                   - pipe fitting
+
+* ls                    - list directory contents. 
+* df                    - display free disk space
+* du                    - display disk usage statistics
+** tab-delimited, space aligned
+
+* od                    - octal, decimal, hex, ASCII dump
+* printf                - formatted output
+* cksum, sum            - display file checksums and block counts
+* md5sum
+
+* diff
+* comm

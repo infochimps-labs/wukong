@@ -1,0 +1,128 @@
+h1. Wukong Utility Scripts
+
+h2. Stupid command-line tricks
+
+h3. Histogram
+
+Given data with a date column:
+
+   message	235623	20090423012345	Now is the winter of our discontent Made glorious summer by this son of York
+   message	235623	20080101230900	These pretzels are making me THIRSTY!
+   ...
+
+You can calculate number of messages sent by day with
+
+    cat messages | cuttab 3 | cutc 8 | sort | uniq -c
+
+(see the wuhist command, below.)
+
+h3. Simple intersection, union, etc
+
+For two datasets (batch_1 and batch_2) with unique entries (no repeated lines),
+
+* Their union is simple:
+
+      cat batch_1 batch_2 | sort -u
+
+
+* Their intersection:
+
+      cat batch_1 batch_2 | sort | uniq -c | egrep -v '^ *1 '
+
+  This concatenates the two sets and filters out everything that only occurred once.
+
+* For the complement of the intersection, use "... | egrep '^ *1 '"
+  
+* In both cases, if the files are each internally sorted, the commandline sort takes a --merge flag:
+
+      sort --merge -u batch_1 batch_2 
+
+h2. Command Listing
+
+h3. cutc
+
+@cutc [colnum]@
+
+Ex.
+
+  echo -e 'foo\tbar\tbaz' | cutc 6
+  foo	ba
+
+Cuts from beginning of line to given column (default 200). A tab is one character, so right margin can still be ragged.
+ 
+h3. cuttab
+
+  @cuttab [colspec]@
+
+Cuts given tab-separated columns. You can give a comma separated list of numbers
+or ranges 1-4. columns are numbered from 1.
+
+Ex.
+
+  echo -e 'foo\tbar\tbaz' | cuttab 1,3
+  foo	baz
+
+h3. hdp-*
+
+These perform the corresponding commands on the HDFS filesystem.  In general,
+where they accept command-line flags, they go with the GNU-style ones, not the
+hadoop-style: so, @hdp-du -s dir@ or @hdp-rm -r foo/@
+
+* @hdp-cat@
+* @hdp-catd@ -- cats the files that don't start with '_' in a directory. Use this for a pile of @.../part-00000@ files
+* @hdp-du@
+* @hdp-get@
+* @hdp-kill@
+* @hdp-ls@
+* @hdp-mkdir@
+* @hdp-mv@
+* @hdp-ps@
+* @hdp-put@
+* @hdp-rm@
+* @hdp-sync@
+
+h3. hdp-sort, hdp-stream, hdp-stream-flat
+
+* @hdp-sort@
+* @hdp-stream@
+* @hdp-stream-flat@
+
+    <code><pre>
+    hdp-stream input_filespec output_file map_cmd reduce_cmd num_key_fields
+    </pre></code>
+
+h3. tabchar
+
+Outputs a single tab character.
+ 
+h3. wuhist
+
+Occasionally useful to gather a lexical histogram of a single column:
+
+Ex.
+
+    <code><pre>
+    $ echo -e 'foo\nbar\nbar\nfoo\nfoo\nfoo\n7' | ./wuhist
+    4       foo
+    2       bar
+    1       7
+    </pre></code>
+
+(the output will have a tab between the first and second column, for futher processing.)
+
+h3. wulign
+
+Intelligently format a tab-separated file into aligned columns (while remaining tab-separated for further processing). See README-wulign.textile.
+ 
+h3. hdp-parts_to_keys.rb
+
+A *very* clumsy script to rename reduced hadoop output files by their initial key.
+
+If your output file has an initial key in the first column and you pass it
+through hdp-sort, they will be distributed across reducers and thus output
+files. (Because of the way hadoop hashes the keys, there's no guarantee that
+each file will get a distinct key. You could have 2 keys with a million entries
+and they could land sequentially on the same reducer, always fun.)
+
+If you're willing to roll the dice, this script will rename files according to
+the first key in the first line.
