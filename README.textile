@@ -1,0 +1,166 @@
+h1. Wukong
+
+Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.
+
+Treat your dataset as a
+
+* stream of lines when it's efficient to process by lines
+* stream of field arrays when it's efficient to deal directly with fields
+* stream of lightweight objects when it's efficient to deal with objects
+
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
+
+The main documentation -- including tutorials and tips for working with big data -- lives on the "Wukong Pages":http://mrflip.github.com/wukong and there is some supplemental information on the "wukong wiki.":http://wiki.github.com/mrflip/wukong
+
+h2. How to write a Wukong script
+
+Here's a script to count words in a text stream:
+
+<pre><code>    require 'wukong'
+    module WordCount
+      class Mapper < Wukong::Streamer::LineStreamer
+        # Emit each word in the line.
+        def process line
+          words = line.strip.split(/\W+/).reject(&:blank?)
+          words.each{|word| yield [word, 1] }
+        end
+      end
+      
+      class Reducer < Wukong::Streamer::ListReducer
+        def finalize
+          yield [ key, values.map(&:last).map(&:to_i).sum ]
+        end
+      end
+    end
+    
+    Wukong::Script.new(
+      WordCount::Mapper,
+      WordCount::Reducer
+      ).run # Execute the script
+</code></pre>
+
+The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the /key/, its count is the /value/.
+
+In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["examples":examples/]
+
+h3. Structured data stream
+
+You can also use structs to treat your dataset as a stream of objects:
+
+<pre><code>    require 'wukong'
+    require 'my_blog' #defines the blog models
+    # structs for our input objects
+    Tweet = Struct.new( :id, :created_at, :twitter_user_id,
+      :in_reply_to_user_id, :in_reply_to_status_id, :text )
+    TwitterUser  = Struct.new( :id, :username, :fullname,
+      :homepage, :location, :description )
+    module TwitBlog
+      class Mapper < Wukong::Streamer::RecordStreamer
+        # Watch for tweets by me
+        MY_USER_ID = 24601
+        #
+        # If this is a tweet is by me, convert it to a Post.
+        #
+        # If it is a tweet not by me, convert it to a Comment that
+        # will be paired with the correct Post.
+        #
+        # If it is a TwitterUser, convert it to a User record and
+        # a user_location record
+        #
+        def process record
+          case record
+          when TwitterUser
+            user     = MyBlog::User.new.merge(record) # grab the fields in common
+            user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
+            yield user
+            yield user_loc
+          when Tweet
+            if record.twitter_user_id == MY_USER_ID
+              post = MyBlog::Post.new.merge record
+              post.link = "http://twitter.com/statuses/show/#{record.id}"
+              post.body = record.text
+              post.title = record.text[0..65] + "..."
+              yield post
+            else
+              comment = MyBlog::Comment.new.merge record
+              comment.body    = record.text
+              comment.post_id = record.in_reply_to_status_id
+              yield comment
+            end
+          end
+        end
+      end
+    end
+    Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
+</code></pre>
+
+h3. More info
+
+There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.
+
+h2. Setup
+
+1. Allow Wukong to discover where his elephant friend lives: either
+
+  * set a @$HADOOP_HOME@ environment variable,
+
+  * or create a file 'config/wukong-site.yaml' with a line that points to the top-level directory of your hadoop install:
+
+      @:hadoop_home: /usr/local/share/hadoop@
+
+2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
+
+
+h2. How to run a Wukong script
+
+To run your script using local files and no connection to a hadoop cluster,
+
+  @your/script.rb --run=local path/to/input_files path/to/output_dir@
+
+To run the command across a Hadoop cluster,
+
+  @your/script.rb --run=hadoop path/to/input_files path/to/output_dir@
+
+You can set the default in the config/wukong-site.yaml file, and then just use @--run@ instead of @--run=something@ --it will just use the default run mode.
+
+If you're running @--run=hadoop@, all file paths are HDFS paths. If you're running @--run=local@, all file paths are local paths.  (your/script path, of course, lives on the local filesystem).
+
+You can supply arbitrary command line arguments (they wind up as key-value pairs in the options path your mapper and reducer receive), and you can use the hadoop syntax to specify more than one input file:
+
+    ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
+         --run "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
+
+Note that all @--options@ must precede (in any order) all non-options.
+
+h2. How to test your scripts
+
+To run mapper on its own:
+
+  cat ./local/test/input.tsv | ./examples/word_count.rb --map | more
+
+or if your test data lies on the HDFS,
+
+  hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
+
+Next graduate to running @--run=local@ mode so you can inspect the reducer.
+
+
+h2. What's up with Wukong::AndPig?
+
+@Wukong::AndPig@ is a small library to more easily generate code for the
+"Pig":http://hadoop.apache.org/pig data analysis language.  See its
+"README":wukong/and_pig/README.textile for more.
+
+h2. Why is it called Wukong?
+
+Hadoop, as you may know, is "named after a stuffed elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by the "infochimps":http://infochimps.org team, we needed a simian analog.  A Monkey King who journeyed to the land of the Elephant seems to fit the bill:
+
+bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main character in the classical Chinese epic novel Journey to the West. In the novel, he accompanies the monk Xuanzang on the journey to retrieve Buddhist sutras from India.
+
+bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn (8,100 kg) Ruyi Jingu Bang with ease. He also has superb speed, traveling 108,000 li (54,000 kilometers) in one somersault. Sun knows 72 transformations, which allows him to transform into various animals and objects; he is, however, shown with slight problems transforming into other people, since he is unable to complete the transformation of his tail. He is a skilled fighter, capable of holding his own against the best generals of heaven. Each of his hairs possesses magical properties, and is capable of transforming into a clone of the Monkey King himself, or various weapons, animals, and other objects. He also knows various spells in order to command wind, part water, conjure protective circles against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
+
+The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
+
+h2. What tools does Wukong work with?
+
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  We're looking forward to being friends with "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord down the road.
