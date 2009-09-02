@@ -5,14 +5,22 @@ h2. Hadoop on EC2
 * http://www.cloudera.com/hadoop-ec2-ebs-beta
 
 
-h4. Setup NFS within the cluster
+h3. Setup NFS within the cluster
 
 * 
 * http://nfs.sourceforge.net/nfs-howto/ar01s03.html
 
 
+h3. Miscellaneous Hadoop Tips
 
-h4. Tools for EC2 and S3 Management
+* The Cloudera AMIs and distribution include BZip2 support.  This means that if you have input files with a .bz2 extension, they will be naturally un-bzipped and streamed. (Note that there is a non-trivial penalty for doing so: each bzip'ed file must go, in whole, to a single mapper; and the CPU load for un-bzipping is sizeable.)
+
+* To _produce_ bzip2 files, specify the new @--compress_output=@ flag.  If you have the BZip2 patches installed, you can give @--compress_output=bz2@; everyone should be able to use @--compress_output=gz@.
+
+* For excellent performance you can patch your install for "Parallel LZO Splitting":http://www.cloudera.com/blog/2009/06/24/parallel-lzo-splittable-compression-for-hadoop/
+
+
+h3. Tools for EC2 and S3 Management
 
 * http://s3sync.net/wiki
 * http://jets3t.s3.amazonaws.com/applications/applications.html#uploader

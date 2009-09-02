@@ -1,0 +1,41 @@
+---
+layout: default
+title:  Install Notes
+---
+
+
+h1(gemheader). {{ site.gemname }} %(small):: install%
+
+<notextile><div class="toggle"></notextile>
+
+h2. Get the code
+
+This code is available as a gem:
+
+pre. $ sudo gem install mrflip-{{ site.gemname }}
+
+You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
+
+Better yet, you can also clone the project with "Git":http://git-scm.com by running:
+
+pre. $ git clone git://github.com/mrflip/{{ site.gemname }}
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. Get the Dependencies
+
+* Hadoop, pig
+* extlib, YAML, JSON
+* Optional gems: trollop, addressable/uri, htmlentities
+
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. Setup
+
+1. Allow Wukong to discover where his elephant friend lives: either
+** set a $HADOOP_HOME environment variable,
+** or create a file 'config/wukong-site.yaml' with a line that points to the top-level directory of your hadoop install: @:hadoop_home: /usr/local/share/hadoop@
+2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
+
+<notextile></div></notextile>

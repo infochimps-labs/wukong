@@ -2,19 +2,21 @@ h1. Wukong
 
 Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.
 
-Treat your dataset like a
+Treat your dataset as a
+
 * stream of lines when it's efficient to process by lines
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
 
+The main documentation -- including tutorials and tips for working with big data -- lives on the "Wukong Pages":http://mrflip.github.com/wukong and there is some supplemental information on the "wukong wiki.":http://wiki.github.com/mrflip/wukong
+
 h2. How to write a Wukong script
 
 Here's a script to count words in a text stream:
 
-<pre><code>
-    require 'wukong'
+<pre><code>    require 'wukong'
     module WordCount
       class Mapper < Wukong::Streamer::LineStreamer
         # Emit each word in the line.
@@ -45,8 +47,7 @@ h3. Structured data stream
 
 You can also use structs to treat your dataset as a stream of objects:
 
-<pre><code>
-    require 'wukong'
+<pre><code>    require 'wukong'
     require 'my_blog' #defines the blog models
     # structs for our input objects
     Tweet = Struct.new( :id, :created_at, :twitter_user_id,
@@ -101,11 +102,11 @@ h2. Setup
 
 1. Allow Wukong to discover where his elephant friend lives: either
 
-  * set a $HADOOP_HOME environment variable,
+  * set a @$HADOOP_HOME@ environment variable,
 
   * or create a file 'config/wukong-site.yaml' with a line that points to the top-level directory of your hadoop install:
 
-      :hadoop_home: /usr/local/share/hadoop
+      @:hadoop_home: /usr/local/share/hadoop@
 
 2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
 
@@ -114,11 +115,11 @@ h2. How to run a Wukong script
 
 To run your script using local files and no connection to a hadoop cluster,
 
-  your/script.rb --run=local path/to/input_files path/to/output_dir
+  @your/script.rb --run=local path/to/input_files path/to/output_dir@
 
 To run the command across a Hadoop cluster,
 
-  your/script.rb --run=hadoop path/to/input_files path/to/output_dir
+  @your/script.rb --run=hadoop path/to/input_files path/to/output_dir@
 
 You can set the default in the config/wukong-site.yaml file, and then just use @--run@ instead of @--run=something@ --it will just use the default run mode.
 
@@ -126,8 +127,8 @@ If you're running @--run=hadoop@, all file paths are HDFS paths. If you're runni
 
 You can supply arbitrary command line arguments (they wind up as key-value pairs in the options path your mapper and reducer receive), and you can use the hadoop syntax to specify more than one input file:
 
-  ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
-    --run "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
+    ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
+         --run "input_dir/part_*,input_file2.tsv,etc.tsv" path/to/output_dir
 
 Note that all @--options@ must precede (in any order) all non-options.
 
