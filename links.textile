@@ -1,3 +1,9 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Useful links for Wukong and Hadoop
+collapse: false
+---
+
 h3. Setting up your cluster:
 
 * "Running Hadoop On Ubuntu Linux (Single-Node Cluster)":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Single-Node_Cluster) and "unning Hadoop On Ubuntu Linux (Multi-Node Cluster).":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Multi-Node_Cluster)

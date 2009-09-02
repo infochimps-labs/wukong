@@ -1,3 +1,8 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Setting up Hadoop and Wukong on Amazon AWS
+collapse: false
+---
 
 h2. Hadoop on EC2
 

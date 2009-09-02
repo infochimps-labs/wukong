@@ -1,3 +1,9 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - NFS on Hadoop FTW
+collapse: false
+---
+
 The "Cloudera Hadoop AMI Instances":http://www.cloudera.com/hadoop-ec2 for Amazon's EC2 compute cloud are the fastest, easiest way to get up and running with hadoop. Unfortunately, doing streaming scripts can be a pain, especially if you're doing iterative development.
 
 Installing NFS to share files along the cluster gives the following conveniences:

@@ -1,3 +1,9 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - wu-utils utilities
+collapse: false
+---
+
 h1. Wukong Utility Scripts
 
 h2. Stupid command-line tricks

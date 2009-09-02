@@ -1,3 +1,11 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Tutorial
+collapse: false
+---
+
+h2. Count Words
+
 Here's a script to count words in a text stream:
 
   require 'wukong'

@@ -1,3 +1,9 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Using Wukong and Wuclan, Part 3 - Parsing
+collapse: false
+---
+
 h1. Using Wukong and Wuclan, Part 3 - Parsing
 
 In part 2 we begain a scraper to trawl our desired part of the social web. Now

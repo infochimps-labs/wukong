@@ -1,3 +1,8 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Lessons Learned working with Big Data
+collapse: false
+---
 
 h3. Don't Drop ACID while exploring Big Data
 
