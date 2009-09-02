@@ -1,3 +1,8 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - README
+collapse: false
+---
 h1. Wukong
 
 Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.

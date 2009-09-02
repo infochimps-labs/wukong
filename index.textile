@@ -25,7 +25,7 @@ There is some major duplication -- we're consolidating the documentation into th
 * "Overview of wukong":overview.html
 * "Original README":README.html
 * "Tips for working with big data":tips.html
-* "Usage notes & Getting Started":usage.textile
+* "Usage notes & Getting Started":usage.html
 * Wutils -- command-line utilies for working with data from the command line
 ** "overview of wutils":README-wutils.html
 ** "docs for the wu-lign command":README-wulign.html
@@ -34,7 +34,7 @@ There is some major duplication -- we're consolidating the documentation into th
 * The start of a long intro to data processing with wukong:
 ** "Part 1, setup":UsingWukong-part1-setup.html
 ** "Part 2, scraping":UsingWukong-part2-scraping.html
-** "Part 3, parsing":UsingWukong-part2-parsing.html
+** "Part 3, parsing":UsingWukong-part3-parsing.html
 * Hadoop notes
 ** "Setting up hadoop and wukong":hadoop-setup.html
 ** "NFS makes Hadoop way easier":hadoop-nfs.html
