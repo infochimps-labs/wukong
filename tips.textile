@@ -73,7 +73,7 @@ Wukong gives you a BadRecord class -- just rescue errors, pass the full or parti
 
 h3. Don't be afraid to use the command line as an IDE
 
-%{ highlight sh %}
+{% highlight sh %}
   cat /data/foo.tsv | ruby -ne 'puts $_.chomp.scan(/text="([^"]+)"/).join("\t")'
 {% endhighlight %}
 
