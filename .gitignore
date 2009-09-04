@@ -1,8 +1,5 @@
-/.#
 .\#*
-.#*
 *~
-\#*
 .DS_Store
 Icon?
 REVISION
@@ -15,18 +12,13 @@ nohup.out
 /**/cache/*
 /**/db/*.sqlite3
 /**/*DONTVERSION*
+/**/*private*
 *.sw?
-coverage
-rdoc
-pkg
 .project
 .pydevproject
 .settings
 .tasks-cache
 *.tmproj
-TODO (Autosaved).taskpaper
-twitter_pass.rb
-config/wukong-site.rb
-private.yaml
-config/private.yaml
-/**/*private*
+coverage
+rdoc
+pkg
