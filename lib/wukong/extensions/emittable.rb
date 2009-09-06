@@ -21,6 +21,8 @@ Struct.class_eval do
   def to_flat include_key=true
     if include_key.is_a? Proc
       sort_key = include_key.call(self)
+    elsif include_key.blank?
+      return to_a
     elsif include_key && respond_to?(:key)
       sort_key = [self.class.resource_name, key].flatten.join("-")
     else
