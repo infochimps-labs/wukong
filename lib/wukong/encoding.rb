@@ -73,39 +73,39 @@ String.class_eval do
   # Strip control characters that might harsh our buzz, TSV-wise
   # See Wukong.encode_str
   #
-  def wukong_encode!
-    replace self.wukong_encode
+  def wukong_encode! *args
+    replace self.wukong_encode(*args)
   end
 
-  def wukong_encode
-    Wukong.encode_str(self)
+  def wukong_encode(*args)
+    Wukong.encode_str(self, *args)
   end
 
   #
   # Decode string into original (and possibly unsafe) form
   # See Wukong.encode_str and Wukong.decode_str
   #
-  def wukong_decode!
-    replace self.wukong_decode
+  def wukong_decode!(*args)
+    replace self.wukong_decode(*args)
   end
 
   def wukong_decode
-    Wukong.decode_str(self)
+    Wukong.decode_str(self, *args)
   end
 
   #
   # Takes an XML-encoded or plaintext string and forces it into canonical encoding
   #
-  def wukong_recode!
-    replace self.wukong_decode.wukong_encode
+  def wukong_recode!(*args)
+    replace self.wukong_decode(*args).wukong_encode(*args)
   end
   def wukong_recode
-    Wukong.encode_str(Wukong.decode_str(self))
+    Wukong.encode_str(Wukong.decode_str(self, *args), *args)
   end
 end
 
 Struct.class_eval do
-  def recode!
-    each_pair{|k,v| v.wukong_recode! if (v && v.respond_to?(:wukong_recode!)) }
+  def recode!(*args)
+    each_pair{|k,v| v.wukong_recode!(*args) if (v && v.respond_to?(:wukong_recode!)) }
   end
 end
