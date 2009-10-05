@@ -103,7 +103,7 @@ The AccumulatingReducer calls start! on the first record for each key, calls acc
 Here's an AccumulatingReducer that takes a long list of key-value pairs and emits, for each key, all its corresponding values in one line.
 
 <pre><code>    #
-    # Roll up all 
+    # Roll up all values for each key into a single line
     #
     class GroupByReducer < Wukong::Streamer::AccumulatingReducer
       attr_accessor :values
@@ -125,6 +125,29 @@ Here's an AccumulatingReducer that takes a long list of key-value pairs and emit
     end
 </code></pre>
 
+So given adjacency pairs for the following directed friend graph:
+
+<pre><code>
+    @jerry      @elaine
+    @elaine     @jerry
+    @jerry      @kramer
+    @kramer     @jerry
+    @kramer     @bobsacamato
+    @kramer     @newman
+    @jerry      @superman
+    @newman     @kramer
+    @newman     @elaine
+    @newman     @jerry
+</code></pre>
+
+You'd end up with 
+
+<pre><code>
+    @elaine     @jerry
+    @jerry      @elaine      @kramer     @superman
+    @kramer     @bobsacamato @jerry      @newman
+    @newman     @elaine      @jerry      @kramer   
+</code></pre>
 
 h3. More info
 

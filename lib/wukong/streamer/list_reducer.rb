@@ -11,14 +11,20 @@ module Wukong
         self.values = []
       end
 
-      # aggregate all values
+      # aggregate all records.
+      # note that this accumulates the full *record* -- key, value, everything.
       def accumulate *record
-        self.values << record.to_flat.join(";")
+        self.values << record
       end
 
-      # emit the key and all values, tab-separated
+      # emit the key and all records, tab-separated
+      #
+      # you will almost certainly want to override this method to do something
+      # interesting with the values (or override accumulate to gather scalar
+      # values)
+      #
       def finalize
-        yield [key, values].flatten
+        yield [key, values.to_flat.join(";")].flatten
       end
     end
   end
