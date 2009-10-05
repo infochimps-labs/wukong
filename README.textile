@@ -94,6 +94,37 @@ You can also use structs to treat your dataset as a stream of objects:
     Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
 </code></pre>
 
+h3. Advanced Patterns
+
+Wukong has a good collection of map/reduce patterns. For example, it's quite common to accumulate all records for a given key and emit some result based on the whole group.
+
+The AccumulatingReducer calls start! on the first record for each key, calls accumulate() on every example for that key (including the first), and calls finalize() once the last record for that key is seen.
+
+Here's an AccumulatingReducer that takes a long list of key-value pairs and emits, for each key, all its corresponding values in one line.
+
+    #
+    # Roll up all 
+    #
+    class GroupByReducer < Wukong::Streamer::AccumulatingReducer
+      attr_accessor :values
+
+      # Start with an empty list
+      def start! *args
+        self.values = []
+      end
+
+      # Aggregate each value in turn 
+      def accumulate key, value
+        self.values << value
+      end
+
+      # Emit the key and all values, tab-separated
+      def finalize
+        yield [key, values].flatten
+      end
+    end
+
+
 h3. More info
 
 There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.

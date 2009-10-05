@@ -1,19 +1,24 @@
 module Wukong
   module Streamer
     #
-    # Emit each unique key and the count of its occurrences
+    # Roll up all records from a given key into a single list.
     #
     class ListReducer < Wukong::Streamer::AccumulatingReducer
       attr_accessor :values
 
-      # reset the counter to zero
+      # start with an empty list
       def start! *args
         self.values = []
       end
 
-      # record one more for this key
+      # aggregate all values
       def accumulate *record
-        self.values << record
+        self.values << record.to_flat.join(";")
+      end
+
+      # emit the key and all values, tab-separated
+      def finalize
+        yield [key, values].flatten
       end
     end
   end

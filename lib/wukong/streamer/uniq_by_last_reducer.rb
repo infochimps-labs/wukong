@@ -1,13 +1,20 @@
 module Wukong
   module Streamer
     #
-    # Accumulate acts like an insecure high-school kid, for each key adopting in
-    # turn the latest value seen. It then emits the last (in sort order) value
-    # for that key.
+    # UniqByLastReducer accepts all records for a given key and emits only the
+    # last-seen.
     #
-    # For example, to extract the *latest* value for each property, set hadoop
-    # to use <resource, item_id, timestamp> as sort fields and <resource,
-    # item_id> as key fields.
+    # It acts like an insecure high-school kid: for each record of a given key
+    # it discards whatever record it's holding and adopts this new value. When a
+    # new key comes on the scene it emits the last record, like an older brother
+    # handing off his Depeche Mode collection.
+    #
+    # For example, to extract the *latest* value for each property, emit your
+    # records as
+    #
+    #    [resource_type, key, timestamp, ... fields ...]
+    #
+    # then set :sort_fields to 3 and :partition_fields to 2.
     #
     class UniqByLastReducer < Wukong::Streamer::AccumulatingReducer
       attr_accessor :final_value

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2009-08-23}
+  s.date = %q{2009-10-05}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -21,19 +21,24 @@ Gem::Specification.new do |s|
   s.email = %q{flip@infochimps.org}
   s.executables = ["cutc", "cuttab", "greptrue", "hdp-cat", "hdp-catd", "hdp-du", "hdp-get", "hdp-kill", "hdp-ls", "hdp-mkdir", "hdp-mv", "hdp-parts_to_keys.rb", "hdp-ps", "hdp-put", "hdp-rm", "hdp-sort", "hdp-stream", "hdp-stream-flat", "hdp-sync", "hdp-wc", "md5sort", "tabchar", "uniqc", "wu-hist", "wu-lign", "wu-sum"]
   s.extra_rdoc_files = [
-    "LICENSE.txt",
-     "README-tutorial.textile",
+    "LICENSE.textile",
      "README.textile"
   ]
   s.files = [
-    "doc/README-wulign.textile",
+    "doc/INSTALL.textile",
+     "doc/LICENSE.textile",
+     "doc/README-tutorial.textile",
+     "doc/README-wulign.textile",
      "doc/README-wutils.textile",
-     "doc/UsingWukong-part1.textile",
-     "doc/UsingWukong-part2.textile",
+     "doc/TODO.textile",
+     "doc/UsingWukong-part1-setup.textile",
+     "doc/UsingWukong-part2-scraping.textile",
      "doc/UsingWukong-part3-parsing.textile",
      "doc/code/api_response_example.txt",
      "doc/code/parser_skeleton.rb",
+     "doc/hadoop-nfs.textile",
      "doc/hadoop-setup.textile",
+     "doc/index.textile",
      "doc/intro_to_map_reduce/MapReduceDiagram.graffle",
      "doc/links.textile",
      "doc/overview.textile",
@@ -41,6 +46,7 @@ Gem::Specification.new do |s|
      "doc/pig/PigLatinReferenceManual.html",
      "doc/pig/PigLatinReferenceManual.txt",
      "doc/tips.textile",
+     "doc/usage.textile",
      "doc/utils.textile",
      "examples/README.txt",
      "examples/and_pig/sample_queries.rb",
