@@ -1,0 +1,15 @@
+
+
+
+
+
+h3. Random notes
+
+* Did you know that the first write to any disk location is about 5x slower than later writes? Explanation, and how to pre-soften a volume, here: http://docs.amazonwebservices.com/AWSEC2/latest/DeveloperGuide/index.html?instance-storage.html
+
+
+* If you're using XFS, set the nobarrier option
+    /dev/sdf  /mnt/data2    xfs     noatime,nodiratime,nobarrier    0 0
+
+
+* "How to Mount EBS volume at launch":http://clouddevelopertips.blogspot.com/2009/08/mount-ebs-volume-created-from-snapshot.html
