@@ -6,7 +6,7 @@ title:  Usage notes
 h1(gemheader). {{ site.gemname }} %(small):: usage%
 
 
-<div class="toggle">
+<notextile><div class="toggle"></notextile>
 
 h2. How to run a Wukong script
 
@@ -29,7 +29,7 @@ pre. ./path/to/your/script.rb --any_specific_options --options=can_have_vals \
 
 Note that all @--options@ must precede (in any order) all non-options.
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. How to test your scripts
 
@@ -43,13 +43,13 @@ pre. hdp-cat test/input.tsv | ./examples/word_count.rb --map | more
 
 Next graduate to running @--run=local@ mode so you can inspect the reducer.
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. What tools does Wukong work with?
 
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  We're looking forward to being friends with "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord down the road.
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. Design
 
@@ -124,19 +124,19 @@ Here's a stream method, overridden to batch-process ActiveRecord objects (untest
       end
 
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. Caveats
 
 ...
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. TODOs
 
 ...
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. Note on Patches/Pull Requests
 
@@ -146,7 +146,7 @@ h2. Note on Patches/Pull Requests
 * Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but  bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. Endnotes
 
@@ -167,5 +167,5 @@ The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympic
 
 
 
-</div>
+<notextile></div></notextile>
 

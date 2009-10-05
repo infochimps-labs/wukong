@@ -17,7 +17,31 @@ Treat your dataset like a
 
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
 
-<div class="toggle">
+h2. full index of pages
+
+There is some major duplication -- we're consolidating the documentation into the single gh-pages site within the repo.
+
+* "Tutorial":README-tutorial.html
+* "Overview of wukong":overview.html
+* "Original README":README.html
+* "Tips for working with big data":tips.html
+* "Usage notes & Getting Started":usage.html
+* Wutils -- command-line utilies for working with data from the command line
+** "overview of wutils":README-wutils.html
+** "docs for the wu-lign command":README-wulign.html
+* "install notes":INSTALL.html
+* "Apache License":LICENSE.html
+* The start of a long intro to data processing with wukong:
+** "Part 1, setup":UsingWukong-part1-setup.html
+** "Part 2, scraping":UsingWukong-part2-scraping.html
+** "Part 3, parsing":UsingWukong-part3-parsing.html
+* Hadoop notes
+** "Setting up hadoop and wukong":hadoop-setup.html
+** "NFS makes Hadoop way easier":hadoop-nfs.html
+* "Useful links":links.html
+
+
+<notextile><div class="toggle"></notextile>
 
 h2. How to write a Wukong script
 
@@ -51,7 +75,7 @@ The first class, the Mapper, eats lines and craps @[word, count]@ records: word 
 
 In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["examples":examples/]
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. Structured data stream
 
@@ -105,7 +129,7 @@ You can also use structs to treat your dataset as a stream of objects:
     Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
 </code></pre>
 
-</div><div class="toggle">
+<notextile></div><div class="toggle"></notextile>
 
 h2. More info
 
@@ -119,6 +143,6 @@ Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)
 * ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui@masuidrive.jp - http://blog.masuidrive.jp/
 
-</div>
+<notextile></div></notextile>
 
 {% include news.html %}

@@ -10,7 +10,7 @@ collapse: true
   {% for post in site.posts %}
   <div class="toggle" id="news-{{ post.id }}">
     
-    <h2><a href="{{ post.url }}">{{ post.title }}</a><span class="small"> &raquo; {{ post.date | date_to_string }}</span></h2>
+    <h2><a href="{{ post.url }}">{{ post.title }}</a><span class="postdate"> &raquo; {{ post.date | date_to_string }}</span></h2>
     
     {{ post.content }}
     
