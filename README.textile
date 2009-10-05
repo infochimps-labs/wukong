@@ -102,7 +102,7 @@ The AccumulatingReducer calls start! on the first record for each key, calls acc
 
 Here's an AccumulatingReducer that takes a long list of key-value pairs and emits, for each key, all its corresponding values in one line.
 
-    #
+<pre><code>    #
     # Roll up all 
     #
     class GroupByReducer < Wukong::Streamer::AccumulatingReducer
@@ -123,6 +123,7 @@ Here's an AccumulatingReducer that takes a long list of key-value pairs and emit
         yield [key, values].flatten
       end
     end
+</code></pre>
 
 
 h3. More info
