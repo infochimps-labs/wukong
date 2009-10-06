@@ -1,8 +1,0 @@
----
-layout: default
-title:  mrflip.github.com/wukong - Using Wukong and Wuclan, Part 2 - Scraping
-collapse: false
----
-
-h1. Using Wukong and Wuclan, Part 2 - Scraping
-
