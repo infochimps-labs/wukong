@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
@@ -97,6 +97,7 @@ Gem::Specification.new do |s|
      "lib/wukong/boot.rb",
      "lib/wukong/datatypes.rb",
      "lib/wukong/datatypes/enum.rb",
+     "lib/wukong/datatypes/fake_types.rb",
      "lib/wukong/dfs.rb",
      "lib/wukong/encoding.rb",
      "lib/wukong/extensions.rb",
