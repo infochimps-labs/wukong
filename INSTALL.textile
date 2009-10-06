@@ -2,23 +2,25 @@
 layout: default
 title:  Install Notes
 ---
-
-
 h1(gemheader). {{ site.gemname }} %(small):: install%
 
 <notextile><div class="toggle"></notextile>
 
 h2. Get the code
 
-This code is available as a gem:
-
-pre. $ sudo gem install mrflip-{{ site.gemname }}
-
-You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
-
-Better yet, you can also clone the project with "Git":http://git-scm.com by running:
+Wukong is still under active development.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
 
 pre. $ git clone git://github.com/mrflip/{{ site.gemname }}
+
+A gem is available from "github:":http://gems.github.com
+
+pre. $ sudo gem install mrflip-{{ site.gemname }} --source=http://gems.github.com
+
+or from "gemcutter":http://gemcutter.org
+
+pre. $ sudo gem install {{ site.gemname }} --source=http://gemcutter.org
+
+You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
 
 <notextile></div><div class="toggle"></notextile>
 
@@ -39,3 +41,23 @@ h2. Setup
 2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
 
 <notextile></div></notextile>
+
+h2. Installing and Running Wukong under Hadoop
+
+Wukong is used by many in an non-Hadoop environment -- anywhere you can stream data records you can unleash its monkey power.  It was developed for Hadoop, though, and we think it's actually the best (and certainly the most fun) way to use Hadoop.
+
+h3. Set up a Hadoop cluster
+
+To set up hadoop, your best bet are the Cloudera AMIs on Amazon's EC2 compute cloud:
+
+* http://www.cloudera.com/hadoop-ec2
+* http://www.cloudera.com/hadoop-ec2-ebs-beta
+
+EC2 means anyone with a $10 bill can rent a 10-machine cluster with 1TB of distributed storage for 8 hours.
+
+If you have a local cluster, or just want to experiment with a single-machine install, check out the Cloudera packages for both Debian/Ubuntu-based and Redhat/RPM-based Linux systems.
+
+h3. Run Wukong on the Amazon AWS EC2 Cloud
+
+Phil Ripperger has prepared "instructions on getting wukong to work on the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart that are better than anything we could put here. Thanks Phil!
+
