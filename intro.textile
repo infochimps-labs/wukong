@@ -1,0 +1,7 @@
+---
+layout: default
+title:  mrflip.github.com/wukong
+collapse: false
+---
+
+{% include intro.textile %}
