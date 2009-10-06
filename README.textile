@@ -12,6 +12,15 @@ Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig
 
 The main documentation -- including tutorials and tips for working with big data -- lives on the "Wukong Pages":http://mrflip.github.com/wukong and there is some supplemental information on the "wukong wiki.":http://wiki.github.com/mrflip/wukong
 
+
+* "Install and set up wukong":http://mrflip.github.com/wukong/INSTALL.html
+* "Tutorial":http://mrflip.github.com/wukong/tutorial.html
+* "Usage notes":http://mrflip.github.com/wukong/usage.html
+* "Wutils":http://mrflip.github.com/wukong/wutils.html -- command-line utilies for working with data from the command line
+* Links and tips for "configuring and working with hadoop":http://mrflip.github.com/wukong/hadoop-tips.html
+* Wukong is licensed under the "Apache License":http://mrflip.github.com/wukong/LICENSE.html (same as Hadoop)
+* "More info":http://mrflip.github.com/wukong/moreinfo.html
+
 h2. Install
 
 Wukong is still under active development.  The newest version is available at
