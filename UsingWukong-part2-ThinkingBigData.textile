@@ -4,7 +4,9 @@ title:  mrflip.github.com/wukong - Overview
 collapse: false
 ---
 
-h2. There's lots of data
+h1. Thinking Big Data
+
+h2. There's lots of data, Wukong and Hadoop can help
 
 
 There are two disruptive
@@ -17,9 +19,6 @@ There are two disruptive
 * We have linearly scaling multiprocessing
 ** Old frontier computing: expensive, N log N, SUUUUUUCKS
 ** It's cheap, it's scaleable and it's fun
-
-h2. Wukong + Hadoop can help
-
 
 h2. == Map|Reduce ==
 

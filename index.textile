@@ -18,25 +18,31 @@ Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig
 
 h2. Help index
 
-* "Tutorial":intro.html
+* "Install and set up wukong":INSTALL.html
 * "Tutorial":README-tutorial.html
-* "Overview of wukong":overview.html
-* "Original README":README.html
-* "Tips for working with big data":tips.html
-* "Usage notes & Getting Started":usage.html
+* "Usage notes":usage.html
+usage.textile:h2(#running).        How to run a Wukong script
+usage.textile:h2(#testing).        How to test your scripts
+usage.textile:h2(#playnice).       Plays nicely with others
+usage.textile:h3(#schema_export).  Schema export
+usage.textile:h3(#stayinruby).     Using wukong with internal streaming
+usage.textile:h3(#activerecord).   Using wukong to Batch-Process ActiveRecord Objects
+
 * Wutils -- command-line utilies for working with data from the command line
-** "overview of wutils":README-wutils.html
+** "overview of wutils":README-wutils.html#wutils
+** "Stupid command-line tricks":README-wutils.html#cmdlinetricks using the wutils
 ** "docs for the wu-lign command":README-wulign.html
-* "install notes":INSTALL.html
-* "Apache License":LICENSE.html
-* The start of a long intro to data processing with wukong:
-** "Part 1, setup and scraping":UsingWukong-part1-setup.html
-** "Part 2, scraping":UsingWukong-part2-scraping.html
-** "Part 3, parsing":UsingWukong-part3-parsing.html
-* Hadoop notes
-** "Setting up hadoop and wukong":hadoop-setup.html
-** "NFS makes Hadoop way easier":hadoop-nfs.html
-* "Useful links":links.html
+** Dear Lazyweb, please build this for us: "tab-oriented version of the Textutils library":README-wutils.html#wutilsinc
+* Links and tips for "configuring and working with hadoop":hadoop-tips.html
+* Some opinionated "thoughts on working with big data,":bigdata-tips.html on why you should drop acid, treat exceptions as records, and happily embrace variable-length strings as primary keys.
+* Wukong is licensed under the "Apache License":LICENSE.html (same as Hadoop)
+* "More info":moreinfo.html
+
+* Work in progress: an intro to data processing with wukong:
+** "Part 1, Get Ready":UsingWukong-part1-getready.html
+** "Part 2, Thinking Big Data":UsingWukong-part2-ThinkingBigData.html
+** "Part 3, Parsing":UsingWukong-part3-parsing.html
+
 
 There is still some documentation on the "wukong wiki":http://github.com/mrflip/wukong/wikis
 
@@ -44,19 +50,25 @@ Please forgive the major disorganized / duplication of the wukong documentation 
 
 <notextile><div id="intro" class="toggle"></notextile>
 
+{% include intro.textile %}
+
 <notextile></div><div class="toggle"></notextile>
 
 h2. More info
 
 There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.
 
-h3. Authors
+h3. Credits
 
-Philip (flip) Kromer (flip@infochimps.org)
+Wukong was written by Philip (flip) Kromer (flip@infochimps.org) for the "infochimps project":http://infochimps.org
 
 Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)
 * ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui@masuidrive.jp - http://blog.masuidrive.jp/
+
+Thanks to:
+* "Brad Heintz": for his early feedback
+* "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
 
 <notextile></div></notextile>
 

@@ -4,7 +4,18 @@ title:  mrflip.github.com/wukong - Lessons Learned working with Big Data
 collapse: false
 ---
 
-h3. Don't Drop ACID while exploring Big Data
+h2. Random Thoughts on Big Data
+
+Stuff changes when you cross the 100GB barrier.  Here are random musings on why it might make sense to
+
+* Sort everything
+* Don't do any error handling
+* Catch errors and emit them along with your data
+* Make everything ASCII
+* Abandon integer keys
+* Use bash as your data-analysis IDE.
+
+h2(#dropacid). Drop ACID, explore Big Data
 
 The traditional "ACID quartet":http://en.wikipedia.org/wiki/ACID for relational databases can be re-interpreted in a Big Data context:
 
@@ -23,45 +34,13 @@ Finally, where possible leave things in sort order by some appropriate index. Cl
 
 Note: for files that will live on the DFS, you should usually *not* do a total sort, 
 
-h3. If it's not broken, it's wrong
+h2. If it's not broken, it's wrong
 
 Something that goes wrong one in a five million times will crop up hundreds of times in a billion-record collection.
 
 h3. Error is not normally distributed
 
 What's more, errors introduced will not in general be normally distributed and their impact may not decrease with increasing data size.
-
-h3. Encode once, and carefully.
-
-Encoding violates idempotence.  Data brought in from elsewhere *must* be considered unparsable, ill-formatted and rife with illegal characters.
-
-* Immediately fix a copy of the original data with as minimal encoding as possible.
-* Follow this with a separate parse stage to emit perfectly well-formed, tab-separated / newline delimited data
-* In this parse stage, encode the data to 7-bits, free of internal tabs, backslashes, carriage return/line feed or control characters. You want your encoding scheme to be
-** perfectly reversible
-** widely implemented
-** easily parseable
-** recognizable: incoming data that is mostly inoffensive (a json record, or each line of a document such as this one) should be minimally altered from its original.  This lets you do rough exploration with sort/cut/grep and friends.
-** !! Involve **NO QUOTING**, only escaping.  I can write a simple regexp to decode entities such as %10, \n or &#10;. This regexp will behave harmlessly with ill-formed data (eg %%10 or &&; or \ at end of line) and is robust against data being split or interpolated.  Schemes such as "quoting: it's bad", %Q{quoting: "just say no"} or <notextile><notextile>tagged markup</notextile></notextile> require a recursive parser. An extra or missing quote mark is almost impossible to backtrack.  And av
-
-In the absence of some lightweight, mostly-transparent, ASCII-compatible *AND* idempotent encoding scheme lurking in a back closet of some algorithms book -- how to handle the initial lousy payload coming off the wire?
-
-* For data that is *mostly* text in a western language, you'll do well wiht XML encoding (with <notextile>[\n\r\t\\]</notextile> forced to encode as entities)
-* URL encoding isn't as recognizable, but is also safe. Use this for things like URIs and filenames, or if you want to be /really/ paranoid about escaping.
-* For binary data, Binhex is efficient enough and every toolkit can handle it.  There are more data-efficient ascii-compatible encoding schemes but it's not worth the hassle for the 10% or whatever gain in size.
-* If your payload itself is XML data, consider using \0 (nul) between records, with a fixed number of tab-separated metadata fields leading the XML data, which can then include tabs, newlines, or whatever the hell it wants. No changes are made to the data apart from a quick gsub to remove any (highly illegal) \0 in the XML data itself. A later parse round will convert it to structured hadoop-able data.  Ex:
-
-{% highlight html %}
-feed_request	20090809101112  200     OK      <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang='en' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'>
-  <head>
-      <title>infochimps.org &mdash; Find Any Dataset in the World</title>
-{% endhighlight %}
-
-p. Many of the command line utilities (@cat@, @grep@, etc.) will accept nul-delimited files.
-
-You may be tempted to use XML around your XML so you can XML while you XML, but this is ultimately only done right by parsing or scrubbing the inputm and at that point you should just translate directly to a reasonable tab/newline format. (Even if that format is tsv-compatible JSON).
 
 h3. Do your exception handling in-band
 
@@ -71,14 +50,7 @@ However, it's worth considering another extremely efficient, simple and powerful
 
 Wukong gives you a BadRecord class -- just rescue errors, pass the full or partial contents of the offending input. and emit the BadRecord instance in-band.  They'll be serialized out along with the rest, and at your preference can be made to reduce to a single instance. Do analysis on them at your leisure; by default, any StructStreamer will silently discard *inbound* BadRecords -- they won't survive past the current generation.
 
-h3. Don't be afraid to use the command line as an IDE
-
-{% highlight sh %}
-  cat /data/foo.tsv | ruby -ne 'puts $_.chomp.scan(/text="([^"]+)"/).join("\t")'
-{% endhighlight %}
-
-
-h3. Keys
+h2(#keys). Keys
 
 * Artificial key: assigned externally, key is not a function of the object's intrinsic values. A social security number is an artificial key. Artificial 
 
@@ -119,3 +91,41 @@ How do you get a unique prefix?
 
 
 Working with records that change over time, 
+
+h2(#bashide). The command line is an IDE
+
+{% highlight sh %}
+  cat /data/foo.tsv | ruby -ne 'puts $_.chomp.scan(/text="([^"]+)"/).join("\t")'
+{% endhighlight %}
+
+h2(#encoding). Encode once, and carefully.
+
+Encoding violates idempotence.  Data brought in from elsewhere *must* be considered unparsable, ill-formatted and rife with illegal characters.
+
+* Immediately fix a copy of the original data with as minimal encoding as possible.
+* Follow this with a separate parse stage to emit perfectly well-formed, tab-separated / newline delimited data
+* In this parse stage, encode the data to 7-bits, free of internal tabs, backslashes, carriage return/line feed or control characters. You want your encoding scheme to be
+** perfectly reversible
+** widely implemented
+** easily parseable
+** recognizable: incoming data that is mostly inoffensive (a json record, or each line of a document such as this one) should be minimally altered from its original.  This lets you do rough exploration with sort/cut/grep and friends.
+** !! Involve **NO QUOTING**, only escaping.  I can write a simple regexp to decode entities such as %10, \n or &#10;. This regexp will behave harmlessly with ill-formed data (eg %%10 or &&; or \ at end of line) and is robust against data being split or interpolated.  Schemes such as "quoting: it's bad", %Q{quoting: "just say no"} or <notextile><notextile>tagged markup</notextile></notextile> require a recursive parser. An extra or missing quote mark is almost impossible to backtrack.  And av
+
+In the absence of some lightweight, mostly-transparent, ASCII-compatible *AND* idempotent encoding scheme lurking in a back closet of some algorithms book -- how to handle the initial lousy payload coming off the wire?
+
+* For data that is *mostly* text in a western language, you'll do well wiht XML encoding (with <notextile>[\n\r\t\\]</notextile> forced to encode as entities)
+* URL encoding isn't as recognizable, but is also safe. Use this for things like URIs and filenames, or if you want to be /really/ paranoid about escaping.
+* For binary data, Binhex is efficient enough and every toolkit can handle it.  There are more data-efficient ascii-compatible encoding schemes but it's not worth the hassle for the 10% or whatever gain in size.
+* If your payload itself is XML data, consider using \0 (nul) between records, with a fixed number of tab-separated metadata fields leading the XML data, which can then include tabs, newlines, or whatever the hell it wants. No changes are made to the data apart from a quick gsub to remove any (highly illegal) \0 in the XML data itself. A later parse round will convert it to structured hadoop-able data.  Ex:
+
+{% highlight html %}
+feed_request	20090809101112  200     OK      <?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang='en' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'>
+  <head>
+      <title>infochimps.org &mdash; Find Any Dataset in the World</title>
+{% endhighlight %}
+
+p. Many of the command line utilities (@cat@, @grep@, etc.) will accept nul-delimited files.
+
+You may be tempted to use XML around your XML so you can XML while you XML.  Ultimately, you'll find this can only be done right by doing a full parse of the input -- and at that point you should just translate directly to a reasonable tab/newline format. (Even if that format is tsv-compatible JSON).

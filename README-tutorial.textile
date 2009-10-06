@@ -4,7 +4,7 @@ title:  mrflip.github.com/wukong - Tutorial
 collapse: false
 ---
 
-h2. Count Words
+h2(#wordcount). Count Words
 
 Here's a script to count words in a text stream:
 
@@ -53,18 +53,18 @@ yield the sum in @#finalize@:
       end
     end
 
-Of course you can be really lazy (that is, smart) and write your script instead as
+Of course you can be really lazy (i.e. smart) and write your script as
 
-  class Script < Wukong::Script
-    def reducer_command
-      'uniq -c'
+    class Script < Wukong::Script
+      def reducer_command
+        'uniq -c'
+      end
     end
-  end
 
-  
-h2. Structured data
-  
-All of these deal with unstructured data.  Wukong also lets you view your data
+    
+h2(#structstream). Structured data
+
+The previous example dealt with unstructured data.  Wukong also lets you view your data
 as a stream of structured objects.
 
 Let's say you have a blog; its records look like
@@ -141,7 +141,7 @@ instantiates it with the
   end
   Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
 
-h2. Uniqifying
+h2(#uniqifying). Uniqifying
 
 The script above uses the identity reducer: every record from the mapper is sent
 to the output.  But what if you had grabbed the replying user's record every time
@@ -164,8 +164,8 @@ Map/Reduce paradigm does badly with synthetic keys. Synthetic keys demand
 locality, and map/reduce's remarkable scaling comes from not assuming
 locality. In general, write your map/reduce scripts to use natural keys (the scre
 
-h1. More info
+h2. More...
 
 There are many useful examples (including an actually-useful version of this
-WordCount script) in examples/ directory.
+WordCount script) in the "examples/ directory.":http://github.com/mrflip/wukong/tree/master/examples
 

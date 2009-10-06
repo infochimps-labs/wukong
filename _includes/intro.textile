@@ -3,7 +3,7 @@ h1(gemheader). Intro %(small):: 3 simple examples%
 
 h2. How to write a Wukong script
 
-Everyone uses a word count example to demonstrate map/reduce -- it's the hello world. Here, therefore, is a script to count words in a text stream:
+Everyone uses a word count example to demonstrate map/reduce. Here is our obligatory script to count words in a text stream:
 
 <pre><code>
     require 'wukong'
@@ -29,9 +29,9 @@ Everyone uses a word count example to demonstrate map/reduce -- it's the hello w
       ).run # Execute the script
 </code></pre>
 
-The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the /key/, its count is the /value/.
+The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the /key/, the count (1) is the /value/.
 
-In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["examples":examples/]
+In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["tutorial":README-tutorial.textile/]
 
 h2. Structured data stream
 

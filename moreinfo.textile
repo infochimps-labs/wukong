@@ -1,0 +1,106 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - TODO
+collapse: true
+---
+<notextile><div class="toggle"></notextile>
+
+h2. Why is it called Wukong?
+
+Hadoop, as you may know, is "named after a stuffed elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by the "infochimps":http://infochimps.org team, we needed a simian analog.  A Monkey King who journeyed to the land of the Elephant seems to fit the bill:
+
+bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main character in the classical Chinese epic novel Journey to the West. In the novel, he accompanies the monk Xuanzang on the journey to retrieve Buddhist sutras from India.
+
+bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn (8,100 kg) Ruyi Jingu Bang with ease. He also has superb speed, traveling 108,000 li (54,000 kilometers) in one somersault. Sun knows 72 transformations, which allows him to transform into various animals and objects; he is, however, shown with slight problems transforming into other people, since he is unable to complete the transformation of his tail. He is a skilled fighter, capable of holding his own against the best generals of heaven. Each of his hairs possesses magical properties, and is capable of transforming into a clone of the Monkey King himself, or various weapons, animals, and other objects. He also knows various spells in order to command wind, part water, conjure protective circles against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
+
+The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. What tools does Wukong work with?
+
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  We're looking forward to being friends with "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord down the road.
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. Note on Patches/Pull Requests
+
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a future version unintentionally.
+* Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but  bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. What's up with Wukong::AndPig?
+
+@Wukong::AndPig@ is a small library to more easily generate code for the "Pig":http://hadoop.apache.org/pig data analysis language.  See its "README":wukong/and_pig/README.textile for more.
+
+It's not really being worked on, and you should probably ignore it.
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. Map/Reduce Algorithms
+
+Example graph scripts:
+
+* Multigraph
+* Pagerank 		(done)
+* Breadth-first search  
+* Triangle enumeration  
+* Clustering
+
+More example hadoop algorithms:
+* Bigram counts: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/bigrams.html
+* Inverted index construction: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/indexer.html
+* Pagerank : http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/pagerank.html
+* SIPs, Median, classifiers and more : http://matpalm.com/
+
+Example example scripts (from http://www.cloudera.com/resources/learning-mapreduce): 
+
+1. Find the [number of] hits by 5 minute timeslot for a website given its access logs.
+
+2. Find the pages with over 1 million hits in day for a website given its access logs.
+
+3. Find the pages that link to each page in a collection of webpages.
+
+4. Calculate the proportion of lines that match a given regular expression for a collection of documents.
+
+5. Sort tabular data by a primary and secondary column.
+
+6. Find the most popular pages for a website given its access logs.
+
+<notextile></div><div class="toggle"></notextile>
+
+h2. TODOs
+
+Utility
+
+* columnizing / reconstituting
+
+* Set up with JRuby
+* Allow for direct HDFS operations
+* Make the dfs commands slightly less stupid
+* add more standard options
+* Allow for combiners
+* JobStarter / JobSteps
+* might as well take dumbo's command line args
+
+BUGS:
+
+* Can't do multiple input files in local mode
+
+Patterns to implement:
+
+* Stats reducer
+** basic sum, avg, max, min, std.dev of a numeric field
+** the "running standard deviation":http://www.johndcook.com/standard_deviation.html
+
+* Efficient median (and other order statistics)
+
+* Make StructRecordizer work generically with other reducers (spec. AccumulatingReducer)
+
+Make wutils: tsv-oriented implementations of the coreutils (eg uniq, sort, cut, nl, wc, split, ls, df and du) to instrinsically accept and emit tab-separated records.
+
+<notextile></div></notextile>

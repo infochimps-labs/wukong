@@ -8,7 +8,7 @@ h1(gemheader). {{ site.gemname }} %(small):: usage%
 
 <notextile><div class="toggle"></notextile>
 
-h2. How to run a Wukong script
+h2(#running). How to run a Wukong script
 
 To run your script using local files and no connection to a hadoop cluster,
 
@@ -31,7 +31,7 @@ Note that all @--options@ must precede (in any order) all non-options.
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. How to test your scripts
+h2(#testing). How to test your scripts
 
 To run mapper on its own:
 
@@ -45,14 +45,68 @@ Next graduate to running @--run=local@ mode so you can inspect the reducer.
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. What tools does Wukong work with?
+h2(#playnice). Plays nicely with others
 
-Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  We're looking forward to being friends with "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord down the road.
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  It even has limited support for "martinis":http://datamapper.org (Datamapper) and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord (ActiveRecord).
+
+* "Export Wukong classes to SQL or Pig":#schema_export -- easily bulk-load and define SQL tables, or kickstart your pig scripts
+* "Batch-Process records from ActiveRecord":#activerecord (the datamapper case is similar)
+* Cascade Mappers and Reducers "purely in ruby":#stayinruby -- reportedly useful in an "ETL":http://en.wikipedia.org/wiki/Extract,_transform,_load context.
+
+h3(#schema_export). Schema export
+
+There is preliminary support for dumping wukong classes as schemata for other tools.
+
+<pre><code>
+    require "wukong" ; 
+    require "wukong/schema"
+   
+    User = TypedStruct.new(
+        [:id,                     Integer],
+        [:scraped_at,             Bignum],
+        [:screen_name,            String],
+        [:followers_count,        Integer],
+        [:created_at,             Bignum]
+        );
+    
+</code></pre>
+
+<pre><code>
+    User.load_pig
+    #=> user = LOAD users.tsv AS ( rsrc:chararray, id: int, scraped_at: long, screen_name: chararray, followers_count: int, created_at: long )
+</code></pre>
+
+<pre><code>
+    User.sql_create_table
+    #=> CREATE TABLE         `users` (
+        `id`                  INT,
+        `scraped_at`          BIGINT,
+        `screen_name`         VARCHAR(255) CHARACTER SET ASCII,
+        `followers_count`     INT,
+        `created_at`          BIGINT
+        )  ;
+        
+    User.sql_load_mysql
+    #=> ALTER TABLE            `user` DISABLE KEYS;
+      LOAD DATA LOCAL INFILE 'user.tsv'
+        REPLACE INTO TABLE   `user`
+        COLUMNS
+          TERMINATED BY           '\t'
+          OPTIONALLY ENCLOSED BY  ''
+          ESCAPED BY              ''
+        LINES STARTING BY     'user'
+        ( @dummy,
+      
+          `id`, `scraped_at`, `screen_name`, `followers_count`, `created_at`
+      
+        );
+      ALTER TABLE `user` ENABLE KEYS ;
+      SELECT 'user', NOW(), COUNT(*) FROM `user`;
+</code></pre>
 
 <notextile></div><div class="toggle"></notextile>
 
 h2. Design
-
 
 Here's a somewhat detailed overview of a wukong script's internal workflow.
 
@@ -80,7 +134,7 @@ When in --map or --reduce mode (we'll just use --map as an example):
 
 (*) Of course, if you have no reducers then that's zero or more times; and if you change the :map_command or :reduce_command options then that runs instead.
 
-h3. Using wukong with internal streaming
+h3(#stayinruby). Using wukong with internal streaming
 
 If you're using wukong in local mode, you may not want to spawn new processes all over the place.  Or your records may arrive not from the command line but from, say, a database call. 
 
@@ -100,6 +154,8 @@ In that case, just override #stream.  The original:
         end
         after_stream
       end
+
+h3(#activerecord). Using wukong to Batch-Process ActiveRecord Objects
 
 Here's a stream method, overridden to batch-process ActiveRecord objects (untested sample code):
 
@@ -130,42 +186,4 @@ h2. Caveats
 
 ...
 
-<notextile></div><div class="toggle"></notextile>
-
-h2. TODOs
-
-...
-
-<notextile></div><div class="toggle"></notextile>
-
-h2. Note on Patches/Pull Requests
-
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a future version unintentionally.
-* Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but  bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
-
-<notextile></div><div class="toggle"></notextile>
-
-h2. Endnotes
-
-
-h3. Why is it called Wukong?
-
-Hadoop, as you may know, is "named after a stuffed elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by the "infochimps":http://infochimps.org team, we needed a simian analog.  A Monkey King who journeyed to the land of the Elephant seems to fit the bill:
-
-bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main character in the classical Chinese epic novel Journey to the West. In the novel, he accompanies the monk Xuanzang on the journey to retrieve Buddhist sutras from India.
-
-bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn (8,100 kg) Ruyi Jingu Bang with ease. He also has superb speed, traveling 108,000 li (54,000 kilometers) in one somersault. Sun knows 72 transformations, which allows him to transform into various animals and objects; he is, however, shown with slight problems transforming into other people, since he is unable to complete the transformation of his tail. He is a skilled fighter, capable of holding his own against the best generals of heaven. Each of his hairs possesses magical properties, and is capable of transforming into a clone of the Monkey King himself, or various weapons, animals, and other objects. He also knows various spells in order to command wind, part water, conjure protective circles against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
-
-The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
-
-
-* What's up with Wukong::AndPig?
-** @Wukong::AndPig@ is a small library to more easily generate code for the "Pig":http://hadoop.apache.org/pig data analysis language.  See its "README":wukong/and_pig/README.textile for more.
-
-
-
-<notextile></div></notextile>
-
+<notextile></div>

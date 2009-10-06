@@ -6,7 +6,7 @@ h1(gemheader). {{ site.gemname }} %(small):: install%
 
 <notextile><div class="toggle"></notextile>
 
-h2. Get the code
+h2(#getcode). Get the code
 
 Wukong is still under active development.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
 
@@ -24,16 +24,15 @@ You can instead download this project in either "zip":http://github.com/mrflip/{
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. Get the Dependencies
+h3(#getcode). Get the Dependencies
 
 * Hadoop, pig
 * extlib, YAML, JSON
 * Optional gems: trollop, addressable/uri, htmlentities
 
-
 <notextile></div><div class="toggle"></notextile>
 
-h2. Setup
+h2(#getcode). Setup
 
 1. Allow Wukong to discover where his elephant friend lives: either
 ** set a $HADOOP_HOME environment variable,
@@ -42,11 +41,11 @@ h2. Setup
 
 <notextile></div></notextile>
 
-h2. Installing and Running Wukong under Hadoop
+h2(#gethadoop). Installing and Running Wukong with Hadoop
 
-Wukong is used by many in an non-Hadoop environment -- anywhere you can stream data records you can unleash its monkey power.  It was developed for Hadoop, though, and we think it's actually the best (and certainly the most fun) way to use Hadoop.
+Wukong was primarily developed for Hadoop, and we think it's the best way to use Hadoop (it's certainly the most fun!).
 
-h3. Set up a Hadoop cluster
+h3. Run Wukong on the Amazon AWS EC2 Cloud
 
 To set up hadoop, your best bet are the Cloudera AMIs on Amazon's EC2 compute cloud:
 
@@ -55,9 +54,22 @@ To set up hadoop, your best bet are the Cloudera AMIs on Amazon's EC2 compute cl
 
 EC2 means anyone with a $10 bill can rent a 10-machine cluster with 1TB of distributed storage for 8 hours.
 
-If you have a local cluster, or just want to experiment with a single-machine install, check out the Cloudera packages for both Debian/Ubuntu-based and Redhat/RPM-based Linux systems.
+h3. Run Wukong using Amazon AWS Elastic MapReduce
 
-h3. Run Wukong on the Amazon AWS EC2 Cloud
+AWS Elastic MapReduce saves the trouble of even setting up a cluster: click, bam, there it is.
 
 Phil Ripperger has prepared "instructions on getting wukong to work on the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart that are better than anything we could put here. Thanks Phil!
 
+h3. Set up a Hadoop cluster
+
+If you have a local cluster, or just want to experiment with a single-machine install, check out the Cloudera packages for both Debian/Ubuntu-based and Redhat/RPM-based Linux systems.
+
+h3. More Hadoop Notes
+
+I've braindumped some "random notes on configuring and using hadoop":hadoop-tips.html
+
+h2(#others). Wukong isn't just Hadoop: Datamapper, ActiveRecord, command-line usage and more
+
+Wukong is used by many in an non-Hadoop environment -- anywhere you can stream data records, you can unleash its monkey power.
+
+Please see the "usage notes":usage.html#playnice for more!
