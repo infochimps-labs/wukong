@@ -99,7 +99,7 @@ h2(#patches). Note on Patches/Pull Requests
 
 h2(#andpig). What's up with Wukong::AndPig?
 
-@Wukong::AndPig@ is a small library to more easily generate code for the "Pig":http://hadoop.apache.org/pig data analysis language.  See its "README":wukong/and_pig/README.textile for more.
+@Wukong::AndPig@ is a small library to more easily generate code for the "Pig":http://hadoop.apache.org/pig data analysis language.  See its "README":http://github.com/mrflip/wukong/tree/master/lib/wukong/and_pig/README.textile for more.
 
 It's **not really being worked on**, and you should probably **ignore it**.
 

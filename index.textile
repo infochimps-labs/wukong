@@ -63,10 +63,6 @@ h2. Documentation index
 ** "Part 2, Thinking Big Data":UsingWukong-part2-ThinkingBigData.html
 ** "Part 3, Parsing":UsingWukong-part3-parsing.html
 
-There is still some documentation on the "wukong wiki":http://github.com/mrflip/wukong/wikis
-
-Please forgive the major disorganized / duplication of the wukong documentation -- we're consolidating into the single gh-pages site within the repo and still fleshing out the tutorials.  The actual best source of documentation are the "many working examples":http://github.com/mrflip/wukong/tree/master/examples
-
 <notextile></div></notextile>
 
 {% include intro.textile %}
