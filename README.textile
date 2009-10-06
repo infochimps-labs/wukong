@@ -12,6 +12,22 @@ Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig
 
 The main documentation -- including tutorials and tips for working with big data -- lives on the "Wukong Pages":http://mrflip.github.com/wukong and there is some supplemental information on the "wukong wiki.":http://wiki.github.com/mrflip/wukong
 
+h2. Install
+
+Wukong is still under active development.  The newest version is available at
+
+    http://github.com/mrflip/wukong
+
+A gem is available from "github:":http://gems.github.com
+
+    gem install mrflip-wukong --source=http://gems.github.com
+
+or from "gemcutter":http://gemcutter.org
+
+    gem install wukong --source=http://gemcutter.org
+
+Phil Ripperger has prepared "instructions on getting wukong to work on the Amazon AWS cloud.":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart Thanks Phil!
+
 h2. How to write a Wukong script
 
 Here's a script to count words in a text stream:
@@ -164,7 +180,6 @@ h2. Setup
       @:hadoop_home: /usr/local/share/hadoop@
 
 2. Add wukong's @bin/@ directory to your $PATH, so that you may use its filesystem shortcuts.
-
 
 h2. How to run a Wukong script
 

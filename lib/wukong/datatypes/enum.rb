@@ -26,6 +26,14 @@ module Wukong
       def self.[] *args
         new *args
       end
+
+      # returns the value corresponding to that string representation
+      def index *args
+        # delegate
+        self.class.names.index *args
+      end
+
+      # Representations:
       def to_i
         val
       end
@@ -33,16 +41,21 @@ module Wukong
         return nil if val.nil?
         self.class.names[val]
       end
+
       def inspect
         "<#{self.class.to_s} #{to_i} (#{to_s})>"
       end
-      # returns the value corresponding to that string representation
-      def index *args
-        # delegate
-        self.class.names.index *args
-      end
+
       def to_flat
         to_s #to_i
+      end
+
+      def self.to_sql_str
+        "ENUM('#{names.join("', '")}')"
+      end
+
+      def self.to_pig
+        'chararray'
       end
 
       #
@@ -57,16 +70,7 @@ module Wukong
       def self.enumerates *names
         self.names = names.map(&:to_s)
       end
-
-      def self.to_sql_str
-        "ENUM('#{names.join("', '")}')"
-      end
-
-      def self.typify
-        'chararray'
-      end
     end
-
 
     #
     # Note that bin 0 is
