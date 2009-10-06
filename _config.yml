@@ -23,9 +23,11 @@ keywords:       [ 'wukong,hadoop,ruby,mrflip,infochimps,map,reduce,streaming,dum
 description:    "Wukong: Hadoop made so easy a Chimpanzee could run it."
 header_files:
   - INSTALL
-  - usage
-  - news
   - LICENSE
+  - usage
+  - wutils
+  - moreinfo
+  - tutorial
 
 credits:
   <p>Wukong image courtesy

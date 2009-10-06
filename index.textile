@@ -1,7 +1,7 @@
 ---
 layout: default
 title:  mrflip.github.com/wukong
-collapse: false
+collapse: true
 ---
 h1(gemheader). wukong %(small):: hadoop made easy%
 
@@ -14,62 +14,75 @@ Treat your dataset like a
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
-Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. 
 
-h2. Help index
+<notextile><div class="toggle"></notextile>
+
+h2. Documentation index
 
 * "Install and set up wukong":INSTALL.html
-* "Tutorial":README-tutorial.html
-* "Usage notes":usage.html
-usage.textile:h2(#running).        How to run a Wukong script
-usage.textile:h2(#testing).        How to test your scripts
-usage.textile:h2(#playnice).       Plays nicely with others
-usage.textile:h3(#schema_export).  Schema export
-usage.textile:h3(#stayinruby).     Using wukong with internal streaming
-usage.textile:h3(#activerecord).   Using wukong to Batch-Process ActiveRecord Objects
+** "Get the code":INSTALL.html#getcode
+** "Setup":INSTALL.html#setup
+** "Installing and Running Wukong with Hadoop":INSTALL.html#gethadoop
+** "Installing and Running Wukong with Datamapper, ActiveRecord, the command-line and more":INSTALL.html#others
 
-* Wutils -- command-line utilies for working with data from the command line
-** "overview of wutils":README-wutils.html#wutils
-** "Stupid command-line tricks":README-wutils.html#cmdlinetricks using the wutils
-** "docs for the wu-lign command":README-wulign.html
-** Dear Lazyweb, please build this for us: "tab-oriented version of the Textutils library":README-wutils.html#wutilsinc
+* "Tutorial":tutorial.html
+** "Count Words":tutorial.html#wordcount
+** "Structured data":tutorial.html#structstream
+** "Accumulators":tutorial.html#accumulators including a UniqByLastReducer and a GroupBy reducer.
+
+* "Usage notes":usage.html
+** "How to run a Wukong script":usage.html#running
+** "How to test your scripts":usage.html#testing
+** "Wukong Plays nicely with others":usage.html#playnice
+** "Schema export":usage.html#schema_export to Pig and SQL
+** "Using wukong with internal streaming":usage.html#stayinruby
+** "Using wukong to Batch-Process ActiveRecord Objects":usage.html#activerecord
+
+* "Wutils":wutils.html -- command-line utilies for working with data from the command line
+** "Overview of wutils":wutils.html#wutils -- command listing
+** "Stupid command-line tricks":wutils.html#cmdlinetricks using the wutils
+** "wu-lign":wutils.html#wulign -- present a tab-separated file as aligned columns
+** Dear Lazyweb, please build us a "tab-oriented version of the Textutils library":wutils.html#wutilsinc
+
 * Links and tips for "configuring and working with hadoop":hadoop-tips.html
 * Some opinionated "thoughts on working with big data,":bigdata-tips.html on why you should drop acid, treat exceptions as records, and happily embrace variable-length strings as primary keys.
 * Wukong is licensed under the "Apache License":LICENSE.html (same as Hadoop)
+
 * "More info":moreinfo.html
+** "Why is it called Wukong?":moreinfo.html#name
+** "Don't Use Wukong, use this instead":moreinfo.html#whateverdude
+** "Further Reading and useful links":moreinfo.html#links
+** "Note on Patches/Pull Requests":moreinfo.html#patches
+** "What's up with Wukong::AndPig?":moreinfo.html#andpig
+** "Map/Reduce Algorithms":moreinfo.html#algorithms
+** "TODOs":moreinfo.html#TODO                
 
 * Work in progress: an intro to data processing with wukong:
 ** "Part 1, Get Ready":UsingWukong-part1-getready.html
 ** "Part 2, Thinking Big Data":UsingWukong-part2-ThinkingBigData.html
 ** "Part 3, Parsing":UsingWukong-part3-parsing.html
 
-
 There is still some documentation on the "wukong wiki":http://github.com/mrflip/wukong/wikis
 
 Please forgive the major disorganized / duplication of the wukong documentation -- we're consolidating into the single gh-pages site within the repo and still fleshing out the tutorials.  The actual best source of documentation are the "many working examples":http://github.com/mrflip/wukong/tree/master/examples
 
-<notextile><div id="intro" class="toggle"></notextile>
+<notextile></div></notextile>
 
 {% include intro.textile %}
 
-<notextile></div><div class="toggle"></notextile>
+<notextile><div class="toggle"></notextile>
 
-h2. More info
+h2. Credits
 
-There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.
-
-h3. Credits
-
-Wukong was written by Philip (flip) Kromer (flip@infochimps.org) for the "infochimps project":http://infochimps.org
+Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org) for the "infochimps project":http://infochimps.org
 
 Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)
 * ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui@masuidrive.jp - http://blog.masuidrive.jp/
 
 Thanks to:
-* "Brad Heintz": for his early feedback
+* "Brad Heintz":http://www.bradheintz.com/no1thing/talks/ for his early feedback
 * "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
 
 <notextile></div></notextile>
-
-{% include news.html %}

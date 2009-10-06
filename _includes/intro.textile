@@ -1,11 +1,11 @@
 
-h1(gemheader). Intro %(small):: 3 simple examples%
+<notextile><div class="toggle"></notextile>
 
 h2. How to write a Wukong script
 
 Everyone uses a word count example to demonstrate map/reduce. Here is our obligatory script to count words in a text stream:
 
-<pre><code>
+{% highlight ruby %}
     require 'wukong'
     module WordCount
       class Mapper < Wukong::Streamer::LineStreamer
@@ -27,17 +27,19 @@ Everyone uses a word count example to demonstrate map/reduce. Here is our obliga
       WordCount::Mapper,
       WordCount::Reducer
       ).run # Execute the script
-</code></pre>
+{% endhighlight %}
 
-The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the /key/, the count (1) is the /value/.
+The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the __key__, the count (1) is the __value__.
 
 In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["tutorial":README-tutorial.textile/]
+
+<notextile></div><div class="toggle"></notextile>
 
 h2. Structured data stream
 
 You can also use structs to treat your dataset as a stream of objects:
 
-<pre><code>
+{% highlight ruby %}
     require 'wukong'
     require 'my_blog' #defines the blog models
     # structs for our input objects
@@ -83,7 +85,10 @@ You can also use structs to treat your dataset as a stream of objects:
       end
     end
     Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
-</code></pre>
+{% endhighlight %}
+
+
+<notextile></div><div class="toggle"></notextile>
 
 h2. Advanced Patterns
 
@@ -93,7 +98,7 @@ The AccumulatingReducer calls start! on the first record for each key, calls acc
 
 Here's an AccumulatingReducer that takes a long list of key-value pairs and emits, for each key, all its corresponding values in one line.
 
-<pre><code>    #
+{% highlight ruby %}    #
     # Roll up all values for each key into a single line
     #
     class GroupByReducer < Wukong::Streamer::AccumulatingReducer
@@ -114,7 +119,7 @@ Here's an AccumulatingReducer that takes a long list of key-value pairs and emit
         yield [key, values].flatten
       end
     end
-</code></pre>
+{% endhighlight %}
 
 So given adjacency pairs for the following directed friend graph:
 
@@ -139,3 +144,6 @@ You'd end up with
     @kramer     @bobsacamato @jerry      @newman
     @newman     @elaine      @jerry      @kramer   
 </code></pre>
+
+
+<notextile></div></notextile>

@@ -5,6 +5,14 @@ title:  Usage notes
 
 h1(gemheader). {{ site.gemname }} %(small):: usage%
 
+** "How to run a Wukong script":#running
+** "How to test your scripts":#testing
+** "Wukong Plays nicely with others":#playnice
+** "Schema export":#schema_export to Pig or SQL
+** "Wukong's internal workflow":#workflow
+** "Using wukong with internal streaming":#stayinruby
+** "Using wukong to Batch-Process ActiveRecord Objects":#activerecord
+
 
 <notextile><div class="toggle"></notextile>
 
@@ -45,7 +53,7 @@ Next graduate to running @--run=local@ mode so you can inspect the reducer.
 
 <notextile></div><div class="toggle"></notextile>
 
-h2(#playnice). Plays nicely with others
+h2(#playnice). Wukong Plays nicely with others
 
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  It even has limited support for "martinis":http://datamapper.org (Datamapper) and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord (ActiveRecord).
 
@@ -53,14 +61,13 @@ Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig
 * "Batch-Process records from ActiveRecord":#activerecord (the datamapper case is similar)
 * Cascade Mappers and Reducers "purely in ruby":#stayinruby -- reportedly useful in an "ETL":http://en.wikipedia.org/wiki/Extract,_transform,_load context.
 
-h3(#schema_export). Schema export
+h3(#schema_export). Schema export to Pig or SQL
 
-There is preliminary support for dumping wukong classes as schemata for other tools.
+There is preliminary support for dumping wukong classes as schemata for other tools. For example, given the following:
 
-<pre><code>
-    require "wukong" ; 
+{% highlight ruby %}
+    require "wukong" ;
     require "wukong/schema"
-   
     User = TypedStruct.new(
         [:id,                     Integer],
         [:scraped_at,             Bignum],
@@ -68,59 +75,54 @@ There is preliminary support for dumping wukong classes as schemata for other to
         [:followers_count,        Integer],
         [:created_at,             Bignum]
         );
-    
-</code></pre>
+{% endhighlight %}
 
-<pre><code>
-    User.load_pig
-    #=> user = LOAD users.tsv AS ( rsrc:chararray, id: int, scraped_at: long, screen_name: chararray, followers_count: int, created_at: long )
-</code></pre>
+You can make a snippet for loading into pig with @puts User.load_pig@:
 
-<pre><code>
-    User.sql_create_table
-    #=> CREATE TABLE         `users` (
-        `id`                  INT,
-        `scraped_at`          BIGINT,
-        `screen_name`         VARCHAR(255) CHARACTER SET ASCII,
-        `followers_count`     INT,
-        `created_at`          BIGINT
-        )  ;
-        
-    User.sql_load_mysql
-    #=> ALTER TABLE            `user` DISABLE KEYS;
-      LOAD DATA LOCAL INFILE 'user.tsv'
-        REPLACE INTO TABLE   `user`
-        COLUMNS
-          TERMINATED BY           '\t'
-          OPTIONALLY ENCLOSED BY  ''
-          ESCAPED BY              ''
-        LINES STARTING BY     'user'
-        ( @dummy,
-      
-          `id`, `scraped_at`, `screen_name`, `followers_count`, `created_at`
-      
-        );
-      ALTER TABLE `user` ENABLE KEYS ;
-      SELECT 'user', NOW(), COUNT(*) FROM `user`;
-</code></pre>
+<pre>    LOAD users.tsv AS ( rsrc:chararray, id: int, scraped_at: long, screen_name: chararray, followers_count: int, created_at: long )</pre>
+
+Export to SQL with @puts User.sql_create_table ; puts User.sql_load_mysql@:
+
+{% highlight sql %}
+    CREATE TABLE         `users` (
+      `id`                  INT,
+      `scraped_at`          BIGINT,
+      `screen_name`         VARCHAR(255) CHARACTER SET ASCII,
+      `followers_count`     INT,
+      `created_at`          BIGINT
+      )  ;
+    ALTER TABLE            `user` DISABLE KEYS;
+    LOAD DATA LOCAL INFILE 'user.tsv'
+      REPLACE INTO TABLE   `user`
+      COLUMNS
+        TERMINATED BY           '\t'
+        OPTIONALLY ENCLOSED BY  ''
+        ESCAPED BY              ''
+      LINES STARTING BY     'user'
+      ( @dummy,
+        `id`, `scraped_at`, `screen_name`, `followers_count`, `created_at`
+      );
+    ALTER TABLE `user` ENABLE KEYS ;
+    SELECT 'user', NOW(), COUNT(*) FROM `user`;
+{% endhighlight %}
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. Design
+h2(#workflow). Wukong's internal workflow
 
 Here's a somewhat detailed overview of a wukong script's internal workflow.
 
-# You call ./myscript.rb --run infile outfile
-# Execution begins in the run method of the Script class (wukong/script.rb). It launches (depending on if you're local or remote) one of
-** cat infile | ./myscript.rb --map | sort | ./myscript.rb --reduce > outfile
-** hadoop [a_crapton_of_streaming_args] -mapper './myscript.rb --map' -reducer './myscript.rb --reduce' 
-# In either case, the effect is to spawn the exact same script you ran at the command line: one or more times with the --map command in place of the --run command, and one or more times with the --reduce command in place of the --run command. (*)
-# With the --map or --reduce flag given, the Script flag turns over control to the corresponding class: for instance,
-** mapper_klass.new(self.options).stream
+# You call @./myscript.rb --run infile outfile@
+# Execution begins in the run method of the Script class (@wukong/script.rb@). It launches (depending on if you're local or remote) one of
+** @cat infile | ./myscript.rb --map | sort | ./myscript.rb --reduce > outfile@
+** @hadoop [a_crapton_of_streaming_args] -mapper './myscript.rb --map' -reducer './myscript.rb --reduce' @
+# In either case, the effect is to spawn the exact same script you ran at the command line: one or more times with the --map command in place of the --run command, and one or more times with the --reduce command in place of the --run command. %(quiet)(well, unless you specify no reducers or a :map_command or something)%
 
-When in --map or --reduce mode (we'll just use --map as an example):
+# With the @--map@ or @--reduce@ flag given, the Script flag turns over control to the corresponding class: either @mapper_klass.new(self.options).stream@ or @reducer_klass.new(self.options).stream@
 
-# The mapper_klass is usually a subclass of Streamer::Base, but in actual fact it can be anything that initializes from a hash of options and responds to #stream.
+When in @--map@ or @--reduce@ mode (we'll just use @--map@ as an example):
+
+# The mapper_klass is usually a subclass of @Streamer::Base@, but in actual fact it can be anything that initializes from a hash of options and responds to #stream.
 # The default #stream method
 ** calls the before_stream hook
 ** reads each line from stdin ; #recordizes it ; passes it (if non-nil) to #process ; and emits each object yielded by #process
@@ -132,14 +134,14 @@ When in --map or --reduce mode (we'll just use --map as an example):
 ** #finalize --  called when the last key of this accumulation is seen.
 ** #get_key -- called on each record to recover its key.
 
-(*) Of course, if you have no reducers then that's zero or more times; and if you change the :map_command or :reduce_command options then that runs instead.
 
 h3(#stayinruby). Using wukong with internal streaming
 
-If you're using wukong in local mode, you may not want to spawn new processes all over the place.  Or your records may arrive not from the command line but from, say, a database call. 
+If you're using wukong in local mode, you may not want to spawn new processes all over the place.  Or your records may arrive not from the command line but from, say, a database call.
 
 In that case, just override #stream.  The original:
 
+{% highlight ruby %}
       #
       # Pass each record to +#process+
       #
@@ -154,18 +156,25 @@ In that case, just override #stream.  The original:
         end
         after_stream
       end
+{% endhighlight %}
 
 h3(#activerecord). Using wukong to Batch-Process ActiveRecord Objects
 
 Here's a stream method, overridden to batch-process ActiveRecord objects (untested sample code):
 
+{% highlight ruby %}
+    class Mapper < Wukong::Streamer
       # Set record_klass to the ActiveRecord class you'd like to batch process
       cattr_accessor :record_klass
       # Size of each batch to pull from the database
       cattr_accessor :batch_size
-      
+
       #
-      # Pass each record to +#process+
+      # Grab records from the database in batches,
+      # pass each record to +#process+
+      #
+      # Everything downstream of this is agnostic of the fact that
+      # records are coming from the database and not $stdin
       #
       def stream
         before_stream
@@ -179,11 +188,8 @@ Here's a stream method, overridden to batch-process ActiveRecord objects (untest
         after_stream
       end
 
+      # ....
+    end
+{% endhighlight %}
 
-<notextile></div><div class="toggle"></notextile>
-
-h2. Caveats
-
-...
-
-<notextile></div>
+<notextile></div></notextile>

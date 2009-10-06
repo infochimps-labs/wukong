@@ -1,0 +1,263 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - wu-utils utilities
+collapse: false
+---
+
+h1(gemheader). Wukong Utility Scripts
+
+** "Overview of wutils":#wutils -- command listing
+** "Stupid command-line tricks":#cmdlinetricks using the wutils
+** "wu-lign":#wulign -- present a tab-separated file as aligned columns
+** Dear Lazyweb, please build this for us: "tab-oriented version of the Textutils library":#wutilsinc
+
+<notextile><div class="toggle"></notextile>
+
+h2(#cmdlinetricks). Stupid command-line tricks
+
+Here are a few useful little snippets you can run from the command line:
+
+h3. Histogram
+
+Given data with a date column:
+
+    <pre>
+    message	235623	20090423012345	Now is the winter of our discontent Made glorious summer by this son of York
+    message	235623	20080101230900	These pretzels are making me THIRSTY!
+    ...
+    </pre>
+
+You can calculate number of messages sent by day with
+
+    <pre>
+    cat messages | cuttab 3 | cutc 8 | sort | uniq -c
+    </pre>
+
+(see the wuhist command, below.)
+
+h3. Simple intersection, union, etc
+
+For two datasets (batch_1 and batch_2) with unique entries (no repeated lines),
+
+* Their union is simple:
+
+    <pre>
+    cat batch_1 batch_2 | sort -u
+    </pre>
+
+* To find their intersection, concatenate the two sets and filters out everything that only occurred once.
+
+    <pre>
+    cat batch_1 batch_2 | sort | uniq -c | egrep -v '^ *1 '
+    </pre>
+
+* For the complement of the intersection, use @... | egrep '^ *1 '@
+  
+* In both cases, if the files are each internally sorted, the commandline sort takes a --merge flag:
+
+    <pre>
+    sort --merge -u batch_1 batch_2 
+    </pre>
+
+<notextile></div><div class="toggle"></notextile>
+    
+h2(#wutils). Wutils Command Listing
+
+h3. cutc
+
+@cutc [colnum]@
+
+Ex.
+
+    @echo -e 'foo\tbar\tbaz' | cutc 6@
+    @foo	ba@
+
+Cuts from beginning of line to given column (default 200). A tab is one character, so right margin can still be ragged.
+ 
+h3. cuttab
+
+    @cuttab [colspec]@
+
+Cuts given tab-separated columns. You can give a comma separated list of numbers
+or ranges 1-4. columns are numbered from 1.
+
+Ex.
+
+    <pre>
+    echo -e 'foo\tbar\tbaz' | cuttab 1,3
+    foo	baz
+    </pre>
+
+h3. hdp-*
+
+These perform the corresponding commands on the HDFS filesystem.  In general,
+where they accept command-line flags, they go with the GNU-style ones, not the
+hadoop-style: so, @hdp-du -s dir@ or @hdp-rm -r foo/@
+
+* @hdp-cat@
+* @hdp-catd@ -- cats the files that don't start with '_' in a directory. Use this for a pile of @.../part-00000@ files
+* @hdp-du@
+* @hdp-get@
+* @hdp-kill@
+* @hdp-ls@
+* @hdp-mkdir@
+* @hdp-mv@
+* @hdp-ps@
+* @hdp-put@
+* @hdp-rm@
+* @hdp-sync@
+
+h3. hdp-sort, hdp-stream, hdp-stream-flat
+
+* @hdp-sort@
+* @hdp-stream@
+* @hdp-stream-flat@
+
+    <code><pre>
+    hdp-stream input_filespec output_file map_cmd reduce_cmd num_key_fields
+    </pre></code>
+
+h3. tabchar
+
+Outputs a single tab character.
+ 
+h3. wuhist
+
+Occasionally useful to gather a lexical histogram of a single column:
+
+Ex.
+
+    <code><pre>
+    $ echo -e 'foo\nbar\nbar\nfoo\nfoo\nfoo\n7' | ./wuhist
+    4       foo
+    2       bar
+    1       7
+    </pre></code>
+
+(the output will have a tab between the first and second column, for futher processing.)
+
+h3. wulign
+
+Intelligently format a tab-separated file into aligned columns (while remaining tab-separated for further processing). See "below":#wulign.
+ 
+h3. hdp-parts_to_keys.rb
+
+A *very* clumsy script to rename reduced hadoop output files by their initial key.
+
+If your output file has an initial key in the first column and you pass it through hdp-sort, they will be distributed across reducers and thus output files. (Because of the way hadoop hashes the keys, there's no guarantee that each file will get a distinct key. You could have 2 keys with a million entries and they could land sequentially on the same reducer, always fun.)
+
+If you're willing to roll the dice, this script will rename files according to the first key in the first line.
+
+**Do you have or know of a native hadoop utility to do this?** If so, please get in touch!
+
+<notextile></div><div class="toggle"></notextile>
+
+h2(#wulign). wu-lign -- format a tab-separated file as aligned columns
+
+wu-lign will intelligently reformat a tab-separated file into a tab-separated, space aligned file that is still suitable for further processing. For example, given the log-file input
+
+    <pre><code>
+    2009-07-21T21:39:40 day     65536   3.15479 68750   1171316
+    2009-07-21T21:39:45 doing   65536   1.04533 26230   1053956
+    2009-07-21T21:41:53 hapaxlegomenon  65536   0.87574e-05     23707   10051141
+    2009-07-21T21:44:00 concert 500     0.29290 13367   9733414
+    2009-07-21T21:44:29 world   65536   1.09110 32850   200916
+    2009-07-21T21:44:39 world+series    65536   0.49380 9929    7972025
+    2009-07-21T21:44:54 iranelection    65536   2.91775 14592   136342
+    </code></pre>
+
+wu-lign will reformat it to read
+
+    <pre><code>
+    2009-07-21T21:39:40 day                   65536   3.154791234 68750    1171316
+    2009-07-21T21:39:45 doing                 65536   1.045330000 26230    1053956
+    2009-07-21T21:41:53 hapaxlegomenon        65536   0.000008757 23707   10051141
+    2009-07-21T21:44:00 concert                 500   0.292900000 13367    9733414
+    2009-07-21T21:44:29 world                 65536   1.091100000 32850     200916
+    2009-07-21T21:44:39 world+series          65536   0.493800000  9929    7972025
+    2009-07-21T21:44:54 iranelection          65536   2.917750000 14592     136342
+    </code></pre>
+
+The fields are still tab-delimited by exactly one tab -- only spaces are used to pad out fields. You can still use cuttab and friends to manipulate columns.
+
+wu-lign isn't intended to be smart, or correct, or reliable -- only to be useful for previewing and organizing tab-formatted files. In general @wu-lign(foo).split("\t").map(&:strip)@ *should* give output semantically equivalent to its input. (That is, the only changes should be insertion of spaces and re-formatting of numerics.) But still -- reserve its use for human inspection only.
+
+(Note: tab characters in this source code file have been converted to spaces; replace whitespace with tab in the first example if you'd like to play along at home.)
+
+h3. How it works 
+
+Wu-Lign takes the first 1000 lines, splits by TAB characters into fields, and tries to guess the format -- int, float, or string -- for each. It builds a consensus of the width and type for corresponding columns in the chunk.  If a column has mixed numeric and string formats it degrades to :mixed, which is basically treated as :string. If a column has mixed :float and :int elements all of them are formatted as float.
+
+h3. Command-line arguments
+
+You can give sprintf-style positional arguments on the command line that will be applied to the corresponding columns. (Blank args are used for placeholding and auto-formatting is still applied).  So with the example above,
+
+    @cat foo | wu-lign  '' '' '' '%8.4e'@
+
+will format the fourth column with "%8.4e", while the first three columns and fifth-and-higher columns are formatted as usual.
+
+    <pre><code>
+    ...
+    2009-07-21T21:39:45 doing           65536   1.0453e+00      26230    1053956
+    2009-07-21T21:41:53 hapaxlegomenon  65536   8.7574e-06      23707   10051141
+    2009-07-21T21:44:00 concert           500   2.9290e-01      13367    9733414
+    ....
+    </code></pre>
+
+h3. Notes
+
+* It has no knowledge of header rows. An all-text first line will screw everything up.
+* It also requires a unanimous vote. One screwy line can coerce the whole mess to :mixed; width formatting will still be applied, though.
+* It won't set columns wider than 70 chars -- this allows for the occasional super-wide column without completely breaking your screen.
+* For :float values, wu-lign tries to guess at the right number of significant digits to the left and right of the decimal point.
+* wu-lign does not parse 'TSV files' in their strict sense -- there is no quoting or escaping; every tab delimits a field, every newline a record.
+
+h2(#wutilsinc). Dear Lazyweb, please build this
+
+* uniq                  - report or filter out repeated lines in a file
+**  -c                    produces line<tab>count
+**  --ignore f1,f2,...    discards given fields from consideration. field syntax same as for cut, etc.
+
+* sort                  - sort lines of text files
+** columns indexed as tab-separated
+** can specify any column order, uses same field spec as cut
+* tsort                 - topological sort of a directed graph
+
+* cut                   - select portions of each line of a file
+** can reorder columns
+* nl                    - line numbering filter
+** takes prefix, suffix
+** count \t line -OR- line \t count 
+
+* wc                    - word, line, character, and byte count
+** field count (tab-separated fields)
+* paste                 - merge corresponding or subsequent lines of files
+* expand, unexpand      - expand tabs to spaces, and vice versa
+* seq
+* simple row, column sums
+* join                  - relational database operator
+* tac
+
+* cat                   - concatenate and print files
+* head                  - display first lines of a file
+* tail                  - display the last part of a file
+* shuf
+* split                 - split a file into pieces
+* csplit                - split files based on context
+* tee                   - pipe fitting
+
+* ls                    - list directory contents. 
+* df                    - display free disk space
+* du                    - display disk usage statistics
+** tab-delimited, space aligned
+
+* od                    - octal, decimal, hex, ASCII dump
+* printf                - formatted output
+* cksum, sum            - display file checksums and block counts
+* md5sum
+
+* diff
+* comm
+
+
+<notextile></div></notextile>
