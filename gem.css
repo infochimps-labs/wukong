@@ -1,4 +1,3 @@
-/* body            { background-color: #80f3e8; } */
 #header a       { color:            #00a;  }  
 hr              { border-color:     #66a ; }
 h2              { border-color:     #acc ; }
@@ -6,7 +5,6 @@ h1              { border-color:     #acc ; }
 .download       { border-color:     #acc ; }
 #footer         { border-color:     #a0e0e8 ; }
 
-.toggle h2   { background: url('/images/comments-blue.png') no-repeat 0px -30px ;  }
 
 h1.gemheader {
   margin:      -30px 0 0.5em -65px ; 
@@ -15,8 +13,3 @@ h1.gemheader {
   padding:      50px 0 10px 0px; 
   background:   url('/images/wukong.png') no-repeat 0px 0px ;
   }
-
-/*
-  pre, code { border-color:     #70e0d0 ; }
-  pre, code { background-color: #88f0e7; }
-*/

@@ -4,6 +4,32 @@ title:  mrflip.github.com/wukong - NFS on Hadoop FTW
 collapse: false
 ---
 
+
+h3. Setup NFS within the cluster
+
+If you're lazy, I recommend setting up NFS -- it makes dispatching simple config and script files much easier. (And if you're not lazy, what the hell are you doing using Wukong?).  Be careful though -- used unwisely, a swarm of NFS requests will mount a devastatingly effective denial of service attack on your poor old master node.
+
+* "Some notes on setting up NFS in a hadoop cluster":hadoop-nfs.html
+* http://nfs.sourceforge.net/nfs-howto/ar01s03.html
+
+h3. Miscellaneous Hadoop Config Tips
+
+* The Cloudera AMIs and distribution include BZip2 support.  This means that if you have input files with a .bz2 extension, they will be naturally un-bzipped and streamed. (Note that there is a non-trivial penalty for doing so: each bzip'ed file must go, in whole, to a single mapper; and the CPU load for un-bzipping is sizeable.)
+
+* To _produce_ bzip2 files, specify the new @--compress_output=@ flag.  If you have the BZip2 patches installed, you can give @--compress_output=bz2@; everyone should be able to use @--compress_output=gz@.
+
+* For excellent performance you can patch your install for "Parallel LZO Splitting":http://www.cloudera.com/blog/2009/06/24/parallel-lzo-splittable-compression-for-hadoop/
+
+
+h3. Tools for EC2 and S3 Management
+
+* http://s3sync.net/wiki
+* http://jets3t.s3.amazonaws.com/applications/applications.html#uploader
+* "ElasticFox"
+* "S3Fox (S3 Organizer)":
+* "FoxyProxy":
+
+
 The "Cloudera Hadoop AMI Instances":http://www.cloudera.com/hadoop-ec2 for Amazon's EC2 compute cloud are the fastest, easiest way to get up and running with hadoop. Unfortunately, doing streaming scripts can be a pain, especially if you're doing iterative development.
 
 Installing NFS to share files along the cluster gives the following conveniences:
