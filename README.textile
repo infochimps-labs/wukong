@@ -8,9 +8,9 @@ Treat your dataset as a
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
-Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. (It's even passing familiar with  "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord)
 
-The main documentation -- including tutorials and tips for working with big data -- lives on the "Wukong Pages":http://mrflip.github.com/wukong and there is some supplemental information on the "wukong wiki.":http://wiki.github.com/mrflip/wukong
+The main documentation -- including tutorials and tips for working with big data -- lives on the "Wukong Pages.":http://mrflip.github.com/wukong Please feel free to add supplemental information to the "wukong wiki.":http://wiki.github.com/mrflip/wukong
 
 
 * "Install and set up wukong":http://mrflip.github.com/wukong/INSTALL.html
