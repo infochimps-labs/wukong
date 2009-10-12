@@ -30,6 +30,41 @@ The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympic
 
 <notextile></div><div class="toggle"></notextile>
 
+h2(#algorithms). Map/Reduce Algorithms
+
+Example graph scripts:
+
+* Multigraph
+* Pagerank 		(done)
+* Breadth-first search  
+* Triangle enumeration  
+* Clustering
+
+h3. K-Nearest Neighbors
+
+More example hadoop algorithms:
+* Bigram counts: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/bigrams.html
+* Inverted index construction: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/indexer.html
+* Pagerank : http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/pagerank.html
+* SIPs, Median, classifiers and more : http://matpalm.com/
+* Brad Heintz's "Distributed Computing with Ruby":http://www.bradheintz.com/no1thing/talks/ demonstrates Travelling Salesman in map/reduce.
+
+* "Clustering billions of images with large scale nearest neighbor search":http://scholar.google.com/scholar?cluster=2473742255769621469&hl=en uses three map/reduce passes:
+** Subsample to build a "spill tree" that roughly localizes each object
+** Use the spill tree on the full dataset to group each object with its potential neighbors
+** Calculate the metrics and emit only the k-nearest neighbors
+
+Example example scripts (from http://www.cloudera.com/resources/learning-mapreduce): 
+
+1. Find the [number of] hits by 5 minute timeslot for a website given its access logs.
+2. Find the pages with over 1 million hits in day for a website given its access logs.
+3. Find the pages that link to each page in a collection of webpages.
+4. Calculate the proportion of lines that match a given regular expression for a collection of documents.
+5. Sort tabular data by a primary and secondary column.
+6. Find the most popular pages for a website given its access logs.
+
+<notextile></div><div class="toggle"></notextile>
+
 h2(#whateverdude). Don't Use Wukong, use this instead
 
 There are several worthy Hadoop|Streaming Frameworks:
@@ -87,7 +122,7 @@ h4. Hadoop
 * "Running Hadoop On Ubuntu Linux (Single-Node Cluster)":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Single-Node_Cluster) and "unning Hadoop On Ubuntu Linux (Multi-Node Cluster).":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Multi-Node_Cluster)
 * "Running Hadoop MapReduce on Amazon EC2 and S3":http://developer.amazonwebservices.com/connect/entry.jspa?externalID=873
 
---------------------------
+* A "dimwitted screed on Ruby, Hadoop and Starling":http://www.theregister.co.uk/2008/08/11/hadoop_dziuba/ seemingly written with jockstrap on head.
 
 <notextile></div><div class="toggle"></notextile>
 
@@ -106,41 +141,6 @@ h2(#andpig). What's up with Wukong::AndPig?
 @Wukong::AndPig@ is a small library to more easily generate code for the "Pig":http://hadoop.apache.org/pig data analysis language.  See its "README":http://github.com/mrflip/wukong/tree/master/lib/wukong/and_pig/README.textile for more.
 
 It's **not really being worked on**, and you should probably **ignore it**.
-
-<notextile></div><div class="toggle"></notextile>
-
-h2(#algorithms). Map/Reduce Algorithms
-
-Example graph scripts:
-
-* Multigraph
-* Pagerank 		(done)
-* Breadth-first search  
-* Triangle enumeration  
-* Clustering
-
-More example hadoop algorithms:
-* Bigram counts: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/bigrams.html
-* Inverted index construction: http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/indexer.html
-* Pagerank : http://www.umiacs.umd.edu/~jimmylin/cloud9/docs/exercises/pagerank.html
-* SIPs, Median, classifiers and more : http://matpalm.com/
-* Brad Heintz's "Distributed Computing with Ruby":http://www.bradheintz.com/no1thing/talks/ demonstrates Travelling Salesman in map/reduce.
-
-Example example scripts (from http://www.cloudera.com/resources/learning-mapreduce): 
-
-1. Find the [number of] hits by 5 minute timeslot for a website given its access logs.
-
-2. Find the pages with over 1 million hits in day for a website given its access logs.
-
-3. Find the pages that link to each page in a collection of webpages.
-
-4. Calculate the proportion of lines that match a given regular expression for a collection of documents.
-
-5. Sort tabular data by a primary and secondary column.
-
-6. Find the most popular pages for a website given its access logs.
-
-
 
 <notextile></div><div class="toggle"></notextile>
 
