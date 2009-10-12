@@ -53,13 +53,11 @@ h2(#links). Further Reading and useful links:
 * "Ruby Hadoop Quickstart":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart - dive right in with Wukong, Hadoop and the Amazon Elastic MapReduce cloud. Once you get bored with the command line, this is the fastest path to Wukong power.
 * "Distributed Computing with Ruby":http://www.bradheintz.com/no1thing/talks/ has some raw ruby, some Wukong and some JRuby/Hadoop integration -- it demonstrates a Travelling Salesman in map/reduce. Cool!
 
-* "Hadoop, The Definitive Guide":http://www.amazon.com/Hadoop-Definitive-Guide-Tom-White/dp/0596521979
+h4. Hadoop Algorithms
 
-* "Running Hadoop On Ubuntu Linux (Single-Node Cluster)":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Single-Node_Cluster) and "unning Hadoop On Ubuntu Linux (Multi-Node Cluster).":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Multi-Node_Cluster)
-* "Running Hadoop MapReduce on Amazon EC2 and S3":http://developer.amazonwebservices.com/connect/entry.jspa?externalID=873
-
-* "Hadoop Overview by Doug Cutting":http://video.google.com/videoplay?docid=-4912926263813234341 - the founder of the Hadoop project. (49m video)
-
+* http://matpalm.com
+* http://xrime.sourceforge.net/
+* Mahout
 * "Cluster Computing and Map|Reduce":http://www.youtube.com/results?search_query=cluster+computing+and+mapreduce
 ** "Lecture 1: Overview":http://www.youtube.com/watch?v=yjPBkvYh-ss
 ** "Lecture 2 (technical): Map|Reduce":http://www.youtube.com/watch?v=-vD6PUdf3Js
@@ -67,6 +65,9 @@ h2(#links). Further Reading and useful links:
 ** "Lecture 4 (theoretical): Canopy Clustering":http://www.youtube.com/watch?v=1ZDybXl212Q
 ** "Lecture 5 (theoretical): Breadth-First Search":http://www.youtube.com/watch?v=BT-piFBP4fE
 
+h4. Hadoop
+
+* "Hadoop, The Definitive Guide":http://www.amazon.com/Hadoop-Definitive-Guide-Tom-White/dp/0596521979
 * "Cloudera Hadoop Training:":http://www.cloudera.com/hadoop-training
 ** "Thinking at Scale":http://www.cloudera.com/hadoop-training-thinking-at-scale
 ** "Mapreduce and HDFS":http://www.cloudera.com/hadoop-training-mapreduce-hdfs
@@ -80,10 +81,13 @@ h2(#links). Further Reading and useful links:
 ** "Exercise: Getting started with Hadoop":http://www.cloudera.com/hadoop-training-exercise-getting-started-with-hadoop
 ** "Exercise: Writing mapreduce programs":http://www.cloudera.com/hadoop-training-exercise-writing-mapreduce-programs
 ** "Cloudera Blog":http://www.cloudera.com/blog/
-
+* "Hadoop Overview by Doug Cutting":http://video.google.com/videoplay?docid=-4912926263813234341 - the founder of the Hadoop project. (49m video)
 * "Hadoop Wiki: Hadoop Streaming":http://wiki.apache.org/hadoop/HadoopStreaming
 * "Hadoop Docs: Hadoop Streaming":http://hadoop.apache.org/common/docs/current/streaming.html
+* "Running Hadoop On Ubuntu Linux (Single-Node Cluster)":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Single-Node_Cluster) and "unning Hadoop On Ubuntu Linux (Multi-Node Cluster).":http://www.michael-noll.com/wiki/Running_Hadoop_On_Ubuntu_Linux_(Multi-Node_Cluster)
+* "Running Hadoop MapReduce on Amazon EC2 and S3":http://developer.amazonwebservices.com/connect/entry.jspa?externalID=873
 
+--------------------------
 
 <notextile></div><div class="toggle"></notextile>
 
