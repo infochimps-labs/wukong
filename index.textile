@@ -16,7 +16,7 @@ Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig
 
 Send Wukong questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code
 
-<notextile><div class="toggle"></notextile>
+<notextile><div class="toggle" style="display:block;"></notextile>
 
 h2. Documentation index
 
