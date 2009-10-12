@@ -2,13 +2,12 @@ h1. Wukong
 
 Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.
 
-Treat your dataset as a
-
+Treat your dataset like a
 * stream of lines when it's efficient to process by lines
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
-Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. (It's even passing familiar with  "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord)
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. 
 
 The **main documentation** lives on the "Wukong Pages.":http://mrflip.github.com/wukong Please feel free to add supplemental information to the "wukong wiki.":http://wiki.github.com/mrflip/wukong
 
@@ -24,21 +23,23 @@ h2. Install
 
 ** "Main Install and Setup Documentation":http://mrflip.github.com/wukong/INSTALL.html **
 
-Wukong is still under active development.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
+h3. Get the code
+
+We're still actively developing {{ site.gemname }}.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
 
 pre. $ git clone git://github.com/mrflip/{{ site.gemname }}
 
-A gem is available from "github:":http://gems.github.com
-
-pre. $ sudo gem install mrflip-{{ site.gemname }} --source=http://gems.github.com
-
-or from "gemcutter":http://gemcutter.org
+A gem is available from "gemcutter:":http://gemcutter.org/gems/{{ site.gemname }}
 
 pre. $ sudo gem install {{ site.gemname }} --source=http://gemcutter.org
 
+(don't use the gems.github.com version -- it's way out of date.)
+
 You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
 
-To finish setting up, see "setup instructions":http://mrflip.github.com/wukong/INSTALL.html and then read the "usage notes":http://mrflip.github.com/wukong/usage.html
+h3. Dependencies and setup
+
+To finish setting up, see the "detailed setup instructions":http://mrflip.github.com/wukong/INSTALL.html and then read the "usage notes":http://mrflip.github.com/wukong/usage.html
 
 h2. How to write a Wukong script
 

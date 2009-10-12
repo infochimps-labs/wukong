@@ -15,25 +15,30 @@ h1(gemheader). {{ site.gemname }} %(small):: install%
 
 h2(#getcode). Get the code
 
-Wukong is still under active development.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
+We're still actively developing {{ site.gemname }}.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
 
 pre. $ git clone git://github.com/mrflip/{{ site.gemname }}
 
-A gem is available from "github:":http://gems.github.com
-
-pre. $ sudo gem install mrflip-{{ site.gemname }} --source=http://gems.github.com
-
-or from "gemcutter":http://gemcutter.org
+A gem is available from "gemcutter:":http://gemcutter.org/gems/{{ site.gemname }}
 
 pre. $ sudo gem install {{ site.gemname }} --source=http://gemcutter.org
 
+(don't use the gems.github.com version -- it's way out of date.)
+
 You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
+
+<notextile></div><div class="toggle"></notextile>
 
 h3. Get the Dependencies
 
-* Hadoop, pig
-* extlib, YAML, JSON
-* Optional gems: trollop, addressable/uri, htmlentities
+* Hadoop
+* Pig (optional)
+* Parts of {{ site.gemname }} require these gems:
+** addressable/uri
+** htmlentities 
+** extlib
+** YAML
+** JSON
 
 <notextile></div><div class="toggle"></notextile>
 

@@ -1,0 +1,5 @@
+README.textile
+lib/**/*.rb
+examples/**/*.rb
+LICENSE.textile
+docpages/**/*.textile

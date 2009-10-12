@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "0.1.4"
+  s.version = "1.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2009-10-05}
+  s.date = %q{2009-10-12}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -25,31 +25,7 @@ Gem::Specification.new do |s|
      "README.textile"
   ]
   s.files = [
-    "doc/INSTALL.textile",
-     "doc/LICENSE.textile",
-     "doc/README-tutorial.textile",
-     "doc/README-wulign.textile",
-     "doc/README-wutils.textile",
-     "doc/TODO.textile",
-     "doc/UsingWukong-part1-setup.textile",
-     "doc/UsingWukong-part2-scraping.textile",
-     "doc/UsingWukong-part3-parsing.textile",
-     "doc/code/api_response_example.txt",
-     "doc/code/parser_skeleton.rb",
-     "doc/hadoop-nfs.textile",
-     "doc/hadoop-setup.textile",
-     "doc/index.textile",
-     "doc/intro_to_map_reduce/MapReduceDiagram.graffle",
-     "doc/links.textile",
-     "doc/overview.textile",
-     "doc/pig/PigLatinExpressionsList.txt",
-     "doc/pig/PigLatinReferenceManual.html",
-     "doc/pig/PigLatinReferenceManual.txt",
-     "doc/tips.textile",
-     "doc/usage.textile",
-     "doc/utils.textile",
-     "examples/README.txt",
-     "examples/and_pig/sample_queries.rb",
+    "examples/README.txt",
      "examples/apache_log_parser.rb",
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
@@ -71,28 +47,6 @@ Gem::Specification.new do |s|
      "examples/size.rb",
      "examples/word_count.rb",
      "lib/wukong.rb",
-     "lib/wukong/and_pig.rb",
-     "lib/wukong/and_pig/README.textile",
-     "lib/wukong/and_pig/as.rb",
-     "lib/wukong/and_pig/data_types.rb",
-     "lib/wukong/and_pig/functions.rb",
-     "lib/wukong/and_pig/generate.rb",
-     "lib/wukong/and_pig/generate/variable_inflections.rb",
-     "lib/wukong/and_pig/junk.rb",
-     "lib/wukong/and_pig/operators.rb",
-     "lib/wukong/and_pig/operators/compound.rb",
-     "lib/wukong/and_pig/operators/evaluators.rb",
-     "lib/wukong/and_pig/operators/execution.rb",
-     "lib/wukong/and_pig/operators/file_methods.rb",
-     "lib/wukong/and_pig/operators/foreach.rb",
-     "lib/wukong/and_pig/operators/groupies.rb",
-     "lib/wukong/and_pig/operators/load_store.rb",
-     "lib/wukong/and_pig/operators/meta.rb",
-     "lib/wukong/and_pig/operators/relational.rb",
-     "lib/wukong/and_pig/pig_struct.rb",
-     "lib/wukong/and_pig/pig_var.rb",
-     "lib/wukong/and_pig/symbol.rb",
-     "lib/wukong/and_pig/utils.rb",
      "lib/wukong/bad_record.rb",
      "lib/wukong/boot.rb",
      "lib/wukong/datatypes.rb",
@@ -141,7 +95,7 @@ Gem::Specification.new do |s|
      "spec/spec_helper.rb",
      "wukong.gemspec"
   ]
-  s.homepage = %q{http://github.com/mrflip/wukong}
+  s.homepage = %q{http://mrflip.github.com/wukong}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
@@ -149,7 +103,6 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/bin/hdp-wc_spec.rb",
      "spec/spec_helper.rb",
-     "examples/and_pig/sample_queries.rb",
      "examples/apache_log_parser.rb",
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
@@ -173,8 +126,17 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<addressable>, [">= 0"])
+      s.add_runtime_dependency(%q<extlib>, [">= 0"])
+      s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
     else
+      s.add_dependency(%q<addressable>, [">= 0"])
+      s.add_dependency(%q<extlib>, [">= 0"])
+      s.add_dependency(%q<htmlentities>, [">= 0"])
     end
   else
+    s.add_dependency(%q<addressable>, [">= 0"])
+    s.add_dependency(%q<extlib>, [">= 0"])
+    s.add_dependency(%q<htmlentities>, [">= 0"])
   end
 end
