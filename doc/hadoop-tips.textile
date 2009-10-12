@@ -1,0 +1,83 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - NFS on Hadoop FTW
+collapse: false
+---
+
+h2. Hadoop Config Tips
+
+h3(#hadoopnfs). Setup NFS within the cluster
+
+If you're lazy, I recommend setting up NFS -- it makes dispatching simple config and script files much easier. (And if you're not lazy, what the hell are you doing using Wukong?).  Be careful though -- used unwisely, a swarm of NFS requests will mount a devastatingly effective denial of service attack on your poor old master node.
+
+Installing NFS to share files along the cluster gives the following conveniences:
+* You don't have to bundle everything up with each run: any path in ~coder/ will refer back via NFS to the filesystem on master.
+* The user can now passwordless ssh among the nodes, since there's only one shared home directory and since we included the user's own public key in the authorized_keys2 file.  This lets you easily rsync files among the nodes.
+
+First, you need to take note of the _internal_ name for your master, perhaps something like @domU-xx-xx-xx-xx-xx-xx.compute-1.internal@.
+   
+As root, on the master (change @compute-1.internal@ to match your setup):
+
+<pre>
+    apt-get install nfs-kernel-server 
+    echo "/home *.compute-1.internal(rw)" >> /etc/exports ;
+    /etc/init.d/nfs-kernel-server stop ;
+</pre>
+
+(The @*.compute-1.internal@ part limits host access, but you should take a look at the security settings of both EC2 and the built-in portmapper as well.)
+
+Next, set up a regular user account on the *master only*. In this case our user will be named 'chimpy':
+
+<pre>
+  visudo # uncomment the last line, to allow group sudo to sudo
+  groupadd admin 
+  adduser chimpy
+  usermod -a -G sudo,admin chimpy
+  su chimpy                  # now you are the new user
+  ssh-keygen -t rsa          # accept all the defaults
+  cat ~/.ssh/id_rsa.pub      # can paste this public key into your github, etc
+  cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys2
+</pre>    
+
+Then on each slave (replacing domU-xx-... by the internal name for the master node):
+
+<pre>
+    apt-get install nfs-common ;
+    echo "domU-xx-xx-xx-xx-xx-xx.compute-1.internal:/home  /mnt/home  nfs  rw  0 0"  >> /etc/fstab
+    /etc/init.d/nfs-common restart
+    mkdir /mnt/home
+    mount /mnt/home
+   ln -s /mnt/home/chimpy /home/chimpy
+</pre>
+
+You should now be in business. 
+
+Performance tradeoffs should be small as long as you're just sending code files and gems around.  *Don't* write out log entries or data to NFS partitions, or you'll effectively perform a denial-of-service attack on the master node.
+
+* http://nfs.sourceforge.net/nfs-howto/ar01s03.html
+* The "Setting up an NFS Server HOWTO":http://nfs.sourceforge.net/nfs-howto/index.html was an immense help, and I recommend reading it  carefully.
+
+h3(#awstools). Tools for EC2 and S3 Management
+
+* http://s3sync.net/wiki
+* http://jets3t.s3.amazonaws.com/applications/applications.html#uploader
+* "ElasticFox"
+* "S3Fox (S3 Organizer)":
+* "FoxyProxy":
+
+
+h3. Random EC2 notes
+
+* "How to Mount EBS volume at launch":http://clouddevelopertips.blogspot.com/2009/08/mount-ebs-volume-created-from-snapshot.html
+
+* The Cloudera AMIs and distribution include BZip2 support.  This means that if you have input files with a .bz2 extension, they will be naturally un-bzipped and streamed. (Note that there is a non-trivial penalty for doing so: each bzip'ed file must go, in whole, to a single mapper; and the CPU load for un-bzipping is sizeable.)
+
+* To _produce_ bzip2 files, specify the @--compress_output=@ flag. If you have the BZip2 patches installed, you can give @--compress_output=bz2@; everyone should be able to use @--compress_output=gz@.
+
+* For excellent performance you can patch your install for "Parallel LZO Splitting":http://www.cloudera.com/blog/2009/06/24/parallel-lzo-splittable-compression-for-hadoop/
+
+* If you're using XFS, consider setting the nobarrier option
+    /dev/sdf  /mnt/data2    xfs     noatime,nodiratime,nobarrier    0 0
+
+* The first write to any disk location is about 5x slower than later writes. Explanation, and how to pre-soften a volume, here: http://docs.amazonwebservices.com/AWSEC2/latest/DeveloperGuide/index.html?instance-storage.html
+

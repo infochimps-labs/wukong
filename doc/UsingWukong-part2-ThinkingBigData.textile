@@ -1,5 +1,12 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Overview
+collapse: false
+---
 
-h2. There's lots of data
+h1. Thinking Big Data
+
+h2. There's lots of data, Wukong and Hadoop can help
 
 
 There are two disruptive
@@ -12,9 +19,6 @@ There are two disruptive
 * We have linearly scaling multiprocessing
 ** Old frontier computing: expensive, N log N, SUUUUUUCKS
 ** It's cheap, it's scaleable and it's fun
-
-h2. Wukong + Hadoop can help
-
 
 h2. == Map|Reduce ==
 
@@ -69,23 +73,3 @@ h2. == Mechanics, HDFS ==
 
 x M _
 _ M y
-
-h2. == More Reading ==
-
-h3. Hadoop
-
-* "Hadoop, The Definitive Guide":http://www.amazon.com/Hadoop-Definitive-Guide-Tom-White/dp/0596521979
-* "":
-
-* "Cloudera Blog":http://www.cloudera.com/blog/
-
-h3. Hadoop|Streaming Frameworks
-
-* infochimps.org's "Wukong":http://github.com/mrflip/wukong -- ruby; object-oriented *and* record-oriented
-* NYTimes' "MRToolkit":http://code.google.com/p/mrtoolkit/ -- ruby; much more log-oriented
-* Freebase's "Happy":http://code.google.com/p/happy/ -- python; the most performant, as it can use Jython to make direct API calls.
-* Last.fm's "Dumbo":http://wiki.github.com/klbostee/dumbo -- python
-
- h3. Hadoop Infrastructure
-
-Even if you have a bunch of machines with spare cycles, lots of RAM, and a shared filesystem... do yourself a favor and start out using the "Cloudera AMIs on Amazon's EC2 cloud.":http://www.cloudera.com/hadoop-ec2 There are an overwhelming number of fiddly little parameters and you'll be glad for the user experience before you get into server setup. Actually, if it's still June 2009 when you read this, profile your scripts with Wukong on the command line and kill some time before Hadoop 0.20 comes out.  It will be a) more fun, b) much more robust (trust me, at "v0.20" you want to live on the bleeding edge), and c) you won't have to suffer through migrating your HDFS two weeks after setup.

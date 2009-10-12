@@ -1,0 +1,17 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - Using Wukong and Wuclan, Part 1 - Setup
+collapse: false
+---
+
+h1. Using Wukong and Wuclan, Part 0 - Setup
+
+Please follow the "installation and setup directions":setup.html for wukong, hadoop and a compute cluster.
+
+h1. Using Wukong and Wuclan, Part 1 - Scraping
+
+This part needs writing.
+
+Later, it will tell you how to get a large corpus of data to use in part 2.
+
+In the meantime check out http://mrflip.github.com/monkeyshines/ and http://mrflip.github.com/wuclan/ -- in particular the "Twitter Search Scraper":http://github.com/mrflip/wuclan/tree/master/examples/twitter/scrape_twitter_search/ example.  We use this in production to gather and analyze tens of gigabytes of twitter conversations.

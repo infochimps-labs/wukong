@@ -1,3 +1,9 @@
+---
+layout: default
+title:  mrflip.github.com/wukong - wu-lign utility
+collapse: false
+---
+
 h1. wu-lign -- format a tab-separated file as aligned columns
 
 wu-lign will intelligently reformat a tab-separated file into a tab-separated, space aligned file that is still suitable for further processing. For example, given the log-file input

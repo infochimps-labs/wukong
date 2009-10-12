@@ -5,10 +5,18 @@ title:  Usage notes
 
 h1(gemheader). {{ site.gemname }} %(small):: usage%
 
+** "How to run a Wukong script":#running
+** "How to test your scripts":#testing
+** "Wukong Plays nicely with others":#playnice
+** "Schema export":#schema_export to Pig or SQL
+** "Wukong's internal workflow":#workflow
+** "Using wukong with internal streaming":#stayinruby
+** "Using wukong to Batch-Process ActiveRecord Objects":#activerecord
+
 
 <notextile><div class="toggle"></notextile>
 
-h2. How to run a Wukong script
+h2(#running). How to run a Wukong script
 
 To run your script using local files and no connection to a hadoop cluster,
 
@@ -31,7 +39,7 @@ Note that all @--options@ must precede (in any order) all non-options.
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. How to test your scripts
+h2(#testing). How to test your scripts
 
 To run mapper on its own:
 
@@ -45,58 +53,143 @@ Next graduate to running @--run=local@ mode so you can inspect the reducer.
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. What tools does Wukong work with?
+h2(#playnice). Wukong Plays nicely with others
 
-Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  We're looking forward to being friends with "martinis":http://datamapper.org and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord down the road.
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.  It even has limited support for "martinis":http://datamapper.org (Datamapper) and "express trains":http://wiki.rubyonrails.org/rails/pages/ActiveRecord (ActiveRecord).
+
+* "Export Wukong classes to SQL or Pig":#schema_export -- easily bulk-load and define SQL tables, or kickstart your pig scripts
+* "Batch-Process records from ActiveRecord":#activerecord (the datamapper case is similar)
+* Cascade Mappers and Reducers "purely in ruby":#stayinruby -- reportedly useful in an "ETL":http://en.wikipedia.org/wiki/Extract,_transform,_load context.
+
+h3(#schema_export). Schema export to Pig or SQL
+
+There is preliminary support for dumping wukong classes as schemata for other tools. For example, given the following:
+
+{% highlight ruby %}
+    require "wukong" ;
+    require "wukong/schema"
+    User = TypedStruct.new(
+        [:id,                     Integer],
+        [:scraped_at,             Bignum],
+        [:screen_name,            String],
+        [:followers_count,        Integer],
+        [:created_at,             Bignum]
+        );
+{% endhighlight %}
+
+You can make a snippet for loading into pig with @puts User.load_pig@:
+
+<pre>    LOAD users.tsv AS ( rsrc:chararray, id: int, scraped_at: long, screen_name: chararray, followers_count: int, created_at: long )</pre>
+
+Export to SQL with @puts User.sql_create_table ; puts User.sql_load_mysql@:
+
+{% highlight sql %}
+    CREATE TABLE         `users` (
+      `id`                  INT,
+      `scraped_at`          BIGINT,
+      `screen_name`         VARCHAR(255) CHARACTER SET ASCII,
+      `followers_count`     INT,
+      `created_at`          BIGINT
+      )  ;
+    ALTER TABLE            `user` DISABLE KEYS;
+    LOAD DATA LOCAL INFILE 'user.tsv'
+      REPLACE INTO TABLE   `user`
+      COLUMNS
+        TERMINATED BY           '\t'
+        OPTIONALLY ENCLOSED BY  ''
+        ESCAPED BY              ''
+      LINES STARTING BY     'user'
+      ( @dummy,
+        `id`, `scraped_at`, `screen_name`, `followers_count`, `created_at`
+      );
+    ALTER TABLE `user` ENABLE KEYS ;
+    SELECT 'user', NOW(), COUNT(*) FROM `user`;
+{% endhighlight %}
 
 <notextile></div><div class="toggle"></notextile>
 
-h2. Design
+h2(#workflow). Wukong's internal workflow
 
-...
+Here's a somewhat detailed overview of a wukong script's internal workflow.
 
-<notextile></div><div class="toggle"></notextile>
+# You call @./myscript.rb --run infile outfile@
+# Execution begins in the run method of the Script class (@wukong/script.rb@). It launches (depending on if you're local or remote) one of
+** @cat infile | ./myscript.rb --map | sort | ./myscript.rb --reduce > outfile@
+** @hadoop [a_crapton_of_streaming_args] -mapper './myscript.rb --map' -reducer './myscript.rb --reduce' @
+# In either case, the effect is to spawn the exact same script you ran at the command line: one or more times with the --map command in place of the --run command, and one or more times with the --reduce command in place of the --run command. %(quiet)(well, unless you specify no reducers or a :map_command or something)%
 
-h2. Caveats
+# With the @--map@ or @--reduce@ flag given, the Script flag turns over control to the corresponding class: either @mapper_klass.new(self.options).stream@ or @reducer_klass.new(self.options).stream@
 
-...
+When in @--map@ or @--reduce@ mode (we'll just use @--map@ as an example):
 
-<notextile></div><div class="toggle"></notextile>
-
-h2. TODOs
-
-...
-
-<notextile></div><div class="toggle"></notextile>
-
-h2. Note on Patches/Pull Requests
-
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a future version unintentionally.
-* Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but  bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
-
-<notextile></div><div class="toggle"></notextile>
-
-h2. Endnotes
+# The mapper_klass is usually a subclass of @Streamer::Base@, but in actual fact it can be anything that initializes from a hash of options and responds to #stream.
+# The default #stream method
+** calls the before_stream hook
+** reads each line from stdin ; #recordizes it ; passes it (if non-nil) to #process ; and emits each object yielded by #process
+** calls its after_stream hook
+# You typically leave #stream alone and just override #process.
+# The accumulator classes build on these patterns (they're proper subclasses of Streamer::Base), but are used differently. With an accumulator, you should implement some or all of
+** #start! -- called at the start of each accumulation, passing in the first record for that key
+** #accumulate -- called on each record (including that first one)
+** #finalize --  called when the last key of this accumulation is seen.
+** #get_key -- called on each record to recover its key.
 
 
-h3. Why is it called Wukong?
+h3(#stayinruby). Using wukong with internal streaming
 
-Hadoop, as you may know, is "named after a stuffed elephant.":http://en.wikipedia.org/wiki/Hadoop Since Wukong was started by the "infochimps":http://infochimps.org team, we needed a simian analog.  A Monkey King who journeyed to the land of the Elephant seems to fit the bill:
+If you're using wukong in local mode, you may not want to spawn new processes all over the place.  Or your records may arrive not from the command line but from, say, a database call.
 
-bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main character in the classical Chinese epic novel Journey to the West. In the novel, he accompanies the monk Xuanzang on the journey to retrieve Buddhist sutras from India.
+In that case, just override #stream.  The original:
 
-bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn (8,100 kg) Ruyi Jingu Bang with ease. He also has superb speed, traveling 108,000 li (54,000 kilometers) in one somersault. Sun knows 72 transformations, which allows him to transform into various animals and objects; he is, however, shown with slight problems transforming into other people, since he is unable to complete the transformation of his tail. He is a skilled fighter, capable of holding his own against the best generals of heaven. Each of his hairs possesses magical properties, and is capable of transforming into a clone of the Monkey King himself, or various weapons, animals, and other objects. He also knows various spells in order to command wind, part water, conjure protective circles against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
+{% highlight ruby %}
+      #
+      # Pass each record to +#process+
+      #
+      def stream
+        before_stream
+        $stdin.each do |line|
+          record = recordize(line.chomp)
+          next unless record
+          process(*record) do |output_record|
+            emit output_record
+          end
+        end
+        after_stream
+      end
+{% endhighlight %}
 
-The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
+h3(#activerecord). Using wukong to Batch-Process ActiveRecord Objects
 
+Here's a stream method, overridden to batch-process ActiveRecord objects (untested sample code):
 
-* What's up with Wukong::AndPig?
-** @Wukong::AndPig@ is a small library to more easily generate code for the "Pig":http://hadoop.apache.org/pig data analysis language.  See its "README":wukong/and_pig/README.textile for more.
+{% highlight ruby %}
+    class Mapper < Wukong::Streamer
+      # Set record_klass to the ActiveRecord class you'd like to batch process
+      cattr_accessor :record_klass
+      # Size of each batch to pull from the database
+      cattr_accessor :batch_size
 
+      #
+      # Grab records from the database in batches,
+      # pass each record to +#process+
+      #
+      # Everything downstream of this is agnostic of the fact that
+      # records are coming from the database and not $stdin
+      #
+      def stream
+        before_stream
+        record_klass.find_in_batches(:batch_size => batch_size ) do |record_batch|
+          record_batch.each do |record|
+            process(record.id, record) do |output_record|
+              emit output_record
+            end
+          end
+        end
+        after_stream
+      end
 
+      # ....
+    end
+{% endhighlight %}
 
 <notextile></div></notextile>
-

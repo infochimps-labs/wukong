@@ -1,9 +1,8 @@
 ---
 layout: default
 title:  mrflip.github.com/wukong
-collapse: false
+collapse: true
 ---
-
 h1(gemheader). wukong %(small):: hadoop made easy%
 
 
@@ -15,110 +14,71 @@ Treat your dataset like a
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
-Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line.
+Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. 
 
 <notextile><div class="toggle"></notextile>
 
-h2. How to write a Wukong script
+h2. Documentation index
 
-Here's a script to count words in a text stream:
+* "Install and set up wukong":INSTALL.html
+** "Get the code":INSTALL.html#getcode
+** "Setup":INSTALL.html#setup
+** "Installing and Running Wukong with Hadoop":INSTALL.html#gethadoop
+** "Installing and Running Wukong with Datamapper, ActiveRecord, the command-line and more":INSTALL.html#others
 
-<pre><code>
-    require 'wukong'
-    module WordCount
-      class Mapper < Wukong::Streamer::LineStreamer
-        # Emit each word in the line.
-        def process line
-          words = line.strip.split(/\W+/).reject(&:blank?)
-          words.each{|word| yield [word, 1] }
-        end
-      end
-      
-      class Reducer < Wukong::Streamer::ListReducer
-        def finalize
-          yield [ key, values.map(&:last).map(&:to_i).sum ]
-        end
-      end
-    end
-    
-    Wukong::Script.new(
-      WordCount::Mapper,
-      WordCount::Reducer
-      ).run # Execute the script
-</code></pre>
+* "Tutorial":tutorial.html
+** "Count Words":tutorial.html#wordcount
+** "Structured data":tutorial.html#structstream
+** "Accumulators":tutorial.html#accumulators including a UniqByLastReducer and a GroupBy reducer.
 
-The first class, the Mapper, eats lines and craps @[word, count]@ records: word is the /key/, its count is the /value/.
+* "Usage notes":usage.html
+** "How to run a Wukong script":usage.html#running
+** "How to test your scripts":usage.html#testing
+** "Wukong Plays nicely with others":usage.html#playnice
+** "Schema export":usage.html#schema_export to Pig and SQL
+** "Using wukong with internal streaming":usage.html#stayinruby
+** "Using wukong to Batch-Process ActiveRecord Objects":usage.html#activerecord
 
-In the reducer, the values for each key are stacked up into a list; then the record(s) yielded by @#finalize@ are emitted. There are many other ways to write the reducer (most of them are better) -- see the ["examples":examples/]
+* "Wutils":wutils.html -- command-line utilies for working with data from the command line
+** "Overview of wutils":wutils.html#wutils -- command listing
+** "Stupid command-line tricks":wutils.html#cmdlinetricks using the wutils
+** "wu-lign":wutils.html#wulign -- present a tab-separated file as aligned columns
+** Dear Lazyweb, please build us a "tab-oriented version of the Textutils library":wutils.html#wutilsinc
 
-<notextile></div><div class="toggle"></notextile>
+* Links and tips for "configuring and working with hadoop":hadoop-tips.html
+* Some opinionated "thoughts on working with big data,":bigdata-tips.html on why you should drop acid, treat exceptions as records, and happily embrace variable-length strings as primary keys.
+* Wukong is licensed under the "Apache License":LICENSE.html (same as Hadoop)
 
-h2. Structured data stream
+* "More info":moreinfo.html
+** "Why is it called Wukong?":moreinfo.html#name
+** "Don't Use Wukong, use this instead":moreinfo.html#whateverdude
+** "Further Reading and useful links":moreinfo.html#links
+** "Note on Patches/Pull Requests":moreinfo.html#patches
+** "What's up with Wukong::AndPig?":moreinfo.html#andpig
+** "Map/Reduce Algorithms":moreinfo.html#algorithms
+** "TODOs":moreinfo.html#TODO                
 
-You can also use structs to treat your dataset as a stream of objects:
+* Work in progress: an intro to data processing with wukong:
+** "Part 1, Get Ready":UsingWukong-part1-getready.html
+** "Part 2, Thinking Big Data":UsingWukong-part2-ThinkingBigData.html
+** "Part 3, Parsing":UsingWukong-part3-parsing.html
 
-<pre><code>
-    require 'wukong'
-    require 'my_blog' #defines the blog models
-    # structs for our input objects
-    Tweet = Struct.new( :id, :created_at, :twitter_user_id,
-      :in_reply_to_user_id, :in_reply_to_status_id, :text )
-    TwitterUser  = Struct.new( :id, :username, :fullname,
-      :homepage, :location, :description )
-    module TwitBlog
-      class Mapper < Wukong::Streamer::RecordStreamer
-        # Watch for tweets by me
-        MY_USER_ID = 24601
-        #
-        # If this is a tweet is by me, convert it to a Post.
-        #
-        # If it is a tweet not by me, convert it to a Comment that
-        # will be paired with the correct Post.
-        #
-        # If it is a TwitterUser, convert it to a User record and
-        # a user_location record
-        #
-        def process record
-          case record
-          when TwitterUser
-            user     = MyBlog::User.new.merge(record) # grab the fields in common
-            user_loc = MyBlog::UserLoc.new(record.id, record.location, nil, nil)
-            yield user
-            yield user_loc
-          when Tweet
-            if record.twitter_user_id == MY_USER_ID
-              post = MyBlog::Post.new.merge record
-              post.link = "http://twitter.com/statuses/show/#{record.id}"
-              post.body = record.text
-              post.title = record.text[0..65] + "..."
-              yield post
-            else
-              comment = MyBlog::Comment.new.merge record
-              comment.body    = record.text
-              comment.post_id = record.in_reply_to_status_id
-              yield comment
-            end
-          end
-        end
-      end
-    end
-    Wukong::Script.new( TwitBlog::Mapper, nil ).run # identity reducer
-</code></pre>
+<notextile></div></notextile>
 
-<notextile></div><div class="toggle"></notextile>
+{% include intro.textile %}
 
-h2. More info
+<notextile><div class="toggle"></notextile>
 
-There are many useful examples (including an actually-useful version of the WordCount script) in examples/ directory.
+h2. Credits
 
-h3. Authors
-
-Philip (flip) Kromer (flip@infochimps.org)
+Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org) for the "infochimps project":http://infochimps.org
 
 Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)
 * ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui@masuidrive.jp - http://blog.masuidrive.jp/
 
-<notextile></div></notextile>
+Thanks to:
+* "Brad Heintz":http://www.bradheintz.com/no1thing/talks/ for his early feedback
+* "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
 
-{% include news.html %}
+<notextile></div></notextile>
