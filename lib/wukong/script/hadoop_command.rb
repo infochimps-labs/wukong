@@ -4,6 +4,30 @@ module Wukong
 
     # ===========================================================================
     #
+    # Hadoop Environment
+    #
+
+    #
+    # Via @pskomoroch via @tlipcon,
+    #
+    #  "there is a little known Hadoop Streaming trick buried in this Python
+    #   script. You will notice that the date is not actually in the raw log
+    #   data itself, but is part of the filename. It turns out that Hadoop makes
+    #   job parameters you would fetch in Java with something like
+    #   job.get("mapred.input.file") available as environment variables for
+    #   streaming jobs, with periods replaced with underscores:
+    #
+    #     filepath = os.environ["map_input_file"]
+    #     filename = os.path.split(filepath)[-1]
+    #   Thanks to Todd Lipcon for directing me to that hack.
+    #
+
+    def self.input_file
+      ENV['map_input_file']
+    end
+
+    # ===========================================================================
+    #
     # Hadoop Options
     #
 
