@@ -33,7 +33,7 @@
   </div> 
 
   {% if site.gemname %}
-  <div class="download"><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/zipball/master"><img alt="download sourceball as .zip" width="72" src="/images/zip.png" /></a><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/tarball/master"><img alt="download sourceball as .tar" width="72" src="/images/tar.png" /></a><a href="http://gems.github.com/gems/{{ site.gemuser }}-{{ site.gemname }}-{{ site.gemversion }}.gem"><img alt="download sourceball as static gem" width="72" src="/images/gem.png" /></a></div>
+    <div class="download"><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/zipball/master"><img alt="download sourceball as .zip" border="0" width="72" src="/images/zip.png" /></a><a href="http://github.com/{{ site.gemuser }}/{{ site.gemname }}/tarball/master"><img alt="download sourceball as .tar" border="0" width="72" src="/images/tar.png" /></a><a href="http://gemcutter.org/gems/{{ site.gemname }}"><img alt="download sourceball as static gem" border="0" width="72" src="/images/gem.png" /></a></div>
   {% endif %}
 
   {{ content }}
