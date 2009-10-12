@@ -19,6 +19,10 @@ The **main documentation** lives on the "Wukong Pages.":http://mrflip.github.com
 * Wukong is licensed under the "Apache License":http://mrflip.github.com/wukong/LICENSE.html (same as Hadoop)
 * "More info":http://mrflip.github.com/wukong/moreinfo.html
 
+h2. Help!
+
+Send Wukong questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code
+
 h2. Install
 
 ** "Main Install and Setup Documentation":http://mrflip.github.com/wukong/INSTALL.html **
@@ -185,3 +189,15 @@ bq. Sun Wukong (孙悟空), known in the West as the Monkey King, is the main ch
 bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn (8,100 kg) Ruyi Jingu Bang with ease. He also has superb speed, traveling 108,000 li (54,000 kilometers) in one somersault. Sun knows 72 transformations, which allows him to transform into various animals and objects; he is, however, shown with slight problems transforming into other people, since he is unable to complete the transformation of his tail. He is a skilled fighter, capable of holding his own against the best generals of heaven. Each of his hairs possesses magical properties, and is capable of transforming into a clone of the Monkey King himself, or various weapons, animals, and other objects. He also knows various spells in order to command wind, part water, conjure protective circles against demons, freeze humans, demons, and gods alike. -- ["Sun Wukong's Wikipedia entry":http://en.wikipedia.org/wiki/Wukong]
 
 The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
+
+h2. Credits
+
+Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org) for the "infochimps project":http://infochimps.org
+
+Patches submitted by:
+* gemified by Ben Woosley (ben.woosley with the gmails)
+* ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui at masuidrive.jp - http://blog.masuidrive.jp/
+
+Thanks to:
+* "Brad Heintz":http://www.bradheintz.com/no1thing/talks/ for his early feedback
+* "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
