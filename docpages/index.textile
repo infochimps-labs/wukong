@@ -81,7 +81,7 @@ Thanks to:
 * "Brad Heintz":http://www.bradheintz.com/no1thing/talks/ for his early feedback
 * "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
 
-<notextile><div class="toggle"></notextile>
+<notextile></div><div class="toggle"></notextile>
 
 h2. Help!
 
