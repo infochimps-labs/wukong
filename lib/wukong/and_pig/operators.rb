@@ -1,8 +1,0 @@
-require 'wukong/and_pig/operators/evaluators'
-require 'wukong/and_pig/operators/foreach'
-require 'wukong/and_pig/operators/groupies'
-require 'wukong/and_pig/operators/load_store'
-require 'wukong/and_pig/operators/meta'
-require 'wukong/and_pig/operators/relational'
-require 'wukong/and_pig/operators/file_methods'
-require 'wukong/and_pig/operators/compound'
