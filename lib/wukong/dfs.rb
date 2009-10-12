@@ -22,15 +22,16 @@ module Wukong
       end
     end
 
-    class HFile < TypedStruct.new(
-        [:mode_str,     String],
-        [:i_count,      String],
-        [:owner,        String],
-        [:group,        String],
-        [:size,         Integer],
-        [:date,         Bignum],
-        [:path,     String]
-        )
+    HFile = TypedStruct.new(
+      [:mode_str,     String],
+      [:i_count,      String],
+      [:owner,        String],
+      [:group,        String],
+      [:size,         Integer],
+      [:date,         Bignum],
+      [:path,     String]
+      )
+    HFile.class_eval do
       def self.new_from_ls ls_line
         mode, ic, o, g, sz, dt, tm, path = ls_line.chomp.split(/\s+/)
         date = Time.parse("#{dt} #{tm}").utc.to_flat

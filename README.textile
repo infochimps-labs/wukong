@@ -29,17 +29,17 @@ h2. Install
 
 h3. Get the code
 
-We're still actively developing {{ site.gemname }}.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/{{ site.gemname }}
+We're still actively developing wukong.  The newest version is available via "Git":http://git-scm.com on "github:":http://github.com/mrflip/wukong
 
-pre. $ git clone git://github.com/mrflip/{{ site.gemname }}
+pre. $ git clone git://github.com/mrflip/wukong
 
-A gem is available from "gemcutter:":http://gemcutter.org/gems/{{ site.gemname }}
+A gem is available from "gemcutter:":http://gemcutter.org/gems/wukong
 
-pre. $ sudo gem install {{ site.gemname }} --source=http://gemcutter.org
+pre. $ sudo gem install wukong --source=http://gemcutter.org
 
 (don't use the gems.github.com version -- it's way out of date.)
 
-You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
+You can instead download this project in either "zip":http://github.com/mrflip/wukong/zipball/master or "tar":http://github.com/mrflip/wukong/tarball/master formats.
 
 h3. Dependencies and setup
 
@@ -190,9 +190,15 @@ bq. Sun Wukong possesses incredible strength, being able to lift his 13,500 jīn
 
 The "Jaime Hewlett / Damon Albarn short":http://news.bbc.co.uk/sport1/hi/olympics/monkey that the BBC made for their 2008 Olympics coverage gives the general idea.
 
-h2. Credits
+<notextile><div class="toggle"></notextile>
 
-Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org) for the "infochimps project":http://infochimps.org
+h2. More info
+
+There are many useful examples in the examples/ directory.
+
+h3. Credits
+
+Monkeyshines was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org / "@mrflip":http://twitter.com/mrflip) for the "infochimps project":http://infochimps.org
 
 Patches submitted by:
 * gemified by Ben Woosley (ben.woosley with the gmails)
@@ -201,3 +207,9 @@ Patches submitted by:
 Thanks to:
 * "Brad Heintz":http://www.bradheintz.com/no1thing/talks/ for his early feedback
 * "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
+
+h3. Help!
+
+Send monkeyshines questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code
+
+<notextile></div></notextile>

@@ -71,7 +71,7 @@ h2. Documentation index
 
 h2. Credits
 
-Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org) for the "infochimps project":http://infochimps.org
+Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org / "@mrflip":http://twitter.com/mrflip) for the "infochimps project":http://infochimps.org
 
 Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)
@@ -88,3 +88,5 @@ h2. Help!
 Send Wukong questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code
 
 <notextile></div></notextile>
+
+{% include news.html %}
