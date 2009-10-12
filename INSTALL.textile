@@ -27,8 +27,6 @@ pre. $ sudo gem install {{ site.gemname }} --source=http://gemcutter.org
 
 You can instead download this project in either "zip":http://github.com/mrflip/{{ site.gemname }}/zipball/master or "tar":http://github.com/mrflip/{{ site.gemname }}/tarball/master formats.
 
-<notextile></div><div class="toggle"></notextile>
-
 h3. Get the Dependencies
 
 * Hadoop
