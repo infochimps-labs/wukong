@@ -67,7 +67,7 @@ h2. Documentation index
 
 {% include intro.textile %}
 
-<notextile></div><div class="toggle"></notextile>
+<notextile><div class="toggle"></notextile>
 
 h2. Credits
 
