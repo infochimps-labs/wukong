@@ -1,5 +1,7 @@
 README.textile
+LICENSE.textile
+app/**/*.rm
 lib/**/*.rb
 examples/**/*.rb
-LICENSE.textile
+utils/**/*.rb
 docpages/**/*.textile
