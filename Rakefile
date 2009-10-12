@@ -21,7 +21,7 @@ begin
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
 DESC
     gem.executables = FileList['bin/*'].pathmap('%f')
-    gem.files       =  FileList["\w*", "{bin,docpages,examples,lib,spec,utils}/**/*"].reject{|file| file.to_s =~ %r{.*private.*} }
+    gem.files       =  FileList["\w*", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"].reject{|file| file.to_s =~ %r{.*private.*} }
     gem.add_dependency 'addressable'
     gem.add_dependency 'extlib'
     gem.add_dependency 'htmlentities'
