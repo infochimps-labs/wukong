@@ -125,7 +125,7 @@ module Wukong
         sql_str = []
         members.zip(mtypes).each do |attr, type|
           type_str = type.respond_to?(:to_sql) ? type.to_sql : type.to_s.upcase
-          sql_str << "  %-21s\t%s" %["`#{attr}`", type_str]
+          sql_str << "  %-29s\t%s" %["`#{attr}`", type_str]
         end
         sql_str.join(",\n")
       end
@@ -184,13 +184,15 @@ module Wukong
       # different objects jumbled together, you can just dump in the whole file,
       # landing each object in its correct table.
       #
-      def sql_load_mysql
+      def sql_load_mysql(filename=nil)
+        filename ||= ":resource_name.tsv"
+        filename.gsub!(/:resource_name/, self.table_name)
         str = []
         # disable indexing during bulk load
-        str << %Q{ALTER TABLE            `#{self.resource_name}` DISABLE KEYS; }
+        str << %Q{ALTER TABLE            `#{self.table_name}` DISABLE KEYS; }
         # Bulk load the tab-separated-values file.
-        str << %Q{LOAD DATA LOCAL INFILE '#{self.resource_name}.tsv'}
-        str << %Q{  REPLACE INTO TABLE   `#{self.resource_name}`    }
+        str << %Q{LOAD DATA LOCAL INFILE '#{filename}'}
+        str << %Q{  REPLACE INTO TABLE   `#{self.table_name}`    }
         str << %Q{  COLUMNS                                         }
         str << %Q{    TERMINATED BY           '\\t'                 }
         str << %Q{    OPTIONALLY ENCLOSED BY  ''                    }
@@ -200,9 +202,9 @@ module Wukong
         str << '    '+self.sql_members
         str << %Q{\n  ); }
         # Re-enable indexing
-        str << %Q{ALTER TABLE `#{self.resource_name}` ENABLE KEYS ; }
+        str << %Q{ALTER TABLE `#{self.table_name}` ENABLE KEYS ; }
         # Show it loaded correctly
-        str << %Q{SELECT '#{self.resource_name}', NOW(), COUNT(*) FROM `#{self.resource_name}`; }
+        str << %Q{SELECT NOW(), COUNT(*), '#{self.table_name}' FROM `#{self.table_name}`; }
         str.join("\n")
       end
 

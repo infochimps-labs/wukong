@@ -19,7 +19,7 @@ module Wukong
         begin
           [ klass.new(*fields), suffix ]
         rescue ArgumentError => e
-          warn "Couldn't instantiate: #{e} (#{[rsrc, fields].inspect})"
+          warn "Couldn't instantiate: #{e} (#{[klass, fields].inspect})"
           return
         rescue Exception => e
           raise [e, rsrc, fields].inspect
