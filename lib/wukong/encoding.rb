@@ -1,6 +1,23 @@
 require 'htmlentities'
 require 'addressable/uri'
 
+# Fix a bug (?) in the HTMLEntities encoder class with $KCODE='NONE'
+HTMLEntities::Encoder.class_eval do
+private
+  def extended_entity_regexp
+    @extended_entity_regexp ||= (
+      if encoding_aware?
+        regexp = '[^\u{20}-\u{7E}]'
+      else
+        # regexp = '[^\x20-\x7E]'
+        regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
+      end
+      regexp += "|'" if @flavor == 'html4'
+      Regexp.new(regexp)
+      )
+  end
+end
+
 module Wukong
   #
   # By default (or explicitly with the :xml strategy), convert string to
@@ -24,7 +41,9 @@ module Wukong
   #
   # Wukong.decode_str(Wukong.encode_str(str)) returns the original str
   #
-  #
+  # If you're seeing bad_encoding errors, try
+  #   $KCODE='u' unless "1.9".respond_to?(:encoding)
+  # at the start of your script.
   #
   def self.encode_str str, strategy=:xml
     begin
@@ -34,8 +53,7 @@ module Wukong
       else raise "Don't know how to encode with strategy #{strategy}"
       end
     rescue ArgumentError => e
-      str.gsub!(/[^\w\s\.\-@#%]+/, '')
-      '!!bad_encoding!! ' + str
+      '!bad_encoding!! ' + str.gsub(/[^\w\s\.\-@#%]+/, '')
     end
   end
   # HTMLEntities encoder instance
