@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2009-10-12}
+  s.date = %q{2009-10-19}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
 }
   s.email = %q{flip@infochimps.org}
-  s.executables = ["cutc", "cuttab", "greptrue", "hdp-cat", "hdp-catd", "hdp-du", "hdp-get", "hdp-kill", "hdp-ls", "hdp-mkdir", "hdp-mv", "hdp-parts_to_keys.rb", "hdp-ps", "hdp-put", "hdp-rm", "hdp-sort", "hdp-stream", "hdp-stream-flat", "hdp-sync", "hdp-wc", "md5sort", "tabchar", "uniqc", "wu-hist", "wu-lign", "wu-sum"]
+  s.executables = ["hdp-parts_to_keys.rb", "bin/hdp-du", "bin/hdp-sync", "bin/hdp-parts_to_keys", "bin/hdp-wc", "bin/wu-lign", "bin/wu-sum"]
   s.extra_rdoc_files = [
     "LICENSE.textile",
      "README.textile"
@@ -129,6 +129,7 @@ Gem::Specification.new do |s|
      "lib/wukong/extensions/date_time.rb",
      "lib/wukong/extensions/emittable.rb",
      "lib/wukong/extensions/hash.rb",
+     "lib/wukong/extensions/hash_keys.rb",
      "lib/wukong/extensions/hash_like.rb",
      "lib/wukong/extensions/hashlike_class.rb",
      "lib/wukong/extensions/module.rb",
