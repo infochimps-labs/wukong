@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
 }
   s.email = %q{flip@infochimps.org}
-  s.executables = ["hdp-parts_to_keys.rb", "bin/hdp-du", "bin/hdp-sync", "bin/hdp-parts_to_keys", "bin/hdp-wc", "bin/wu-lign", "bin/wu-sum"]
+  s.executables = ["hdp-du", "hdp-sync", "hdp-parts_to_keys", "hdp-wc", "wu-lign", "wu-sum", "hdp-parts_to_keys.rb"]
   s.extra_rdoc_files = [
     "LICENSE.textile",
      "README.textile"
