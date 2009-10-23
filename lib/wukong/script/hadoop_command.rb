@@ -7,23 +7,78 @@ module Wukong
     # Hadoop Environment
     #
 
-    #
-    # Via @pskomoroch via @tlipcon,
-    #
-    #  "there is a little known Hadoop Streaming trick buried in this Python
-    #   script. You will notice that the date is not actually in the raw log
-    #   data itself, but is part of the filename. It turns out that Hadoop makes
-    #   job parameters you would fetch in Java with something like
-    #   job.get("mapred.input.file") available as environment variables for
-    #   streaming jobs, with periods replaced with underscores:
-    #
-    #     filepath = os.environ["map_input_file"]
-    #     filename = os.path.split(filepath)[-1]
-    #   Thanks to Todd Lipcon for directing me to that hack.
-    #
+    module ClassMethods
+      #
+      # Via @pskomoroch via @tlipcon,
+      #
+      #  "there is a little known Hadoop Streaming trick buried in this Python
+      #   script. You will notice that the date is not actually in the raw log
+      #   data itself, but is part of the filename. It turns out that Hadoop makes
+      #   job parameters you would fetch in Java with something like
+      #   job.get("mapred.input.file") available as environment variables for
+      #   streaming jobs, with periods replaced with underscores:
+      #
+      #     filepath = os.environ["map_input_file"]
+      #     filename = os.path.split(filepath)[-1]
+      #   Thanks to Todd Lipcon for directing me to that hack.
+      #
 
-    def self.input_file
-      ENV['map_input_file']
+      # "HADOOP_HOME"                             =>"/usr/lib/hadoop-0.20/bin/..",
+      # "HADOOP_IDENT_STRING"                     =>"hadoop",
+      # "HADOOP_LOGFILE"                          =>"hadoop-hadoop-tasktracker-ip-10-242-14-223.log",
+      # "HADOOP_LOG_DIR"                          =>"/usr/lib/hadoop-0.20/bin/../logs",
+      # "HOME"                                    =>"/var/run/hadoop-0.20",
+      # "JAVA_HOME"                               =>"/usr/lib/jvm/java-6-sun",
+      # "LD_LIBRARY_PATH"                         =>"/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386/client:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/i386:/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386/client:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/i386",
+      # "PATH"                                    =>"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games",
+      # "USER"                                    =>"hadoop",
+      #
+      # "dfs_block_size"                          =>"134217728",
+      # "map_input_start"                         =>"0",
+      # "map_input_length"                        =>"125726898",
+      # "mapred_output_key_class"                 =>"org.apache.hadoop.io.Text",
+      # "mapred_output_value_class"               =>"org.apache.hadoop.io.Text",
+      # "mapred_output_format_class"              =>"org.apache.hadoop.mapred.TextOutputFormat",
+      # "mapred_output_compression_codec"         =>"org.apache.hadoop.io.compress.DefaultCodec",
+      # "mapred_output_compression_type"          =>"BLOCK",
+      # "mapred_task_partition"                   =>"0",
+      # "mapred_tasktracker_map_tasks_maximum"    =>"4",
+      # "mapred_tasktracker_reduce_tasks_maximum" =>"2",
+      # "mapred_tip_id"                           =>"task_200910221152_0023_m_000000",
+      # "mapred_task_id"                          =>"attempt_200910221152_0023_m_000000_0",
+      # "mapred_job_tracker"                      =>"ec2-174-129-141-78.compute-1.amazonaws.com:8021",
+      #
+      # "mapred_input_dir"                        =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/ripd/com.tw/com.twitter.search/20090809",
+      # "map_input_file"                          =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/ripd/com.tw/com.twitter.search/20090809/com.twitter.search+20090809233441-56735-womper.tsv.bz2",
+      # "mapred_working_dir"                      =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip",
+      # "mapred_work_output_dir"                  =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/tmp/twsearch-20090809/_temporary/_attempt_200910221152_0023_m_000000_0",
+      # "mapred_output_dir"                       =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/tmp/twsearch-20090809",
+      # "mapred_temp_dir"                         =>"/mnt/tmp/hadoop-hadoop/mapred/temp",
+      # "PWD"                                     =>"/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work",
+      # "TMPDIR"                                  =>"/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work/tmp",
+      # "stream_map_streamprocessor"              =>"%2Fusr%2Fbin%2Fruby1.8+%2Fmnt%2Fhome%2Fflip%2Fics%2Fwuclan%2Fexamples%2Ftwitter%2Fparse%2Fparse_twitter_search_requests.rb+--map+--rm",
+      # "user_name"                               =>"flip",
+
+      def input_file
+        ENV['mapred_input_file']
+      end
+
+      def attempt_id
+        ENV['mapred_task_id']
+      end
+      def curr_task_id
+        ENV['mapred_tip_id']
+      end
+
+      def script_cmdline_urlenc
+        ENV['stream_map_streamprocessor']
+      end
+    end
+    # Standard ClassMethods-on-include trick
+    def self.included base
+      base.class_eval do
+        extend ClassMethods
+      end
     end
 
     # ===========================================================================
