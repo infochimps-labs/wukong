@@ -17,7 +17,7 @@ module Wukong
       # Pass each record to +#process+
       #
       def stream
-        Log.info("Streaming on:\t%s" % [Script.inputfile])
+        Log.info("Streaming on:\t%s" % [Script.input_file])
         before_stream
         $stdin.each do |line|
           record = recordize(line.chomp)
