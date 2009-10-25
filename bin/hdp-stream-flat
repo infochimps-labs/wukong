@@ -5,9 +5,12 @@ output_file=${1} 			; shift
 map_script=${1-/bin/cat}		; shift
 reduce_script=${1-/usr/bin/uniq}	; shift
 
-if [ "$reduce_script" == "" ] ; then echo "$0 input_file output_file [sort_fields] [mapper] [reducer] [args]" ; exit ; fi
+if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/cat] [reducer=/usr/bin/uniq] [extra_args]" ; exit ; fi
 
-hadoop jar /home/flip/hadoop/h/contrib/streaming/hadoop-*-streaming.jar			\
+HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
+
+${HADOOP_HOME}/bin/hadoop \
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		\
     -mapper  	"$map_script"  								\
     -reducer	"$reduce_script"							\
     -input      "$input_file"								\
