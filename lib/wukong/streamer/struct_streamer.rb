@@ -30,7 +30,7 @@ module Wukong
       #
       #
       def recordize line
-        StructRecordizer.recordize *line.split("\t")
+        StructRecordizer.recordize *line.split("\t") unless line.blank?
       end
     end
 
