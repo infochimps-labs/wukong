@@ -2,4 +2,4 @@
 
 fields=${1-"1-"}
 shift
-cut  -d'	' -f"$fields" "$@"
+exec cut  -d'	' -f"$fields" "$@"

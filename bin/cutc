@@ -27,4 +27,4 @@ shift
 #
 # Do the cuttin'
 #
-cut -c"${cutchars}" "$@"
+exec cut -c"${cutchars}" "$@"
