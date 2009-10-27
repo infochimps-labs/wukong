@@ -7,4 +7,4 @@ else
     action=ls
 fi
 
-hadoop dfs -$action "$@"
+exec hadoop dfs -$action "$@"

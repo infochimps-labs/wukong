@@ -8,4 +8,4 @@ else
 fi
 echo hadoop dfs -$action "$@"
 # read -p "Hit ctrl-C to abort or enter to do this...."
-hadoop dfs -$action "$@"
+exec hadoop dfs -$action "$@"
