@@ -17,6 +17,16 @@ module Wukong::Streamer
   end
 end
 
+#
+# Find symmetric links
+#
+# Takes adjacency list for a directed graph and emits only edges where
+#   A->B and B->A
+#
+# The output will list each such symmetric edge exactly once as
+#    a_symmetric_b   node1    node2
+# where node1 is lexicographically less than node2.
+#
 module FindSymmetricLinks
 
   class Mapper < Wukong::Streamer::EdgeStreamer

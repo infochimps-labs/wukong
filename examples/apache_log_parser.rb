@@ -5,21 +5,21 @@ require 'wukong'
 module ApacheLogParser
   class Mapper < Wukong::Streamer::LineStreamer
 
+    # regular expression for apache-style log lines
+    # note that we strip out the google analytics listener.
+    LOG_RE = %r{\A
+           (\d+\.\d+\.\d+\.\d+)                         # IP addr
+         \s([^\s]+)\s                                   # -
+         \s([^\s]+)                                     # -
+         \s\[(\d\d/\w+/\d+):(\d\d:\d\d:\d\d)([^\]]*)\]  # [07/Jun/2008:20:37:11 +0000]
+         \s(\d+)                                        # 400
+         \s"([^\"]*(?:\" \+ gaJsHost \+ \"[^\"]*)?)"    # "GET /faq" + gaJsHost + "google-analytics.com/ga.js HTTP/1.1"
+         \s(\d+)                                        # 173
+         \s"([^\"]*)" "([^\"]*)" "([^\"]*)"             #  "-" "-" "-"
+      \z}x
 
-    def parse_request req
-      m = %r{\A(\w+) (.*) (\w+/[\w\.]+)\z}.match(req)
-      if m
-        [''] + m.captures
-      else
-        [req, '', '', '']
-      end
-    end
-
-
-    # regular expression to match on apache-style log lines
-    #             IP addr              -         -        [07/Jun/2008:20:37:11 +0000]               400   "GET /faq" + gaJsHost + "google-analytics.com/ga.js HTTP/1.1" 173 "-" "-" "-"
-    LOG_RE = %r{\A(\d+\.\d+\.\d+\.\d+) ([^\s]+) ([^\s]+) \[(\d\d/\w+/\d+):(\d\d:\d\d:\d\d)([^\]]*)\] (\d+) "([^\"]*(?:\" \+ gaJsHost \+ \"[^\"]*)?)" (\d+) "([^\"]*)" "([^\"]*)" "([^\"]*)"\z}
-
+    # Use the regex to break line into fields
+    # Emit each record as flat line
     def process line
       line.chomp
       m = LOG_RE.match(line)
@@ -32,7 +32,19 @@ module ApacheLogParser
         yield [:unparseable, line]
       end
     end
+
+
+    def parse_request req
+      m = %r{\A(\w+) (.*) (\w+/[\w\.]+)\z}.match(req)
+      if m
+        [''] + m.captures
+      else
+        [req, '', '', '']
+      end
+    end
+
   end
+
 
   class Reducer < Wukong::Streamer::LineStreamer
   end
