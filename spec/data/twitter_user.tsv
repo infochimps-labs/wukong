@@ -1,0 +1,85 @@
+# rsrc   	id          	screen_name	scat    	fo	fr	st	st	crat
+twitter_user	1000000001	jerry   	20060101080808	18	6	6	0	20060101080808
+twitter_user	1000000002	costanza81	20060101080812	5	14	0	0       20060101080812
+twitter_user	1000000003	elaine  	20060101080600	8		28	0       20060101080600
+twitter_user	1000000004	puddy   	20080401080808	7				20080401080808
+twitter_user	1000000005	bania    	20080402080808	7				20080402080808
+twitter_user	1000000006	bob_sacamano	20080403080808					20080403080808
+twitter_user	1000000007	original_kramer	20080404080808					20080404080808
+twitter_user	1000000008	newman    	20080405080808					20080405080808
+twitter_user	1000000009	lomez   	20080411080808					20080411080808
+twitter_user	1000000010	man_hands	20080422080808					20080422080808
+twitter_user	1000000011	fusilli_jerry	20080501080808					20080501080808
+twitter_user	1000000012	bubble_boy	20080601080808					20080601080808
+twitter_user	1000000013	jpeterman	20080601080808					20080601080808
+twitter_user	1000000014	jpetermanco	20080601080908					20080601080908
+twitter_user	1000000015	UNCLE_LEO	20080601080808					20080601080808
+twitter_user	1000000016	serenity_now	20080601080808					20080601080808
+twitter_user	1000000017	JackieChilesEsq	20080601080808					20080601080808
+twitter_user	1000000018	mulva   	20080601080808					20080601080808
+twitter_user	1000000019	babubhatt	20080812080808					20080812080808
+twitter_user	1000000020	marla   	20080801080808					20080801080808
+twitter_user	1000000021	ESTELLECOSTNAZA	20080908080808					20080908080808
+twitter_user	1000000022	semischke	20080601080808					20080601080808
+twitter_user	1000000023	bigstein	20080601080808					20080601080808
+twitter_user	1000000024	superman	20080601080808					20080601080808
+twitter_user	1000000025	ArtVandelay	20060101080812	5	14	0	0       20060101080812
+twitter_user	1000000026	HJPennypacker	20080601080808					20080601080808
+twitter_user	1000000027	KelVarnsen	20080601080808					20080601080808
+twitter_user	1000000028	vannostrandmd	20080601080808					20080601080808
+
+a_follows_b	jerry   	costanza87
+a_follows_b	jerry   	elaine
+a_follows_b	jerry		puddy
+a_follows_b	jerry   	bob_sacamano
+a_follows_b	jerry   	original_kramer
+a_follows_b	jerry   	ESTELLECOSTNAZA
+a_follows_b	jerry   	superman
+a_follows_b	jerry   	dccomics
+a_follows_b	jerry   	shake_shack
+a_follows_b	costanza87	jerry
+a_follows_b	costanza87	elaine
+a_follows_b	costanza87	puddy   	
+a_follows_b	costanza87			
+a_follows_b	costanza87	bob_sacamano	
+a_follows_b	costanza87	original_kramer	
+a_follows_b	costanza87	newman    	
+a_follows_b	costanza87	close_talker	
+a_follows_b	costanza87	man_hands	
+a_follows_b	costanza87  	fusilli_jerry	
+a_follows_b	elaine
+a_follows_b	puddy   	jerry
+a_follows_b	puddy   	original_kramer
+a_follows_b	puddy   	nyrangers
+a_follows_b	puddy   	
+a_follows_b	puddy   	
+a_follows_b	puddy   	
+a_follows_b	bob_sacamano	
+a_follows_b	original_kramer	
+a_follows_b	newman    	
+
+a_follows_b	lomez   	
+a_follows_b	man_hands	
+a_follows_b	fusilli_jerry	jerry
+a_follows_b	fusilli_jerry	original_kramer
+a_follows_b	fusilli_jerry	(comedianguy)
+a_follows_b	bubble_boy	
+a_follows_b	jpeterman	
+a_follows_b	jpetermanco	
+a_follows_b	UNCLE_LEO	
+a_follows_b	serenity_now	
+a_follows_b	JackieChilesEsq	
+a_follows_b	mulva   	
+a_follows_b	babubhatt	
+a_follows_b	marla   	
+a_follows_b	ESTELLECOSTNAZA	
+a_follows_b	semischke	
+a_follows_b	bigstein	
+a_follows_b	superman	
+a_follows_b	ArtVandelay	
+a_follows_b	HJPennypacker	
+a_follows_b	KelVarnsen	
+a_follows_b	vannostrandmd
+a_follows_b	bubble_boy	jerry
+a_follows_b	bubble_boy	costanza87
+
