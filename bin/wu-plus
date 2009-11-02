@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+sum   = 0.0
+lines = 0
+$stdin.each do |n|
+  sum   += n.to_f
+  lines += 1
+end
+puts "%15d\t%15d"%[sum, lines]
