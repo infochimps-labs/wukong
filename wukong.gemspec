@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2009-10-19}
+  s.date = %q{2009-11-02}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
      "bin/uniqc",
      "bin/wu-hist",
      "bin/wu-lign",
+     "bin/wu-plus",
      "bin/wu-sum",
      "docpages/INSTALL.textile",
      "docpages/INSTALL.textile",
@@ -154,6 +155,7 @@ Gem::Specification.new do |s|
      "lib/wukong/streamer/list_reducer.rb",
      "lib/wukong/streamer/preprocess_with_pipe_streamer.rb",
      "lib/wukong/streamer/rank_and_bin_reducer.rb",
+     "lib/wukong/streamer/record_streamer.rb",
      "lib/wukong/streamer/set_reducer.rb",
      "lib/wukong/streamer/struct_streamer.rb",
      "lib/wukong/streamer/summing_reducer.rb",
@@ -161,6 +163,10 @@ Gem::Specification.new do |s|
      "lib/wukong/typed_struct.rb",
      "lib/wukong/wukong_class.rb",
      "spec/bin/hdp-wc_spec.rb",
+     "spec/data/a_atsigns_b.tsv",
+     "spec/data/a_follows_b.tsv",
+     "spec/data/tweet.tsv",
+     "spec/data/twitter_user.tsv",
      "spec/spec_helper.rb",
      "wukong.gemspec"
   ]
