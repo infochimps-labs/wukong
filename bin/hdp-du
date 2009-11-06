@@ -73,7 +73,7 @@ def format_output file, size
   OUTPUT_LINE_FMT % [file, size.to_i, human_size]
 end
 
-files_count = 0
+entries_count = 0
 total_size  = 0
 %x{ #{prepare_command} }.split("\n").each do |line|
   if line =~ /^Found \d+ items$/ then puts line ; next end
@@ -81,6 +81,6 @@ total_size  = 0
   if OPTIONS[:summary] then file, size = info else size, file = info end
   puts format_output(file, size)
   total_size  += size.to_i
-  files_count += 1
+  entries_count += 1
 end
-$stderr.puts OUTPUT_LINE_FMT%["# #{"%55d"%files_count} files", total_size, number_to_human_size(total_size)]
+$stderr.puts OUTPUT_LINE_FMT%[" #{"%55d"%entries_count} entries", total_size, number_to_human_size(total_size)]

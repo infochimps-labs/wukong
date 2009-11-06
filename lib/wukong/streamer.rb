@@ -4,6 +4,7 @@ module Wukong
     autoload :LineStreamer,         'wukong/streamer/line_streamer'
     autoload :RecordStreamer,       'wukong/streamer/record_streamer'
     autoload :StructStreamer,       'wukong/streamer/struct_streamer'
+    autoload :StructRecordizer,     'wukong/streamer/struct_streamer'
     #
     autoload :Filter,               'wukong/streamer/filter'
     #
