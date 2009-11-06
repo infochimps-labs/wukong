@@ -5,7 +5,7 @@ OPTIONS={}
 #
 # grok options
 #
-if ARGV[0] =~ /-[a-z]+/
+if ARGV[0] =~ /\A-[sh]+\z/
   flags = ARGV.shift
   OPTIONS[:summary]  = flags.include?('s')
   OPTIONS[:humanize] = flags.include?('h')

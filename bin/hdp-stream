@@ -15,9 +15,7 @@ HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 ${HADOOP_HOME}/bin/hadoop \
      jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		\
     -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			\
-    -jobconf     map.output.key.field.separator='\t'					\
     -jobconf     num.key.fields.for.partition="$partfields"				\
-    -jobconf 	 stream.map.output.field.separator='\t'					\
     -jobconf 	 stream.num.map.output.key.fields="$sortfields"				\
     -mapper  	 "$map_script"  							\
     -reducer	 "$reduce_script"							\
@@ -25,9 +23,11 @@ ${HADOOP_HOME}/bin/hadoop \
     -output  	 "$output_file"								\
     "$@"
 
-
-# -jobconf mapred.map.tasks=3                                                       \
-# -jobconf mapred.reduce.tasks=3                                                    \
+  # -jobconf     mapred.text.key.partitioner.options="-k1,$partfields"			\
+  # -jobconf 	 stream.map.output.field.separator='\t'					\
+  # -jobconf     map.output.key.field.separator='\t'					\        
+  # -jobconf mapred.map.tasks=3                                                         \
+  # -jobconf mapred.reduce.tasks=3                                                      \
 
 #
 # TODO:
@@ -42,15 +42,3 @@ ${HADOOP_HOME}/bin/hadoop \
 #
 #   New-style secondary sort:
 #     http://hadoop.apache.org/common/docs/r0.20.0/streaming.html
-#
-#   $HADOOP_HOME/bin/hadoop  jar $HADOOP_HOME/hadoop-streaming.jar         \
-#     -input myInputDirs                                                 \
-#     -output myOutputDir                                                \
-#     -mapper org.apache.hadoop.mapred.lib.IdentityMapper                \
-#     -reducer org.apache.hadoop.mapred.lib.IdentityReducer              \
-#     -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
-#     -D stream.map.output.field.separator=.                             \
-#     -D stream.num.map.output.key.fields=4                              \
-#     -D map.output.key.field.separator=.                                \
-#     -D mapred.text.key.partitioner.options=-k1,2                       \
-#     -D mapred.reduce.tasks=12
