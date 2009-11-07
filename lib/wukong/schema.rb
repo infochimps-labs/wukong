@@ -106,11 +106,11 @@ module Wukong
       # should, follow with an immediate GENERATE to ditch that field.)
       #
       def pig_load filename=nil
-        filename ||= table_name+'.tsv'
+        filename ||= resource_name+'.tsv'
         cmd = [
-          "%-23s" % resource_name,
-          "= LOAD", filename,
-          "AS ( rsrc:chararray,", self.to_pig, ')',
+          "%-23s" % self.to_s.gsub(/^.*\W/, ""),
+          "= LOAD '#{filename}'",
+          "AS ( rsrc:chararray,", self.to_pig, ') ;',
         ].join(" ")
       end
 
