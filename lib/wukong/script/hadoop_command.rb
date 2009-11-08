@@ -26,6 +26,8 @@ module Wukong
       :output_field_separator => 'stream.map.output.field.separator',
       :map_speculative        => 'mapred.map.tasks.speculative.execution',
       :timeout                => 'mapred.task.timeout',
+      :reuse_jvms             => 'mapred.job.reuse.jvm.num.tasks',
+      :ignore_exit_status     => 'stream.non.zero.exit.status.is.failure',
     }
 
     # emit a -jobconf hadoop option if the simplified command line arg is present
@@ -67,7 +69,8 @@ module Wukong
 
     def hadoop_other_args
       extra_str_args = [ options[:extra_args] ]
-      extra_hsh_args = [:map_speculative, :timeout].map{|opt| jobconf(opt)  }
+      options[:reuse_jvms] = '-1' if (options[:reuse_jvms] == true)
+      extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms].map{|opt| jobconf(opt)  }
       extra_str_args + extra_hsh_args
     end
 

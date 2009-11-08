@@ -8,7 +8,7 @@ require 'wukong'
 # Set the sampling fraction at the command line using the
 #   --sampling_fraction=
 # option: for example, to take a random 1/1000th of the lines in huge_files,
-#  ./examples/sample_records.rb --sampling_fraction=0.001 --go huge_files sampled_files
+#  ./examples/sample_records.rb --sampling_fraction=0.001 --run huge_files sampled_files
 #
 class Mapper < Wukong::Streamer::LineStreamer
   include Wukong::Streamer::Filter
@@ -32,13 +32,11 @@ class Mapper < Wukong::Streamer::LineStreamer
   end
 end
 
-class Script < Wukong::Script
-  def default_options
-    super.merge :reduce_tasks => 0
-  end
-end
-
 #
 # Executes the script
 #
-Script.new( Mapper, nil ).run
+Wukong::Script.new( Mapper,
+  nil,
+  :reduce_tasks => 0,
+  :reuse_jvms   => true
+  ).run
