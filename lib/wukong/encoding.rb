@@ -107,7 +107,7 @@ String.class_eval do
     replace self.wukong_decode(*args)
   end
 
-  def wukong_decode
+  def wukong_decode(*args)
     Wukong.decode_str(self, *args)
   end
 
