@@ -18,7 +18,7 @@ Struct.class_eval do
   #
   # Flatten for packing as resource name followed by all fields
   #
-  def to_flat include_key=true
+  def to_flat include_key=false
     if include_key.is_a? Proc
       sort_key = include_key.call(self)
     elsif (! include_key.blank?) && respond_to?(:key)

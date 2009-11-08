@@ -106,7 +106,7 @@ module Wukong
       # should, follow with an immediate GENERATE to ditch that field.)
       #
       def pig_load filename=nil
-        filename ||= resource_name+'.tsv'
+        filename ||= resource_name.to_s+'.tsv'
         cmd = [
           "%-23s" % self.to_s.gsub(/^.*\W/, ""),
           "= LOAD '#{filename}'",
