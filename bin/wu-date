@@ -1,0 +1,13 @@
+#!/bin/sh
+
+#
+# Outputs a compact wukong-style date:
+#
+#   
+#	$ date
+#       Sun Nov  8 03:21:37 CST 2009
+#	$ wu-date
+#	20091108
+#
+
+exec date +"%Y%m%d"
