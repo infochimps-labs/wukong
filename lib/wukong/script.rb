@@ -124,12 +124,13 @@ module Wukong
     #
     def process_argv!
       options[:all_args] = []
-      args = ARGV.dup
-      while args do
+      options[:rest]     = []
+      args      = ARGV.dup
+      while (! args.blank?) do
         arg = args.shift
         case
         when arg == '--'
-          break
+          options[:rest] += args
         when arg =~ /\A--(\w+)(?:=(.+))?\z/
           opt, val = [$1, $2]
           opt = opt.to_sym
@@ -137,11 +138,12 @@ module Wukong
           self.options[opt] = val
           options[:all_args] << arg unless std_options.include?(opt)
         else
-          args.unshift(arg) ; break
+          options[:all_args]  << arg
+          options[:rest]      << arg
         end
+        # p [options, arg, args]
       end
       options[:all_args] = options[:all_args].join(" ")
-      options[:rest]     = args
     end
 
     def this_script_filename
@@ -203,7 +205,7 @@ module Wukong
     def input_output_paths
       # input / output paths
       input_path, output_path = options[:rest][0..1]
-      raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:fake]) && (input_path.blank? || output_path.blank?)
+      raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:dry_run]) && (input_path.blank? || output_path.blank?)
       [input_path, output_path]
     end
 
@@ -223,7 +225,7 @@ module Wukong
       maybe_overwrite_output_paths! output_path
       command = runner_command(input_path, output_path)
       $stderr.puts command
-      if ! options[:fake]
+      unless options[:dry_run]
         $stdout.puts `#{command}`
       end
     end
@@ -255,8 +257,24 @@ module Wukong
         #{$0} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
         #{$0} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
         #{$0} --map
-        #{$0} --reduce                                 # dispatch to the mapper or reducer
+        #{$0} --reduce                                        # dispatch to the mapper or reducer
 
+      All flags must precede the input and output paths.
+      Additional flags:
+        --dry_run
+      Hadoop Options (see hadoop documentation)
+        --max_node_map_tasks     => 'mapred.tasktracker.map.tasks.maximum',
+        --max_node_reduce_tasks  => 'mapred.tasktracker.reduce.tasks.maximum',
+        --map_tasks              => 'mapred.map.tasks',
+        --reduce_tasks           => 'mapred.reduce.tasks',
+        --sort_fields            => 'stream.num.map.output.key.fields',
+        --key_field_separator    => 'map.output.key.field.separator',
+        --partition_fields       => 'num.key.fields.for.partition',
+        --output_field_separator => 'stream.map.output.field.separator',
+        --map_speculative        => 'mapred.map.tasks.speculative.execution',
+        --timeout                => 'mapred.task.timeout',
+        --reuse_jvms             => 'mapred.job.reuse.jvm.num.tasks',
+        --ignore_exit_status     => 'stream.non.zero.exit.status.is.failure',
       You can specify as well arbitrary script-specific command line flags; they are added to your options[] hash.
       }
     end
