@@ -76,7 +76,7 @@ module Wukong
     # Note that bin 0 is
     #
     class Binned < Enum
-      class_inheritable_reader :bins, :empty_bin_name
+      class_inheritable_accessor :bins, :empty_bin_name
       @@empty_bin_name = '(none)'
 
       def bins
@@ -95,7 +95,7 @@ module Wukong
 
       def self.enumerates *bins
         options = bins.extract_options!
-        write_inheritable_attribute :bins, bins
+        self.bins = bins
         last_top = bins.shift
         # bins.unshift bins.first if last_top == -Infinity
         names = bins.map do |bin_top|
