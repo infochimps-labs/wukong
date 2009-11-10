@@ -12,22 +12,27 @@ if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/
 
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
-${HADOOP_HOME}/bin/hadoop \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		\
-    -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			\
-    -jobconf     num.key.fields.for.partition="$partfields"				\
-    -jobconf 	 stream.num.map.output.key.fields="$sortfields"				\
-    -mapper  	 "$map_script"  							\
-    -reducer	 "$reduce_script"							\
-    -input       "$input_file"								\
-    -output  	 "$output_file"								\
-    "$@"
+cmd="${HADOOP_HOME}/bin/hadoop \
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		
+    -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			
+    -jobconf     num.key.fields.for.partition=\"$partfields\"				
+    -jobconf 	 stream.num.map.output.key.fields=\"$sortfields\"			
+    -mapper  	 \"$map_script\"  							
+    -reducer	 \"$reduce_script\"							
+    -input       \"$input_file\"							
+    -output  	 \"$output_file\"							
+    $@
+    "
 
-  # -jobconf     mapred.text.key.partitioner.options="-k1,$partfields"			\
-  # -jobconf 	 stream.map.output.field.separator='\t'					\
-  # -jobconf     map.output.key.field.separator='\t'					\        
-  # -jobconf mapred.map.tasks=3                                                         \
-  # -jobconf mapred.reduce.tasks=3                                                      \
+echo "$cmd"
+
+$cmd
+
+# -jobconf      mapred.text.key.partitioner.options="-k1,$partfields"                   \
+# -jobconf      stream.map.output.field.separator='\t'                                  \
+# -jobconf      map.output.key.field.separator='\t'                                     \
+# -jobconf      mapred.map.tasks=3                                                      \
+# -jobconf      mapred.reduce.tasks=3                                                   \
 
 #
 # TODO:
