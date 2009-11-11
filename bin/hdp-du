@@ -16,7 +16,7 @@ end
 #
 def prepare_command
   dfs_cmd  = OPTIONS[:summary] ? 'dus' : 'du'
-  dfs_args = "'" + ARGV.join("' '") + "'"
+  dfs_args = ((!ARGV[0]) || ARGV[0]=='') ? '.' : "'#{ARGV.join("' '")}'"
   %Q{ hadoop dfs -#{dfs_cmd} #{dfs_args} }
 end
 
