@@ -114,6 +114,23 @@ module Wukong
         extend ClassMethods
       end
     end
+
+    def coerce_attr attr, coerce_blank_to_nil=false, &block
+      orig_val = self.send(attr)
+      new_val = (coerce_blank_to_nil && orig_val.blank?) ? nil : block.call(orig_val)
+      self.send("#{attr}=", new_val)
+    end
+
+    def coerce_to_int! attr, *args
+      coerce_attr(attr, *args) do |val|
+        val.to_i
+      end
+    end
+
+    def coerce_to_date! attr, *args
+      coerce_attr(attr, *args){|val| val.is_a?(DateTime) ? val : DateTime.parse(val) rescue nil }
+    end
+
   end
 
 end
