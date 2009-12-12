@@ -15,6 +15,15 @@ Stuff changes when you cross the 100GB barrier.  Here are random musings on why 
 * Abandon integer keys
 * Use bash as your data-analysis IDE.
 
+
+h2. Rules of Thumb
+
+* How big is a dataset to benefit from Hadoop? "The dataset generally should be
+  (in memory) closer to the size of the available RAM of the cluster or more."
+  ("Scott Carey":http://bit.ly/a3WMD in org.apache.hadoop.general)
+
+* 
+   
 h2(#dropacid). Drop ACID, explore Big Data
 
 The traditional "ACID quartet":http://en.wikipedia.org/wiki/ACID for relational databases can be re-interpreted in a Big Data context:

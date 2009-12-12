@@ -4,7 +4,23 @@ title:  mrflip.github.com/wukong - NFS on Hadoop FTW
 collapse: false
 ---
 
+
+h2. 
+
 h2. Hadoop Config Tips
+
+
+h3. Modify Hadoop Job / Site configuration for Wukong/Streaming
+
+Wukong jobs can have long startup times.
+
+If you are processing many small files, increasing
+mapred.tasktracker.map.tasks.maximum to be 1.5-2.5 times the number of cores can
+give a nice improvement.
+
+Hadoop currently is a slow scheduler for tasks (can schecule at most 1 task per second or two per node). Using the Fair Scheduler and enabling some options can turn this up to 1 map and 1 reduce to schedule per 'tick'. There are some big changes in the schedulers due out in 0.21 that will significantly help here. For smaller low latency jobs this can make a big difference.
+
+Hadoop also has some flaws in the shuffle phase that affect clusters of all sizes, but can hurt small clusters with many small map jobs. Look at the log file output of your reduce jobs (in the jobtracker UI) and see how long shuffle phase is taking. There is a big change due for 0.21 that makes this a LOT faster for some cases, and low latency smaller jobs will benefit a lot too. https://issues.apache.org/jira/browse/MAPREDUCE-318 
 
 h3(#hadoopnfs). Setup NFS within the cluster
 
@@ -65,6 +81,16 @@ h3(#awstools). Tools for EC2 and S3 Management
 * "S3Fox (S3 Organizer)":
 * "FoxyProxy":
 
+
+h3. Random hadoop notes
+
+* do your jobs seem to speed up near the end? hadoop will take the largest
+  blocks first, for best speculative execution but the % complete is based on
+  the # of mappers, not the # of input bytes.
+  
+  BZip2 files must all be run through the same mapper, so a job with
+  asymmetrically distributed file sizes may find the first mappers finishing
+  along with the last ones.
 
 h3. Random EC2 notes
 
