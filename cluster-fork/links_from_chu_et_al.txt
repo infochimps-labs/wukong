@@ -1,0 +1,51 @@
+* Locally Weighted Linear Regression (LWLR) LWLR [28, 3] is solved by ﬁnding  the solution of the normal equations Aθ = b, where A =  􏰃  m  i=1 wi (xi xTi ) and b =  􏰃  m  i=1 wi (xi yi ). For the summation form, we divide the computation among different map-  pers. In this case, one set of mappers is used to compute  􏰃  subgroup wi (xi xTi ) and another  set to compute  􏰃  subgroup wi (xi yi ). Two reducers respectively sum up the partial values  for A and b, and the algorithm ﬁnally computes the solution θ = A−1 b. Note that if wi = 1,  the algorithm reduces to the case of ordinary least squares (linear regression). 
+
+* Naive Bayes (NB) In NB [17, 21], we have to estimate P (xj = k|y = 1), P (xj = k|y =  0), and P (y) from the training data. In order to do so, we need to sum over xj = k for  each y label in the training data to calculate P (x  |y). We specify different sets of mappers  to calculate the following:  􏰃  subgroup 1  {xj = k|y = 1},  􏰃  subgroup 1  {xj = k|y = 0},  􏰃  subgroup 1  {y = 1} and  􏰃  subgroup 1  {y = 0}. The reducer then sums up intermediate  results to get the ﬁnal result for the parameters. 
+
+* Gaussian Discriminative Analysis (GDA) The classic GDA algorithm [13] needs to learn  the following four statistics P (y), µ0 , µ1 and Σ. For all the summation forms involved in  these computations, we may leverage the map-reduce framework to parallelize the process.  Each mapper will handle the summation (i.e. Σ 1  {yi = 1}, Σ 1{yi = 0}, Σ 1{yi =  0  }xi , etc) for a subgroup of the training samples. Finally, the reducer will aggregate the  intermediate sums and calculate the ﬁnal result for the parameters. 
+
+* k-means In k-means [12], it is clear that the operation of computing the Euclidean distance  between the sample vectors and the centroids can be parallelized by splitting the data into  individual subgroups and clustering samples in each subgroup separately (by the mapper).  In recalculating new centroid vectors, we divide the sample vectors into subgroups, com-  pute the sum of vectors in each subgroup in parallel, and ﬁnally the reducer will add up the  partial sums and compute the new centroids.  
+
+* Logistic Regression (LR) For logistic regression [23], we choose the form of hypothesis  as hθ (x) = g(θT x) = 1/(1 + exp(  −θ  T  x)) Learning is done by ﬁtting θ to the training  data where the likelihood function can be optimized by using Newton-Raphson to update  θ := θ  − H −  1  ∇θ ℓ(θ). ∇θ ℓ(θ) is the gradient, which can be computed in parallel by  mappers summing up  􏰃  subgroup (y(i)  − hθ (x  (i)  ))x(i)  j each NR step i. The computation  of the hessian matrix can be also written in a summation form of H (j, k) := H (j, k) +  hθ (x(i) )(hθ (x(i) )  − 1)x  (i)  j x  (i)  k for the mappers. The reducer will then sum up the values  for gradient and hessian to perform the update for θ. 
+
+* Neural Network (NN) We focus on backpropagation [6] By deﬁning a network struc-  ture (we use a three layer network with two output neurons classifying the data into two  categories), each mapper propagates its set of data through the network. For each train-  ing example, the error is back propagated to calculate the partial gradient for each of the  weights in the network. The reducer then sums the partial gradient from each mapper and  does a batch gradient descent to update the weights of the network. 
+
+* Principal Components Analysis (PCA) PCA [29] computes the principle eigenvectors of  the covariance matrix Σ = 1  m  􏰄􏰃  m  i=1 xi xTi  􏰅 −  µµT over the data. In the deﬁnition for  Σ, the term  􏰄􏰃  m  i=1 xi xTi  􏰅  is already expressed in summation form. Further, we can also  express the mean vector µ as a sum, µ = 1  m  􏰃  m  i=1 xi . The sums can be mapped to separate  cores, and then the reducer will sum up the partial results to produce the ﬁnal empirical  covariance matrix. 
+
+* Independent Component Analysis (ICA) ICA [1] tries to identify the independent source  vectors based on the assumption that the observed data are linearly transformed from the  source data. In ICA, the main goal is to compute the unmixing matrix W. We implement  batch gradient ascent to optimize the W ’s likelihood. In this scheme, we can independently  calculate the expression  􏰁  1  − 2g(w  T  1 x(i) )  .  .  . 􏰂 x  (i)T  in the mappers and sum them up in the  reducer. 
+
+* Expectation Maximization (EM) For EM [8] we use Mixture of Gaussian as the underly-  ing model as per [19]. For parallelization: In the E-step, every mapper processes its subset􏰂 x T   of the training data and computes the corresponding w(i)  j (expected pseudo count). In M-  phase, three sets of parameters need to be updated: p(y), µ, and Σ. For p(y), every mapper  will compute  􏰃  subgroup (w  (i)  j ), and the reducer will sum up the partial result and divide it  by m. For µ, each mapper will compute  􏰃  subgroup (w  (i)  j  ∗ x  (i)  ) and  􏰃  subgroup (w  (i)  j ), and  the reducer will sum up the partial result and divide them. For Σ, every mapper will com-  pute  􏰃  subgroup (w  (i)  j  ∗ (x  (i)  − µj ) ∗ (x  (i)  − µj )  T  ) and  􏰃  subgroup (w  (i)  j ), and the reducer  will again sum up the partial result and divide them. 
+
+* Support Vector Machine (SVM) Linear SVM’s [27, 22] primary goal is to optimize the  following primal problem minw,b  ∥w∥  2  + C  􏰃  i:ξi >0 ξ  p  i s.t. y(i) (wT x(i) + b)  ≥ 1 −  ξi where p is either 1 (hinge loss) or 2 (quadratic loss). [2] has shown that the primal  problem for quadratic loss can be solved using the following formula where sv are the  support vectors:  ∇ = 2w + 2C  􏰃  i  ∈sv (w · xi − yi )xi & Hessian H = I + C  􏰃  i  ∈sv xi x  T  i  We perform batch gradient descent to optimize the objective function. The mappers will  calculate the partial gradient  􏰃  subgroup(i  ∈sv) (w · xi − yi )xi and the reducer will sum up  the partial results to update w vector. 
+
+
+References 
+# Sejnowski TJ. Bell AJ. An information-maximization approach to blind separation and blind deconvolution. In Neural Computation, 1995. 
+# O. Chapelle. Training a support vector machine in the primal. Journal of Machine Learning Research (submitted), 2006. 
+# W. S. Cleveland and S. J. Devlin. Locally weighted regression: An approach to regression analysis by local ﬁtting. In J. Amer. Statist. Assoc. 83, pages 596–610, 1988. 
+# L. Csanky. Fast parallel matrix inversion algorithms. SIAM J. Comput., 5(4):618–623, 1976. 
+# A. Silvescu D. Caragea and V. Honavar. A framework for learning from distributed data using sufﬁcient statistics and its application to learning decision trees. International Journal of Hybrid Intelligent Systems, 2003. 
+# R. J. Williams D. E. Rumelhart, G. E. Hinton. Learning representation by back-propagating errors. In Nature, volume 323, pages 533–536, 1986. 
+# J. Dean and S. Ghemawat. Mapreduce: Simpliﬁed data processing on large clusters. Operating Systems Design and Implementation, pages 137–149, 2004. 
+# N.M. Dempster A.P., Laird and Rubin D.B. 
+# D.J. Frank. Power-constrained cmos scaling limits. IBM Journal of Research and Development, 46, 2002. 
+# P. Gelsinger. Microprocessors for the new millennium: Challenges, opportunities and new frontiers. In ISSCC Tech. Digest, pages 22–25, 2001. 
+# Leon Bottou Igor Durdanovic Hans Peter Graf, Eric Cosatto and Vladimire Vapnik. Parallel support vector machines: The cascade svm. In NIPS, 2004. 
+# J. Hartigan. Clustering Algorithms. Wiley, 1975. 
+# T. Hastie and R. Tibshirani. Discriminant analysis by gaussian mixtures. Journal of the Royal Statistical Society B, pages 155–176, 1996. 
+# R. Jin and G. Agrawal. Shared memory parallelization of data mining algorithms: Techniques, programming interface, and performance. In Second SIAM International Conference on Data Mining,, 2002. 
+# M. Kearns. Efﬁcient noise-tolerant learning from statistical queries. pages 392–401, 1999. 
+# Michael Kearns and Umesh V. Vazirani. An Introduction to Computational Learning Theory. MIT Press, 1994. 
+# David Lewis. Naive (bayes) at forty: The independence asssumption in information retrieval. In ECML98: Tenth European Conference On Machine Learning, 1998. 
+# Kun Liu and Hillow Kargupta. Distributed data mining bibliography. http://www.cs.umbc.edu/ hillol/DDMBIB/, 2006. 
+# T. K. MOON. The expectation-maximization algorithm. In IEEE Trans. Signal Process, pages 47–59, 1996. 
+# G. Moore. Progress in digital integrated electronics. In IEDM Tech. Digest, pages 11–13, 1975. 
+# Wayne Iba Pat Langley and Kevin Thompson. An analysis of bayesian classiﬁers. In AAAI, 1992. 
+# John C. Platt. Fast training of support vector machines using sequential minimal optimization. pages 185–208, 1999. 
+# Daryl Pregibon. Logistic regression diagnostics. In The Annals of Statistics, volume 9, pages 705–724, 1981. 
+# T. Studt. There’s a multicore in your future, http://tinyurl.com/ohd2m, 2006. 
+# Herb Sutter and James Larus. Software and the concurrency revolution. Queue, 3(7):54–62, 2005. 
+# L.G. Valiant. A theory of the learnable. Communications of the ACM, 3(11):1134–1142, 1984. 
+# V. Vapnik. Estimation of Dependencies Based on Empirical Data. Springer Verlag, 1982. 
+# R. E. Welsch and E. KUH. Linear regression diagnostics. In Working Paper 173, Nat. Bur. Econ. Res.Inc, 1977. 
+# K. Esbensen Wold, S. and P. Geladi. Principal component analysis. In Chemometrics and Intelligent Laboratory Systems, 1987.

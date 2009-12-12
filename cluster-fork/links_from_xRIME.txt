@@ -1,0 +1,29 @@
+
+** vertex degree statistics
+** weakly connected components (WCC)
+** strongly connected components (SCC)
+** bi-connected components (BCC)
+** ego-centric network density
+** bread first search / single source shortest path (BFS/SSSP)
+** K-core
+** maximal cliques
+** pagerank
+** hyperlink-induced topic search (HITS)
+** minimal spanning tree (MST)
+** grid variant of Fruchterman-Reingold network layout algorithm
+
+References
+
+** Social Network Analysis: A Handbook,John P Scott,Sage Publications Ltd; 2nd edition (March 25, 2000).
+** "Finding Strongly Connected Components in Distributed Graphs",William McLendon III, Bruce Hendrickson, Steven J. Plimpton, Lawrence Rauchwerger, http://www.sandia.gov/~sjplimp/papers/jpdc05.pdf
+** "An Experimental Study of Parallel Biconnected Components Algorithms on Symmetric Multiprocessors (SMPs)", Cong, Guojing, Bader, David A., http://smartech.gatech.edu/bitstream/1853/14382/1/GT-CSE-06-03.pdf
+** "Graph Algorithms with MapReduce".Jimmy Lin(2008).
+** "An O(m) Algorithm for Cores Decomposition of Networks",V. Batagelj, M. Zaversnik, http://vlado.fmf.uni-lj.si/pub/networks/doc/cores/cores.pdf
+** "Finding All Cliques of an Undirected Graph",Coen Bron, Joep Kerbosch, http://www.dfki.de/~neumann/ie-seminar/presentations/finding_cliques.pdf
+** "On Computing All Maximal Cliques Distributedly",Fábio Protti, Felipe M. G. França, and Jayme Luiz Szwarcfiter, http://www.springerlink.com/content/g5km75g7u2l80446/fulltext.pdf
+** "The PageRank citation ranking: Bringing order to the Web". Page, Lawrence; Brin, Sergey; Motwani, Rajeev and Winograd, Terry (1999).
+** "Algorithms for Estimating Relative Importance in Networks". Scott White and Padhraic Smyth (2003).
+** "Authoritative sources in a hyperlinked environment".Kleinberg, Jon (1999).Journal of the ACM 46 (5): 604¨C632
+** "Improvement of HITS-based Algorithms on Web Documents". Li, L.; Shang, Y.; Zhang, W. (2002).Proceedings of the 11th International World Wide Web Conference (WWW 2002).
+** "A Distributed Algorithm for Minimum-Weight Spanning Trees",R. G. Gallager, P. A. Humblet, P. M. Spira, http://www.cs.tau.ac.il/~afek/p66-gallager.pdf
+**  "Graph Drawing by Force-directed Placement", Thomas M. J. Fruchterman, Edward M. Reingold, http://www.cs.ubc.ca/local/reading/proceedings/spe91-95/spe/vol21/issue11/spe060tf.pdf

@@ -1,0 +1,117 @@
+== [http://atbrox.com/2009/10/01/mapreduce-and-hadoop-academic-papers/ Mapreduce & Hadoop Algorithms in Academic Papers] ==
+
+Learn from academic literature about how the mapreduce parallel model and hadoop implementation is used to solve algorithmic problems.</p>
+
+__Disclaimer: this is work in progress (look for updates)__
+
+
+== Input Data – Academic Papers ==
+
+Scholar has [http://scholar.google.com/scholar?cites=13171193432274178825 981 papers citing] the original [http://www.usenix.org/publications/library/proceedings/osdi04/tech/full_papers/dean/dean_html/ Mapreduce paper from 2004] – a citation amount that is approximately 10 thousand pages (~ size of a typical encyclopedia)</p>
+
+
+=== What types of papers cite the mapreduce paper? ===
+
+* Algorithmic papers
+* General cloud overview papers
+* Cloud infrastructure papers
+* Future work sections in papers (e.g. “we plan to implement this with Hadoop”)
+
+=> Looked at category 1 papers and skipped the rest
+
+=== Who wrote the papers? ===
+
+* Search/Internet companies/organizations: eBay, Google, Microsoft, Wikipedia, Yahoo and Yandex.
+* IT companies: Hewlett Packard and Intel
+* Universities: Carnegie Mellon Univ., TU Dresden, Univ. of Pennsylvania, Univ. of Central Florida, National Univ. of Ireland, Univ. of Missouri, Univ. of Arizona, Univ. of Glasgow,  Berkeley Univ. and National Tsing Hua Univ., Univ. of California, Poznan Univ.
+
+== Which areas do the papers cover? ==
+
+== Machine Translation ==
+
+* [http://www.cs.cmu.edu/%7Ezollmann/publications/samt-toolkit.pdf  Grammar based statistical MT on Hadoop] (2009)
+* [http://acl.ldc.upenn.edu/D/D07/D07-1090.pdf  Large Language Models in Machine Translation] (2008)
+
+
+== Information/Entity Extraction and Tagging ==
+
+* [http://www.aclweb.org/anthology/D/D09/D09-1098.pdf  Web-Scale Distributional Similarity and Entity Set Expansion] (2009)
+* [http://www.aclweb.org/anthology-new/D/D09/D09-1071.pdf  The infinite HMM for unsupervised PoS tagging] (2009)
+
+
+== Classification ==
+
+* [http://www.cse.nd.edu/%7Edthain/papers/classify-icdm08.pdf  Scaling Up Classifiers to Cloud Computers] (2008)
+
+
+== Ads Analysis ==
+
+* [http://www.cc.gatech.edu/%7Ezha/CSE8801/ad/p209-chen.pdf  Large-Scale Behavioral Targeting] (2009)
+* [http://research.yahoo.com/files/cikm2008-search%20advertising.pdf%20  Search Advertising using Web Relevance Feedback] (2008)
+* [http://research.yahoo.com/workshops/troa-2008/papers/submission_12.pdf  Predicting Ads’ ClickThrough Rate with Decision Rules ](2008)
+
+
+== Search Query Analysis ==
+
+* [http://research.microsoft.com/apps/pubs/default.aspx?id=80592  BBM: Bayesian Browsing Model from Petabyte-scale Data] (2009)
+* [http://portal.acm.org/citation.cfm?id=1559990&amp;dl=GUIDE&amp;coll=GUIDE&amp;CFID=54492464&amp;CFTOKEN=33063869  AIDE: Ad-hoc Intents Detection Engine over Query Logs ](2009)
+
+
+== Indexing &amp; parsing ==
+
+* [http://portal.acm.org/citation.cfm?id=1572106&amp;dl=GUIDE&amp;coll=GUIDE&amp;CFID=54492520&amp;CFTOKEN=63253841  On Single-Pass Indexing with MapReduce] (2009)
+* [http://bhavik.me/docs/Paper.pdf  A Data Parallel Algorithm for XML DOM Parsing] (2009)
+* [http://www.springerlink.com/content/t607305788356537/  Semantic Sitemaps: Efficient and Flexible Access to Datasets on the Semantic Web] (2008)
+
+
+== Spam &amp; Malware Detection ==
+
+* [http://www.usenix.org/event/leet08/tech/full_papers/zhuang/zhuang.pdf Characterizing Botnets from Email Spam Records] (2008)
+- Clustering of emails into spam campaign
+- Finding probability that 2 spam messages are sent form same machine
+- Estime likelihood of botnets based on common senders in spam campaigns
+* [http://www.usenix.org/event/hotbots07/tech/full_papers/provos/provos.pdf The Ghost In The Browser Analysis of Web-based Malware] (2007)
+
+
+== Image and Video Processing ==
+
+* [http://www.hpl.hp.com/personal/Thomas_Sandholm/sandholm2009a.pdf MapReduce Optimization Using Regulated Dynamic Prioritization] (2009)
+- Video Stream Re-Rendering
+* [http://www.pittsburgh.intel-research.net/%7Echensm/papers/IRP-TR-08-05.pdf Map-Reduce Meets Wider Varieties of Applications] (2008)
+- Location detection in images
+
+
+== Networking ==
+
+* [http://wwwse.inf.tu-dresden.de/papers/preprint-pfeifer2008reducible.pdf Reducible Complexity in DNS]
+
+
+== Simulation ==
+
+* [http://www.pittsburgh.intel-research.net/%7Echensm/papers/IRP-TR-08-05.pdf Map-Reduce Meets Wider Varieties of Applications] (2008)
+- Simulation of earthquakes (geology)
+
+
+== Statistics ==
+
+* [http://thepublicgrid.org/papers/koufakou_wcci_08.pdf Fast Parallel Outlier Detection for Categorical Datasets using Mapreduce] (2009)
+* [http://www.hpl.hp.com/personal/Thomas_Sandholm/sandholm2009a.pdf MapReduce Optimization Using&nbsp;Regulated Dynamic Prioritization] (2009)
+- Digg.com story recommendations
+* [http://www.infosci.cornell.edu/weblab/papers/Bank2008.pdf Calculating the Jaccard Similarity Coefficient with&nbsp;Map Reduce for Entity Pairs in Wikipedia] (2008)
+- Measuring Wikipedia Editor similarity
+* [http://www.pittsburgh.intel-research.net/%7Echensm/papers/IRP-TR-08-05.pdf Map-Reduce Meets Wider&nbsp;Varieties of Applications] (2008)
+- Netflix video recommendation
+* [http://www.hpl.hp.com/personal/Robert_Schreiber/papers/2008%20AAIM%20Netflix/netflix_aaim08%28submitted%29.pdf Large-scale Parallel Collaborative Filtering for&nbsp;the Netflix Prize] (2008)
+
+
+== Graphs ==
+
+* [http://www.cis.temple.edu/%7Evasilis/research/Publications/kdd09.pdf DOULION: Counting Triangles in Massive Graphs with a&nbsp;Coin] (2009)
+* [http://reports-archive.adm.cs.cmu.edu/anon/ml2008/CMU-ML-08-103.pdf Fast counting of triangles in real-world networks:&nbsp;proofs, algorithms and observations] (2008)</p></ul>
+
+
+== Conclusion ==
+
+On the papers looked at most of them are focused on IT-related areas, there is lots of unwritten in academia about mapreduce and hadoop applied for algorithms in other business and technology areas. </p>
+
+Opportunity for following up this posting can be to: 1)&nbsp;in more detail describe the algorithms (e.g. input/output formats), 2) try to classify them by patterns (e.g. with similar code structure), 3) offer the opportunity to simulate them in the browser (on toy-sized data sets) and 4) provide links to Hadoop implementations of them.
