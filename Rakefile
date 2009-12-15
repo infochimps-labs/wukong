@@ -26,7 +26,6 @@ DESC
     gem.add_dependency 'extlib'
     gem.add_dependency 'htmlentities'
   end
-  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end

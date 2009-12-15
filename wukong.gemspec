@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2009-11-02}
+  s.date = %q{2009-12-15}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -46,11 +46,14 @@ Gem::Specification.new do |s|
      "bin/hdp-sort",
      "bin/hdp-stream",
      "bin/hdp-stream-flat",
+     "bin/hdp-stream2",
      "bin/hdp-sync",
      "bin/hdp-wc",
      "bin/md5sort",
      "bin/tabchar",
      "bin/uniqc",
+     "bin/wu-date",
+     "bin/wu-datetime",
      "bin/wu-hist",
      "bin/wu-lign",
      "bin/wu-plus",
