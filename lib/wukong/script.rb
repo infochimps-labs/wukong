@@ -135,7 +135,7 @@ module Wukong
           opt, val = [$1, $2]
           opt = opt.to_sym
           val ||= true
-          self.options[opt] = val
+          options[opt] = val
           options[:all_args] << arg unless std_options.include?(opt)
         else
           options[:all_args]  << arg

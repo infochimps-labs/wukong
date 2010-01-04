@@ -1,43 +1,38 @@
+## EDITORS
+*~
 \#*
 .\#*
-*~
-.DS_Store
-Icon?
+*.swp
 REVISION
 TAGS*
-nohup.out
-.bzr
-.hg
-.svn
+tmtags
+*_flymake.*
+*.tmproj
+.project
+.settings
 
+## OS
+.DS_Store
+Icon?
+nohup.out
+
+## COMPILED
 a.out
 *.o
 *.pyc
 *.so
-*.stackdump
-*.sw?
-*.tmproj
-*_flymake.*
-.project
-.pydevproject
-.settings
-.tasks-cache
+
+## OTHER SCM
+.bzr
+.hg
+.svn
+
+## PROJECT::GENERAL
+coverage
+rdoc
+doc
+pkg
 .yardoc
+*private*
 
-/**/*DONTVERSION*
-/**/*private*
-/**/cache/*
-/**/log/*
-/**/tmp/*
-/coverage
-/doc/*
-/pkg/*
-/rdoc/*
-
-/db/*.sqlite3
-/db/sphinx
-/config/*.sphinx.conf
-/config/database.yml
-/config/sphinx.yml
-/public/stylesheets/compiled/*
-/vendor/src/**/*
+## PROJECT::SPECIFIC
