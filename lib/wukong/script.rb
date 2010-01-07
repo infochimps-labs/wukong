@@ -1,7 +1,8 @@
 require 'pathname'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
-require 'configliere' ; Configliere.use(:commandline, :environment)
+require 'configliere' ; Configliere.use(:commandline, :environment, :define)
+require 'rbconfig' # for uncovering ruby_interpreter_path
 module Wukong
 
   # == How to run a Wukong script
@@ -88,6 +89,7 @@ module Wukong
     Settings.define :run,              :description => "run the script's main phase. In hadoop mode, invokes the hadoop script; in local mode, runs your_script.rb --map | sort | your_script.rb --reduce", :wukong => true
     Settings.define :local,            :description => "run in local mode (invokes 'your_script.rb --map | sort | your_script.rb --reduce'", :wukong => true
     Settings.define :hadoop,           :description => "run in hadoop mode (invokes the system hadoop runner script)", :wukong => true
+    Settings.define :dry_run,          :description => "echo the command that will be run, but don't run it", :wukong => true
 
     #
     # Instantiate the Script with the Mapper and the Reducer class (each a
@@ -135,24 +137,6 @@ module Wukong
     #
     def default_options
       {}
-    end
-
-    def this_script_filename
-      Pathname.new($0).realpath
-    end
-
-    def ruby_interpreter_path
-      Pathname.new(
-                   File.join(Config::CONFIG["bindir"],
-                             Config::CONFIG["RUBY_INSTALL_NAME"]+
-                             Config::CONFIG["EXEEXT"])
-                   ).realpath
-    end
-
-    # Reassemble all the non-internal-to-wukong options into a command line for
-    # the map/reducer phase scripts
-    def non_wukong_params
-      options.params_without(:wukong).map{|param,val| "--#{param}=#{val}" }.join(" ")
     end
 
     #
@@ -215,6 +199,29 @@ module Wukong
       end
     end
 
+    # Reassemble all the non-internal-to-wukong options into a command line for
+    # the map/reducer phase scripts
+    def non_wukong_params
+      options.
+        reject{|param, val| options.param_definitions[param][:wukong] }.
+        map{|param,val| "--#{param}=#{val}" }.
+        join(" ")
+    end
+
+    # the full, real path to the script file
+    def this_script_filename
+      Pathname.new($0).realpath
+    end
+
+    # use the full ruby interpreter path to run slave processes
+    def ruby_interpreter_path
+      Pathname.new(
+                   File.join(Config::CONFIG["bindir"],
+                             Config::CONFIG["RUBY_INSTALL_NAME"]+
+                             Config::CONFIG["EXEEXT"])
+                   ).realpath
+    end
+
     #
     # Execute the runner phase
     #
@@ -245,38 +252,6 @@ module Wukong
         options.help
       end
     end
-
-    # #
-    # # Command line usage
-    # #
-    # def help
-    #   $stderr.puts "#{self.class} script"
-    #   $stderr.puts %Q{
-    #     #{$0} --run=hadoop input_hdfs_path output_hdfs_dir    # run the script with hadoop streaming
-    #     #{$0} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
-    #     #{$0} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
-    #     #{$0} --map
-    #     #{$0} --reduce                                        # dispatch to the mapper or reducer
-    #
-    #   All flags must precede the input and output paths.
-    #   Additional flags:
-    #     --dry_run
-    #   Hadoop Options (see hadoop documentation)
-    #     --max_node_map_tasks     => 'mapred.tasktracker.map.tasks.maximum',
-    #     --max_node_reduce_tasks  => 'mapred.tasktracker.reduce.tasks.maximum',
-    #     --map_tasks              => 'mapred.map.tasks',
-    #     --reduce_tasks           => 'mapred.reduce.tasks',
-    #     --sort_fields            => 'stream.num.map.output.key.fields',
-    #     --key_field_separator    => 'map.output.key.field.separator',
-    #     --partition_fields       => 'num.key.fields.for.partition',
-    #     --output_field_separator => 'stream.map.output.field.separator',
-    #     --map_speculative        => 'mapred.map.tasks.speculative.execution',
-    #     --timeout                => 'mapred.task.timeout',
-    #     --reuse_jvms             => 'mapred.job.reuse.jvm.num.tasks',
-    #     --ignore_exit_status     => 'stream.non.zero.exit.status.is.failure',
-    #   You can specify as well arbitrary script-specific command line flags; they are added to your options[] hash.
-    #   }
-    # end
   end
 
 end
