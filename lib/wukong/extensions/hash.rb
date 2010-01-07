@@ -40,9 +40,9 @@ class Hash
   end
 
   # lambda for recursive merges
-  Hash::DEEP_MERGER = proc do |key,v1,v2|
+  ::Hash::DEEP_MERGER = proc do |key,v1,v2|
     (v1.respond_to?(:merge) && v2.respond_to?(:merge)) ? v1.merge(v2.compact, &Hash::DEEP_MERGER) : (v2.nil? ? v1 : v2)
-  end
+  end unless defined?(::Hash::DEEP_MERGER)
 
   #
   # Merge hashes recursively.

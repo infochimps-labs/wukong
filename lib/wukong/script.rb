@@ -1,7 +1,7 @@
 require 'pathname'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
-require 'rbconfig'
+require 'configliere' ; Configliere.use(:commandline, :environment)
 module Wukong
 
   # == How to run a Wukong script
@@ -58,6 +58,37 @@ module Wukong
     include Wukong::LocalCommand
     attr_accessor :mapper_klass, :reducer_klass, :options
 
+    # ---------------------------------------------------------------------------
+    #
+    # Default options for Wukong
+    #   http://github.com/infochimps/wukong
+    #
+    # If you set an environment variable WUKONG_CONFIG, *or* if the file
+    # $HOME/.wukong.rb exists, that file will be +require+'d as well.
+    #
+    # Important values to set:
+    #
+    # * hadoop_home -- Path to root of hadoop install. If your hadoop runner is
+    #     /usr/local/share/hadoop/bin/hadoop
+    #   then your hadoop_home is
+    #     /usr/local/share/hadoop.
+    #   You can also set a :hadoop_runner that gives the full path to the hadoop script
+    #
+    # * default_run_mode -- Whether to run using hadoop (and
+    #   thus, requiring a working hadoop install), or to run in local mode
+    #   (script --map | sort | script --reduce)
+    #
+    Settings.define :default_run_mode, :default => 'hadoop',    :description => 'Run as local or as hadoop?', :wukong => true, :hide_help => true
+    Settings.define :default_mapper,   :default => '/bin/cat',  :description => 'The command to run when a nil mapper is given.', :wukong => true, :hide_help => true
+    Settings.define :default_reducer,  :default => '/bin/cat',  :description => 'The command to run when a nil reducer is given.', :wukong => true, :hide_help => true
+    Settings.define :hadoop_home,      :default => '/usr/lib/hadoop', :environment => 'HADOOP_HOME', :description => "Path to hadoop installation; :hadoop_home/bin/hadoop should run hadoop.", :wukong => true
+    Settings.define :hadoop_runner,    :description => "Path to hadoop script; usually, set :hadoop_home instead of this.", :wukong => true
+    Settings.define :map,              :description => "run the script's map phase. Reads/writes to STDIN/STDOUT.", :wukong => true
+    Settings.define :reduce,           :description => "run the script's reduce phase. Reads/writes to STDIN/STDOUT. You can only choose one of --run, --map or --reduce.", :wukong => true
+    Settings.define :run,              :description => "run the script's main phase. In hadoop mode, invokes the hadoop script; in local mode, runs your_script.rb --map | sort | your_script.rb --reduce", :wukong => true
+    Settings.define :local,            :description => "run in local mode (invokes 'your_script.rb --map | sort | your_script.rb --reduce'", :wukong => true
+    Settings.define :hadoop,           :description => "run in hadoop mode (invokes the system hadoop runner script)", :wukong => true
+
     #
     # Instantiate the Script with the Mapper and the Reducer class (each a
     # Wukong::Streamer) it should call back.
@@ -86,8 +117,9 @@ module Wukong
     #   MyScript.new(MyMapper, nil).run
     #
     def initialize mapper_klass, reducer_klass, extra_options={}
-      self.options = default_options.merge(extra_options)
-      process_argv!
+      self.options = Settings.dup
+      options.resolve!
+      options.merge! extra_options
       self.mapper_klass  = mapper_klass
       self.reducer_klass = reducer_klass
       # If no reducer_klass and no reduce_command, then skip the reduce phase
@@ -97,53 +129,12 @@ module Wukong
     #
     # Gives default options.  Command line parameters take precedence
     #
-    # MAKE SURE YOU CALL SUPER: write your script according to the patter
+    # MAKE SURE YOU CALL SUPER: write your script according to the pattern
     #
     #   super.merge :my_option => :val
     #
     def default_options
-      Wukong::CONFIG[:runner_defaults] || {}
-    end
-
-    # Options that don't need to go in the :all_args hash
-    def std_options
-      @std_options ||= [:run, :map, :reduce, ] + HADOOP_OPTIONS_MAP.keys
-    end
-
-    #
-    # Parse the command-line args into the options hash.
-    #
-    # I should not reinvent the wheel.
-    # Yet: here we are.
-    #
-    # '--foo=foo_val'  produces :foo => 'foo_val' in the options hash.
-    # '--'             After seeing a non-'--' flag, or a '--' on its own, no further flags are parsed
-    #
-    # options[:all_args] contains all arguments that are not in std_options
-    # options[:rest]     contains all arguments following the first non-flag (or the '--')
-    #
-    def process_argv!
-      options[:all_args] = []
-      options[:rest]     = []
-      args      = ARGV.dup
-      while (! args.blank?) do
-        arg = args.shift
-        case
-        when arg == '--'
-          options[:rest] += args
-        when arg =~ /\A--(\w+)(?:=(.+))?\z/
-          opt, val = [$1, $2]
-          opt = opt.to_sym
-          val ||= true
-          options[opt] = val
-          options[:all_args] << arg unless std_options.include?(opt)
-        else
-          options[:all_args]  << arg
-          options[:rest]      << arg
-        end
-        # p [options, arg, args]
-      end
-      options[:all_args] = options[:all_args].join(" ")
+      {}
     end
 
     def this_script_filename
@@ -158,14 +149,20 @@ module Wukong
                    ).realpath
     end
 
+    # Reassemble all the non-internal-to-wukong options into a command line for
+    # the map/reducer phase scripts
+    def non_wukong_params
+      options.params_without(:wukong).map{|param,val| "--#{param}=#{val}" }.join(" ")
+    end
+
     #
     # by default, call this script in --map mode
     #
     def map_command
       case
       when mapper_klass
-        "#{ruby_interpreter_path} #{this_script_filename} --map " + options[:all_args]
-      else options[:map_command] || Wukong::CONFIG[:default_mapper] end
+        "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+      else options[:map_command] || options[:default_mapper] end
     end
 
     #
@@ -175,8 +172,8 @@ module Wukong
     def reduce_command
       case
       when reducer_klass
-        "#{ruby_interpreter_path} #{this_script_filename} --reduce " + options[:all_args]
-      else options[:reduce_command] || Wukong::CONFIG[:default_reducer] end
+        "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+      else options[:reduce_command] || options[:default_reducer] end
     end
 
     #
@@ -197,14 +194,16 @@ module Wukong
     end
 
     def run_mode
+      return 'local'  if options[:local]
+      return 'hadoop' if options[:hadoop]
       # if only --run is given, assume default run mode
-      options[:run] = Wukong::CONFIG[:default_run_mode] if (options[:run] == true)
+      options[:run] = options[:default_run_mode] if (options[:run] == true)
       options[:run].to_s
     end
 
     def input_output_paths
       # input / output paths
-      input_path, output_path = options[:rest][0..1]
+      input_path, output_path = options.rest[0..1]
       raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:dry_run]) && (input_path.blank? || output_path.blank?)
       [input_path, output_path]
     end
@@ -243,41 +242,41 @@ module Wukong
       when options[:run]
         exec_hadoop_streaming
       else
-        self.help # Normant Vincent Peale is proud of you
+        options.help
       end
     end
 
+    # #
+    # # Command line usage
+    # #
+    # def help
+    #   $stderr.puts "#{self.class} script"
+    #   $stderr.puts %Q{
+    #     #{$0} --run=hadoop input_hdfs_path output_hdfs_dir    # run the script with hadoop streaming
+    #     #{$0} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
+    #     #{$0} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
+    #     #{$0} --map
+    #     #{$0} --reduce                                        # dispatch to the mapper or reducer
     #
-    # Command line usage
-    #
-    def help
-      $stderr.puts "#{self.class} script"
-      $stderr.puts %Q{
-        #{$0} --run=hadoop input_hdfs_path output_hdfs_dir    # run the script with hadoop streaming
-        #{$0} --run=local  input_hdfs_path output_hdfs_dir    # run the script on local filesystem using unix pipes
-        #{$0} --run        input_hdfs_path output_hdfs_dir    # run the script with the mode given in config/wukong*.yaml
-        #{$0} --map
-        #{$0} --reduce                                        # dispatch to the mapper or reducer
-
-      All flags must precede the input and output paths.
-      Additional flags:
-        --dry_run
-      Hadoop Options (see hadoop documentation)
-        --max_node_map_tasks     => 'mapred.tasktracker.map.tasks.maximum',
-        --max_node_reduce_tasks  => 'mapred.tasktracker.reduce.tasks.maximum',
-        --map_tasks              => 'mapred.map.tasks',
-        --reduce_tasks           => 'mapred.reduce.tasks',
-        --sort_fields            => 'stream.num.map.output.key.fields',
-        --key_field_separator    => 'map.output.key.field.separator',
-        --partition_fields       => 'num.key.fields.for.partition',
-        --output_field_separator => 'stream.map.output.field.separator',
-        --map_speculative        => 'mapred.map.tasks.speculative.execution',
-        --timeout                => 'mapred.task.timeout',
-        --reuse_jvms             => 'mapred.job.reuse.jvm.num.tasks',
-        --ignore_exit_status     => 'stream.non.zero.exit.status.is.failure',
-      You can specify as well arbitrary script-specific command line flags; they are added to your options[] hash.
-      }
-    end
+    #   All flags must precede the input and output paths.
+    #   Additional flags:
+    #     --dry_run
+    #   Hadoop Options (see hadoop documentation)
+    #     --max_node_map_tasks     => 'mapred.tasktracker.map.tasks.maximum',
+    #     --max_node_reduce_tasks  => 'mapred.tasktracker.reduce.tasks.maximum',
+    #     --map_tasks              => 'mapred.map.tasks',
+    #     --reduce_tasks           => 'mapred.reduce.tasks',
+    #     --sort_fields            => 'stream.num.map.output.key.fields',
+    #     --key_field_separator    => 'map.output.key.field.separator',
+    #     --partition_fields       => 'num.key.fields.for.partition',
+    #     --output_field_separator => 'stream.map.output.field.separator',
+    #     --map_speculative        => 'mapred.map.tasks.speculative.execution',
+    #     --timeout                => 'mapred.task.timeout',
+    #     --reuse_jvms             => 'mapred.job.reuse.jvm.num.tasks',
+    #     --ignore_exit_status     => 'stream.non.zero.exit.status.is.failure',
+    #   You can specify as well arbitrary script-specific command line flags; they are added to your options[] hash.
+    #   }
+    # end
   end
 
 end

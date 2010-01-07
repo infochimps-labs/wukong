@@ -15,26 +15,24 @@ module Wukong
     #
     # Translate the simplified args to their hairy-assed hadoop equivalents
     #
-    HADOOP_OPTIONS_MAP = {
-      :max_node_map_tasks     => 'mapred.tasktracker.map.tasks.maximum',
-      :max_node_reduce_tasks  => 'mapred.tasktracker.reduce.tasks.maximum',
-      :map_tasks              => 'mapred.map.tasks',
-      :reduce_tasks           => 'mapred.reduce.tasks',
-      :sort_fields            => 'stream.num.map.output.key.fields',
-      :key_field_separator    => 'map.output.key.field.separator',
-      :partition_fields       => 'num.key.fields.for.partition',
-      :output_field_separator => 'stream.map.output.field.separator',
-      :map_speculative        => 'mapred.map.tasks.speculative.execution',
-      :timeout                => 'mapred.task.timeout',
-      :reuse_jvms             => 'mapred.job.reuse.jvm.num.tasks',
-      :respect_exit_status    => 'stream.non.zero.exit.is.failure',
-    }
+    Settings.define :max_node_map_tasks,     :jobconf => true, :description => 'mapred.tasktracker.map.tasks.maximum', :wukong => true
+    Settings.define :max_node_reduce_tasks,  :jobconf => true, :description => 'mapred.tasktracker.reduce.tasks.maximum', :wukong => true
+    Settings.define :map_tasks,              :jobconf => true, :description => 'mapred.map.tasks', :wukong => true
+    Settings.define :reduce_tasks,           :jobconf => true, :description => 'mapred.reduce.tasks', :wukong => true
+    Settings.define :sort_fields,            :jobconf => true, :description => 'stream.num.map.output.key.fields', :wukong => true
+    Settings.define :key_field_separator,    :jobconf => true, :description => 'map.output.key.field.separator', :wukong => true
+    Settings.define :partition_fields,       :jobconf => true, :description => 'num.key.fields.for.partition', :wukong => true
+    Settings.define :output_field_separator, :jobconf => true, :description => 'stream.map.output.field.separator', :wukong => true
+    Settings.define :map_speculative,        :jobconf => true, :description => 'mapred.map.tasks.speculative.execution', :wukong => true
+    Settings.define :timeout,                :jobconf => true, :description => 'mapred.task.timeout', :wukong => true
+    Settings.define :reuse_jvms,             :jobconf => true, :description => 'mapred.job.reuse.jvm.num.tasks', :wukong => true
+    Settings.define :respect_exit_status,    :jobconf => true, :description => 'stream.non.zero.exit.is.failure', :wukong => true
 
     # emit a -jobconf hadoop option if the simplified command line arg is present
     # if not, the resulting nil will be elided later
     def jobconf option
       if options[option]
-        "-jobconf %s=%s" % [HADOOP_OPTIONS_MAP[option], options[option]]
+        "-jobconf %s=%s" % [options.description_for(option), options[option]]
       end
     end
 
@@ -81,17 +79,21 @@ module Wukong
       end.compact
     end
 
+    # The path to the hadoop runner script
+    def hadoop_runner
+      options[:hadoop_runner] || (options[:hadoop_home]+'/bin/hadoop')
+    end
+
     #
     # Assemble the hadoop command to execute
     #
     def hadoop_command input_path, output_path
       # If this is wrong, create a config/wukong-site.rb or
-      # otherwise set Wukong::CONFIG[:hadoop_home] to the
+      # otherwise set Settings[:hadoop_home] to the
       # root of your config install.
-      hadoop_program = Wukong::CONFIG[:hadoop_home]+'/bin/hadoop'
       [
-        hadoop_program,
-        "jar #{Wukong::CONFIG[:hadoop_home]}/contrib/streaming/hadoop-*-streaming.jar",
+        hadoop_runner,
+        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*-streaming.jar",
         hadoop_partition_args,
         hadoop_sort_args,
         hadoop_num_tasks_args,
