@@ -72,36 +72,60 @@ class Hash
     merge! hsh2, &Hash::DEEP_MERGER
   end
 
+  #
+  # Treat hash as tree of hashes:
+  #
+  #     x = { 1 => :val, :subhash => { 1 => :val1 } }
+  #     x.deep_set(:subhash, :cat, :hat)
+  #     # => { 1 => :val, :subhash => { 1 => :val1,   :cat => :hat } }
+  #     x.deep_set(:subhash, 1, :newval)
+  #     # => { 1 => :val, :subhash => { 1 => :newval, :cat => :hat } }
+  #
+  #
+  def deep_set *args
+    val      = args.pop
+    last_key = args.pop
+    # dig down to last subtree (building out if necessary)
+    hsh = args.empty? ? self : args.inject(self){|hsh, key| hsh[key] ||= {} }
+    # set leaf value
+    hsh[last_key] = val
+  end
 
   #
   # Treat hash as tree of hashes:
   #
   #     x = { 1 => :val, :subhash => { 1 => :val1 } }
-  #     x.deep_set(:subhash, 3, 4)
-  #     # => { 1 => :val, :subhash => { 1 => :val1,   3 => 4 } }
-  #     x.deep_set(:subhash, 1, :newval)
-  #     # => { 1 => :val, :subhash => { 1 => :newval, 3 => 4 } }
+  #     x.deep_get(:subhash, 1)
+  #     # => :val
+  #     x.deep_get(:subhash, 2)
+  #     # => nil
+  #     x.deep_get(:subhash, 2, 3)
+  #     # => nil
+  #     x.deep_get(:subhash, 2)
+  #     # => nil
   #
-  #
-  def deep_set *args
-    hsh = self
-    head_keys = args[0..-3]
-    last_key  = args[-2]
-    val       = args[-1]
-    # grab last subtree (building out if necessary)
-    head_keys.each{|key| hsh = (hsh[key] ||= {}) }
-    # set leaf value
-    hsh[last_key] = val
+  def deep_get *args
+    last_key = args.pop
+    # dig down to last subtree (building out if necessary)
+    hsh = args.inject(self){|hsh, key| hsh[key] || {} }
+    # get leaf value
+    hsh[last_key]
   end
 
-  # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
-  def reverse_merge(other_hash)
-    other_hash.merge(self)
-  end
 
-  # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
-  def reverse_merge!(other_hash)
-    replace(reverse_merge(other_hash))
+  #
+  # Treat hash as tree of hashes:
+  #
+  #     x = { 1 => :val, :subhash => { 1 => :val1, 2 => :val2 } }
+  #     x.deep_delete(:subhash, 1)
+  #     #=> :val
+  #     x
+  #     #=> { 1 => :val, :subhash => { 2 => :val2 } }
+  #
+  def deep_delete *args
+    last_key  = args.pop
+    last_hsh  = args.empty? ? self : (deep_get(*args)||{})
+    last_hsh.delete(last_key)
   end
 
   #
@@ -115,6 +139,16 @@ class Hash
   #
   def compact!
     replace(compact)
+  end
+
+  # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
+  def reverse_merge(other_hash)
+    other_hash.merge(self)
+  end
+
+  # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
+  def reverse_merge!(other_hash)
+    replace(reverse_merge(other_hash))
   end
 
 end

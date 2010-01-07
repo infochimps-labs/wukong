@@ -1,7 +1,12 @@
+## OS
+.DS_Store
+Icon?
+nohup.out
+
 ## EDITORS
-*~
 \#*
 .\#*
+*~
 *.swp
 REVISION
 TAGS*
@@ -10,11 +15,6 @@ tmtags
 *.tmproj
 .project
 .settings
-
-## OS
-.DS_Store
-Icon?
-nohup.out
 
 ## COMPILED
 a.out

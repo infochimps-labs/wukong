@@ -1,7 +1,6 @@
-README.textile
-LICENSE.textile
-app/**/*.rm
+README.rdoc
 lib/**/*.rb
-examples/**/*.rb
-utils/**/*.rb
-docpages/**/*.textile
+bin/*
+features/**/*.feature
+LICENSE
+examples/*.rb
