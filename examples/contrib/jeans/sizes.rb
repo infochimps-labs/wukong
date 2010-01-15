@@ -33,7 +33,7 @@ module JeanSizes
   # It has the advantage of a minimal footprint.
   #
   class JeansAccumulatingReducer < Wukong::Streamer::AccumulatingReducer
-    attr_accessor :sizes_sum
+    attr_accessor :sums
 
     # start the sum with 0 for each size
     def start! *_
