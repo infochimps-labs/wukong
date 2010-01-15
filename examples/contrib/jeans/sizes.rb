@@ -12,6 +12,23 @@ module JeanSizes
   end
 
   #
+  # This uses a ListReducer. It's nice and simple, but requires first
+  # accumulating each key's records in memory.
+  #
+  class JeansListReducer < Wukong::Streamer::ListReducer
+    def finalize
+      return if values.empty?
+      sums = []; 13.times{ sums << 0 }
+      values.each do |country, *sizes|
+        sizes.map!(&:to_i)
+        sums = sums.zip(sizes).map{|sum, val| sum + val }
+      end
+      yield [key, *sums]
+    end
+  end
+
+
+  #
   # This uses an AccumulatingReducer directly.
   # It has the advantage of a minimal footprint.
   #
@@ -19,31 +36,20 @@ module JeanSizes
     attr_accessor :sizes_sum
 
     # start the sum with 0 for each size
-    def start! country, *first_sizes
-      self.sizes_sum = first_sizes.map{ 0 }
+    def start! *_
+      self.sums = []; 13.times{ self.sums << 0 }
     end
     # accumulate each size count into the sizes_sum
     def accumulate country, *sizes
       sizes.map!(&:to_i)
-      self.sizes_sum = self.sizes_sum.zip(sizes).map{|sum, val| sum + val }
+      self.sums = self.sums.zip(sizes).map{|sum, val| sum + val }
     end
     # emit [country, size_0_sum, size_1_sum, ...]
     def finalize
-      yield [key, sizes_sum].flatten
+      yield [key, sums].flatten
     end
   end
 
-  class JeansListReducer < Wukong::Streamer::ListReducer
-    def finalize
-      return if values.empty?
-      sizes_sum = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0]
-      values.each do |country, *sizes|
-        sizes.map!(&:to_i)
-        sizes_sum = sizes_sum.zip(sizes).map{|sum, val| sum + val }
-      end
-      yield [key, *sizes_sum]
-    end
-  end
 end
 
 Wukong::Script.new(JeanSizes::Mapper, JeanSizes::JeansListReducer).run
