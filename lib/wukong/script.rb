@@ -252,9 +252,9 @@ module Wukong
         options.dump_help %Q{Please specify a run mode: you probably want to start with
   #{$0} --run --local input.tsv output.tsv
 although
-  cat input.tsv | #{$0} --map > output.tsv
+  cat input.tsv | #{$0} --map > mapped.tsv
 or
-  cat input.tsv | #{$0} --reduce > output.tsv
+  cat mapped.tsv | sort | #{$0} --reduce > reduced.tsv
 can be useful for initial testing.}
       end
     end
