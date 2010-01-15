@@ -9,16 +9,16 @@ class << Integer    ; def to_sql() 'INT'                              end ; end
 class << Bignum     ; def to_sql() 'BIGINT'                           end ; end
 class << String     ; def to_sql() 'VARCHAR(255) CHARACTER SET ASCII' end ; end
 class << Symbol     ; def to_sql() 'VARCHAR(255) CHARACTER SET ASCII' end ; end
-class << BigDecimal ; def to_pig() 'DECIMAL'                          end ; end if defined?(BigDecimal)
-class << EpochTime  ; def to_pig() 'INT'                              end ; end if defined?(EpochTime)
-class << FilePath   ; def to_pig() 'VARCHAR(255) CHARACTER SET ASCII' end ; end if defined?(FilePath)
-class << Flag       ; def to_pig() 'CHAR(1)      CHARACTER SET ASCII' end ; end if defined?(Flag)
-class << IPAddress  ; def to_pig() 'CHAR(15)     CHARACTER SET ASCII' end ; end if defined?(IPAddress)
-class << URI        ; def to_pig() 'VARCHAR(255) CHARACTER SET ASCII' end ; end if defined?(URI)
-class << Csv        ; def to_pig() 'TEXT'                             end ; end if defined?(Csv)
-class << Yaml       ; def to_pig() 'TEXT'                             end ; end if defined?(Yaml)
-class << Json       ; def to_pig() 'TEXT'                             end ; end if defined?(Json)
-class << Regex      ; def to_pig() 'TEXT'                             end ; end if defined?(Regex)
+class << BigDecimal ; def to_sql() 'DECIMAL'                          end ; end if defined?(BigDecimal)
+class << EpochTime  ; def to_sql() 'INT'                              end ; end if defined?(EpochTime)
+class << FilePath   ; def to_sql() 'VARCHAR(255) CHARACTER SET ASCII' end ; end if defined?(FilePath)
+class << Flag       ; def to_sql() 'CHAR(1)      CHARACTER SET ASCII' end ; end if defined?(Flag)
+class << IPAddress  ; def to_sql() 'CHAR(15)     CHARACTER SET ASCII' end ; end if defined?(IPAddress)
+class << URI        ; def to_sql() 'VARCHAR(255) CHARACTER SET ASCII' end ; end if defined?(URI)
+class << Csv        ; def to_sql() 'TEXT'                             end ; end if defined?(Csv)
+class << Yaml       ; def to_sql() 'TEXT'                             end ; end if defined?(Yaml)
+class << Json       ; def to_sql() 'TEXT'                             end ; end if defined?(Json)
+class << Regex      ; def to_sql() 'TEXT'                             end ; end if defined?(Regex)
 class String        ; def to_sql() self             ; end ; end
 class Symbol        ; def to_sql() self.to_s.upcase ; end ; end
 
