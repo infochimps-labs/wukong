@@ -1,0 +1,4 @@
+h2. Wukong v1.4.4 2010-01-15
+
+* Moved settings management & command line handling over to "Configliere":http://github.com/mrflip/configliere (
+* Added "example script and notes":http://github.com/fredrikmollerstrand/hackblag/blob/master/wukong/notes.markdown from Fredrik Möllerstrand (@lenbust)

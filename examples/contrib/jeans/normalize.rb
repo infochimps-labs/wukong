@@ -3,7 +3,7 @@
 # $> ruby normalize.rb --run=local --input data/sizes --output data/normalized_sizes
 require 'rubygems'
 require 'wukong'
-require 'active_record'
+require 'active_support/core_ext/enumerable' # for array#sum
 
 module Normalize
   class Mapper < Wukong::Streamer::RecordStreamer
