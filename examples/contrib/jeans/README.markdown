@@ -1,4 +1,4 @@
-Notes and scripts from a talk by Fredrik Möllerstrand, (@lenbust / http://fredrikmollerstrand.se) with suggested modifications by @mrflip
+Notes and scripts from a talk by Fredrik Möllerstrand, (@lenbust / http://fredrikmollerstrand.se) with some modifications by @mrflip
 
 See http://bit.ly/6ItaHI and forks of that gist!
 
