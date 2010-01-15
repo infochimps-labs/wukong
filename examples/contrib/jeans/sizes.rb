@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # run like so:
-# $> ruby sizes.rb --run=local data/orders.tsv data/sizes.tsv
+# $> ruby sizes.rb --run=local data/orders.tsv data/sizes
 require 'rubygems'
 require 'wukong'
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # run like so:
-# $> ruby normalize.rb --run=local --input data/sizes --output data/normalized_sizes
+# $> ruby normalize.rb --run=local data/sizes.tsv data/normalized_sizes.tsv
 require 'rubygems'
 require 'wukong'
 require 'active_support/core_ext/enumerable' # for array#sum
