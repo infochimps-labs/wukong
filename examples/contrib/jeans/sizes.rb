@@ -47,4 +47,3 @@ module JeanSizes
 end
 
 Wukong::Script.new(JeanSizes::Mapper, JeanSizes::JeansListReducer).run
-Wukong::Script.new(JeanSizes::Mapper, JeanSizes::JeansAccumulatingReducer).run
