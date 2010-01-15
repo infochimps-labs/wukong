@@ -79,7 +79,7 @@ module Wukong
     #   thus, requiring a working hadoop install), or to run in local mode
     #   (script --map | sort | script --reduce)
     #
-    Settings.define :default_run_mode, :default => 'hadoop',    :description => 'Run as local or as hadoop?', :wukong => true, :hide_help => true
+    Settings.define :default_run_mode, :default => 'hadoop',    :description => 'Run as local or as hadoop?', :wukong => true, :hide_help => false
     Settings.define :default_mapper,   :default => '/bin/cat',  :description => 'The command to run when a nil mapper is given.', :wukong => true, :hide_help => true
     Settings.define :default_reducer,  :default => '/bin/cat',  :description => 'The command to run when a nil reducer is given.', :wukong => true, :hide_help => true
     Settings.define :hadoop_home,      :default => '/usr/lib/hadoop', :environment => 'HADOOP_HOME', :description => "Path to hadoop installation; :hadoop_home/bin/hadoop should run hadoop.", :wukong => true
@@ -249,7 +249,13 @@ module Wukong
       when options[:run]
         exec_hadoop_streaming
       else
-        options.help
+        options.dump_help %Q{Please specify a run mode: you probably want to start with
+  #{$0} --run --local input.tsv output.tsv
+although
+  cat input.tsv | #{$0} --map > output.tsv
+or
+  cat input.tsv | #{$0} --reduce > output.tsv
+can be useful for initial testing.}
       end
     end
   end
