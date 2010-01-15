@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-01-07}
+  s.date = %q{2010-01-15}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -84,6 +84,11 @@ Gem::Specification.new do |s|
      "docpages/wutils.textile",
      "examples/README.txt",
      "examples/apache_log_parser.rb",
+     "examples/contrib/jeans/README.markdown",
+     "examples/contrib/jeans/data/orders.tsv",
+     "examples/contrib/jeans/data/sizes.tsv",
+     "examples/contrib/jeans/normalize.rb",
+     "examples/contrib/jeans/sizes.rb",
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
      "examples/foo.rb",
@@ -170,6 +175,8 @@ Gem::Specification.new do |s|
      "spec/wukong/encoding_spec.rb",
      "spec/wukong/script_spec.rb",
      "examples/apache_log_parser.rb",
+     "examples/contrib/jeans/normalize.rb",
+     "examples/contrib/jeans/sizes.rb",
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
      "examples/foo.rb",
