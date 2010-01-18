@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "1.4.4"
+  s.version = "1.4.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-01-15}
+  s.date = %q{2010-01-18}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
