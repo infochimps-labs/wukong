@@ -1,7 +1,7 @@
 require 'pathname'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
-require 'configliere' ; Configliere.use(:commandline, :environment, :define)
+require 'configliere' ; Configliere.use(:commandline, :env_var, :define)
 require 'rbconfig' # for uncovering ruby_interpreter_path
 module Wukong
 
@@ -82,7 +82,7 @@ module Wukong
     Settings.define :default_run_mode, :default => 'hadoop',    :description => 'Run as local or as hadoop?', :wukong => true, :hide_help => false
     Settings.define :default_mapper,   :default => '/bin/cat',  :description => 'The command to run when a nil mapper is given.', :wukong => true, :hide_help => true
     Settings.define :default_reducer,  :default => '/bin/cat',  :description => 'The command to run when a nil reducer is given.', :wukong => true, :hide_help => true
-    Settings.define :hadoop_home,      :default => '/usr/lib/hadoop', :environment => 'HADOOP_HOME', :description => "Path to hadoop installation; :hadoop_home/bin/hadoop should run hadoop.", :wukong => true
+    Settings.define :hadoop_home,      :default => '/usr/lib/hadoop', :env_var => 'HADOOP_HOME', :description => "Path to hadoop installation; :hadoop_home/bin/hadoop should run hadoop.", :wukong => true
     Settings.define :hadoop_runner,    :description => "Path to hadoop script; usually, set :hadoop_home instead of this.", :wukong => true
     Settings.define :map,              :description => "run the script's map phase. Reads/writes to STDIN/STDOUT.", :wukong => true
     Settings.define :reduce,           :description => "run the script's reduce phase. Reads/writes to STDIN/STDOUT. You can only choose one of --run, --map or --reduce.", :wukong => true
