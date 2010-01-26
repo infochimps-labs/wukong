@@ -1,7 +1,7 @@
 require 'pathname'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
-require 'configliere' ; Configliere.use(:commandline, :environment, :define)
+require 'configliere' ; Configliere.use(:commandline, :env_var, :define)
 require 'rbconfig' # for uncovering ruby_interpreter_path
 module Wukong
 
