@@ -1,3 +1,8 @@
+h2. Wukong v1.4.5 2010-01-18
+
+* In @--run=local@ mode, you can use '-' alone as a filename to indicate STDIN / STDOUT as input/output respectively.
+* Minor tweaks to contrib/jeans
+
 h2. Wukong v1.4.4 2010-01-15
 
 * Moved settings management & command line handling over to "Configliere":http://github.com/mrflip/configliere (
