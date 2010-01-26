@@ -1,3 +1,1302 @@
-SS10	vaxjobutiken	2010-01-10 10:45:54	sweden	Storgatan	64	VÄXJÖ	352	30	SWEDEN	retailer	120664	L34	0	0	0	0	0	1	1	1	2	2	1	1	0
-SS10	vaxjobutiken	2009-01-10 10:45:54	sweden	Storgatan	64	VÄXJÖ	352	30	SWEDEN	retailer	120721	L32	0	0	0	0	0	1	2	2	2	1	1	1	0
-SS09	kubic	2010-01-10 13:33:37	spain	NULL	NULL	NULL	NULL	retailer	120571	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110080	L32	1	2	1	1	1	1	0	0	0	0	0	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110120	L32	0	0	0	0	1	1	2	1	2	0	0	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110198	L32	1	2	3	2	2	1	1	1	0	0	0	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110211	L32	2	3	2	1	2	1	1	1	0	0	0	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110220	L32	0	0	0	0	1	1	2	2	3	1	2	1	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110277	L32	0	0	0	0	0	1	2	1	2	1	1	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110285	L32	0	0	0	0	2	1	2	2	3	1	1	1	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110307	L32	2	3	2	2	2	1	1	0	0	0	0	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	110348	L32	1	2	2	1	1	1	1	0	0	0	0	0	0
+SS08	outerjeans	2007-08-29 09:14:29	australia	Cotton Road	Hemlock	1001	Australia	retailer	114901	L32	0	0	0	0	1	1	2	2	3	1	2	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110001	L32	2	3	2	2	2	1	1	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110002	L32	2	3	2	2	2	1	1	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110160	L32	0	0	0	0	1	2	2	2	3	2	1	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110281	L32	0	0	0	0	1	2	2	1	3	2	1	1	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110287	L32	0	0	0	0	1	2	2	2	3	2	1	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110305	L32	1	3	3	2	2	1	1	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110415	L32	1	1	2	2	2	2	2	1	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110428	L32	1	2	3	3	2	1	1	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	110505	L32	0	0	0	0	1	1	2	2	3	2	1	1	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	114043	L32	0	0	0	0	1	1	2	2	3	3	1	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	114901	L32	0	0	0	0	1	2	2	2	3	2	1	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	130422	B01	1	2	2	1	0	0	0	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	130450	B01	1	2	2	1	0	0	0	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	130451	B43	1	2	2	1	0	0	0	0	0	0	0	0	0
+FW08	outerjeans	2008-03-03 07:32:16	australia	Cotton Road	Hemlock	1001	Australia	retailer	130456	Y03	1	2	2	1	0	0	0	0	0	0	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110001	L32	0	1	1	2	3	2	2	1	1	0	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110002	L32	0	1	1	2	2	2	2	2	1	0	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110011	L32	0	0	0	0	0	1	2	2	3	2	2	1	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110120	L32	0	0	0	0	0	1	2	2	3	2	2	1	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110194	L32	0	0	0	0	1	1	2	2	3	3	2	1	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110211	L32	0	1	1	2	2	2	2	2	1	0	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110271	L32	0	0	2	2	3	2	2	1	1	0	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110455	L32	0	0	0	0	0	0	1	1	3	3	3	2	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110560	L32	0	0	0	0	0	1	2	2	3	2	2	1	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	110576	L32	0	0	0	1	2	2	3	2	2	1	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	114901	L32	0	0	0	0	0	1	2	2	3	2	2	1	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	130563	B01	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS09	outerjeans	2008-08-25 08:44:32	australia	Cotton Road	Hemlock	1001	Australia	retailer	130564	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	outerjeans	2009-03-03 02:53:10	australia	Cotton Road	Hemlock	1001	Australia	retailer	110001	L32	0	1	2	1	2	2	2	1	2	1	1	0	0
+FW09	outerjeans	2009-03-03 02:53:10	australia	Cotton Road	Hemlock	1001	Australia	retailer	110002	L32	1	2	2	1	2	2	2	2	2	1	1	0	0
+FW09	outerjeans	2009-03-03 02:53:10	australia	Cotton Road	Hemlock	1001	Australia	retailer	110120	L32	0	0	0	0	1	2	2	1	3	2	1	1	0
+FW09	outerjeans	2009-03-03 02:53:10	australia	Cotton Road	Hemlock	1001	Australia	retailer	114901	L32	0	0	0	0	1	1	2	2	3	2	1	1	0
+SS10	outerjeans	2009-07-27 03:02:26	australia	Cotton Road	Hemlock	1001	Australia	retailer	110662	L32	0	0	0	0	1	1	2	1	3	2	2	1	0
+SS10	outerjeans	2009-07-27 03:02:26	australia	Cotton Road	Hemlock	1001	Australia	retailer	110747	L32	0	0	0	0	1	1	2	1	3	2	2	1	0
+SS10	outerjeans	2009-07-27 03:02:26	australia	Cotton Road	Hemlock	1001	Australia	retailer	110765	L32	0	0	0	0	1	1	2	2	3	2	2	0	0
+SS10	outerjeans	2009-07-27 03:02:26	australia	Cotton Road	Hemlock	1001	Australia	retailer	110767	L32	1	1	2	2	2	2	2	1	0	0	0	0	0
+SS10	outerjeans	2009-07-27 03:02:26	australia	Cotton Road	Hemlock	1001	Australia	retailer	110774	L32	0	0	0	0	1	1	2	2	3	2	2	0	0
+SS10	outerjeans	2009-07-27 03:02:26	australia	Cotton Road	Hemlock	1001	Australia	retailer	130712B22	B22	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110001	L32	1	2	2	3	2	2	1	0	0	0	0	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110120	L32	0	0	0	0	2	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110120	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110194	L32	0	0	0	0	1	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110194	L34	0	0	0	0	0	1	1	1	1	1	1	1	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110196	L32	0	0	0	0	1	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110196	L34	0	0	0	0	0	1	1	1	1	1	1	1	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110211	L32	1	2	2	3	2	2	1	0	0	0	0	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110267	L32	1	2	2	3	2	2	1	0	0	0	0	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110268	L32	0	0	0	0	2	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110268	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110271	L32	1	2	2	3	2	2	1	0	0	0	0	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110281	L32	0	0	0	0	2	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110281	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110285	L32	0	0	0	0	1	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110285	L34	0	0	0	0	0	1	1	1	1	1	1	1	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	110348	L32	1	2	2	3	2	2	1	0	0	0	0	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	114043	L32	0	0	0	0	1	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	114043	L34	0	0	0	0	0	1	1	1	1	1	1	1	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	114901	L32	0	0	0	0	2	1	1	1	1	1	1	0	0
+SS08	buttond	2007-09-27 06:46:42	australia		Brisbane		Australia	retailer	114901	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110120	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110120	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110160	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110160	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110194	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110194	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110196	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110196	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110268	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110268	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110287	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110287	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110401	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110401	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110455	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110455	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110505	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110505	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110507	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	110507	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	114043	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	114043	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	114901	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	114901	L34	0	0	0	0	0	0	1	1	1	0	1	0	0
+FW08	buttond	2008-02-29 02:28:16	australia		Brisbane		Australia	retailer	180052	B01	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110022	L32	0	0	0	0	1	2	3	3	2	2	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110022	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110120	L32	0	0	0	0	1	2	3	3	2	2	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110120	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110194	L32	0	0	0	0	1	1	2	2	2	1	1	1	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110194	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110196	L32	0	0	0	0	1	1	2	2	2	1	1	1	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110196	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110268	L32	0	0	0	0	1	2	3	3	2	2	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110268	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110281	L32	0	0	0	0	1	2	3	3	2	2	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110281	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110357	L32	0	0	0	0	1	1	2	2	2	1	1	1	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110357	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110363	L32	0	0	0	0	0	0	2	2	2	1	1	1	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	110363	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	114043	L32	0	0	0	0	1	1	2	2	2	1	1	1	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	114043	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	114901	L32	0	0	0	0	1	2	3	3	2	2	1	1	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	114901	L34	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	160087	B01	0	1	1	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180110	B03	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180114	B04	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180114	B55	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180150	B01	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180150	B03	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180151	B63	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180151	B64	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS09	buttond	2008-08-29 07:37:58	australia		Brisbane		Australia	retailer	180154	B31	1	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110120	L32	0	0	0	0	1	2	3	3	2	2	1	0	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110120	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110194	L32	0	0	0	0	1	1	3	2	1	1	1	1	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110194	L34	0	0	0	0	0	0	0	1	1	1	1	0	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110268	L32	0	0	0	0	1	2	3	3	2	2	1	0	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110268	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110530	L32	0	0	0	0	0	1	1	2	1	2	1	1	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	110530	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	114901	L32	0	0	0	0	1	2	3	3	2	2	1	0	0
+FW09	buttond	2009-03-02 09:15:26	australia		Brisbane		Australia	retailer	114901	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110120	L32	0	0	0	0	2	2	2	2	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110120	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110160	L32	0	0	0	0	1	1	2	2	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110160	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110194	L32	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110194	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110268	L32	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110268	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110473	L32	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110473	L34	0	0	0	0	0	0	1	1	1	1	1	1	1
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110765	L32	0	0	0	0	2	2	1	1	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110765	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110771	L32	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	110771	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	114901	L32	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	114901	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	160095B01	B01	2	2	2	1	0	0	0	0	0	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	180181B01	B01	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	180181B12	B12	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	180207B01	B01	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10	buttond	2009-07-29 04:32:11	australia		Brisbane		Australia	retailer	180207B18	B18	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110194	L32	0	0	0	0	0	1	1	2	2	1	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110194	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110268	L32	0	0	0	0	0	1	2	2	1	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110268	L34	0	0	0	0	0	0	1	1	1	1	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110392	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110392	L34	0	0	0	1	2	2	1	1	1	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110395	L32	0	0	0	0	1	1	2	2	2	1	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110395	L34	0	0	0	0	0	0	0	2	2	1	1	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110415	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110415	L34	0	0	0	1	2	2	1	1	1	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110454	L32	0	0	0	0	0	1	1	2	2	2	2	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110454	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110458	L32	0	0	0	0	0	1	1	2	2	2	2	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110458	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110472	L32	0	0	0	0	1	1	2	3	3	3	2	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110472	L34	0	0	0	0	0	0	1	2	3	3	3	2	1
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110530	L32	0	0	0	0	1	1	1	2	2	2	2	1	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110530	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110540	L32	0	0	0	0	1	1	2	2	2	2	2	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110540	L34	0	0	0	0	0	1	1	1	2	2	1	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110544	L32	0	0	0	0	1	2	2	2	2	2	1	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110544	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110559	L32	0	0	0	0	1	1	2	3	3	3	2	1	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110559	L34	0	0	0	0	0	1	1	2	3	3	2	1	1
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110563	L32	0	0	0	0	1	2	2	2	2	2	1	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110563	L34	0	0	0	0	0	0	1	1	2	2	1	1	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110576	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110576	L34	0	0	0	1	2	2	1	1	1	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110580	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110580	L34	0	0	0	1	2	2	1	1	1	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	114043	L32	0	0	0	0	1	1	2	2	2	2	1	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	114043	L34	0	0	0	0	0	0	0	1	2	2	2	1	1
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130550	Y01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130553	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130558	R01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130561	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130562	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130574	G05	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130581	B37	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130582	B37	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130588	R03	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130589	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	160083	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	jeanslulea	2008-08-06 15:20:31	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	180156	B21	0	1	3	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110001	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110001	L34	0	0	1	2	2	1	1	1	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110002	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110002	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110392	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110392	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110670	L32	0	1	2	2	2	2	1	1	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110670	L34	0	0	0	1	2	2	2	1	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110671	L32	0	1	2	2	2	2	1	1	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110671	L34	0	0	0	1	2	2	2	1	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110678	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 11:58:23	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110678	L34	0	0	1	2	2	1	1	1	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130631B46	B46	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130636R01	R01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130637W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130652B58	B58	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130661B26	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	160095B01	B01	0	0	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	180159B21	B21	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	180181B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 13:17:46	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	180181B12	B12	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110160	L32	0	0	0	0	0	0	1	2	2	1	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110160	L34	0	0	0	0	0	0	0	1	2	2	2	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110194	L32	0	0	0	0	0	1	1	2	2	1	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110194	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110268	L32	0	0	0	0	0	1	2	2	1	0	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110268	L34	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110472	L32	0	0	0	0	0	1	2	2	2	2	1	1	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110472	L34	0	0	0	0	0	0	0	1	2	2	2	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110530	L32	0	0	0	0	1	1	2	2	2	2	1	1	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110530	L34	0	0	0	0	0	0	0	1	2	2	2	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110617	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110617	L34	0	0	0	0	0	0	0	1	1	1	1	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110628	L32	0	0	0	0	0	1	1	2	2	2	2	2	2
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110628	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110634	L32	0	0	0	0	0	1	1	2	2	2	1	1	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110634	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110639	L32	0	0	0	0	0	1	1	2	2	2	2	2	2
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110639	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110640	L32	0	0	0	0	0	1	1	2	2	2	2	2	2
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110640	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110645	L32	0	0	0	0	1	2	2	2	2	2	1	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110645	L34	0	0	0	0	0	1	1	1	2	2	1	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110656	L32	0	0	0	0	1	1	2	3	3	3	2	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110656	L34	0	0	0	0	0	0	1	2	3	3	3	2	1
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110662	L32	0	0	0	1	1	2	2	2	2	1	1	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110662	L34	0	0	0	0	0	0	1	2	2	2	1	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110706	L32	0	0	0	0	1	1	2	2	2	1	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110706	L34	0	0	0	0	0	0	0	2	2	1	1	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	114043	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	jeanslulea	2009-01-20 14:32:03	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	114043	L34	0	0	0	0	0	0	0	1	1	1	1	1	1
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130702B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130705G20	G20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130706W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130709B66	B66	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130720Y03	Y03	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130721W04	W04	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130783B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130785Y03	Y03	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	130790B21	B21	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	160103B26	B26	0	0	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	180204B18	B18	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 14:24:06	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	180206B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110001	L32	0	1	1	1	1	1	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110002	L32	0	1	1	1	1	1	0	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110198	L32	0	0	0	1	1	1	1	1	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110271	L32	0	0	1	2	2	2	2	2	1	1	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110271	L34	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110755	L32	0	1	1	2	2	2	2	2	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110755	L34	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110756	L32	0	1	1	2	2	2	2	2	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110756	L34	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110757	L32	0	1	1	2	2	2	2	2	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110757	L34	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110765	L32	0	1	1	2	2	2	2	2	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110765	L34	0	0	0	0	1	2	2	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110766	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110766	L34	0	0	0	1	2	2	1	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110767	L32	1	2	2	2	2	2	1	0	0	0	0	0	0
+SS10	jeanslulea	2009-08-06 15:37:29	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110767	L34	0	0	0	1	2	2	1	1	1	0	0	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110160	L32	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110194	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110268	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110472	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110617	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110639	L32	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110640	L32	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110662	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110721	L32	0	0	0	0	0	1	1	2	2	2	2	2	2
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110721	L34	0	0	0	0	0	0	0	1	2	2	2	2	1
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110724	L32	0	0	0	0	0	1	1	2	2	2	2	2	2
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110724	L34	0	0	0	0	0	0	0	1	2	2	2	2	1
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110727	L32	0	0	0	0	0	1	1	2	2	2	2	2	2
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110727	L34	0	0	0	0	0	0	0	1	2	2	2	2	1
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110729	L32	0	0	0	0	1	1	2	2	2	2	0	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110729	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110733	L32	0	0	0	0	1	1	2	2	2	2	1	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110733	L34	0	0	0	0	0	0	1	1	2	2	2	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110735	L32	0	0	0	0	1	1	2	2	2	2	1	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110735	L34	0	0	0	0	0	0	1	1	2	2	2	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110741	L32	0	0	0	0	1	1	2	3	3	3	2	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110741	L34	0	0	0	0	0	0	1	2	3	3	3	2	1
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110746	L32	0	0	0	0	1	1	2	3	3	3	2	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110746	L34	0	0	0	0	0	0	1	2	3	3	3	2	1
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110747	L32	0	0	0	1	2	2	2	2	2	0	0	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110747	L34	0	0	0	0	0	1	2	2	2	1	1	0	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	110754	L32	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	jeanslulea	2009-08-06 16:05:27	sweden	Tveklösa gatan 12	Luleå	970 70	SWEDEN	retailer	114043	L32	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110640	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110640	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110662	L32	0	0	0	0	1	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110662	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110719	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110719	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110749	L32	0	0	0	0	1	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110749	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110750	L32	0	0	0	0	1	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110750	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110758	L32	0	1	1	1	1	1	1	1	1	0	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110760	L32	0	1	1	1	1	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110760	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110761	L32	0	1	1	1	1	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110761	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110766	L32	0	1	1	1	1	1	1	1	1	1	0	0	0
+SS10	kicks	2009-07-10 13:01:29	spain		barcelona		spain	retailer	110766	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L32	0	1	2	2	3	2	1	0	0	0	0	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110080	L32	1	1	2	2	3	2	1	0	0	0	0	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110080	L34	0	0	0	0	0	0	1	0	0	0	0	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L32	0	0	0	0	0	0	2	2	2	1	1	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L34	0	0	0	0	0	0	0	0	0	2	2	1	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110230	L32	0	1	2	2	3	2	2	0	0	0	0	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110230	L34	0	0	0	0	0	0	0	1	1	0	0	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110268	L32	0	0	0	0	0	0	2	2	2	1	1	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	110268	L34	0	0	0	0	0	0	0	0	1	2	2	1	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	114043	L32	0	0	0	0	0	0	2	2	1	1	1	0	0
+SS08	studio	2007-09-27 03:17:22	australia	100 Broad Street	Vincent	4400	Australia	retailer	114043	L34	0	0	0	0	0	0	0	0	0	2	2	2	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110001	L32	1	1	2	2	3	2	1	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110001	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L32	1	1	2	2	2	2	1	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L34	0	0	0	0	0	1	1	1	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L34	0	0	0	0	0	0	0	0	0	2	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110194	L32	0	0	0	0	0	0	2	2	2	2	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110194	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110211	L32	0	1	2	2	2	2	1	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110211	L34	0	0	0	0	0	1	1	1	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110287	L32	0	0	0	0	0	0	2	2	2	2	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110287	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110401	L32	0	0	0	0	0	0	2	2	2	2	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110401	L34	0	0	0	0	0	0	0	0	0	1	2	1	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110415	L32	0	1	2	2	2	2	1	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110415	L34	0	0	0	0	0	1	1	1	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110504	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	110504	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	130438	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	130444	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	130449	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	130454	Y01	0	2	2	1	1	0	0	0	0	0	0	0	0
+FW08	studio	2008-02-28 13:32:51	australia	100 Broad Street	Vincent	4400	Australia	retailer	130459	G01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110001	L32	1	1	2	2	2	2	1	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110001	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L32	1	1	2	2	2	2	1	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L34	0	0	0	0	0	1	1	1	1	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L32	0	0	0	0	0	1	1	2	2	1	1	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110160	L32	0	0	0	0	0	0	1	2	2	2	1	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110160	L34	0	0	0	0	0	0	0	0	0	0	2	1	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110211	L32	1	1	2	2	2	1	1	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110211	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110268	L32	0	0	0	0	0	0	1	2	2	2	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110268	L34	0	0	0	0	0	0	0	0	0	1	2	1	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110392	L32	1	1	2	2	2	2	1	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110392	L34	0	0	0	0	0	0	1	1	1	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110511	L32	1	1	2	2	2	2	1	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110511	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110560	L32	0	0	0	0	0	1	1	1	2	1	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	110560	L34	0	0	0	0	0	0	0	0	0	1	2	1	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	130555	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	130564	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	130566	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	130588	R01	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	130588	R03	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	studio	2008-08-29 10:05:23	australia	100 Broad Street	Vincent	4400	Australia	retailer	160087	B01	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110001	L32	1	1	1	1	1	1	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110001	L34	0	0	0	0	0	0	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L32	1	1	1	1	1	1	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110002	L34	0	0	0	0	0	0	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L32	0	0	0	0	0	0	2	2	2	1	1	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110120	L34	0	0	0	0	0	0	0	0	0	2	1	1	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110194	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110194	L34	0	0	0	0	0	0	0	0	0	1	1	1	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110198	L32	1	1	1	1	1	1	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110198	L34	0	0	0	1	1	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110211	L32	1	1	1	1	1	1	1	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110211	L34	0	0	0	0	0	0	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110268	L32	0	0	0	0	0	0	2	2	2	1	1	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110268	L34	0	0	0	0	0	0	0	0	0	1	1	1	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110392	L32	0	1	1	1	1	1	1	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110392	L34	0	0	0	0	0	1	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110544	L32	0	0	0	0	0	1	1	2	2	1	1	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110544	L34	0	0	0	0	0	0	0	0	0	1	1	1	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	110700	L32	0	1	1	1	1	1	1	1	1	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	114901	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	114901	L34	0	0	0	0	0	0	0	0	0	1	1	1	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130337B01	B01	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130625B01	B01	0	1	1	1	1	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130634B01	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130635W01	W01	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130637W01	W01	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130652B23	B23	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	studio	2009-03-02 04:03:08	australia	100 Broad Street	Vincent	4400	Australia	retailer	130680B01	B01	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110001	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110001	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110002	L32	1	1	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110002	L34	0	0	0	1	1	1	1	1	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110160	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110160	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110160	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110211	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110211	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110268	L32	0	0	0	1	1	1	1	1	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110268	L34	0	0	0	0	1	1	1	1	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110271	L32	0	1	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110271	L34	0	0	1	1	1	1	1	1	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110392	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110392	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110472	L32	0	0	0	0	0	1	2	2	2	2	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110472	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110472	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110530	L32	0	0	0	0	0	1	2	2	2	1	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110530	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110544	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110544	L34	0	0	0	0	0	1	1	2	2	2	2	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110617	L32	0	0	0	0	0	0	2	3	3	3	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110617	L34	0	0	0	0	0	0	1	2	2	2	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110634	L32	0	0	0	0	0	1	2	2	2	1	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110634	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110639	L32	0	0	0	0	0	0	1	2	2	2	2	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110639	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110639	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110640	L32	0	0	0	0	0	0	1	2	2	2	2	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110640	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110640	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110645	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110645	L34	0	0	0	0	0	1	1	2	2	2	2	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110656	L32	0	0	0	0	0	1	2	2	2	2	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110656	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110656	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110662	L32	0	0	0	0	1	2	2	2	2	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110662	L34	0	0	0	0	0	1	1	2	2	2	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110670	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110670	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110671	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110671	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110678	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110678	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110706	L32	0	0	0	0	1	2	2	2	2	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110706	L34	0	0	0	0	0	1	1	2	2	2	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	114043	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	114043	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	114043	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130624B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130624W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130625B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130631B46	B46	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130632G05	G05	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130634B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130637W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130638R01	R01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130646W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130647B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130651B10	B10	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130652B58	B58	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130656B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130661B26	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130662B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130667B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130672B21	B21	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130673B65	B65	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130678B30	B30	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	queenjean	2009-02-13 10:15:22	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	160095B01	B01	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110001	L32	1	1	2	3	3	3	1	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110001	L34	0	0	1	1	1	1	1	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110002	L32	1	2	2	3	3	2	1	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110002	L34	0	0	1	1	1	1	1	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110758	L32	0	1	2	2	2	1	1	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110758	L34	0	0	1	1	1	1	1	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110765	L32	0	1	2	2	2	2	1	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110765	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110766	L32	1	2	3	3	3	3	2	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110766	L34	0	1	2	2	2	2	1	1	1	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110767	L32	1	2	3	3	3	3	2	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110767	L34	0	1	2	2	2	2	1	1	1	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110775	L30	0	1	2	2	2	2	1	1	0	0	0	0	0
+SS10	queenjean	2009-08-19 08:49:39	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110775	L32	0	0	1	1	2	2	1	1	1	0	0	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110160	L32	0	0	0	0	0	1	1	2	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110160	L34	0	0	0	0	0	0	1	2	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110160	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110268	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110268	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110472	L32	0	0	0	0	0	1	2	2	2	2	1	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110472	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110472	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110633	L32	0	0	0	0	0	1	2	2	2	2	2	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110633	L34	0	0	0	0	0	0	1	1	2	2	1	1	1
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110640	L32	0	0	0	0	0	0	1	2	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110640	L34	0	0	0	0	0	0	0	1	1	1	1	1	1
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110640	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110662	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110662	L34	0	0	0	0	0	1	2	2	2	2	2	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110664	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110664	L34	0	0	0	0	0	1	1	2	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110721	L32	0	0	0	0	0	1	2	2	2	2	2	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110721	L34	0	0	0	0	0	0	1	1	2	2	1	1	1
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110733	L32	0	0	0	0	1	1	2	3	3	3	2	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110733	L34	0	0	0	0	0	1	1	1	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110735	L32	0	0	0	0	1	1	2	3	3	3	2	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110735	L34	0	0	0	0	0	1	1	1	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110746	L32	0	0	0	0	0	1	2	3	3	3	3	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110746	L34	0	0	0	0	0	0	1	1	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110747	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	110747	L34	0	0	0	0	0	1	2	2	2	2	2	0	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	114043	L32	0	0	0	0	0	1	1	2	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:24:29	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	114043	L34	0	0	0	0	0	0	1	1	2	2	2	1	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130702B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130704W04	W04	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130706W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130709B66	B66	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130718G20	G20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130721W04	W04	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130723G03	G03	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130724R14	R14	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130727B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130749B03	B03	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130772B37	B37	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130773B61	B61	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130777B26	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130784R01	R01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	130790B21	B21	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	160114B01	B01	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	178013B01	B01	0	0	2	3	1	0	0	0	0	0	0	0	0
+SS10	queenjean	2009-08-19 09:39:34	sweden	Göteborgsgränd 2	Kalmar	390 90	SWEDEN	retailer	178014W01	W01	0	0	2	3	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110001	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110001	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110002	L32	1	1	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110002	L34	0	0	0	1	1	1	1	1	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110160	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110160	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110160	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110211	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110211	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110268	L32	0	0	0	1	1	1	1	1	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110268	L34	0	0	0	0	1	1	1	1	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110392	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110392	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110472	L32	0	0	0	0	0	1	2	2	2	2	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110472	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110472	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110530	L32	0	0	0	0	0	1	2	2	2	1	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110530	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110544	L32	0	0	0	0	1	2	2	2	2	2	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110544	L34	0	0	0	0	0	1	1	1	2	2	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110639	L32	0	0	0	0	0	0	1	2	2	2	2	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110639	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110639	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110640	L32	0	0	0	0	0	0	1	2	2	2	2	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110640	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110640	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110645	L32	0	0	0	0	1	2	2	2	2	2	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110645	L34	0	0	0	0	0	1	1	2	2	2	0	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110656	L32	0	0	0	0	0	1	2	2	2	2	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110656	L34	0	0	0	0	0	0	1	1	2	2	2	2	1
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110656	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110662	L32	0	0	0	0	1	2	2	2	2	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110662	L34	0	0	0	0	0	1	1	2	2	2	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110670	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110670	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110671	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110671	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110678	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110678	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110706	L32	0	0	0	0	1	2	2	2	2	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110706	L34	0	0	0	0	0	1	1	2	2	2	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	114043	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	114043	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	114043	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130624W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130625B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130631B46	B46	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130632G05	G05	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130634B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130637W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130638R01	R01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130647B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130651B10	B10	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130661B26	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130662B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130672B21	B21	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	bearden	2009-02-13 11:39:10	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130673B65	B65	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130702B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130705G20	G20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130706W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130709B66	B66	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130721W04	W04	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130724R14	R14	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130749B03	B03	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130773B61	B61	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130777B26	B26	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130784R01	R01	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 09:51:39	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	130790B21	B21	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110001	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110001	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110002	L32	1	1	2	2	2	1	1	0	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110002	L34	0	0	0	1	1	1	1	1	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110765	L32	0	1	2	2	2	2	1	1	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110765	L34	0	0	0	1	2	2	2	1	1	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110766	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110766	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110767	L32	1	2	2	2	2	1	1	0	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110767	L34	0	0	1	1	2	2	1	1	1	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110775	L32	0	1	2	2	2	2	1	1	0	0	0	0	0
+SS10	bearden	2009-08-19 10:13:14	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110775	L34	0	0	0	1	2	2	2	1	1	0	0	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110160	L32	0	0	0	0	0	1	2	2	2	2	2	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110160	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110160	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110268	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110268	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110472	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110472	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110472	L36	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110640	L32	0	0	0	0	0	0	1	2	2	2	2	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110640	L34	0	0	0	0	0	0	0	1	2	2	2	2	1
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110640	L36	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110662	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110662	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110664	L32	0	0	0	0	1	2	2	2	2	2	0	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110664	L34	0	0	0	0	0	1	1	1	2	2	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110721	L32	0	0	0	0	0	1	2	2	2	1	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110721	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110733	L32	0	0	0	0	1	2	2	2	2	2	0	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110733	L34	0	0	0	0	0	1	1	1	2	2	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110735	L32	0	0	0	0	1	2	2	2	2	2	0	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110735	L34	0	0	0	0	0	1	1	1	2	2	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110746	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110746	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110747	L32	0	0	0	0	1	2	2	3	3	2	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110747	L34	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110754	L32	0	0	0	0	0	1	2	2	2	1	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	110754	L34	0	0	0	0	0	0	1	1	2	2	2	1	1
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	114043	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	114043	L34	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	bearden	2009-08-19 10:45:54	sweden	Parkvägen	Simrishamn	140 10	SWEDEN	retailer	114043	L36	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110001	L32	0	0	1	1	1	1	1	1	1	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110002	L32	0	0	1	1	1	1	1	1	1	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110120	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110120	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110186	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110186	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110196	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110196	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110211	L32	0	0	1	1	1	1	1	1	1	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110268	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110268	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110396	L30	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110396	L32	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110437	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110437	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110487	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	110487	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	130336	B01	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	130422	B01	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	130434	B03	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	130438	W01	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	130444	B01	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	160066	B01	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	160072	B01	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	160073	B01	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	160075	B01	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	180116	B10	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW08	steamdried	2008-04-06 23:54:56	spain	NULL	NULL	NULL	NULL	retailer	180119	B01	0	0	1	2	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110392	L32	0	0	1	1	1	1	1	1	1	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110487	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110487	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110536	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110536	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110571	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110571	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110577	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110577	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110580	L32	0	0	1	1	1	1	1	1	1	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110585	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	110585	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130550	Y01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130551	B22	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130553	B01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130555	W01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130556	W01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130558	R01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130561	B01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130564	W01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130582	B37	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130583	B53	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130583	B54	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130593	G01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130598	G14	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130610	Y01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	130614	B01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	160085	B01	0	0	1	1	0	0	0	0	0	0	0	0	0
+SS09	steamdried	2008-07-24 09:36:46	spain	NULL	NULL	NULL	NULL	retailer	180141	B01	0	1	1	0	0	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110530	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110530	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110640	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110640	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110644	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110644	L34	0	0	0	0	0	0	0	1	1	1	1	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110656	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110656	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110660	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110660	L34	0	0	0	0	0	0	0	1	1	1	1	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110662	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110662	L34	0	0	0	0	0	0	0	1	1	1	1	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110664	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110664	L34	0	0	0	0	0	0	0	1	1	1	1	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	110678	L32	0	0	1	1	1	1	1	1	1	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130631B46	B46	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130632G05	G05	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130638R01	R01	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130646W01	W01	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130650G05	G05	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130650Y03	Y03	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130651B10	B10	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130660B20	B20	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130660Y03	Y03	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130671G01	G01	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130673B65	B65	0	0	2	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130674B29	B29	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	130676B29	B29	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	160091B01	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	160095B01	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	160098B01	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	160099G05	G05	0	0	1	1	1	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	180170B30	B30	3	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	steamdried	2009-02-16 14:28:33	spain	NULL	NULL	NULL	NULL	retailer	180181B12	B12	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110473	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110473	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110747	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110747	L34	0	0	0	0	0	0	0	1	1	1	1	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110750	L32	0	0	0	0	0	1	1	1	1	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110750	L34	0	0	0	0	0	0	0	1	1	1	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	110776	L32	0	0	1	1	2	1	1	1	1	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130704W04	W04	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130705G20	G20	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130707B01	B01	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130712B22	B22	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130712R14	R14	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130714B21	B21	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130721W04	W04	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130724R14	R14	0	1	1	0	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130727B20	B20	0	1	2	0	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130772B37	B37	0	0	1	1	0	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130773Y06	Y06	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130783B20	B20	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130784R01	R01	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS10	steamdried	2009-07-20 15:52:39	spain	NULL	NULL	NULL	NULL	retailer	130788B20	B20	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS10I	steamdried	2009-10-14 20:35:43	spain	NULL	NULL	NULL	NULL	retailer	130775W02	W02	0	0	1	1	0	0	0	0	0	0	0	0	0
+SS10I	steamdried	2009-10-14 20:35:43	spain	NULL	NULL	NULL	NULL	retailer	130801B21	B21	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS10I	steamdried	2009-10-14 20:35:43	spain	NULL	NULL	NULL	NULL	retailer	130802B34	B34	0	0	2	1	1	0	0	0	0	0	0	0	0
+SS10I	steamdried	2009-10-14 20:35:43	spain	NULL	NULL	NULL	NULL	retailer	130808W02	W02	0	0	1	1	0	0	0	0	0	0	0	0	0
+SS10I	steamdried	2009-10-14 20:35:43	spain	NULL	NULL	NULL	NULL	retailer	130809B21	B21	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110130	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110281	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110281	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110287	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110287	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110396	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110396	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110437	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110437	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110442	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110442	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110497	L32	0	0	0	0	0	1	2	2	2	2	1	0	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	110497	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+FW08	pepper	2008-04-04 18:46:53	spain	200 St Mafalda	Barcelona	10010		retailer	160066	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110268	L32	0	0	0	0	0	1	2	2	2	1	1	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110268	L34	0	0	0	0	0	0	1	1	1	2	2	1	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110536	L32	0	0	0	0	0	0	2	2	1	1	0	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110536	L34	0	0	0	0	0	0	0	0	1	1	2	2	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110551	L32	0	0	0	0	0	0	1	2	2	0	0	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110551	L34	0	0	0	0	0	0	0	0	0	2	1	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110560	L32	0	0	0	0	0	0	2	2	1	0	0	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110560	L34	0	0	0	0	0	0	0	0	1	2	2	1	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110563	L32	0	0	0	0	0	0	2	2	1	1	0	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110563	L34	0	0	0	0	0	0	0	0	1	1	2	1	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110571	L32	0	0	0	0	0	0	2	2	2	1	0	0	0
+SS09	pepper	2008-09-05 13:52:24	spain	200 St Mafalda	Barcelona	10010		retailer	110571	L34	0	0	0	0	0	0	0	0	0	1	2	1	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110120	L32	0	0	0	0	0	0	2	2	1	0	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110120	L34	0	0	0	0	0	0	0	0	1	2	2	2	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110268	L32	0	0	0	0	0	1	3	3	3	1	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110268	L34	0	0	0	0	0	0	0	1	1	3	4	3	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110631	L32	0	0	0	0	0	0	2	2	0	0	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110631	L34	0	0	0	0	0	0	0	0	2	2	2	2	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110644	L32	0	0	0	0	0	0	3	3	3	1	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110644	L34	0	0	0	0	0	0	0	0	1	3	4	2	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110645	L32	0	0	0	0	0	0	2	2	2	1	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110645	L34	0	0	0	0	0	0	0	0	1	2	2	1	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110662	L32	0	0	0	0	0	0	2	2	2	0	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	110662	L34	0	0	0	0	0	0	0	0	0	2	2	1	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	114043	L32	0	0	0	0	0	0	2	3	2	2	0	0	0
+FW09	pepper	2009-03-05 18:58:49	spain	200 St Mafalda	Barcelona	10010		retailer	114043	L34	0	0	0	0	0	0	0	0	2	2	4	3	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110194	L32	0	0	0	0	0	0	1	2	1	1	1	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110194	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110268	L32	0	0	0	0	0	0	2	2	1	1	1	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110268	L34	0	0	0	0	0	0	0	0	2	2	2	2	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110662	L32	0	0	0	0	0	0	1	2	2	1	1	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110662	L34	0	0	0	0	0	0	0	0	0	1	1	1	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110747	L32	0	0	0	0	0	0	1	2	1	1	0	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110747	L34	0	0	0	0	0	0	0	0	1	1	2	1	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110750	L32	0	0	0	0	0	0	2	2	1	1	1	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110750	L34	0	0	0	0	0	0	0	0	2	2	1	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110761	L32	0	0	0	2	2	2	1	1	0	0	0	0	0
+SS10	pepper	2009-08-06 19:13:16	spain	200 St Mafalda	Barcelona	10010		retailer	110766	L32	0	0	0	2	2	2	1	1	0	0	0	0	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	110778	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	110778	L34	0	0	0	0	0	0	0	0	0	0	1	1	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	110783	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	110783	L34	0	0	0	0	0	0	0	0	0	0	1	1	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	130802B34	B34	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	130803W01	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	130805W02	W02	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10I	pepper	2009-10-13 17:01:45	spain	200 St Mafalda	Barcelona	10010		retailer	160123W01	W01	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110324	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110326	L34	0	0	0	0	0	0	0	1	1	1	1	1	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110327	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110390	L32	0	1	1	1	1	1	1	1	1	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110526	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110526	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110543	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110543	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110545	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110547	L34	0	0	0	0	0	0	0	1	2	2	2	1	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110562	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110562	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110574	L32	0	1	1	1	1	1	1	1	1	0	0	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110579	L30	0	1	1	1	1	1	1	1	1	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110585	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	110585	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS09	bondbreeches	2008-07-16 15:57:02	spain	NULL	NULL	NULL	NULL	retailer	180155	B12	0	0	0	0	0	0	0	8	0	0	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110001	L32	0	0	1	1	1	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110001	L34	0	0	0	0	0	0	0	0	0	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110120	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110120	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110196	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110196	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110211	L32	0	0	1	1	1	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110211	L34	0	0	0	0	0	0	0	0	0	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110459	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110459	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110530	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110530	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110641	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110641	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110660	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110660	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110662	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	110662	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	114901	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-01-29 12:57:35	spain	NULL	NULL	NULL	NULL	retailer	114901	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110001	L32	0	1	1	1	1	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110001	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110002	L32	0	1	1	1	1	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110002	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110120	L32	0	0	0	0	1	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110120	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110196	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	110196	L34	0	0	0	0	0	0	0	0	0	1	1	1	1
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	114901	L32	0	0	0	0	1	1	1	1	1	1	0	0	0
+FW09	bondbreeches	2009-07-15 11:28:36	spain	NULL	NULL	NULL	NULL	retailer	114901	L34	0	0	0	0	0	0	0	0	0	1	1	0	0
+SS08	stylepark	2008-04-17 12:40:26	spain	compton way 20	ibiza	20250		retailer	110196	L30	0	0	0	0	0	0	10	0	0	0	0	0	0
+SS08	stylepark	2008-04-17 12:40:26	spain	compton way 20	ibiza	20250		retailer	110272	L30	0	0	0	0	0	0	0	6	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110526	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110526	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110538	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110538	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110544	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110544	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110577	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110577	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110578	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110578	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110585	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	110585	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130404	B43	0	2	3	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130404	B46	0	2	3	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130404	W01	0	2	3	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130409	B43	0	2	3	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130409	B46	0	2	3	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130409	W01	0	2	3	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130551	B22	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130551	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130553	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130553	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130555	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130556	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130561	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130562	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130563	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130564	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130565	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130566	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130567	W01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	130568	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	170082	G03	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	170083	B47	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	180116	B10	0	0	1	1	1	1	0	0	0	0	0	0	0
+SS09	stylepark	2008-07-30 12:34:28	spain	compton way 20	ibiza	20250		retailer	180156	B21	0	0	1	1	1	1	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110530	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110530	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110615	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110615	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110628	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110628	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110632	L32	0	0	0	0	0	0	1	1	1	1	1	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110632	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110644	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110644	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110662	L32	0	0	0	0	0	1	1	1	1	1	1	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	110662	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130404W01	W01	0	3	3	0	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130409W01	W01	0	3	3	0	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130625B01	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130635W01	W01	0	2	2	2	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130648W04	W04	0	2	2	2	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130651B10	B10	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130671G01	G01	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130674B29	B29	0	0	1	1	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	130677B16	B16	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	132060000	000	0	2	2	2	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	132061000	000	0	2	2	2	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	160094B26	B26	0	0	0	1	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	160095B01	B01	0	0	0	1	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	170098B03	B03	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	170099B10	B10	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	170100G03	G03	0	1	2	2	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	180110B03	B03	4	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	180159B21	B21	0	0	1	2	1	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	180173B12	B12	4	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	180174B12	B12	4	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	180175B12	B12	4	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	stylepark	2009-02-03 18:52:11	spain	compton way 20	ibiza	20250		retailer	180181B12	B12	0	0	1	2	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110639	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110639	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110656	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110656	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110716	L32	0	0	0	0	0	0	0	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110716	L34	0	0	0	0	0	0	0	0	0	0	1	1	1
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110724	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110724	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110725	L32	0	0	0	0	0	0	0	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110725	L34	0	0	0	0	0	0	0	0	0	0	1	1	1
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110733	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110733	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110747	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110747	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110749	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110749	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110750	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	110750	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130696R14	R14	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130702B01	B01	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130704W04	W04	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130705G20	G20	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130706W01	W01	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130707B01	B01	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130709B66	B66	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130714B21	B21	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130724R14	R14	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130725B01	B01	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130726B03	B03	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130727B20	B20	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130773B61	B61	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130788R01	R01	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130789B20	B20	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	130790B21	B21	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	132061000	000	0	1	2	1	1	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180173B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180175B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180181B12	B12	0	0	1	1	1	1	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180183B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180184B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180185B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180186B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180206B18	B18	0	0	1	1	1	1	0	0	0	0	0	0	0
+SS10	stylepark	2009-07-16 17:56:29	spain	compton way 20	ibiza	20250		retailer	180207B18	B18	0	0	1	1	1	1	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110778	L32	0	0	0	0	0	0	1	1	1	1	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110778	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110779	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110779	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110780	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110780	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110784	L32	0	0	0	0	0	1	1	1	1	1	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	110784	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130775W02	W02	0	1	1	1	1	1	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130801B21	B21	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130802B34	B34	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130803W01	W01	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130804B03	B03	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130805W02	W02	0	2	2	1	1	0	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130806B21	B21	0	1	1	1	1	1	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	130807W01	W01	0	1	1	1	1	0	0	0	0	0	0	0	0
+SS10I	stylepark	2009-10-07 18:47:13	spain	compton way 20	ibiza	20250		retailer	160123W01	W01	0	0	1	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110001	L32	3	7	9	8	9	7	7	4	3	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110002	L32	3	5	7	6	7	5	5	2	2	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110011	L32	0	0	0	1	6	8	10	9	9	6	5	1	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110011	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110120	L32	0	0	1	4	10	9	10	9	8	4	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110120	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110130B01	B01	0	2	2	2	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110160	L32	0	0	0	1	7	8	10	9	8	6	5	1	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110160	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110194	L32	0	0	0	1	8	10	11	9	8	5	4	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110194	L34	0	0	0	0	0	0	0	0	1	1	1	1	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110196	L32	0	0	0	0	0	3	4	4	4	3	4	2	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110196	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110198	L32	1	3	5	5	5	3	3	1	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110211	L30	0	2	2	2	2	1	1	1	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110211	L32	1	1	2	2	3	3	3	2	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110264	L32	0	0	0	2	4	5	7	5	4	2	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110268	L32	0	0	1	4	8	7	8	7	6	3	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110271	L32	1	2	3	2	2	1	1	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110327	L32	0	0	0	0	0	0	0	1	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110357	L32	0	0	0	0	2	3	5	4	4	3	3	1	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110357	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110392	L32	2	3	4	5	5	4	4	2	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110422	L32	0	0	0	0	0	0	0	1	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110455	L32	0	0	0	0	0	1	1	1	2	1	2	1	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110455	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110472	L32	0	0	0	0	1	2	3	2	3	2	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110530	L30	0	0	0	0	2	1	1	1	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110530	L32	0	0	0	1	3	5	5	5	6	5	5	1	1
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110544	L32	0	0	0	1	5	5	5	4	4	3	3	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110549	L32	0	0	0	0	1	0	1	0	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110634	L30	0	0	0	0	2	1	1	1	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110634	L32	0	0	0	0	0	1	1	1	2	2	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110646	L30	0	0	0	0	0	1	1	0	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110652	L32	0	0	0	0	1	3	4	5	5	4	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110652	L34	0	0	0	0	0	0	0	0	1	1	1	1	1
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110657	L32	0	0	0	0	2	2	3	2	2	2	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110662	L32	0	0	1	3	7	7	7	6	6	3	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110662	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110666	L32	0	0	0	0	3	2	2	2	2	2	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110670	L30	2	1	2	3	3	2	2	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110675	L32	2	3	4	4	5	4	4	2	2	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110678	L32	1	1	2	2	3	2	2	1	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110683	L32	0	0	0	0	0	2	3	3	2	2	2	1	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110696	L32	0	0	0	0	2	2	3	2	2	2	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110697	L32	0	0	0	0	3	4	6	4	5	4	4	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110700	L32	1	4	5	5	6	4	3	1	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110706	L32	0	0	1	3	7	7	7	6	6	3	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110706	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	110708	L32	2	3	4	5	5	4	4	2	1	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	114043	L32	0	0	0	0	2	2	3	2	2	2	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	114901	L32	0	0	1	4	7	6	7	6	6	3	2	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	114901	L34	0	0	0	0	0	0	0	0	1	1	1	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130409B01	B01	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130409W01	W01	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130630B10	B10	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130634B01	B01	0	2	2	1	1	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130635W01	W01	0	5	4	2	1	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130636R01	R01	0	2	2	1	1	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130638R01	R01	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130646W01	W01	0	5	4	3	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130647B01	B01	0	5	4	3	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130651B10	B10	0	2	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130651B20	B20	0	2	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130652B23	B23	0	3	3	2	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130652B58	B58	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130654B05	B05	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130655B10	B10	0	2	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130655B20	B20	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130657B03	B03	0	3	3	2	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130657R01	R01	0	1	1	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130658B01	B01	0	2	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130659B01	B01	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130659B10	B10	0	3	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130660B20	B20	0	1	1	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130660G01	G01	0	1	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130661B26	B26	0	2	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130662B20	B20	0	4	3	2	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130663B01	B01	0	1	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	130667B20	B20	0	1	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	160098B01	B01	0	1	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	161002000	000	0	2	2	2	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	170090B10	B10	0	3	3	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	170091G03	G03	0	3	3	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	170092B03	B03	0	3	3	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	170094G03	G03	0	3	3	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180091B21	B21	6	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180093B21	B21	3	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180094B21	B21	1	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180117B10	B10	0	0	4	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180119B01	B01	0	0	3	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180119B12	B12	0	0	3	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180121B01	B01	0	0	3	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180121B10	B10	0	0	3	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180121B12	B12	0	0	3	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180123B10	B10	0	0	4	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180160B21	B21	0	0	3	2	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180165B26	B26	0	1	1	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180166B26	B26	0	1	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180167B26	B26	0	1	1	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180168B26	B26	0	1	2	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180173B01	B01	2	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180173B12	B12	2	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180175B01	B01	13	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180175B12	B12	13	0	0	0	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180181B01	B01	0	0	3	1	0	0	0	0	0	0	0	0	0
+FW09	killerqueen	2009-03-06 01:37:45	australia					retailer	180181B12	B12	0	0	3	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110001	L30	10	16	11	9	6	3	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110001	L32	7	12	13	17	24	18	16	9	7	4	3	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110002	L30	1	3	5	4	3	3	2	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110002	L32	4	6	6	7	7	6	7	6	5	2	2	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110011	L30	0	0	0	0	1	1	2	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110011	L32	0	0	2	6	9	7	7	7	5	5	5	3	2
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110120	L30	0	10	18	22	16	2	2	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110120	L32	0	0	2	17	14	25	16	13	12	8	6	5	2
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110130	B01	1	8	8	4	1	1	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110160	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110160	L32	0	0	0	2	5	6	7	7	7	6	5	4	2
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110160	L34	0	0	0	0	0	0	0	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110194	L30	0	0	2	3	3	3	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110194	L32	0	0	1	6	10	10	11	11	9	8	5	3	2
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110194	L34	0	0	0	0	0	0	0	0	0	0	0	1	1
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110198	L30	0	3	3	4	3	3	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110198	L32	2	2	2	4	4	3	2	2	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110268	L30	2	8	20	18	13	9	3	2	2	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110268	L32	0	0	8	13	23	24	18	14	12	10	7	5	1
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110268	L34	0	0	0	0	0	0	2	2	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110271	L30	0	3	3	4	3	3	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110271	L32	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110348	L30	21	22	11	11	5	4	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110348	L32	1	10	21	24	24	21	16	8	6	4	3	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110348	L34	0	0	0	0	0	2	2	2	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110357	L30	0	0	0	0	1	1	2	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110357	L32	0	0	0	2	7	8	9	9	7	5	6	4	4
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110357	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110472	L30	0	0	0	0	1	1	1	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110472	L32	0	0	0	0	2	3	6	6	5	5	4	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110473	L32	0	0	0	0	0	2	3	3	2	2	2	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110631	L32	0	0	0	0	0	2	3	4	4	3	2	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110633	L34	0	0	0	0	0	0	2	2	3	2	2	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110639	L32	0	0	0	0	0	2	3	3	2	2	2	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110645	L32	0	0	0	1	2	2	2	3	3	2	2	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110656	L30	0	0	0	0	1	1	1	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110656	L32	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110662	L30	0	0	1	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110662	L32	0	0	0	3	4	4	3	3	3	3	3	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110664	L32	0	0	0	1	2	2	2	2	2	2	2	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110664	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110675	L30	1	2	3	1	1	1	1	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110675	L32	0	0	0	1	1	1	1	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110678	L30	1	1	2	2	2	1	1	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110678	L32	0	0	0	1	1	1	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110708	L30	1	2	3	1	1	1	1	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110708	L32	3	5	5	6	6	5	5	4	4	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110725	L32	0	0	0	0	0	0	0	1	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110733	L30	0	0	0	0	2	2	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110733	L32	0	0	0	1	5	6	9	9	8	6	5	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110734	L30	0	0	0	0	2	2	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110734	L32	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110735	L30	0	0	0	0	2	2	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110735	L32	0	0	0	1	2	2	3	4	4	3	3	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110742	L32	0	0	0	0	2	2	3	3	4	2	2	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110744	L30	0	0	0	0	1	1	1	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110744	L32	0	0	0	0	0	0	1	1	1	1	1	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110745	L30	0	0	0	0	1	1	1	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110745	L32	0	0	0	1	2	2	3	3	2	2	3	2	1
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110747	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110747	L32	0	0	1	4	5	7	6	6	5	4	3	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110747	L34	0	0	0	0	0	0	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110748	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110748	L32	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110749	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110749	L32	0	0	1	3	3	5	6	7	5	4	3	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110750	L30	0	0	0	1	2	2	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110750	L32	0	0	1	3	5	6	6	6	5	4	3	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110750	L34	0	0	0	0	0	0	1	1	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110752	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110752	L32	0	0	0	0	1	1	1	1	1	1	1	1	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110760	L30	1	1	2	2	2	1	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110760	L32	0	0	0	0	2	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110761	L30	1	1	2	2	2	1	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110761	L32	2	2	2	2	4	4	4	2	2	1	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110762	L32	1	3	2	2	2	2	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110763	L30	1	1	2	2	3	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110764	L30	1	1	2	2	3	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110764	L32	0	1	2	2	2	3	2	2	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110765	L30	1	1	2	2	3	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110765	L32	1	3	4	4	4	5	4	3	2	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110766	L30	1	2	4	5	5	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110766	L32	2	4	4	5	7	7	6	4	3	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110767	L30	1	1	2	2	2	1	1	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110767	L32	0	0	0	0	2	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110768	L30	0	0	0	0	1	1	1	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110768	L32	0	0	0	0	2	2	4	4	4	3	3	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110771	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110771	L32	0	0	0	2	6	7	6	6	6	4	4	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110773	L30	0	0	0	1	1	1	1	1	1	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110773	L32	0	0	1	2	4	4	4	4	3	3	3	2	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110774	L30	1	1	2	2	3	2	2	1	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	110774	L32	0	1	2	2	2	3	2	2	1	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	114043	L30	0	0	0	0	1	1	2	2	2	1	1	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	114043	L32	0	0	0	2	5	7	7	7	6	6	6	5	4
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	114901	L30	2	8	16	22	15	11	9	2	2	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	114901	L32	0	0	8	13	18	19	15	15	13	10	8	5	1
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	114901	L34	0	0	0	0	0	2	2	2	2	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130680B21	B21	0	0	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130690B01	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130690B66	B66	1	3	4	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130690G13	G13	1	3	4	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130699G03	G03	1	4	4	3	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130702B01	B01	1	3	4	3	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130704W04	W04	1	3	4	3	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130705G20	G20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130710B01	B01	3	3	2	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130712B03	B03	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130712B21	B21	1	3	3	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130712R14	R14	1	2	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130718G20	G20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130719R13	R13	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130720Y03	Y03	1	2	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130721W04	W04	1	3	4	3	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130722B01	B01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130725B01	B01	1	2	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130727B20	B20	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130739B21	B21	0	0	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130739B46	B46	1	2	2	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130772B16	B16	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130772B37	B37	0	1	2	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130773Y06	Y06	0	1	3	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130777B26	B26	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130778B26	B26	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130780B26	B26	0	0	2	2	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130783B20	B20	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130784G01	G01	0	1	2	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130784R01	R01	0	4	3	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130785B01	B01	0	4	3	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130785Y03	Y03	0	3	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130786B20	B20	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130786R01	R01	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130787B26	B26	0	3	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130788B20	B20	0	2	4	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130788R01	R01	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	130790B21	B21	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160090B26	B26	0	1	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160094B26	B26	0	1	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160100B26	B26	0	3	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160103B26	B26	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160113B01	B01	0	1	1	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160114B01	B01	0	1	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	160122B18	B18	0	0	3	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	161002000	000	0	4	4	2	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	170104G03	G03	0	3	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	170106B20	B20	0	3	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	178006B01	B01	0	3	2	1	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180118B01	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180118B12	B12	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180119B12	B12	0	0	1	2	2	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180173B01	B01	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180173B12	B12	25	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180181B01	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180181B12	B12	0	0	3	4	4	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180183B12	B12	10	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180184B12	B12	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180187B01	B01	2	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180187B12	B12	4	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180188B01	B01	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180188B12	B12	2	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180189B01	B01	1	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180189B12	B12	3	0	0	0	0	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180204B01	B01	0	0	2	3	3	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180204B18	B18	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180205B01	B01	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180205B18	B18	0	0	1	1	1	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180206B01	B01	0	0	2	2	2	0	0	0	0	0	0	0	0
+SS10	killerqueen	2009-09-04 03:49:38	australia					retailer	180206B18	B18	0	0	2	2	2	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110778	L32	0	0	0	0	0	1	2	3	3	3	2	1	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110779	L32	0	0	0	0	3	4	4	4	4	4	2	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110780	L30	0	0	0	2	3	3	2	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110780	L32	0	0	0	1	2	3	3	4	3	2	2	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110781	L30	3	3	5	3	2	2	1	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110781	L32	5	8	11	12	11	9	6	3	2	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110783	L30	0	0	0	2	3	3	2	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110783	L32	0	0	0	3	6	8	9	11	9	7	6	1	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110784	L30	0	1	2	2	2	2	1	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	110784	L32	0	0	0	0	1	1	1	1	1	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130775W02	W02	1	1	0	0	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130801B21	B21	0	5	5	2	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130802B34	B34	2	10	11	4	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130803W01	W01	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130804B03	B03	0	4	6	4	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130805W02	W02	0	2	2	2	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130806B21	B21	0	1	1	0	0	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	130807W01	W01	0	1	2	2	1	0	0	0	0	0	0	0	0
+SS10I	killerqueen	2009-10-30 03:42:31	australia					retailer	160123W01	W01	0	2	2	2	0	0	0	0	0	0	0	0	0

@@ -6,8 +6,8 @@ require 'wukong'
 
 module JeanSizes
   class Mapper < Wukong::Streamer::RecordStreamer
-    def process(code,model,time,country,j1,j2,j3, n1,n2,c1, venue,n3,n4, *sizes)
-      yield [country, *sizes] if sizes.length == 13
+    def process(code,model,time,country,reg,col, n1,c1, venue,n3,n4, *sizes)
+      yield [country, *sizes]
     end
   end
 
