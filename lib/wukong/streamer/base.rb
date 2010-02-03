@@ -19,7 +19,7 @@ module Wukong
       def stream
         Log.info("Streaming on:\t%s" % [Script.input_file]) unless Script.input_file.blank?
         before_stream
-        $stdin.each do |line|
+        each_record do |line|
           record = recordize(line.chomp)
           next unless record
           process(*record) do |output_record|
@@ -27,6 +27,10 @@ module Wukong
           end
         end
         after_stream
+      end
+
+      def each_record &block
+        $stdin.each(&block)
       end
 
       # Called exactly once, before streaming begins

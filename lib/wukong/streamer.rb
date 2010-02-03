@@ -11,5 +11,6 @@ module Wukong
     autoload :AccumulatingReducer,  'wukong/streamer/accumulating_reducer'
     autoload :ListReducer,          'wukong/streamer/list_reducer'
     autoload :UniqByLastReducer,    'wukong/streamer/uniq_by_last_reducer'
+    autoload :CountingReducer,      'wukong/streamer/counting_reducer'
   end
 end
