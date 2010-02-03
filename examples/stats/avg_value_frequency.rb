@@ -72,7 +72,11 @@ module AverageValueFrequency
   end
 end
 
-Settings.use :commandline ; Settings.resolve!
+Settings.use :commandline, :define
+Settings.define :histogram,      :description => "Run the first pass to calculate a histogram"
+Settings.define :avf,            :description => "Run the second pass, to run back over the records with the histogram and find the AVF for each row."
+Settings.define :histogram_file, :description => "File to load the histogram from (supply name of the  output file from first pass)"
+Settings.resolve!
 if Settings[:histogram]
   Wukong::Script.new(AverageValueFrequency::HistogramMapper, AverageValueFrequency::HistogramReducer).run
 elsif Settings[:avf]
