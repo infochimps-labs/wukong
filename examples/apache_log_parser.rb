@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 $: << File.dirname(__FILE__)+'/../lib'
+require 'rubygems'
 require 'wukong'
 
 module ApacheLogParser
@@ -8,14 +9,14 @@ module ApacheLogParser
     # regular expression for apache-style log lines
     # note that we strip out the google analytics listener.
     LOG_RE = %r{\A
-           (\d+\.\d+\.\d+\.\d+)                         # IP addr
-         \s([^\s]+)\s                                   # -
-         \s([^\s]+)                                     # -
-         \s\[(\d\d/\w+/\d+):(\d\d:\d\d:\d\d)([^\]]*)\]  # [07/Jun/2008:20:37:11 +0000]
-         \s(\d+)                                        # 400
-         \s"([^\"]*(?:\" \+ gaJsHost \+ \"[^\"]*)?)"    # "GET /faq" + gaJsHost + "google-analytics.com/ga.js HTTP/1.1"
-         \s(\d+)                                        # 173
-         \s"([^\"]*)" "([^\"]*)" "([^\"]*)"             #  "-" "-" "-"
+           (\d+\.\d+\.\d+\.\d+)                           # IP addr - ip
+         \s([^\s]+)                                       # - j1
+         \s([^\s]+)                                       # -j2
+         \s\[(\d\d\/\w+\/\d+):(\d\d:\d\d:\d\d)([^\]]*)\]  # [07/Jun/2008:20:37:11 +0000] - datepart, timepart, tzpart
+         \s"([^\"]*(?:\" \+ gaJsHost \+ \"[^\"]*)?)"      # "GET /faq" + gaJsHost + "google-analytics.com/ga.js HTTP/1.1" - req
+         \s(\d+)                                          # 400 - resp
+         \s(\d+)                                          # 173 - j3
+         \s\"([^\"]*)\"\s\"([^\"]*)\"                     #  "-" "-" - ref, ua
       \z}x
 
     # Use the regex to break line into fields
@@ -24,10 +25,10 @@ module ApacheLogParser
       line.chomp
       m = LOG_RE.match(line)
       if m
-        ip, j1, j2, datepart, timepart, tzpart, resp, req, j3, ref, ua, j4 = m.captures
+        ip, j1, j2, datepart, timepart, tzpart, req, resp, j3, ref, ua = m.captures
         req_date = DateTime.parse("#{datepart} #{timepart} #{tzpart}").to_flat
         req, method, path, protocol = parse_request(req)
-        yield [:logline, method, path, protocol, ip, j1, j2, req_date, resp, req, j3, ref, ua, j4]
+        yield [:logline, method, path, protocol, ip, j1, j2, req_date, req, resp, j3, ref, ua]
       else
         yield [:unparseable, line]
       end
@@ -43,10 +44,6 @@ module ApacheLogParser
       end
     end
 
-  end
-
-
-  class Reducer < Wukong::Streamer::LineStreamer
   end
 
   # Execute the script
