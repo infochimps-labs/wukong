@@ -121,6 +121,7 @@ module Wukong
     def initialize mapper_klass, reducer_klass, extra_options={}
       self.options = Settings.dup
       options.resolve!
+      options.merge! self.default_options
       options.merge! extra_options
       self.mapper_klass  = mapper_klass
       self.reducer_klass = reducer_klass
