@@ -27,6 +27,8 @@ module Wukong
     Settings.define :timeout,                :jobconf => true, :description => 'mapred.task.timeout', :wukong => true
     Settings.define :reuse_jvms,             :jobconf => true, :description => 'mapred.job.reuse.jvm.num.tasks', :wukong => true
     Settings.define :respect_exit_status,    :jobconf => true, :description => 'stream.non.zero.exit.is.failure', :wukong => true
+    Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
+    # mapred.linerecordreader.maxlength :description => "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
 
     # emit a -jobconf hadoop option if the simplified command line arg is present
     # if not, the resulting nil will be elided later
@@ -66,7 +68,8 @@ module Wukong
     end
 
     def hadoop_other_args
-      extra_str_args = [ options[:extra_args] ]
+      extra_str_args  = [ options[:extra_args] ]
+      extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
       extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
