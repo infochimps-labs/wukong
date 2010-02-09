@@ -3,21 +3,43 @@ $: << File.dirname(__FILE__)+'/../lib'
 require 'rubygems'
 require 'wukong'
 
+MONTHS = {
+  'Jan' => '01',
+  'Feb' => '02',
+  'Mar' => '03',
+  'Apr' => '04',
+  'May' => '05',
+  'Jun' => '06',
+  'Jul' => '07',
+  'Aug' => '08',
+  'Sep' => '09',
+  'Oct' => '10',
+  'Nov' => '11',
+  'Dec' => '12',
+}
 module ApacheLogParser
   class Mapper < Wukong::Streamer::LineStreamer
 
-    # regular expression for apache-style log lines
-    # note that we strip out the google analytics listener.
-    LOG_RE = %r{\A
-           (\d+\.\d+\.\d+\.\d+)                           # IP addr - ip
-         \s([^\s]+)                                       # - j1
-         \s([^\s]+)                                       # -j2
-         \s\[(\d\d\/\w+\/\d+):(\d\d:\d\d:\d\d)([^\]]*)\]  # [07/Jun/2008:20:37:11 +0000] - datepart, timepart, tzpart
-         \s"([^\"]*(?:\" \+ gaJsHost \+ \"[^\"]*)?)"      # "GET /faq" + gaJsHost + "google-analytics.com/ga.js HTTP/1.1" - req
-         \s(\d+)                                          # 400 - resp
-         \s(\d+)                                          # 173 - j3
-         \s\"([^\"]*)\"\s\"([^\"]*)\"                     #  "-" "-" - ref, ua
-      \z}x
+    #
+    # Regular expression to parse an apache log line.
+    #
+    # 83.240.154.3 - - [07/Jun/2008:20:37:11 +0000] "GET /faq HTTP/1.1" 200 569 "http://infochimps.org/search?query=CAC" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
+    #
+    LOG_RE = Regexp.compile(%r{\A
+           (\S+)                        # ip                  83.240.154.3
+         \s(\S+)                        # j1                  -
+         \s(\S+)                        # j2                  -
+       \s\[(\d+)/(\w+)/(\d+)            # date part           [07/Jun/2008
+          :(\d+):(\d+):(\d+)            # time part           :20:37:11
+         \s(\+.*)\]                     # timezone            +0000]
+    \s\"(?:(\S+)                        # http_method         "GET
+         \s(\S+)                        # path                /faq
+         \s(\S+)|-)"                    # protocol            HTTP/1.1"
+         \s(\d+)                        # response_code       200
+         \s(\d+)                        # duration            569
+       \s\"([^\"]*)\"                   # referer             "http://infochimps.org/search?query=CAC"
+       \s\"([^\"]*)\"                   # ua                  "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
+      \z}x)
 
     # Use the regex to break line into fields
     # Emit each record as flat line
@@ -25,38 +47,28 @@ module ApacheLogParser
       line.chomp
       m = LOG_RE.match(line)
       if m
-        ip, j1, j2, datepart, timepart, tzpart, req, resp, j3, ref, ua = m.captures
-        req_date = DateTime.parse("#{datepart} #{timepart} #{tzpart}").to_flat
-        req, method, path, protocol = parse_request(req)
-        yield [:logline, method, path, protocol, ip, j1, j2, req_date, req, resp, j3, ref, ua]
+        (ip, j1, j2,
+          ts_day, ts_mo, ts_year,
+          ts_hour, ts_min, ts_sec, req_tz,
+          http_method, path, protocol,
+          response_code, duration,
+          referer, ua, *cruft) = m.captures
+        # DateTime.parse("#{datepart} #{timepart}").to_flat # this takes way too long
+        req_date = [ts_year, MONTHS[ts_mo], ts_day].join("")
+        req_time = [ts_hour, ts_min, ts_sec].join("")
+        yield [:logline, ip, req_date, req_time, http_method, protocol, path, response_code, duration, referer, ua, req_tz]
       else
         yield [:unparseable, line]
       end
     end
 
-
-    def parse_request req
-      m = %r{\A(\w+) (.*) (\w+/[\w\.]+)\z}.match(req)
-      if m
-        [''] + m.captures
-      else
-        [req, '', '', '']
-      end
-    end
-
   end
-
-  # Execute the script
-  class Script < Wukong::Script
-    def reduce_command
-      "/usr/bin/uniq"
-    end
-    def default_options
-      super.merge :sort_fields => 8 # , :reduce_tasks => 0
-    end
-  end
-
-  Script.new(Mapper,nil).run
 end
 
+Wukong::Script.new(ApacheLogParser::Mapper, nil, :sort_fields => 7).run
+
 # 55.55.155.55 - - [04/Feb/2008:11:37:52 +0000] 301 "GET /robots.txt HTTP/1.1" 185 "-" "WebAlta Crawler/2.0 (http://www.webalta.net/ru/about_webmaster.html) (Windows; U; Windows NT 5.1; ru-RU)" "-"
+
+
+
+
