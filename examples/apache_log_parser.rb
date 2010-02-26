@@ -16,7 +16,7 @@ module ApacheLogParser
          \s"([^\"]*(?:\" \+ gaJsHost \+ \"[^\"]*)?)"      # "GET /faq" + gaJsHost + "google-analytics.com/ga.js HTTP/1.1" - req
          \s(\d+)                                          # 400 - resp
          \s(\d+)                                          # 173 - j3
-         \s\"([^\"]*)\"\s\"([^\"]*)\"                     #  "-" "-" - ref, ua
+         \s\"([^\"]*)\"\s\"([^\"]*)\"                     # referer, user agent
       \z}x
 
     # Use the regex to break line into fields
