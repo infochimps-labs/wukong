@@ -6,6 +6,8 @@
 #   http://github.com/jaxn/parse-user-agent
 #   http://code.google.com/p/browserscope/wiki/UserAgentParsing
 #   http://code.google.com/p/ua-parser/source/browse/
+#   http://github.com/shenoudab/active_device/tree/master/lib/active_device/
+
 
 #
 # * Mozilla based
@@ -29,3 +31,10 @@
 # * Version Fourth Bit
 # * Open Question: How should we handle the "alpha/beta" bit, like apre1? I'm inclined to say we put it in its own datapoint and let people group together how ever they want, but not leave it attached to any of the version bits.
 
+# Bot
+# Brand
+# Browser
+# Engine
+# Handset
+# Model
+# OS
