@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "1.4.6"
+  s.version = "1.4.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-01-26}
+  s.date = %q{2010-03-04}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -109,7 +109,11 @@ Gem::Specification.new do |s|
      "examples/rank_and_bin.rb",
      "examples/run_all.sh",
      "examples/sample_records.rb",
+     "examples/server_logs/breadcrumbs.rb",
+     "examples/server_logs/user_agent.rb",
      "examples/size.rb",
+     "examples/stats/avg_value_frequency.rb",
+     "examples/stats/data/avg_value_frequency.tsv",
      "examples/word_count.rb",
      "lib/wukong.rb",
      "lib/wukong/bad_record.rb",
@@ -145,6 +149,7 @@ Gem::Specification.new do |s|
      "lib/wukong/streamer/base.rb",
      "lib/wukong/streamer/count_keys.rb",
      "lib/wukong/streamer/count_lines.rb",
+     "lib/wukong/streamer/counting_reducer.rb",
      "lib/wukong/streamer/filter.rb",
      "lib/wukong/streamer/line_streamer.rb",
      "lib/wukong/streamer/list_reducer.rb",
@@ -170,7 +175,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://mrflip.github.com/wukong}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Wukong makes Hadoop so easy a chimpanzee can use it.}
   s.test_files = [
     "spec/spec_helper.rb",
@@ -193,7 +198,10 @@ Gem::Specification.new do |s|
      "examples/pagerank/pagerank_initialize.rb",
      "examples/rank_and_bin.rb",
      "examples/sample_records.rb",
+     "examples/server_logs/breadcrumbs.rb",
+     "examples/server_logs/user_agent.rb",
      "examples/size.rb",
+     "examples/stats/avg_value_frequency.rb",
      "examples/word_count.rb"
   ]
 
