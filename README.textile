@@ -220,6 +220,7 @@ Patches submitted by:
 * ruby interpreter path fix by "Yuichiro MASUI":http://github.com/masuidrive - masui at masuidrive.jp - http://blog.masuidrive.jp/
 
 Thanks to:
+* "Fredrik Möllerstrand (@lenbust)":http://twitter.com/lenbust for the examples/contrib/jeans working example
 * "Brad Heintz":http://www.bradheintz.com/no1thing/talks/ for his early feedback
 * "Phil Ripperger":http://blog.pdatasolutions.com for his "wukong in the Amazon AWS cloud":http://blog.pdatasolutions.com/post/191978092/ruby-on-hadoop-quickstart tutorial.
 
