@@ -101,7 +101,7 @@ end
 #
 FORMAT_GUESSING_LINES = 500
 # widest column to set
-MAX_MAX_WIDTH = 70
+MAX_MAX_WIDTH = 100
 
 INT_RE   = /\A\d+\z/
 FLOAT_RE = /\A(\d+)(?:\.(\d+))?(?:e-?\d+)?\z/
