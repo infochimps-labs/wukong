@@ -68,10 +68,17 @@ module CassandraConditionalOutputter
   #
   def emit record, &block
     key = conditional_output_key(record)
-    unless has_key?(key)
-      set_key(key)
+    if should_emit?(record)
+      set_key(key, {'t' => record.timestamp})
       super record
     end
+  end
+
+  # Default. Emit record if its key is not already contained
+  # in the key-value store. Overwrite this as necessary
+  def should_emit? record
+    key = conditional_output_key(record)
+    !has_key?(key)
   end
 
   # Check for presence of key in the cache
@@ -80,7 +87,7 @@ module CassandraConditionalOutputter
   end
 
   # register key in the key_cache
-  def set_key key, data={'1' => '1'}
+  def set_key key, data={'t' => '0'}
     key_cache.insert(conditional_output_key_column, key, data)
   end
 
