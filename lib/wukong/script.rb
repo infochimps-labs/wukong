@@ -82,6 +82,7 @@ module Wukong
     Settings.define :default_run_mode, :default => 'hadoop',    :description => 'Run as local or as hadoop?', :wukong => true, :hide_help => false
     Settings.define :default_mapper,   :default => '/bin/cat',  :description => 'The command to run when a nil mapper is given.', :wukong => true, :hide_help => true
     Settings.define :default_reducer,  :default => '/bin/cat',  :description => 'The command to run when a nil reducer is given.', :wukong => true, :hide_help => true
+    Settings.define :map_command,      :description => "shell command to run as mapper, in place of this wukong script", :wukong => true
     Settings.define :hadoop_home,      :default => '/usr/lib/hadoop', :env_var => 'HADOOP_HOME', :description => "Path to hadoop installation; :hadoop_home/bin/hadoop should run hadoop.", :wukong => true
     Settings.define :hadoop_runner,    :description => "Path to hadoop script; usually, set :hadoop_home instead of this.", :wukong => true
     Settings.define :map,              :description => "run the script's map phase. Reads/writes to STDIN/STDOUT.", :wukong => true
@@ -160,7 +161,7 @@ module Wukong
     #
     def reduce_command
       if reducer_klass
-         "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+         "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
       else
         options[:reduce_command]
       end
