@@ -228,10 +228,10 @@ module Wukong
     def exec_hadoop_streaming
       $stderr.puts "Streaming on self"
       input_path, output_path = input_output_paths
-      maybe_overwrite_output_paths! output_path
       command = runner_command(input_path, output_path)
       $stderr.puts command
       unless options[:dry_run]
+        maybe_overwrite_output_paths! output_path
         $stdout.puts `#{command}`
       end
     end
