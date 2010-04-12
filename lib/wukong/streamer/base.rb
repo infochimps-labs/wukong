@@ -20,8 +20,7 @@ module Wukong
         Log.info("Streaming on:\t%s" % [Script.input_file]) unless Script.input_file.blank?
         before_stream
         each_record do |line|
-          record = recordize(line.chomp)
-          next unless record
+          record = recordize(line.chomp) or next
           process(*record) do |output_record|
             emit output_record
           end

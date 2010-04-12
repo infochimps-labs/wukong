@@ -1,3 +1,15 @@
+h2. Wukong v1.4.7 2010-03-05
+
+Lots more examples:
+* examples/stats/avg_value_frequency.rb does an Average Value Frequency histogram
+* examples/server_logs has a quite useful apache log file parser
+* Made the base streamer use each_record, opening the door for alternative record injection (eg Datamapper!)
+* wukong/streamer/counting_reducer.rb is an um reducer and it counts things.
+
+h2. Wukong v1.4.6 2010-01-26
+
+* A HELLA AWESOME working example from retail web analytics by @lenbust
+
 h2. Wukong v1.4.5 2010-01-18
 
 * In @--run=local@ mode, you can use '-' alone as a filename to indicate STDIN / STDOUT as input/output respectively.
