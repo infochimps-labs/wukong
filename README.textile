@@ -1,6 +1,6 @@
 h1. Wukong
 
-Wukong makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.
+Wukong is Ruby for Hadoop -- it makes "Hadoop":http://hadoop.apache.org/core so easy a chimpanzee can use it.
 
 Treat your dataset like a
 * stream of lines when it's efficient to process by lines

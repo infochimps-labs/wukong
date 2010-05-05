@@ -101,22 +101,26 @@ end
 #
 FORMAT_GUESSING_LINES = 500
 # widest column to set
-MAX_MAX_WIDTH = 70
+MAX_MAX_WIDTH = 100
 
 INT_RE   = /\A\d+\z/
 FLOAT_RE = /\A(\d+)(?:\.(\d+))?(?:e-?\d+)?\z/
 
-def consensus_type val, alltype
-  return :mixed if alltype == :mixed
+def get_type val
   case
   when val == ''       then type = nil
   when val =~ INT_RE   then type = :int
   when val =~ FLOAT_RE then type = :float
-  else                      type = :str end
-  return if ! type
+  else                      type = :str end 
+end
+
+def consensus_type val, alltype, is_first
+  return :mixed if alltype == :mixed
+  type = get_type(val) or return
   case
-  when alltype.nil?    then type
-  when alltype == type then type
+  when alltype.nil?                  then type
+  when is_first && (alltype == :str) then type
+  when alltype == type               then type
   when ( ((alltype==:float) && (type == :int)) || ((alltype == :int) && (type == :float)) )
     :float
   else :mixed
@@ -134,24 +138,27 @@ col_minmag = []
 col_maxmag = []
 rows       = []
 skip_col   = []
+has_header = false
 ARGV.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
 FORMAT_GUESSING_LINES.times do
   line = $stdin.readline rescue nil
   break unless line
-  cols = line.chomp.split("\t").map{|s| s.strip }
-  col_widths = cols.map{|col| col.length }
+  row = line.chomp.split("\t").map{|s| s.strip }
+  col_widths = row.map{|col| col.length }
   col_widths.each_with_index{|cw,i| maxw[i] = [[cw,maxw[i]].compact.max, MAX_MAX_WIDTH].min }
-  cols.each_with_index{|col,i|
+  row.each_with_index{|col,i|
     next if skip_col[i]
-    col_types[i] = consensus_type(col, col_types[i])
+    # Let the first row be text (headers)
+    col_types[i] = consensus_type(col, col_types[i], rows.length == 1) 
     if col_types[i] == :float
       mantissa, radix = f_width(col)
       col_minmag[i] = [radix,    col_minmag[i], 1].compact.max
       col_maxmag[i] = [mantissa, col_maxmag[i], 1].compact.max
     end
   }
-  # p [maxw, col_types, col_minmag, col_maxmag, col_widths, cols]
-  rows << cols
+  # p [rows.length, has_header, maxw, col_types, col_minmag, col_maxmag, col_widths, row]
+  has_header = true if row.all?{|col| get_type(col) == :str } && rows.length == 0
+  rows << row
 end
 
 format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, minmag, maxmag, default|
@@ -160,18 +167,25 @@ format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, 
   when :mixed, nil then lambda{|s| "%-#{width}s" % s }
   when :str        then lambda{|s| "%-#{width}s" % s }
   when :int        then lambda{|s| "%#{width}d"  % s.to_i }
-  when :float      then lambda{|s| "%#{maxmag+minmag+1}.#{minmag}f" % s.to_f }
+  when :float      then lambda{|s| "%#{maxmag+minmag+2}.#{minmag}f" % s.to_f }
   else raise "oops type #{type}"  end
 end
-# p [maxw, col_types, col_minmag, col_maxmag, format]
+
+def dump_row row, format
+  puts row.zip(format).map{|c,f| f.call(c) rescue c }.join("\t")
+end
+def dump_header row, maxw
+  puts row.zip(maxw).map{|col, width| "%-#{width}s" % col.to_s }.join("\t")  
+end
 
 pad = [''] * maxw.length
+dump_header(rows.shift, maxw) if has_header
 rows.each do |row|
   # note -- strips trailing columns
-  puts row.zip(format).map{|c,f| f.call(c) }.join("\t")
+  dump_row(row, format)
 end
 $stdin.each do |line|
-  cols = line.chomp.split("\t").map{|s| s.strip }
+  row = line.chomp.split("\t").map{|s| s.strip }
   # note -- strips trailing columns
-  puts cols.zip(format).map{|c,f| f.call(c) rescue c }.join("\t")
+  dump_row(row, format)
 end

@@ -82,6 +82,7 @@ module Wukong
     Settings.define :default_run_mode, :default => 'hadoop',    :description => 'Run as local or as hadoop?', :wukong => true, :hide_help => false
     Settings.define :default_mapper,   :default => '/bin/cat',  :description => 'The command to run when a nil mapper is given.', :wukong => true, :hide_help => true
     Settings.define :default_reducer,  :default => '/bin/cat',  :description => 'The command to run when a nil reducer is given.', :wukong => true, :hide_help => true
+    Settings.define :map_command,      :description => "shell command to run as mapper, in place of this wukong script", :wukong => true
     Settings.define :hadoop_home,      :default => '/usr/lib/hadoop', :env_var => 'HADOOP_HOME', :description => "Path to hadoop installation; :hadoop_home/bin/hadoop should run hadoop.", :wukong => true
     Settings.define :hadoop_runner,    :description => "Path to hadoop script; usually, set :hadoop_home instead of this.", :wukong => true
     Settings.define :map,              :description => "run the script's map phase. Reads/writes to STDIN/STDOUT.", :wukong => true
@@ -118,11 +119,11 @@ module Wukong
     #   end
     #   MyScript.new(MyMapper, nil).run
     #
-    def initialize mapper_klass, reducer_klass, extra_options={}
+    def initialize mapper_klass, reducer_klass=nil, extra_options={}
       self.options = Settings.dup
-      options.resolve!
-      options.merge! self.default_options
-      options.merge! extra_options
+      self.options.resolve!
+      self.options.merge! self.default_options
+      self.options.merge! extra_options
       self.mapper_klass  = mapper_klass
       self.reducer_klass = reducer_klass
       # If no reducer_klass and no reduce_command, then skip the reduce phase
@@ -141,24 +142,29 @@ module Wukong
     end
 
     #
-    # by default, call this script in --map mode
+    # Shell command for map phase. By default, calls the script in --map mode
+    # In hadoop mode, this is given to the hadoop streaming command.
+    # In local mode, it's given to the system() call
     #
     def map_command
-      case
-      when mapper_klass
-        "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
-      else options[:map_command] || options[:default_mapper] end
+      if mapper_klass
+         "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+      else
+        options[:map_command] || options[:default_mapper]
+      end
     end
 
     #
-    # Shell command for reduce phase
-    # by default, call this script in --reduce mode
+    # Shell command for reduce phase. By default, calls the script in --reduce mode
+    # In hadoop mode, this is given to the hadoop streaming command.
+    # In local mode, it's given to the system() call
     #
     def reduce_command
-      case
-      when reducer_klass
-        "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
-      else options[:reduce_command] || options[:default_reducer] end
+      if reducer_klass
+         "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+      else
+        options[:reduce_command]
+      end
     end
 
     #
@@ -187,10 +193,10 @@ module Wukong
     end
 
     def input_output_paths
-      # input / output paths
-      input_path, output_path = options.rest[0..1]
-      raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:dry_run]) && (input_path.blank? || output_path.blank?)
-      [input_path, output_path]
+      output_path = options.rest.pop
+      input_paths = options.rest.reject(&:blank?)
+      raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}" if (! options[:dry_run]) && (input_paths.blank? || output_path.blank?)
+      [input_paths, output_path]
     end
 
     def maybe_overwrite_output_paths! output_path
@@ -205,7 +211,7 @@ module Wukong
     def non_wukong_params
       options.
         reject{|param, val| options.param_definitions[param][:wukong] }.
-        map{|param,val| "--#{param}=#{val}" }.
+        map{|param,val| "--#{param}=\"#{val}\"" }.
         join(" ")
     end
 
@@ -218,8 +224,7 @@ module Wukong
     def ruby_interpreter_path
       Pathname.new(
                    File.join(Config::CONFIG["bindir"],
-                             Config::CONFIG["RUBY_INSTALL_NAME"]+
-                             Config::CONFIG["EXEEXT"])
+                             Config::CONFIG["RUBY_INSTALL_NAME"]+Config::CONFIG["EXEEXT"])
                    ).realpath
     end
 
@@ -229,10 +234,10 @@ module Wukong
     def exec_hadoop_streaming
       $stderr.puts "Streaming on self"
       input_path, output_path = input_output_paths
-      maybe_overwrite_output_paths! output_path
       command = runner_command(input_path, output_path)
       $stderr.puts command
       unless options[:dry_run]
+        maybe_overwrite_output_paths! output_path
         $stdout.puts `#{command}`
       end
     end
