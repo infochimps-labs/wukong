@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+for dir in "$@"; do
+    echo working on $dir ;
+    if [ `exec hadoop fs -ls $dir` -gt 0 ]; then
+      # do nothing
+	echo "$dir exists" ;
+    else
+	exec hadoop dfs -mkdir $dir ;
+    fi
+done
+
