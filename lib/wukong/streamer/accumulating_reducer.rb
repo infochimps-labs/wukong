@@ -81,7 +81,8 @@
        #
        def stream
          super
-         finalize(){|record| emit record }
+         # don't finalize if we never saw any field at all
+         finalize(){|record| emit record } unless (self.key == :__first_pass__)
        end
      end
 
