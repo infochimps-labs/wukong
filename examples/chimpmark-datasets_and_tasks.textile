@@ -1,8 +1,25 @@
+h1. ChimpMARK-2010: Perfor
+
+The ChimpMARK-2010 is a collection of real-world datasets, real-world problems on those datasets, and simple example code to solve them.
+
+Why?
+
+* Estimate run time for a job by adding runtimes for tasks with similar size, shape and atomic operations.
+* With known data and code, you can performance-qualify cluster. How fast should a join run on a 10-machine cluster of m1.large instances?
+* Understand what cluster settings should be tuned in response to job characterstics.
+* Compare clusters of equivalent nominal power (CPU, cores, memory) across data centers or hardware configs: AWS vs Rackspace vs private cluster: go!
+* Different core technologies (pig vs. wukong vs. raw Java) can compete on run time, efficiency, elegance, and size of code. 
+
+The jobs have been chosen to each exercise typical atomic operations. For example, the runtime for "take rollup counts on a giant spreadsheet" is largely dominated by the GROUP operation it entails. The generic
+
 h2. Goals:
 
 * Datasets at full size should be about 30-200GB raw size on HDFS (that is, ready to process, not counting replication multiplier)
+* Run tasks times on 5%, 20% and 100% samples
 * Cluster sizes from 5 to 15 machines m1.small, c1.medium, m2.xl
 * Important that all datasets be *completely* unencumbered by copyright issues or controversy
+* Exercise CPU-bound, IO-bound and memory-bound operations
+* Tasks should be specified so that say Solr or Cassandra can show example code.
 
 h2. Corpora:
 
