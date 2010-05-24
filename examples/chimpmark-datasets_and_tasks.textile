@@ -1,8 +1,25 @@
+h1. ChimpMARK-2010: Big Data Benchmark on Real-World Datasets
+
+The ChimpMARK-2010 is a collection of real-world datasets, real-world problems on those datasets, and simple example code to solve them.
+
+Why?
+
+* Estimate run time for a job by adding runtimes for tasks with similar size, shape and atomic operations.
+* With known data and code, you can performance-qualify cluster. How fast should a join run on a 10-machine cluster of m1.large instances?
+* Understand what cluster settings should be tuned in response to job characterstics.
+* Compare clusters of equivalent nominal power (CPU, cores, memory) across data centers or hardware configs: AWS vs Rackspace vs private cluster: go!
+* Different core technologies (pig vs. wukong vs. raw Java) can compete on run time, efficiency, elegance, and size of code. 
+
+The jobs have been chosen to each exercise typical atomic operations. For example, the runtime for "take rollup counts on a giant spreadsheet" is largely dominated by the GROUP operation it entails. The generic
+
 h2. Goals:
 
 * Datasets at full size should be about 30-200GB raw size on HDFS (that is, ready to process, not counting replication multiplier)
+* Run tasks times on 5%, 20% and 100% samples
 * Cluster sizes from 5 to 15 machines m1.small, c1.medium, m2.xl
 * Important that all datasets be *completely* unencumbered by copyright issues or controversy
+* Exercise CPU-bound, IO-bound and memory-bound operations
+* Tasks should be specified so that say Solr or Cassandra can show example code.
 
 h2. Corpora:
 
@@ -16,9 +33,11 @@ bq. Contains a wikipedia linkgraph dataset provided by Henry Haselgrove.
   These files contain all links between proper english language Wikipedia pages, that is pages in "namespace 0". This includes disambiguation pages and redirect pages.
   [ convert this to adj. pairs -- or to be directly loadable in pig ]
   In links-simple-sorted.txt, there is one line for each page that has links from it. The format of the lines is:
+<pre><code>
       from1: to11 to12 to13 ...
       from2: to21 to22 to23 ...
       ...
+</code></pre>
   where from1 is an integer labelling a page that has links from it, and to11 to12 to13 ... are integers labelling all the pages that the page links to. To find the page title that corresponds to integer n, just look up the n-th line in the file titles-sorted.txt.
   
 h3. Short Documents 1: ???
@@ -37,21 +56,25 @@ h4. Wikipedia Traffic Statistics Dataset
   Each log file is named with the date and time of collection: pagecounts-20090430-230000.gz
   Each line has 4 fields: projectcode, pagename, pageviews, bytes
 
-	en Barack_Obama                         997 123091092
+<pre><code>
+        en Barack_Obama                         997 123091092
 	en Barack_Obama%27s_first_100_days        8 850127
 	en Barack_Obama,_Jr                       1 144103
 	en Barack_Obama,_Sr.                     37 938821
 	en Barack_Obama_%22HOPE%22_poster         4 81005
 	en Barack_Obama_%22Hope%22_poster         5 102081
+</code></pre>
 
    we should denormalize into 
 
+<pre><code>
         date 	hour	en Barack_Obama                         997 123091092
 	date 	hour	en Barack_Obama%27s_first_100_days        8 850127
 	date 	hour	en Barack_Obama,_Jr                       1 144103
 	date 	hour	en Barack_Obama,_Sr.                     37 938821
 	date 	hour	en Barack_Obama_%22HOPE%22_poster         4 81005
 	date 	hour	en Barack_Obama_%22Hope%22_poster         5 102081
+</code></pre>
 
 h3. Spreadsheet-ish: (Business and Industry Summary Data?)
 
