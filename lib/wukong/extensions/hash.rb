@@ -141,6 +141,19 @@ class Hash
     replace(compact)
   end
 
+  #
+  # remove all key-value pairs where the value is blank
+  #
+  def compact_blank
+    reject{|key,val| val.blank? }
+  end
+  #
+  # Replace the hash with its compact_blank'ed self
+  #
+  def compact_blank!
+    replace(compact_blank)
+  end
+
   # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
   def reverse_merge(other_hash)
     other_hash.merge(self)
