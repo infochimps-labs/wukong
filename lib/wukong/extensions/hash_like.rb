@@ -88,6 +88,13 @@ module Wukong
       merge hsh2, &Hash::DEEP_MERGER
     end
 
+    #
+    # remove all key-value pairs where the value is blank
+    #
+    def compact_blank
+      to_hash.compact_blank!
+    end
+
     module ClassMethods
       #
       # Instantiate an instance of the struct from a hash
