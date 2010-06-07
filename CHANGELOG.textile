@@ -1,3 +1,8 @@
+h2. Wukong v1.4.8 2010-06-05
+
+* made scripts inject a helpful job name using mapred.job.name
+* Hash.compact_blank! and HashLike.compact_blank! -- eliminate all key-values whoes value is blank?
+
 h2. Wukong v1.4.8 2010-05-17
 
 * Bug in passing commandline args down to map and reduce child processes
