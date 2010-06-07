@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-05-20}
+  s.date = %q{2010-06-07}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it’s efficient to process by lines
@@ -118,6 +118,7 @@ Gem::Specification.new do |s|
      "docpages/usage.textile",
      "docpages/wutils.textile",
      "examples/README.txt",
+     "examples/chimpmark-datasets_and_tasks.textile",
      "examples/contrib/jeans/README.markdown",
      "examples/contrib/jeans/data/normalized_sizes",
      "examples/contrib/jeans/data/orders.tsv",
@@ -208,40 +209,40 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://mrflip.github.com/wukong}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Wukong makes Hadoop so easy a chimpanzee can use it.}
   s.test_files = [
     "spec/spec_helper.rb",
      "spec/wukong/encoding_spec.rb",
      "spec/wukong/script_spec.rb",
-     "examples/contrib/jeans/normalize.rb",
-     "examples/contrib/jeans/sizes.rb",
-     "examples/count_keys.rb",
-     "examples/count_keys_at_mapper.rb",
-     "examples/keystore/conditional_outputter_example.rb",
-     "examples/network_graph/adjacency_list.rb",
-     "examples/network_graph/breadth_first_search.rb",
-     "examples/network_graph/gen_2paths.rb",
-     "examples/network_graph/gen_multi_edge.rb",
-     "examples/network_graph/gen_symmetric_links.rb",
      "examples/pagerank/pagerank.rb",
      "examples/pagerank/pagerank_initialize.rb",
-     "examples/rank_and_bin.rb",
      "examples/sample_records.rb",
      "examples/server_logs/apache_log_parser.rb",
      "examples/server_logs/breadcrumbs.rb",
      "examples/server_logs/user_agent.rb",
+     "examples/count_keys.rb",
+     "examples/rank_and_bin.rb",
      "examples/size.rb",
+     "examples/network_graph/breadth_first_search.rb",
+     "examples/network_graph/gen_symmetric_links.rb",
+     "examples/network_graph/gen_multi_edge.rb",
+     "examples/network_graph/adjacency_list.rb",
+     "examples/network_graph/gen_2paths.rb",
+     "examples/keystore/conditional_outputter_example.rb",
      "examples/stats/avg_value_frequency.rb",
+     "examples/contrib/jeans/sizes.rb",
+     "examples/contrib/jeans/normalize.rb",
+     "examples/word_count.rb",
      "examples/stupidly_simple_filter.rb",
-     "examples/word_count.rb"
+     "examples/count_keys_at_mapper.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<addressable>, [">= 0"])
       s.add_runtime_dependency(%q<extlib>, [">= 0"])
       s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
