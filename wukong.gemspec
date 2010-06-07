@@ -118,7 +118,6 @@ Gem::Specification.new do |s|
      "docpages/usage.textile",
      "docpages/wutils.textile",
      "examples/README.txt",
-     "examples/chimpmark-datasets_and_tasks.textile",
      "examples/contrib/jeans/README.markdown",
      "examples/contrib/jeans/data/normalized_sizes",
      "examples/contrib/jeans/data/orders.tsv",
