@@ -1,21 +1,19 @@
-require 'cassandra' ; include Cassandra::Constants
+require 'wukong/keystore/cassandra_connection'
 module Wukong
   module Streamer
 
     class CassandraStreamer < Wukong::Streamer::Base
-      attr_accessor :batch_count, :batch_record_count, :column_space, :batch_size, :db_seeds
-
-      def cassandra_db
-        @cassandra_db ||= Cassandra.new(self.column_space, self.db_seeds)
-      end
+      attr_accessor :batch_count, :batch_record_count, :batch_size, :column_space, :db_seeds, :cassandra_db
+      include Keystore
 
       def initialize *args
         super *args
         self.batch_count = 0
         self.batch_record_count = 0
         self.column_space ||= 'Twitter'
-        self.batch_size = 100
-        self.db_seeds = %w[10.244.191.178 10.243.19.223 10.243.17.219 10.245.70.85 10.244.206.241].map{ |s| s.to_s+':9160'}
+        self.batch_size   ||= 100
+        self.db_seeds     ||= %w[10.244.191.178 10.243.19.223 10.243.17.219 10.245.70.85 10.244.206.241].map{ |s| s.to_s+':9160'}
+        self.cassandra_db ||= Cassandra.new(self.column_space, self.db_seeds)
       end
 
       def stream

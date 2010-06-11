@@ -13,10 +13,10 @@ class Mapper < Wukong::Streamer::CassandraStreamer
   # be defaults. For testing on local machine simply seed db with localhost:9160
 
   def initialize *args
-    super(*args)
     self.column_space = 'Cruft'
     self.batch_size = 100
     self.db_seeds = "localhost:9160"
+    super(*args)
     @iter = 0
   end
 
