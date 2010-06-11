@@ -3,12 +3,10 @@ module Wukong
   module Streamer
 
     class CassandraStreamer < Wukong::Streamer::Base
-      attr_accessor :batch_count, :batch_record_count, :column_space
-      CASSANDRA_DB_SEEDS = %w[10.244.191.178 10.243.19.223 10.243.17.219 10.245.70.85 10.244.206.241].map{ |s| s.to_s+':9160'}
-      BATCH_SIZE = 100
+      attr_accessor :batch_count, :batch_record_count, :column_space, :batch_size, :db_seeds
 
       def cassandra_db
-        @cassandra_db ||= Cassandra.new(self.column_space, CASSANDRA_DB_SEEDS)
+        @cassandra_db ||= Cassandra.new(self.column_space, self.db_seeds)
       end
 
       def initialize *args
@@ -16,6 +14,8 @@ module Wukong
         self.batch_count = 0
         self.batch_record_count = 0
         self.column_space ||= 'Twitter'
+        self.batch_size = 100
+        self.db_seeds = %w[10.244.191.178 10.243.19.223 10.243.17.219 10.245.70.85 10.244.206.241].map{ |s| s.to_s+':9160'}
       end
 
       def stream
@@ -35,7 +35,7 @@ module Wukong
       end
 
       def process *args, &blk
-        Raise "Overwrite this method, yo"
+        Raise "Overwrite this method to insert into cassandra db"
       end
 
       def start_batch &blk
@@ -53,7 +53,7 @@ module Wukong
       end
 
       def batch_not_full?
-        self.batch_record_count < BATCH_SIZE
+        self.batch_record_count < self.batch_size
       end
 
     end
