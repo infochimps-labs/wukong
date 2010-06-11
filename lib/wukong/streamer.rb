@@ -5,6 +5,7 @@ module Wukong
     autoload :RecordStreamer,       'wukong/streamer/record_streamer'
     autoload :StructStreamer,       'wukong/streamer/struct_streamer'
     autoload :StructRecordizer,     'wukong/streamer/struct_streamer'
+    autoload :CassandraStreamer,    'wukong/streamer/cassandra_streamer'
     #
     autoload :Filter,               'wukong/streamer/filter'
     #
