@@ -10,12 +10,12 @@ require 'wukong'
 class Mapper < Wukong::Streamer::CassandraStreamer
 
   # you must redefine the column space, batch size, and db-seeds  or they will
-  # be defaults. For testing on local machine simply seed db with localhost:9160
+  # be defaults. For testing on local machine simply seed db with 127.0.0.1:9160
 
   def initialize *args
     self.column_space = 'Cruft'
     self.batch_size = 100
-    self.db_seeds = "localhost:9160"
+    self.db_seeds = "127.0.0.1:9160"
     super(*args)
     @iter = 0
   end

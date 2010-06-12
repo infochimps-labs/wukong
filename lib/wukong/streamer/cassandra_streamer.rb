@@ -1,10 +1,10 @@
-require 'wukong/keystore/cassandra_connection'
+# Defines a base class for streaming data into a cassandra db connection.
+require 'cassandra' ; include Cassandra::Constants
 module Wukong
   module Streamer
 
     class CassandraStreamer < Wukong::Streamer::Base
       attr_accessor :batch_count, :batch_record_count, :batch_size, :column_space, :db_seeds, :cassandra_db
-      include Keystore
 
       def initialize *args
         super *args
@@ -39,7 +39,7 @@ module Wukong
       def start_batch &blk
         self.batch_record_count = 0
         self.batch_count += 1
-        cassandra_db.batch(&blk)
+        self.cassandra_db.batch(&blk)
       end
 
       def get_line
