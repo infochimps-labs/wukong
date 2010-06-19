@@ -16,7 +16,6 @@ module TokyoDbConnection
     attr_reader :dataset
     DB_SERVERS = [
       '10.218.47.247',
-      '10.218.1.178',
       '10.218.71.212',
       '10.194.93.123',
       '10.195.77.171',
@@ -61,7 +60,7 @@ module TokyoDbConnection
     def get *args
       begin
         db.get(*args)
-      rescue StandardError => e ; handle_error("Fetch #{key}", e); end
+      rescue StandardError => e ; handle_error("Fetch #{args.inspect}", e); end
     end
 
     def handle_error action, e
