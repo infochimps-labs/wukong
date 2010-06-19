@@ -13,7 +13,7 @@ require 'tokyo_tyrant/balancer'
 
 
 class TokyoTyrant::Balancer::Base
-  def initialize(servers = [], timeout = 0.0, should_retry = false)
+  def initialize(servers = [], timeout = 3.0, should_retry = true)
     servers.collect! do |server|
       host, port = server.split(':')
       klass.new(host, port.to_i, timeout, should_retry)
