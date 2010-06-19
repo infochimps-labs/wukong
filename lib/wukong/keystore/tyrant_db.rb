@@ -13,7 +13,7 @@ require 'tokyo_tyrant/balancer'
 
 
 class TokyoTyrant::Balancer::Base
-  def initialize(hostnames = [], timeout = 3.0, should_retry = true)
+  def initialize(hostnames = [], timeout = 10.0, should_retry = true)
     @servers = hostnames.map do |hostname|
       host, port = hostname.split(':')
       klass.new(host, port.to_i, timeout, should_retry)
@@ -81,12 +81,12 @@ module TokyoDbConnection
     def handle_error action, e
       warn "#{action} failed: #{e} #{e.backtrace.join("\t")}" ;
       invalidate!
-      sleep 0.2
     end
 
     def invalidate!
       (@db && @db.close) or warn "Couldn't close #{@db.inspect}"
       @db = nil
+      sleep 2
     end
   end
 end
