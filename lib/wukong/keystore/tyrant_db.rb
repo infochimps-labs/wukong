@@ -13,14 +13,18 @@ require 'tokyo_tyrant/balancer'
 
 
 class TokyoTyrant::Balancer::Base
-  def initialize(servers = [], timeout = 3.0, should_retry = true)
-    servers.collect! do |server|
-      host, port = server.split(':')
+  def initialize(hostnames = [], timeout = 3.0, should_retry = true)
+    @servers = hostnames.map do |hostname|
+      host, port = hostname.split(':')
       klass.new(host, port.to_i, timeout, should_retry)
     end
-    @servers = servers
     @ring = TokyoTyrant::ConstistentHash.new(servers)
   end
+
+  def close
+    @servers.all?{ |server| server.close } rescue nil
+  end
+
 end
 
 module TokyoDbConnection
@@ -32,7 +36,7 @@ module TokyoDbConnection
       '10.194.93.123',
       '10.195.77.171',
       '10.244.142.192',
-    ]
+    ].freeze
 
     DB_PORTS = {
       :user_ids      => 12001,
