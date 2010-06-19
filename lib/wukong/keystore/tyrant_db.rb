@@ -22,7 +22,7 @@ class TokyoTyrant::Balancer::Base
   end
 
   def close
-    @servers.all?{ |server| server.close } rescue nil
+    @servers.all?{ |server| server.close rescue nil}
   end
 
 end
