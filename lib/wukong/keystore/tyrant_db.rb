@@ -11,6 +11,18 @@ require 'tokyo_tyrant/balancer'
 # ttserver -port 12004 /data/db/ttyrant/tweets_parsed.tch#bnum=800000000#opts=l
 # ttserver -port 12005 /data/db/ttyrant/users_parsed.tch#bnum=100000000#opts=l
 
+
+class TokyoTyrant::Balancer::Base
+  def initialize(servers = [], timeout = 0.0, should_retry = false)
+    servers.collect! do |server|
+      host, port = server.split(':')
+      klass.new(host, port.to_i, timeout, should_retry)
+    end
+    @servers = servers
+    @ring = TokyoTyrant::ConstistentHash.new(servers)
+  end
+end
+
 module TokyoDbConnection
   class TyrantDb
     attr_reader :dataset
