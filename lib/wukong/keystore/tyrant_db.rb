@@ -77,11 +77,12 @@ module TokyoDbConnection
 
     def handle_error action, e
       warn "#{action} failed: #{e} #{e.backtrace.join("\t")}" ;
-      @db = nil
+      invalidate!
       sleep 0.2
     end
 
     def invalidate!
+      (@db && @db.close) or warn "Couldn't close #{@db.inspect}"
       @db = nil
     end
   end
