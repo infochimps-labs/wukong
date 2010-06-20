@@ -1,0 +1,29 @@
+job_201006200508_0002	NORMAL	flip	parse_twitter_api_requests.rb---s3n//monkeyshines.infochimps.org/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b	100.00%
+    s3 => hdfs   	bz2     parser, cond_em 	empty (?)
+
+job_201006200508_0003	NORMAL	flip	parse_twitter_api_requests.rb---s3n//monkeyshines.infochimps.org/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b-dupes	100.00%
+    s3 => hdfs  	bz2	parser, cond_em 	duplicate
+
+job_201006200508_0004	NORMAL	flip	parse_twitter_api_requests.rb---/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b-from_hdfs_bz2	100.00%
+    hdfs => hdfs 	bz2	parser, cond_em 	empty
+
+job_201006200508_0005	NORMAL	flip	parse_twitter_api_requests.rb---/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b-from_hdfs_bz2_no_cond_em	100.00%
+    hdfs => hdfs 	bz2	parser, no_cond_em	--
+    
+job_201006200508_0006	NORMAL	flip	hdp-stream-flat-/bin/cat-/data/ripd/com.tw/com.twitter/2009111*-/data/sn/tw/ripd/com.tw/com.twitter-flat/2009111	100.00%
+    hdfs => hdfs   	bz2	`which cat`
+
+job_201006200508_0007	NORMAL	flip	hdp-stream-flat-/bin/cat-s3n://monkeyshines.infochimps.org/data/ripd/com.tw/com.twitter/2009111*-/data/sn/tw/ripd/com.tw/com.twitter-flat/2009111-from_s3n	100.00%
+    s3 => hdfs   	bz2	`which cat`
+
+
+cat ~/timings/job/201006200508/*/*.tsv | wu-lign
+                job_id                          time            succ?   s3bytes  	hdfs_bytes         	out_hdfs_bytes	    	map_input_bytes	map_input_recs	map_output_recs           	name
+job_details	201006200508_0002		35mins, 34sec	1	1812031232	          		12495736645		7240978546		8180472	388863907			parse_twitter_api_requests.rb---s3n//monkeyshines.infochimps.org/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b
+job_details	201006200508_0003		15mins, 50sec	1	1812031232	          		11877866580		7240978546		8180472	383928615			parse_twitter_api_requests.rb---s3n//monkeyshines.infochimps.org/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b-dupes
+job_details	201006200508_0004		36mins, 56sec	1	         0	1812031232		13334645497		7240978546		8180472	395564272			parse_twitter_api_requests.rb---/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b-from_hdfs_bz2
+job_details	201006200508_0005		35mins, 23sec	1	         0	1812031232		13479823318		7240978546		8180472	396757046			parse_twitter_api_requests.rb---/data/ripd/com.tw/com.twitter/2009111---/data/sn/tw/rawd/parsed/20091110-20091119b-from_hdfs_bz2_no_cond_em
+job_details	201006200508_0006		 1mins, 10sec 	1	         0	1812031232		 7240978549		7240978546		8180472	  8180472			hdp-stream-flat-/bin/cat-/data/ripd/com.tw/com.twitter/2009111*-/data/sn/tw/ripd/com.tw/com.twitter-flat/2009111
+job_details	201006200508_0007		 1mins, 55sec 	1	1812031232	          		 7240978549		7240978546		8180472	  8180472			hdp-stream-flat-/bin/cat-s3n://monkeyshines.infochimps.org/data/ripd/com.tw/com.twitter/2009111*-/data/sn/tw/ripd/com.tw/com.twitter-flat/2009111-from_s3n
+
+
