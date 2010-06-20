@@ -12,6 +12,33 @@ require 'tokyo_tyrant/balancer'
 # ttserver -port 12005 /data/db/ttyrant/users_parsed.tch#bnum=100000000#opts=l
 
 
+# -- Starting
+#    ttserver -port 12002 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/screen_names.log '/data/db/tyrant/screen_names.tch#opts=l#rcnum=50000#bnum=25000000#xmsiz=268435456'
+#
+# -- Monitoring
+#      tcrmgr inform -port $port -st $hostname
+#    active conns:
+#      lsof  -i | grep ttserver | wc -l
+#      netstat -a -W | grep ':120' | ruby -ne 'puts $_.split(/ +/)[3 .. 4].join("\t")' | sort | cut -d: -f1-2 | uniq -c | sort -n
+#    use db.rnum for most lightweight ping method
+#
+# -- Tuning
+#    http://korrespondence.blogspot.com/2009/09/tokyo-tyrant-tuning-parameters.html
+#    http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/5a46ee04006a791c#
+#    opts     "l" of large option (the size of the database can be larger than 2GB by using 64-bit bucket array.), "d" of Deflate option (each record is compressed with Deflate encoding), "b" of BZIP2 option, "t" of TCBS option
+#    bnum     number of elements of the bucket array. If it is not more than 0, the default value is specified. The default value is 131071 (128K). Suggested size of the bucket array is about from 0.5 to 4 times of the number of all records to be stored.
+#    rcnum    maximum number of records to be cached. If it is not more than 0, the record cache is disabled. It is disabled by default.
+#    xmsiz    size of the extra mapped memory. If it is not more than 0, the extra mapped memory is disabled. The default size is 67108864 (64MB).
+#    apow     size of record alignment by power of 2. If it is negative, the default value is specified. The default value is 4 standing for 2^4=16.
+#    fpow     maximum number of elements of the free block pool by power of 2. If it is negative, the default value is specified. The default value is 10 standing for 2^10=1024.
+#    dfunit   unit step number of auto defragmentation. If it is not more than 0, the auto defragmentation is disabled. It is disabled by default.
+#    mode     "w" of writer, "r" of reader,"c" of creating,"t" of truncating ,"e" of no locking,"f" of non-blocking lock
+#
+# -- Links
+#    http://1978th.net/tokyocabinet/spex-en.html
+#    http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/3bd2a93322c09eec#
+
+
 class TokyoTyrant::Balancer::Base
   def initialize(hostnames = [], timeout = 10.0, should_retry = true)
     @servers = hostnames.map do |hostname|
