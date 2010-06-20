@@ -2,13 +2,14 @@
 
 if [ "$1" == "-p" ] ; then
     shift
-    foo=`exec hadoop fs -test -e "$@"`
-    if ["$foo" == "1"] ; then #file does not exist
-      echo "File doesn't exist, making ..."
-      # exec hadoop dfs -mkdir "@"
+    `exec hadoop fs -test -e "$@"`
+    foo=$?
+    if [ "$foo" == 1 ] ; then #file does not exist
+      # echo "File doesn't exist, making ..."
+      exec hadoop dfs -mkdir "$@"
     else
       echo "File exists, doing nothing ..."
     fi
 else
-  # exec hadoop dfs -mkdir "@"
+  exec hadoop dfs -mkdir "$@"
 fi
