@@ -1,19 +1,18 @@
 require 'tokyo_tyrant'
 require 'tokyo_tyrant/balancer'
 
-# make sure tokyocabinet and tokyotyrant are installed (cehf recipe)
-# make sure ruby-tokyotyrant is installed
-# ldconfig
-# mkdir -p /data/db/ttyrant
-# ttserver -port 12001 /data/db/ttyrant/user_ids.tch#bnum=100000000#opts=l
-# ttserver -port 12002 /data/db/ttyrant/screen_names.tch#bnum=100000000#opts=l
-# ttserver -port 12003 /data/db/ttyrant/search_ids.tch#bnum=100000000#opts=l
-# ttserver -port 12004 /data/db/ttyrant/tweets_parsed.tch#bnum=800000000#opts=l
-# ttserver -port 12005 /data/db/ttyrant/users_parsed.tch#bnum=100000000#opts=l
-
-
+# -- Installing
+#    make sure tokyocabinet and tokyotyrant are installed (cehf recipe)
+#    make sure ruby-tokyotyrant is installed
+#    ldconfig
+#    mkdir -p /data/db/ttyrant /var/run/tyrant /var/log/tyrant
+#
 # -- Starting
-#    ttserver -port 12002 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/screen_names.log '/data/db/tyrant/screen_names.tch#opts=l#rcnum=50000#bnum=25000000#xmsiz=268435456'
+#    ttserver -port 12001 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/user_ids.tch      '/data/db/ttyrant/user_ids.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12002 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/screen_names.tch  '/data/db/ttyrant/screen_names.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12003 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/search_ids.tch    '/data/db/ttyrant/search_ids.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12004 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/tweets_parsed.tch '/data/db/ttyrant/tweets_parsed.tch#bnum=800000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12005 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/users_parsed.tch  '/data/db/ttyrant/users_parsed.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
 #
 # -- Monitoring
 #      tcrmgr inform -port $port -st $hostname
@@ -24,6 +23,7 @@ require 'tokyo_tyrant/balancer'
 #
 # -- Tuning
 #    http://korrespondence.blogspot.com/2009/09/tokyo-tyrant-tuning-parameters.html
+#    http://capttofu.livejournal.com/23381.html
 #    http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/5a46ee04006a791c#
 #    opts     "l" of large option (the size of the database can be larger than 2GB by using 64-bit bucket array.), "d" of Deflate option (each record is compressed with Deflate encoding), "b" of BZIP2 option, "t" of TCBS option
 #    bnum     number of elements of the bucket array. If it is not more than 0, the default value is specified. The default value is 131071 (128K). Suggested size of the bucket array is about from 0.5 to 4 times of the number of all records to be stored.
