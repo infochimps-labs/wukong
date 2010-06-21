@@ -40,7 +40,7 @@ require 'tokyo_tyrant/balancer'
 
 
 class TokyoTyrant::Balancer::Base
-  def initialize(hostnames = [], timeout = 10.0, should_retry = true)
+  def initialize(hostnames = [], timeout = 20.0, should_retry = true)
     @servers = hostnames.map do |hostname|
       host, port = hostname.split(':')
       klass.new(host, port.to_i, timeout, should_retry)
@@ -62,7 +62,7 @@ module TokyoDbConnection
       '10.218.71.212',
       '10.194.93.123',
       '10.195.77.171',
-    ].freeze
+    ].freeze unless defined?(TokyoDbConnection::TyrantDb::DB_SERVERS)
 
     DB_PORTS = {
       :user_ids      => 12001,
@@ -70,7 +70,7 @@ module TokyoDbConnection
       :search_ids    => 12003,
       :tweets_parsed => 12004,
       :users_parsed  => 12005,
-    }
+    } unless defined?(TokyoDbConnection::TyrantDb::DB_PORTS)
 
     def initialize dataset
       @dataset = dataset
@@ -84,7 +84,9 @@ module TokyoDbConnection
       @db
     end
 
-    def [](*args) ; db[*args] ; end
+    def [](*args)      ; db[*args]        ; end
+    def size(*args)    ; db.size(*args)   ; end
+    def vanish!(*args) ; db.vanish(*args) ; end
 
     #
     # Insert into the cassandra database with default settings
