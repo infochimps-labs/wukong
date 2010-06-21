@@ -45,7 +45,7 @@ class TokyoTyrant::Balancer::Base
       host, port = hostname.split(':')
       klass.new(host, port.to_i, timeout, should_retry)
     end
-    @ring = TokyoTyrant::ConstistentHash.new(servers)
+    @ring = TokyoTyrant::ConsistentHash.new(servers)
   end
 
   def close
