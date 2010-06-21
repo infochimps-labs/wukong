@@ -45,6 +45,7 @@ class TokyoTyrant::Balancer::Base
       host, port = hostname.split(':')
       klass.new(host, port.to_i, timeout, should_retry)
     end
+    # yes, for some reason it's spelled 'Constistent' here
     @ring = TokyoTyrant::ConstistentHash.new(servers)
   end
 

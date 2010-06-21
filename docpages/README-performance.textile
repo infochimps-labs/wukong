@@ -85,3 +85,6 @@ Parse:
 
 hdp-du s3n://monkeyshines.infochimps.org/data/ripd/com.tw/\*/ > /mnt/tmp/ripd_com.tw-du.tsv
 
+
+
+                                                    1050 entries       	   448483502374	       417.7 GB
