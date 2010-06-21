@@ -1,12 +1,12 @@
 Settings.define :log_interval, :default => 1000, :type => Integer, :description => 'How many iterations between log statements'
 
 #
-# Periodic logger
+# Periodic monitor
 #
 #
 # This is very much a work in progress
 #
-class PeriodicLogger
+class PeriodicMonitor
   attr_reader   :iter, :start_time, :options
   attr_accessor :interval
 
@@ -41,8 +41,8 @@ class PeriodicLogger
   def progress *stuff
     [
       "%15d" % iter,
-      "%7.2f"% elapsed_time, "sec",
-      "%7.2f"%(iter.to_f / elapsed_time), "/sec",
+      "%7.1f"% elapsed_time, "sec",
+      "%7.1f"%(iter.to_f / elapsed_time), "/sec",
       now.to_flat,
       *stuff
     ].join("\t")
