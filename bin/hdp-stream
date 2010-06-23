@@ -8,7 +8,7 @@ reduce_script=${1-/usr/bin/uniq} ; shift
 partfields=${1-2} 		; shift
 sortfields=${1-2} 		; shift
 
-if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/cat] [reducer=/usr/bin/uniq] [sortfields=2] [partfields=1] [extra_args]" ; exit ; fi
+if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/cat] [reducer=/usr/bin/uniq] [partfields=2] [sortfields=2] [extra_args]" ; exit ; fi
 
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
