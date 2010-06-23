@@ -60,7 +60,6 @@ module TokyoDbConnection
     attr_reader :dataset
     DB_SERVERS = [
       '10.218.47.247',
-      '10.218.71.212',
       '10.194.93.123',
       '10.195.77.171',
     ].freeze unless defined?(TokyoDbConnection::TyrantDb::DB_SERVERS)
