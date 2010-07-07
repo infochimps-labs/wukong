@@ -46,6 +46,7 @@ class TokyoTyrant::Balancer::Base
       klass.new(host, port.to_i, timeout, should_retry)
     end
     # yes, for some reason it's spelled 'Constistent' here
+    # DO NOT fix it because it goes deep...
     @ring = TokyoTyrant::ConstistentHash.new(servers)
   end
 
@@ -59,10 +60,10 @@ module TokyoDbConnection
   class TyrantDb
     attr_reader :dataset
     DB_SERVERS = [
-      '10.218.47.247',
-      '10.218.71.212',
-      '10.194.93.123',
-      '10.195.77.171',
+      '10.194.101.156',
+      '10.196.73.156',
+      '10.196.75.47',
+      '10.242.217.140',
     ].freeze unless defined?(TokyoDbConnection::TyrantDb::DB_SERVERS)
 
     DB_PORTS = {
@@ -120,3 +121,4 @@ module TokyoDbConnection
     end
   end
 end
+

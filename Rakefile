@@ -25,6 +25,7 @@ DESC
     gem.add_dependency 'addressable'
     gem.add_dependency 'extlib'
     gem.add_dependency 'htmlentities'
+    gem.add_dependency 'configliere'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
