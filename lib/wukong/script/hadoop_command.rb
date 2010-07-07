@@ -98,7 +98,7 @@ module Wukong
       # root of your config install.
       [
         hadoop_runner,
-        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*-streaming.jar",
+        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
         hadoop_partition_args,
         hadoop_sort_args,
         hadoop_num_tasks_args,
