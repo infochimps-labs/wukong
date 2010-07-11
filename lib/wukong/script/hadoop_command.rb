@@ -27,6 +27,8 @@ module Wukong
     Settings.define :timeout,                :jobconf => true, :description => 'mapred.task.timeout', :wukong => true
     Settings.define :reuse_jvms,             :jobconf => true, :description => 'mapred.job.reuse.jvm.num.tasks', :wukong => true
     Settings.define :respect_exit_status,    :jobconf => true, :description => 'stream.non.zero.exit.is.failure', :wukong => true
+    Settings.define :io_sort_record_percent, :jobconf => true, :description => 'io.sort.record.percent', :wukong => true
+    Settings.define :io_sort_mb,             :jobconf => true, :description => 'io.sort.mb', :wukong => true
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
     Settings.define :job_name,               :jobconf => true, :description => 'mapred.job.name', :wukong => true
     # mapred.linerecordreader.maxlength :description => "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
