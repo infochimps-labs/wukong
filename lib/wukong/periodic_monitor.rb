@@ -45,7 +45,7 @@ class PeriodicMonitor
       "%7.1f"%(iter.to_f / elapsed_time), "/sec",
       now.to_flat,
       *stuff
-    ].join("\t")
+    ].flatten.join("\t")
   end
 
   def elapsed_time
