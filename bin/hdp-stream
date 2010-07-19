@@ -12,18 +12,23 @@ if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/
 
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
-${HADOOP_HOME}/bin/hadoop \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop*streaming*.jar		\
-    -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 		\
-    -jobconf     num.key.fields.for.partition="$partfields"			\
-    -jobconf 	 stream.num.map.output.key.fields="$sortfields"			\
-    -jobconf     stream.map.output.field.separator="'/t'"			\
-    -jobconf     mapred.text.key.partitioner.options="-k1,$partfields"		\
-    -mapper  	 "$map_script"  						\
-    -reducer	 "$reduce_script"						\
-    -input       "$input_file"							\
-    -output  	 "$output_file"							\
+cmd="${HADOOP_HOME}/bin/hadoop \
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		
+    -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			
+    -jobconf     num.key.fields.for.partition=\"$partfields\"				
+    -jobconf 	 stream.num.map.output.key.fields=\"$sortfields\"
+    -jobconf     stream.map.output.field.separator=\"'/t'\"
+    -jobconf     mapred.text.key.partitioner.options=\"-k1,$partfields\"			
+    -mapper  	 \"$map_script\"  							
+    -reducer	 \"$reduce_script\"							
+    -input       \"$input_file\"							
+    -output  	 \"$output_file\"							
     $@
+    "
+
+echo "$cmd"
+
+$cmd
 
 # Maybe?
 #

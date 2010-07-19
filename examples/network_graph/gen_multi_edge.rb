@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require 'rubygems'
 $: << File.dirname(__FILE__)+'/../../lib'
 require 'wukong'
 require 'wukong/models/graph'; include Wukong::Models
@@ -53,8 +54,8 @@ module GenMultiEdge
       rel = m.captures.first
       src = src.to_i ; dest = dest.to_i
       return if ((src == 0) || (dest == 0))
-      yield ["%010d"%src,  "%010d"%dest, "a_#{rel}_b"]
-      yield ["%010d"%dest, "%010d"%src,  "b_#{rel}_a"]
+      yield [src,  dest, "a_#{rel}_b"]
+      yield [dest, src,  "b_#{rel}_a"]
     end
   end
 
