@@ -14,7 +14,7 @@ HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 # -jobconf mapred.reduce.tasks=3                                                    \
 
 exec ${HADOOP_HOME}/bin/hadoop \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop*streaming*.jar		\
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar		\
     "$@"                                                                                \
     -jobconf    "mapred.job.name=`basename $0`-$map_script-$input_file-$output_file"    \
     -mapper  	"$map_script"  								\
