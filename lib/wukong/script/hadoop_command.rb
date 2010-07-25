@@ -27,7 +27,10 @@ module Wukong
     Settings.define :timeout,                :jobconf => true, :description => 'mapred.task.timeout', :wukong => true
     Settings.define :reuse_jvms,             :jobconf => true, :description => 'mapred.job.reuse.jvm.num.tasks', :wukong => true
     Settings.define :respect_exit_status,    :jobconf => true, :description => 'stream.non.zero.exit.is.failure', :wukong => true
+    Settings.define :io_sort_record_percent, :jobconf => true, :description => 'io.sort.record.percent', :wukong => true
+    Settings.define :io_sort_mb,             :jobconf => true, :description => 'io.sort.mb', :wukong => true
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
+    Settings.define :job_name,               :jobconf => true, :description => 'mapred.job.name', :wukong => true
     # mapred.linerecordreader.maxlength :description => "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
 
     # emit a -jobconf hadoop option if the simplified command line arg is present
@@ -67,12 +70,13 @@ module Wukong
       ]
     end
 
-    def hadoop_other_args
+    def hadoop_other_args input_path, output_path
       extra_str_args  = [ options[:extra_args] ]
       extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
-      extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
+      options[:job_name] ||= "#{File.basename(this_script_filename)}---#{input_path}---#{output_path}".gsub(%r{[^\w/\.\-\+]+}, '')
+      extra_hsh_args = [:job_name, :map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
       extra_str_args + extra_hsh_args
     end
 
@@ -96,7 +100,7 @@ module Wukong
       # root of your config install.
       [
         hadoop_runner,
-        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*-streaming.jar",
+        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
         hadoop_partition_args,
         hadoop_sort_args,
         hadoop_num_tasks_args,
@@ -105,7 +109,7 @@ module Wukong
         "-input   '#{input_path}'",
         "-output  '#{output_path}'",
         hadoop_recycle_env,
-        hadoop_other_args,
+        hadoop_other_args(input_path, output_path),
       ].flatten.compact.join(" \t\\\n  ")
     end
 

@@ -1,0 +1,145 @@
+
+# -- Installing
+#    make sure tokyocabinet and tokyotyrant are installed (cehf recipe)
+#    make sure ruby-tokyotyrant is installed
+#    ldconfig
+#    mkdir -p /data/db/ttyrant /var/run/tyrant /var/log/tyrant
+#
+# -- Starting
+#    ttserver -port 12001 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/user_ids.tch      '/data/db/ttyrant/user_ids.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12002 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/screen_names.tch  '/data/db/ttyrant/screen_names.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12003 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/search_ids.tch    '/data/db/ttyrant/search_ids.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12004 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/tweets_parsed.tch '/data/db/ttyrant/tweets_parsed.tch#bnum=800000000#opts=l#rcnum=50000#xmsiz=268435456'
+#    ttserver -port 12005 -thnum 96 -tout 3 -pid /var/run/tyrant/screen_names.pid -kl -log /var/log/tyrant/users_parsed.tch  '/data/db/ttyrant/users_parsed.tch#bnum=100000000#opts=l#rcnum=50000#xmsiz=268435456'
+#
+# -- Monitoring
+#      tcrmgr inform -port $port -st $hostname
+#    active conns:
+#      lsof  -i | grep ttserver | wc -l
+#      netstat -a -W | grep ':120' | ruby -ne 'puts $_.split(/ +/)[3 .. 4].join("\t")' | sort | cut -d: -f1-2 | uniq -c | sort -n
+#    use db.rnum for most lightweight ping method
+#
+# -- Tuning
+#    http://korrespondence.blogspot.com/2009/09/tokyo-tyrant-tuning-parameters.html
+#    http://capttofu.livejournal.com/23381.html
+#    http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/5a46ee04006a791c#
+#    opts     "l" of large option (the size of the database can be larger than 2GB by using 64-bit bucket array.), "d" of Deflate option (each record is compressed with Deflate encoding), "b" of BZIP2 option, "t" of TCBS option
+#    bnum     number of elements of the bucket array. If it is not more than 0, the default value is specified. The default value is 131071 (128K). Suggested size of the bucket array is about from 0.5 to 4 times of the number of all records to be stored.
+#    rcnum    maximum number of records to be cached. If it is not more than 0, the record cache is disabled. It is disabled by default.
+#    xmsiz    size of the extra mapped memory. If it is not more than 0, the extra mapped memory is disabled. The default size is 67108864 (64MB).
+#    apow     size of record alignment by power of 2. If it is negative, the default value is specified. The default value is 4 standing for 2^4=16.
+#    fpow     maximum number of elements of the free block pool by power of 2. If it is negative, the default value is specified. The default value is 10 standing for 2^10=1024.
+#    dfunit   unit step number of auto defragmentation. If it is not more than 0, the auto defragmentation is disabled. It is disabled by default.
+#    mode     "w" of writer, "r" of reader,"c" of creating,"t" of truncating ,"e" of no locking,"f" of non-blocking lock
+#
+# -- Links
+#    http://1978th.net/tokyocabinet/spex-en.html
+#    http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/3bd2a93322c09eec#
+# Performance limits: http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/3bd2a93322c09eec#
+
+
+h2. Tyrant: ttserver
+
+  ttdb="test"
+  ttserver -port 12009 -thnum 96  \
+    -dmn -pid /var/run/tyrant-${ttdb}.pid
+    -ulog /mnt/tmp/ttyrant/tyrant-$[ttdb}.ulog -ulim 268435456 -uas \
+    -log  /var/log/ttyrant/tyrant-${ttdb}.log  \
+    "/data/db/ttyrant/${ttdb}.tch#bnum=200000000#opts=l#rcnum=100000#xmsiz=536870912"
+    
+ can also add host, and umask out to be read-only
+
+    * -host name : specify the host name or the address of the server. By default, every network address is bound.
+    * -port num : specify the port number. By default, it is 1978.
+    * -thnum num : specify the number of worker threads. By default, it is 8.
+    * -tout num : specify the timeout of each session in seconds. By default, no timeout is specified.
+    * -dmn : work as a daemon process.
+    * -pid path : output the process ID into the file.
+    * -kl : kill the existing process if the process ID file is detected.
+    * -log path : output log messages into the file.
+    * -ld : log debug messages also.
+    * -le : log error messages only.
+    * -ulog path : specify the update log directory.
+    * -ulim num : specify the limit size of each update log file.
+    * -uas : use asynchronous I/O for the update log.
+    * -sid num : specify the server ID.
+    * -mhost name : specify the host name of the replication master server.
+    * -mport num : specify the port number of the replication master server.
+    * -rts path : specify the replication time stamp file.
+    * -rcc : check consistency of replication.
+    * -skel name : specify the name of the skeleton database library.
+    * -mul num : specify the division number of the multiple database mechanism.
+    * -ext path : specify the script language extension file.
+    * -extpc name period : specify the function name and the calling period of a periodic command.
+    * -mask expr : specify the names of forbidden commands.
+    * -unmask expr : specify the names of allowed commands.
+
+
+h2. From "Wolfgang Gassler":http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/5a46ee04006a791c#
+
+On Sat, Dec 05, 2009 at 09:32:20PM +0100, Wolfgang Gassler wrote:
+> Hi,
+
+> did anybody look up some of the folowing parameters in the code or can
+> explain them in detail? I just have a guess what they really mean and
+> the short description at the docu homepage
+> http://korrespondence.blogspot.com/2009/09/tokyo-tyrant-tuning-parame...
+> explain them very roughly. Also the already posted blog post
+> http://korrespondence.blogspot.com/2009/09/tokyo-tyrant-tuning-parame...
+> couldn't help.
+
+this is what I gleaned from reading the source code for the hash database
+format ( tchdb.c and tchdb.h ).
+
+> xmsiz
+
+On a TC Hash database, from the beginning of the file, to the end of the bucket
+section, all of that space is mmap'd.  Setting 'xmsiz' sets the minimum amount
+of space that is mmap'd.  Since 67108864 is the default, this means, that an a
+minimum, the first 64MiB of the file will be mmap'd.
+
+If the header size, plus the bucket region is greater than 'xmsize', then xmsiz
+appers to have no affect.
+
+> apow
+
+On a TC Hash database, 'apow' determines on what byte alignment each record will
+sit.  'apow' is a power of 2.  This means that when apow is 4 ( the default for
+hash databases) all records in the database are aligned on a 16 byte boundary,
+in the database file.
+
+This means that every record will take up at a minumum 16 bytes of space, and
+all records are padded to a length that is a multiple of 16.
+
+> fpow
+
+On a TC Hash database, 'fpow' determines the maximum number of free blocks that
+can exist in the free block pool.  This is also a power-of-2 parameter so with
+the default in a Hash database of 10, this means that there can be a maximum
+of 2^10, or 1024 free blocks in the database.
+
+Free blocks come into existence when records are deleted from the database
+and their space in the db file is up for reuse.  If you never delete an
+item from the database, you will never have any free blocks.
+
+> dfunit
+
+On a TC Hash database, 'dfunit' describes how defragmentation takes place.
+Every time a free block is created a 'dfcnt' is incremented.  When 'dfcnt'
+is greater than 'dfunit' and 'dfunit' is greater than 0, defragmentation
+takes place.
+
+I don't know precisely what defragmentation does in TC. A cursory look
+at 'tchdbdefragimpl', the function implementing defagmentation for hash
+databases, it looks like it moves records around filling up free blocks
+in the hash db with real records from the end of the file and then making the
+file smaller if possible.
+
+Basically it moves records around minimizing dead space in the file.
+
+Again, defragmentation will only take place if 'dfunit' has a positive
+value and you remove records from the db creating free blocks.
+
+enjoy,
+
+-jeremy 

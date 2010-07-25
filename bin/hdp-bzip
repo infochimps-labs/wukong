@@ -14,13 +14,13 @@ echo "Removing output directory $OUTPUT"
 hadoop fs -rmr $OUTPUT
 
 cmd="${HADOOP_HOME}/bin/hadoop \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		   \
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar		   \
     -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			   \
     -jobconf     mapred.output.compress=true                                               \
     -jobconf     mapred.output.compression.codec=org.apache.hadoop.io.compress.BZip2Codec  \
     -jobconf     mapred.reduce.tasks=1                                                     \
     -mapper  	 \"/bin/cat\"                                                              \
-    -reducer	 \"/usr/bin/uniq\"                                                         \
+    -reducer	 \"/bin/cat\"                                                              \
     $INPUTS
     -output  	 $OUTPUT                                                                   \
     "

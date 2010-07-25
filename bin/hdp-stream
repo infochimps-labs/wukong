@@ -8,15 +8,17 @@ reduce_script=${1-/usr/bin/uniq} ; shift
 partfields=${1-2} 		; shift
 sortfields=${1-2} 		; shift
 
-if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/cat] [reducer=/usr/bin/uniq] [sortfields=2] [partfields=1] [extra_args]" ; exit ; fi
+if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/cat] [reducer=/usr/bin/uniq] [partfields=2] [sortfields=2] [extra_args]" ; exit ; fi
 
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
 cmd="${HADOOP_HOME}/bin/hadoop \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*-streaming.jar		
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar		
     -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			
     -jobconf     num.key.fields.for.partition=\"$partfields\"				
-    -jobconf 	 stream.num.map.output.key.fields=\"$sortfields\"			
+    -jobconf 	 stream.num.map.output.key.fields=\"$sortfields\"
+    -jobconf     stream.map.output.field.separator=\"'/t'\"
+    -jobconf     mapred.text.key.partitioner.options=\"-k1,$partfields\"			
     -mapper  	 \"$map_script\"  							
     -reducer	 \"$reduce_script\"							
     -input       \"$input_file\"							
@@ -28,22 +30,8 @@ echo "$cmd"
 
 $cmd
 
-# -jobconf      mapred.text.key.partitioner.options="-k1,$partfields"                   \
-# -jobconf      stream.map.output.field.separator='\t'                                  \
-# -jobconf      map.output.key.field.separator='\t'                                     \
-# -jobconf      mapred.map.tasks=3                                                      \
-# -jobconf      mapred.reduce.tasks=3                                                   \
-
+# Maybe?
 #
-# TODO:
-#   http://issues.apache.org/jira/browse/MAPREDUCE-594
-#   http://hadoop.apache.org/common/docs/current/api/org/apache/hadoop/mapred/KeyValueTextInputFormat.html
-#   Instead of /bin/cat, Identity can be (I think)
 #     -inputformat    org.apache.hadoop.mapred.KeyValueTextInputFormat \
 #     -mapper         org.apache.hadoop.mapred.lib.IdentityMapper      \
-#     ...
 #
-# TODO
-#
-#   New-style secondary sort:
-#     http://hadoop.apache.org/common/docs/r0.20.0/streaming.html

@@ -1,33 +1,35 @@
-# -*- coding: utf-8 -*-
 require 'rubygems'
 require 'rake'
 
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     gem.name        = "wukong"
     gem.authors     = ["Philip (flip) Kromer"]
     gem.email       = "flip@infochimps.org"
     gem.homepage    = "http://mrflip.github.com/wukong"
-    gem.summary     = "Wukong makes Hadoop so easy a chimpanzee can use it."
+    gem.summary     = %Q{Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease.}
     gem.description = <<DESC
   Treat your dataset like a:
 
-      * stream of lines when it’s efficient to process by lines
-      * stream of field arrays when it’s efficient to deal directly with fields
-      * stream of lightweight objects when it’s efficient to deal with objects
+      * stream of lines when it's efficient to process by lines
+      * stream of field arrays when it's efficient to deal directly with fields
+      * stream of lightweight objects when it's efficient to deal with objects
 
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
 DESC
     gem.executables = FileList[* %w[bin/hdp-du bin/hdp-sync bin/hdp-wc bin/wu-lign bin/wu-sum bin/*.rb]].pathmap('%f')
-    gem.files       =  FileList["\w*", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"].reject{|file| file.to_s =~ %r{.*private.*} }
+    gem.files       =  FileList["\w*", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"]
+    gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_development_dependency "yard", ">= 0"
     gem.add_dependency 'addressable'
     gem.add_dependency 'extlib'
     gem.add_dependency 'htmlentities'
+    gem.add_dependency 'configliere'
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
 require 'spec/rake/spectask'
@@ -70,37 +72,9 @@ end
 
 begin
   require 'yard'
-  YARD::Rake::YardocTask.new do |yard|
-  end
+  YARD::Rake::YardocTask.new
 rescue LoadError
   task :yardoc do
     abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
-  end
-end
-
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  require 'rdoc'
-  if File.exist?('VERSION')
-    version = File.read('VERSION')
-  else
-    version = ""
-  end
-  rdoc.options += [
-    '-SHN',
-    '-f', 'darkfish',  # use darkfish rdoc styler
-  ]
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "wukong #{version}"
-  #
-  File.open(File.dirname(__FILE__)+'/.document').each{|line| rdoc.rdoc_files.include(line.chomp) }
-end
-
-begin
-  require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new(:features)
-rescue LoadError
-  task :features do
-    abort "Cucumber is not available. In order to run features, you must: sudo gem install cucumber"
   end
 end
