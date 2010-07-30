@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'wukong'
-# require 'wukong/store/chunked_flat_file_store'
+# require 'wukong/store'
 
 require 'configliere'
 Configliere.use :commandline, :define, :config_file
