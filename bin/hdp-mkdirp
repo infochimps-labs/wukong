@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#
+# Despite arguments and deliberation, this IS a necessary script. Azkaban, should you choose to
+# use it, will fail if (it seems) ANY of its spawned subprocesses fails
+#
+
+hadoop fs -test -e "$@"
+if [ "$?" != "0" ] ; then
+  # echo "File does not exist, making..."
+  exec hadoop fs -mkdir "$@"
+fi
