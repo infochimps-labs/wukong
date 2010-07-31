@@ -14,9 +14,9 @@ if [ "$1" == "-r" ] ; then
     shift
     hadoop fs -test -e "$@"
     if [ "$?" == "0" ] ; then
-           # echo "File exists, skipping trash, removing it..."
-      echo hadoop dfs -rmr "$@"
-      exec hadoop dfs -rmr "$@"
+      # echo "File exists, skipping trash, removing it..."
+      echo hadoop dfs -rmr -skipTrash "$@"
+      exec hadoop dfs -rmr -skipTrash "$@"
     fi
   else
     hadoop fs -test -e "$@"
