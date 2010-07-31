@@ -32,6 +32,10 @@ module Wukong
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
     Settings.define :job_name,               :jobconf => true, :description => 'mapred.job.name', :wukong => true
     # mapred.linerecordreader.maxlength :description => "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
+    Settings.define :max_reduces_per_node,   :jobconf => true, :description => 'mapred.max.reduces.per.node',    :wukong => true
+    Settings.define :max_reduces_per_cluster,:jobconf => true, :description => 'mapred.max.reduces.per.cluster', :wukong => true
+    Settings.define :max_maps_per_node,      :jobconf => true, :description => 'mapred.max.maps.per.node',       :wukong => true
+    Settings.define :max_maps_per_cluster,   :jobconf => true, :description => 'mapred.max.maps.per.cluster',    :wukong => true
 
     # emit a -jobconf hadoop option if the simplified command line arg is present
     # if not, the resulting nil will be elided later

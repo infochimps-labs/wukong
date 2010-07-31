@@ -1,3 +1,14 @@
+h2. Wukong v.14.11 2010-07-30
+
+* added the @max_(maps|reduces)_per_(node|cluster)@ jobconfs.
+* added jobconfs for io_job_mb and friends.
+* added a loadable module to convert output data to pig bags and tuples
+* pulled in several methods from active_support, incl. Enumerable#sum
+* Scripts to find percentile rank of elements in a dataset
+* We are starting to move wukong to a model where streaming is from a generic
+  source into a generic sink. Several stores have been landed in the code, but
+  many are in a half- or un-baked state. Please ignore this for the moment.
+
 h2. Wukong v1.4.8 2010-06-05
 
 * made scripts inject a helpful job name using mapred.job.name

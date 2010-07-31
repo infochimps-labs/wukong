@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "1.4.10"
+  s.version = "1.4.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-07-19}
+  s.date = %q{2010-07-30}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it's efficient to process by lines
@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
      "bin/hdp-kill-task",
      "bin/hdp-ls",
      "bin/hdp-mkdir",
+     "bin/hdp-mkdirp",
      "bin/hdp-mv",
      "bin/hdp-parts_to_keys.rb",
      "bin/hdp-ps",
@@ -151,9 +152,11 @@ Gem::Specification.new do |s|
      "examples/size.rb",
      "examples/stats/avg_value_frequency.rb",
      "examples/stats/data/avg_value_frequency.tsv",
+     "examples/store/chunked_store_example.rb",
      "examples/stupidly_simple_filter.rb",
      "examples/word_count.rb",
      "lib/wukong.rb",
+     "lib/wukong/and_pig.rb",
      "lib/wukong/bad_record.rb",
      "lib/wukong/datatypes.rb",
      "lib/wukong/datatypes/enum.rb",
@@ -182,12 +185,28 @@ Gem::Specification.new do |s|
      "lib/wukong/keystore/tyrant_notes.textile",
      "lib/wukong/logger.rb",
      "lib/wukong/models/graph.rb",
+     "lib/wukong/monitor.rb",
+     "lib/wukong/monitor/chunked_store.rb",
+     "lib/wukong/monitor/periodic_logger.rb",
+     "lib/wukong/monitor/periodic_monitor.rb",
      "lib/wukong/periodic_monitor.rb",
      "lib/wukong/rdf.rb",
      "lib/wukong/schema.rb",
      "lib/wukong/script.rb",
      "lib/wukong/script/hadoop_command.rb",
      "lib/wukong/script/local_command.rb",
+     "lib/wukong/store.rb",
+     "lib/wukong/store/base.rb",
+     "lib/wukong/store/chunked_flat_file_store.rb",
+     "lib/wukong/store/conditional_store.rb",
+     "lib/wukong/store/factory.rb",
+     "lib/wukong/store/flat_file_store.rb",
+     "lib/wukong/store/key_store.rb",
+     "lib/wukong/store/null_store.rb",
+     "lib/wukong/store/read_thru_store.rb",
+     "lib/wukong/store/tokyo_tdb_key_store.rb",
+     "lib/wukong/store/tyrant_rdb_key_store.rb",
+     "lib/wukong/store/tyrant_tdb_key_store.rb",
      "lib/wukong/streamer.rb",
      "lib/wukong/streamer/accumulating_reducer.rb",
      "lib/wukong/streamer/base.rb",
@@ -226,30 +245,31 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
      "spec/wukong/encoding_spec.rb",
      "spec/wukong/script_spec.rb",
+     "examples/binning_percentile_estimator.rb",
+     "examples/contrib/jeans/normalize.rb",
+     "examples/contrib/jeans/sizes.rb",
+     "examples/corpus/words_to_bigrams.rb",
+     "examples/count_keys.rb",
+     "examples/count_keys_at_mapper.rb",
+     "examples/keystore/cassandra_batch_test.rb",
+     "examples/keystore/conditional_outputter_example.rb",
+     "examples/network_graph/adjacency_list.rb",
+     "examples/network_graph/breadth_first_search.rb",
+     "examples/network_graph/gen_2paths.rb",
+     "examples/network_graph/gen_multi_edge.rb",
+     "examples/network_graph/gen_symmetric_links.rb",
      "examples/pagerank/pagerank.rb",
      "examples/pagerank/pagerank_initialize.rb",
+     "examples/rank_and_bin.rb",
      "examples/sample_records.rb",
      "examples/server_logs/apache_log_parser.rb",
      "examples/server_logs/breadcrumbs.rb",
      "examples/server_logs/user_agent.rb",
-     "examples/corpus/words_to_bigrams.rb",
-     "examples/count_keys.rb",
-     "examples/rank_and_bin.rb",
-     "examples/binning_percentile_estimator.rb",
      "examples/size.rb",
-     "examples/network_graph/breadth_first_search.rb",
-     "examples/network_graph/gen_symmetric_links.rb",
-     "examples/network_graph/gen_multi_edge.rb",
-     "examples/network_graph/adjacency_list.rb",
-     "examples/network_graph/gen_2paths.rb",
-     "examples/keystore/cassandra_batch_test.rb",
-     "examples/keystore/conditional_outputter_example.rb",
      "examples/stats/avg_value_frequency.rb",
-     "examples/contrib/jeans/sizes.rb",
-     "examples/contrib/jeans/normalize.rb",
-     "examples/word_count.rb",
+     "examples/store/chunked_store_example.rb",
      "examples/stupidly_simple_filter.rb",
-     "examples/count_keys_at_mapper.rb"
+     "examples/word_count.rb"
   ]
 
   if s.respond_to? :specification_version then

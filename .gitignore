@@ -38,3 +38,4 @@ pkg
 
 ## PROJECT::SPECIFIC
 
+*.rdb
