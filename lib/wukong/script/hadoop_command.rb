@@ -69,6 +69,10 @@ module Wukong
       [
         jobconf(:max_node_map_tasks),
         jobconf(:max_node_reduce_tasks),
+        jobconf(:max_reduces_per_node),
+        jobconf(:max_reduces_per_cluster),
+        jobconf(:max_maps_per_node),
+        jobconf(:max_maps_per_cluster),
         jobconf(:map_tasks),
         jobconf(:reduce_tasks)
       ]
