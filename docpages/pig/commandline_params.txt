@@ -1,0 +1,26 @@
+Apache Pig version 0.7.0 (r941408) 
+compiled May 05 2010, 11:15:55
+
+USAGE: Pig [options] [-] : Run interactively in grunt shell.
+       Pig [options] -e[xecute] cmd [cmd ...] : Run cmd(s).
+       Pig [options] [-f[ile]] file : Run cmds found in file.
+  options include:
+    -4, -log4jconf log4j configuration file, overrides log conf
+    -b, -brief brief logging (no timestamps)
+    -c, -cluster clustername, kryptonite is default
+    -d, -debug debug level, INFO is default
+    -e, -execute commands to execute (within quotes)
+    -f, -file path to the script to execute
+    -h, -help display this message
+    -i, -version display version information
+    -j, -jar jarfile load jarfile
+    -l, -logfile path to client side log file; current working directory is default
+    -m, -param_file path to the parameter file
+    -p, -param key value pair of the form param=val
+    -r, -dryrun
+    -t, -optimizer_off optimizer rule name, turn optimizer off for this rule; use all to turn all rules off, optimizer is turned on by default
+    -v, -verbose print all error messages to screen
+    -w, -warning turn warning on; also turns warning aggregation off
+    -x, -exectype local|mapreduce, mapreduce is default
+    -F, -stop_on_failure aborts execution on the first failed job; off by default
+    -M, -no_multiquery turn multiquery optimization off; Multiquery is on by default

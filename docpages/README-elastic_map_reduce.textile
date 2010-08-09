@@ -1,0 +1,377 @@
+h2. Questions
+
+* can I access an EC2 resource (eg cassandra cluster)
+
+
+h2. Setup
+
+* download from http://developer.amazonwebservices.com/connect/entry.jspa?externalID=2264&categoryID=273
+* wget http://elasticmapreduce.s3.amazonaws.com/elastic-mapreduce-ruby.zip
+* unzip elastic-mapreduce-ruby.zip
+* cd elastic-mapreduce-ruby
+* ln -nfs ~/.wukong/credentials.json
+* put your keypair in ~/.wukong/keypairs/WHATEVER.pem
+
+  {
+    "access-id":     "<insert your aws access id here>",
+    "private-key":   "<insert your aws secret access key here>",
+    "key-pair":      "WHATEVER",
+    "key-pair-file": "~/.wukong/keypairs/WHATEVER.pem",
+    "log-uri":       "s3n://yourmom/emr/logs"
+  }
+
+h4. Paths
+
+
+Paths:
+  LogUri		s3	s3n://yourmom/emr/logs
+  step log files 	s3	{log_uri}/Steps/{step}/{syslog,stdout,controller,stderr}
+  Script                s3      s3://yourmom/emr/scripts/path/to/script
+  Wukong                s3      s3://s3scripts.infochimps.org/wukong/current/....
+  Input                 s3      s3n://yourmom/data/wordcount/input 
+  Output                s3      s3n://yourmom/data/wordcount/output
+  Bootstrap Scripts     s3      s3://elasticmapreduce/bootstrap-actions/{configure-hadoop,configure-daemons,run-if}
+  
+  
+  Credentials   	desk	elastic-mapreduce-ruby/credentials.json
+
+  hadoop.tmp.dir	inst	/mnt/var/lib/hadoop/tmp
+  local hdfs		inst	/mnt/var/lib/hadoop/dfs
+  your home dir		inst	/home/hadoop			(small space)
+  Job Settings		inst	/mnt/var/lib/info/job-flow.json
+  Instance Settings	inst	/mnt/var/lib/info/instance.json
+
+
+h4. Launching emr tasks in wukong
+
+* Uses configliere to get your credentials, log_uri, emr_root, script_path
+* Uploads script phases.
+    s3://emr_root/scripts/:script_path/script_name-datetime-mapper.rb
+    s3://emr_root/scripts/:script_path/script_name-datetime-reducer.rb
+** You can use the following symbols to assemble the path:
+    :emr_root, :script_name, :script_path, :username, :date, :datetime, :phase, :rand, :pid, :hostname, :keypair
+  The values for :emr_root and :script_path are taken from configliere.
+  if :script_path is missing, scripts/:username is used.
+  The same timestamp and random number will be used for each phase
+
+* uses elastic-mapreduce-ruby to launch the job
+
+** specify --emr.{option}
+** eg --emr.alive, --emr.num-instances
+
+reads ~/.wukong/emr.yaml
+
+  common
+  jobs / jobname 
+
+  name                  same as for hadoop name
+  alive
+  
+  num_instances         .
+  instance_type         .
+  master_instance_type  .
+  availability_zone     us-east-1b
+  key_pair              job_handle
+  key_pair_file         ~/.wukong/keypairs/{key_pair}.pem
+
+  hadoop_version        0.20
+  plain_output          Return the job flow id from create step as simple text
+  info                  JSON hash
+  emr_root              
+  log_uri               emr_root/logs/:script_path/:script_name-:datetime
+
+  --hadoop-version=0.20 --stream --enable_debugging --verbose --debug --alive
+  --availability-zone AZ --key_pair KP --key_pair_file KPF --access_id EC2ID --private_key EC2PK
+  --slave_instance_type m2.xlarge --master_instance_type m2.xlarge --num_instances NUM
+  #
+  --step_name           
+  --step_action         CANCEL_AND_WAIT, TERMINATE_JOB_FLOW or CONTINUE
+  --jobflow             JOBFLOWID
+  #
+  --info                Settings.emr.info.to_json
+  #
+  --input               INPUT
+  --output              OUTPUT
+  --mapper               s3://emr_root/jobs/:script_path/script_name-datetime-mapper.rb  (or class)
+  --reducer              s3://emr_root/jobs/:script_path/script_name-datetime-reducer.rb (or class)
+  --cache               s3n://emr_root/jobs/:script_path/cache/sample.py#sample.py
+  --cache-archive        s3://s3scripts.infochimps.org/wukong/current/wukong.zip
+  --cache-archive       s3n://emr_root/jobs/:script_path/cache/sample.jar
+  --jobconf             whatever
+  
+...
+
+also:
+
+  --ssh
+  --scp SRC --to DEST
+  --terminate
+  --logs
+  --list
+  --all   
+
+h4. Aggregate
+
+http://hadoop.apache.org/common/docs/r0.20.1/api/org/apache/hadoop/mapred/lib/aggregate/package-summary.html
+
+  DoubleValueSum 	sums up a sequence of double values.
+  LongValueMax  	maintain the maximum of a sequence of long values.
+  LongValueMin  	maintain the minimum of a sequence of long values.
+  LongValueSum  	sums up a sequence of long values.
+  StringValueMax 	maintain the biggest of a sequence of strings.
+  StringValueMin 	maintain the smallest of a sequence of strings.
+  UniqValueCount 	dedupes a sequence of objects.
+  ValueHistogram 	computes the histogram of a sequence of strings.
+  
+h2. Commands
+
+    # create a job and run a mapper written in python and stored in Amazon S3
+    elastic-mapreduce --create --enable_debugging \
+      --stream 
+      --mapper s3://elasticmapreduce/samples/wordcount/wordSplitter.py \
+      --input  s3n://elasticmapreduce/samples/wordcount/input \
+      --output s3n://mybucket/output_path
+      --log_uri 
+
+    elastic-mapreduce --list           # list recently created job flows
+    elastic-mapreduce --list --active  # list all running or starting job flows
+    elastic-mapreduce --list --all     # list all job flows      
+
+h4. Bootstrap actions
+
+    --bootstrap-action s3://elasticmapreduce/bootstrap-actions/configure-hadoop
+    --args "--site-config-file,s3://bucket/config.xml,-s,mapred.tasktracker.map.tasks.maximum=2" 
+
+    --bootstrap-action s3://elasticmapreduce/bootstrap-actions/configure-daemons
+    --args "--namenode-heap-size=2048,--namenode-opts=\"-XX:GCTimeRatio=19\""
+
+You should recompile cascading applications with the Hadoop 0.20 version specified so they can take advantage of the new features available in this version.
+Hadoop 0.20 fully supports Pig scripts.
+All Amazon Elastic MapReduce sample apps are compatible with Hadoop 0.20. The AWS Management Console supports only Hadoop 0.20, so samples will default to 0.20 once launched. 
+
+For Hadoop version 0.20, Hive version 0.5 and version Pig 0.6 is used. The version can be selected by setting HadoopVersion in JobFlowInstancesConfig. 
+
+h3. Pig
+
+  REGISTER s3:///my-bucket/piggybank.jar
+
+  Additional functions:
+  
+  http://developer.amazonwebservices.com/connect/entry.jspa?externalID=2730
+  
+  
+h2. Hadoop and Cluster setup
+  
+h3. Data Compression
+
+  Output Compression:           -jobconf mapred.output.compress=true        FileOutputFormat.setCompressOutput(conf, true);
+  Intermediate Compression:     -jobconf mapred.compress.map.output=true    conf.setCompressMapOutput(true);    
+   
+You can also use a bootstrap action to automatically compress all job outputs. Here is how to do that with the Ruby client.
+  
+   --bootstrap-action s3://elasticmapreduce/bootstrap-actions/configure-hadoop --args "-s,mapred.output.compress=true"
+
+Compressed Input data Hadoop automatically detects the .gz extension on file names and extracts the contents. You do not need to take any action to extract gzipped files.
+
+
+===========================================================================
+
+
+$LOAD_PATH << File.dirname(__FILE__)
+  require 'amazon/coral/elasticmapreduceclient'
+  require 'amazon/retry_delegator'
+  
+  config = {
+    :endpoint            => "https://elasticmapreduce.amazonaws.com",
+    :ca_file             => File.join(File.dirname(__FILE__), "cacert.pem"),
+    :aws_access_key      => my_access_id,
+    :aws_secret_key      => my_secret_key,
+    :signature_algorithm => :V2
+  }
+  client = Amazon::Coral::ElasticMapReduceClient.new_aws_query(config)
+  
+  is_retryable_error_response = Proc.new do |response| 
+  if response == nil then
+    false
+    else
+      ret = false
+    if response['Error'] then 
+      ret ||= ['InternalFailure', 'Throttling', 'ServiceUnavailable', 'Timeout'].include?(response['Error']['Code'])
+    end
+    ret 
+   end
+  end
+  
+  client = Amazon::RetryDelegator.new(client, :retry_if => is_retryable_error_response)
+  
+  puts client.DescribeJobFlows.inspect
+  puts client.DescribeJobFlows('JobFlowId' => 'j-ABAYAS1019012').inspect
+
+h3. Example job-flow.json and instance.json
+
+job-flow.json {"jobFlowId":"j-1UVPY9PQ3XAXE","jobFlowCreationInstant":1271711181000,
+  "instanceCount":4,"masterInstanceId":"i-f987ee92","masterPrivateDnsName":
+  "localhost","masterInstanceType":"m1.small","slaveInstanceType":
+  "m1.small","hadoopVersion":"0.18"}
+
+instance.json {"isMaster":true,"isRunningNameNode":true,"isRunningDataNode":true,
+  "isRunningJobTracker":false,"isRunningTaskTracker":false}        
+
+h3. Configuraion
+
+h4. Configure Hadoop
+
+  Location: s3://elasticmapreduce/bootstrap-actions/configure-hadoop
+  
+  -<f>, --<file>-key-value
+    Key/value pair that will be merged into the specified config file.
+  
+  -<F>, --<file>-config-file
+    Config file in Amazon S3 or locally that will be merged with the specified config file.
+  
+  Acceptable config files:
+  s/S  site     hadoop-site.xml
+  d/D  default  hadoop-default.xml
+  c/C  core     core-site.xml
+  h/H  hdfs     hdfs-site.xml
+  m/M  mapred   mapred-site.xml
+  
+  
+  Example Usage:
+  
+  elastic-mapreduce --create \
+    --bootstrap-action s3://elasticmapreduce/bootstrap-actions/configure-hadoop
+    --args "--site-config-file,s3://bucket/config.xml,-s,mapred.tasktracker.map.tasks.maximum=2" 
+    
+
+  Specify no reducers:
+    --mapred-key-value mapred.reduce.tasks=0
+
+
+  -cacheFile	-files   	Comma separated URIs
+  -cacheArchive	-archives	Comma separated URIs
+  -jobconf	-D      	key=value
+
+h4. Run If  
+
+Location: s3://elasticmapreduce/bootstrap-actions/run-if <JSON path>[!]=<value> <command> [args...]
+
+  JSON path       A path in the instance config or job flow config for the key we should look up.
+  Value           The value we expect to find.
+  Command         The command to run if the value is what we expect (or not what we expect in the case of !=). This can be a path in S3 or a local command.
+  Args            Arguments to pass to the command as it runs.
+
+  elastic-mapreduce --create --alive \
+    --bootstrap-action s3://elasticmapreduce/bootstrap-actions/run-if 
+    --args "instance.isMaster=true,echo,Running,on,master,node"
+
+  
+h4. Configure Daemons
+
+  --<daemon>-heap-size  	Set the heap size in megabytes for the specified daemon.
+  --<daemon>-opts       	Set additional Java options for the specified daemon.
+  --replace               	Replace the existing hadoop-user-env.sh file if it exists.
+  
+  <daemon> is one of: namenode, datanode, jobtracker, tasktracker, client
+
+  elastic-mapreduce --create --alive
+    --bootstrap-action s3://elasticmapreduce/bootstrap-actions/configure-daemons
+    --args "--namenode-heap-size=2048,--namenode-opts=\"-XX:GCTimeRatio=19\""
+
+
+h2. Command Line
+
+
+  Creating Job Flows
+        --create                     Create a new job flow
+        --name NAME                  Name of the job flow
+        --alive                      Create a job flow that stays running even though it has executed all its steps
+        --num-instances NUM          Number of instances in the job flow
+        --instance-type TYPE         The type of the instances to launch
+        --slave-instance-type TYPE   The type of the slave instances to launch
+        --master-instance-type TYPE  The type of the master instance to launch
+        --key-pair KEY_PAIR          The name of your Amazon EC2 Keypair
+        --key-pair-file FILE_PATH    Path to your local pem file for your EC2 key pair
+        --log-uri LOG_URI            Location in S3 to store logs from the job flow, e.g. s3n://mybucket/logs
+        --availability-zone A_Z      Specify the Availability Zone in which to launch the jobflow
+        --info INFO                  Specify additional info in JSON
+        --hadoop-version INFO        Specify the Hadoop Version to install
+        --plain-output               Return the job flow id from create step as simple text
+
+  Adding Jar Steps to Job Flows
+        --jar JAR                    Add a step that executes a jar
+        --wait-for-step              Wait for the step to finish
+        --main-class MAIN_CLASS      Specify main class for the JAR
+
+  Adding Streaming Steps to Job Flows
+        --stream                     Add a step that performs hadoop streaming
+        --input INPUT                Input to the steps, e.g. s3n://mybucket/input
+        --output OUTPUT              The output to the steps, e.g. s3n://mybucket/output
+        --mapper MAPPER              The mapper program or class
+        --cache CACHE_FILE           A file to load into the cache, e.g. s3n://mybucket/sample.py#sample.py
+        --cache-archive CACHE_FILE   A file to unpack into the cache, e.g. s3n://mybucket/sample.jar
+        --jobconf KEY=VALUE          Specify jobconf arguments to pass to streaming, e.g. mapred.task.timeout=800000
+        --reducer REDUCER            The reducer program or class
+
+  Job Flow Deugging Options
+        --enable-debugging           Enable job flow debugging (you must be signed up to SimpleDB for this to work)
+
+  Adding Pig steps to job flows
+        --pig-script                 Add a step that runs a Pig script
+        --pig-interactive            Add a step that sets up the job flow for an interactive (via SSH) pig session
+
+  Configuring a Hive on a JobFlow
+        --hive-site HIVE_SITE        Override Hive configuration with configuration from HIVE_SITE
+        --hive-script                Add a step that runs a Hive script
+        --hive-interactive           Add a step that sets up the job flow for an interactive (via SSH) hive session
+
+  Adding Steps from a Json File to Job Flows
+        --json FILE                  Add a sequence of steps stored in a json file
+        --param VARIABLE=VALUE       subsitute <variable> with value in the json file
+
+  Contacting the Master Node
+        --no-wait                    Don't wait for the Master node to start before executing scp or ssh
+        --ssh [COMMAND]              SSH to the master node and optionally run a command
+        --logs                       Display the step logs for the last executed step
+        --scp SRC                    Copy a file to the master node
+        --to DEST                    the destination to scp a file to
+
+  Settings common to all step types
+        --step-name STEP_NAME        Set name for the step
+        --step-action STEP_NAME      Action to take when step finishes. One of CANCEL_AND_WAIT, TERMINATE_JOB_FLOW or CONTINUE
+        --arg ARG                    Specify an argument to a bootstrap action, jar, streaming, pig-script or hive-script step
+        --args ARGS                  Specify a comma seperated list of arguments, e.g --args 1,2,3 would three arguments
+
+  Specifying Bootstrap Actions
+        --bootstrap-action SCRIPT    Run a bootstrap action script on all instances
+        --bootstrap-name NAME        Set the name of the bootstrap action
+Note --arg and --args are used to pass arguments to bootstrap actions
+
+  Listing and Describing Job Flows
+        --list                       List all job flows created in the last 2 days
+        --describe                   Dump a JSON description of the supplied job flows
+        --active                     List running, starting or shutting down job flows
+        --all                        List all job flows in the last 2 months
+        --nosteps                    Do not list steps when listing jobs
+        --state STATE                List job flows in STATE
+    -n, --max-results MAX_RESULTS    Maximum number of results to list
+
+  Terminating Job Flows
+        --terminate                  Terminate the job flow
+
+  Common Options
+    -j, --jobflow JOB_FLOW_ID
+        --job-flow-id
+    -c, --credentials CRED_FILE      File containing access-id and private-key
+    -a, --access-id ACCESS-ID        AWS Access Id
+    -k, --private-key PRIVATE-KEY    AWS Private Key
+    -v, --verbose                    Turn on verbose logging of program interaction
+
+  Uncommon Options
+        --debug                      Print stack traces when exceptions occur
+        --endpoint ENDPOINT          Specify the webservice endpoint to talk to
+        --region REGION              The region to use for the endpoint
+        --apps-path APPS_PATH        Specify s3:// path to the base of the emr public bucket to use. e.g s3://us-east-1.elasticmapreduce
+        --beta-path BETA_PATH        Specify s3:// path to the base of the emr public bucket to use for beta apps. e.g s3://beta.elasticmapreduce
+        --version                    Print a version string
+    -h, --help                       Show help message
