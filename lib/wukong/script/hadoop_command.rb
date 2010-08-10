@@ -36,13 +36,14 @@ module Wukong
 
     #
     # Assemble the hadoop command to execute
+    # and launch the hadoop runner to execute the script across all tasktrackers
     #
-    def hadoop_commandline input_path, output_path
+    def execute_hadoop_workflow
       # If no reducer_klass and no reduce_command, then skip the reduce phase
       options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
       #
       # Use Settings[:hadoop_home] to set the path your config install.
-      [
+      hadoop_commandline = [
         hadoop_runner,
         "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
         hadoop_jobconf_options,
@@ -53,6 +54,8 @@ module Wukong
         hadoop_recycle_env,
         hadoop_other_args(input_path, output_path),
       ].flatten.compact.join(" \t\\\n  ")
+      Log.info "  Launching hadoop!"
+      execute_command!(hadoop_commandline)
     end
 
     def hadoop_jobconf_options

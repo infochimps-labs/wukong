@@ -123,14 +123,14 @@ module Wukong
     #   MyScript.new(MyMapper, nil).run
     #
     def initialize mapper_klass, reducer_klass=nil, extra_options={}
-      self.options = Settings.dup
-      self.options.resolve!
-      self.options.merge! extra_options
-      self.mapper_klass  = mapper_klass
-      self.reducer_klass = reducer_klass
+      @options = Settings.dup
+      options.resolve!
+      options.merge! extra_options
+      @mapper_klass  = mapper_klass
+      @reducer_klass = reducer_klass
       @output_path = options.rest.pop
       @input_paths = options.rest.reject(&:blank?)
-      if (input_paths.blank? || output_path.blank?) && (not options[:dry_run])
+      if (input_paths.blank? || output_path.blank?) && (not options[:dry_run]) && (not ['map', 'reduce'].include?(run_mode))
         raise "You need to specify a parsed input directory and a directory for output. Got #{ARGV.inspect}"
       end
     end
@@ -141,22 +141,15 @@ module Wukong
     # If --map or --reduce, dispatch to the mapper or reducer.
     #
     def run
-      case
-      when 'map'
-        mapper_klass.new(self.options).stream
-      when 'reduce'
-        reducer_klass.new(self.options).stream
-      when 'local'
-        Log.info "  Reading STDIN / Writing STDOUT"
-        execute_command!(local_command)
-      when 'hadoop', 'mapred'
-        Log.info "  Launching hadoop as"
-        execute_command!(hadoop_command)
+      case run_mode
+      when 'map'              then mapper_klass.new(self.options).stream
+      when 'reduce'           then reducer_klass.new(self.options).stream
+      when 'local'            then execute_local_workflow
+      when 'hadoop', 'mapred' then execute_hadoop_workflow
       when 'emr'
-        Log.info "  Launching Elastic MapReduce Job"
-        execute_command!(emr_command)
-      else
-        dump_help
+        require 'wukong/script/emr_command'
+        execute_emr_workflow
+      else                    dump_help
       end
     end
 
@@ -205,7 +198,7 @@ module Wukong
     def execute_command! command
       Log.info command
       if options[:dry_run]
-        Log.info 'Not'
+        Log.info '== [Not running preceding command: dry run] =='
       else
         maybe_overwrite_output_paths! output_path
         $stdout.puts `#{command}`
