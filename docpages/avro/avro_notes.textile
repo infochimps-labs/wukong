@@ -1,0 +1,56 @@
+* Spec: http://avro.apache.org/docs/current/spec.html
+* Jira: https://issues.apache.org/jira/browse/AVRO
+* Wiki: https://cwiki.apache.org/confluence/display/AVRO/Index
+
+* http://github.com/phunt/avro-rpc-quickstart
+
+* http://lucene.apache.org/java/2_4_0/fileformats.html#VInt -- types
+* http://code.google.com/apis/protocolbuffers/docs/encoding.html#types -- a good reference
+* Avro + Eventlet (Python evented code): http://unethicalblogger.com/node/282
+
+
+
+Cassandra + Avro
+
+* Make bulk loading into Cassandra less crappy, more pluggable https://issues.apache.org/jira/browse/CASSANDRA-1278
+* Refactor Streaming: https://issues.apache.org/jira/browse/CASSANDRA-1189
+* Increment Counters: https://issues.apache.org/jira/browse/CASSANDRA-1072
+
+== From hammer's avro tools:
+
+#! /usr/bin/env python
+
+import sys
+from avro import schema
+from avro.genericio import DatumReader
+from avro.io import DataFileReader
+
+if __name__ == "__main__":
+  if len(sys.argv) < 2:
+    print "Need to at least specify an Avro file."
+  outfile_name = sys.argv[1]
+
+  message_schema = None
+  if len(sys.argv) > 2:
+    message_schema = schema.parse(schema.parse(sys.argv[2].encode("utf-8")))
+
+  r = file(outfile_name, 'r')
+  dr = DatumReader(expected = message_schema)
+  dfr = DataFileReader(r, dr)
+  for record in dfr:
+    print record
+  dfr.close()
+
+from binascii import hexlify
+
+def avro_hexlify(reader):
+  """Return the hex value, as a string, of a binary-encoded int or long."""
+  bytes = []
+  current_byte = reader.read(1)
+  bytes.append(hexlify(current_byte))
+  while (ord(current_byte) & 0x80) != 0:
+    current_byte = reader.read(1)
+    bytes.append(hexlify(current_byte))
+  return ' '.join(bytes)
+
+
