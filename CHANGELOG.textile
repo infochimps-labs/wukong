@@ -1,4 +1,12 @@
-h2. Wukong v.14.11 2010-07-30
+h2. Wukong v1.5
+
+Greatly simplified script launching.
+Incompatible changes to option handling and script launching:
+* Script doesn't use extra_options any more. You should relocate them to the initializer or to configliere.
+* there is no more default_mapper or default_reducer
+
+
+h2. Wukong v1.4.11 2010-07-30
 
 * added the @max_(maps|reduces)_per_(node|cluster)@ jobconfs.
 * added jobconfs for io_job_mb and friends.
