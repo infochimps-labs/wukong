@@ -41,18 +41,21 @@ module Wukong
     def execute_hadoop_workflow
       # If no reducer_klass and no reduce_command, then skip the reduce phase
       options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
+      # Input paths join by ','
+      input_paths = @input_paths.join(',')
       #
       # Use Settings[:hadoop_home] to set the path your config install.
       hadoop_commandline = [
         hadoop_runner,
         "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
         hadoop_jobconf_options,
+        "-D mapred.job.name '#{job_name}",
         "-mapper  '#{map_commandline}'",
         "-reducer '#{reduce_commandline}'",
-        "-input   '#{input_path}'",
+        "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
         hadoop_recycle_env,
-        hadoop_other_args(input_path, output_path),
+        hadoop_other_args(input_paths, output_path),
       ].flatten.compact.join(" \t\\\n  ")
       Log.info "  Launching hadoop!"
       execute_command!(hadoop_commandline)
@@ -95,13 +98,12 @@ module Wukong
       end
     end
 
-    def hadoop_other_args input_path, output_path
+    def hadoop_other_args
       extra_str_args  = [ options[:extra_args] ]
       extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
-      options[:job_name] ||= "#{File.basename(this_script_filename)}---#{input_path}---#{output_path}".gsub(%r{[^\w/\.\-\+]+}, '')
-      extra_hsh_args = [:job_name, :map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
+      extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
       extra_str_args + extra_hsh_args
     end
 

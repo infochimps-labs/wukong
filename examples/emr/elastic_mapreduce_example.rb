@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
+
+Dir[File.dirname(__FILE__)+'/**/lib'].each{|dir| $: << dir }
 require 'rubygems'
 require 'wukong'
+require 'wukong/script/emr_command'
 
 class FooStreamer < Wukong::Streamer::LineStreamer
   def initialize *args
@@ -15,3 +18,5 @@ class FooStreamer < Wukong::Streamer::LineStreamer
 end
 
 Wukong::Script.new(FooStreamer, FooStreamer).run
+puts 'done!'
+puts $0

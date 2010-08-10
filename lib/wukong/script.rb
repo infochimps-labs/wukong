@@ -123,8 +123,8 @@ module Wukong
     #   MyScript.new(MyMapper, nil).run
     #
     def initialize mapper_klass, reducer_klass=nil, extra_options={}
+      Settings.resolve!
       @options = Settings.dup
-      options.resolve!
       options.merge! extra_options
       @mapper_klass  = mapper_klass
       @reducer_klass = reducer_klass
@@ -158,6 +158,8 @@ module Wukong
       case
       when options[:map]           then 'map'
       when options[:reduce]        then 'reduce'
+      when ($0 =~ /-mapper\.rb$/)  then 'map'
+      when ($0 =~ /-reducer\.rb$/) then 'reduce'
       when (options[:run] == true) then options[:default_run_mode]
       else                         options[:run].to_s
       end
@@ -189,14 +191,21 @@ module Wukong
       end
     end
 
+    def job_name
+      options[:job_name] ||
+        "#{File.basename(this_script_filename)}---#{input_paths}---#{output_path}".gsub(%r{[^\w/\.\-\+]+}, '')
+    end
+
+
   protected
 
     #
     # Execute the runner phase:
     # use the running framework to relaunch the script in map and in reduce mode
     #
-    def execute_command! command
-      Log.info command
+    def execute_command! *args
+      command = args.flatten.compact.join(" \\\n    ")
+      Log.info "Running\n\n#{command}\n"
       if options[:dry_run]
         Log.info '== [Not running preceding command: dry run] =='
       else
