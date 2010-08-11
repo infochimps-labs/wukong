@@ -5,8 +5,8 @@ Settings.define :access_key,        :description => 'AWS Access key', :env_var =
 Settings.define :secret_access_key, :description => 'AWS Secret Access key', :env_var => 'AWS_SECRET_ACCESS_KEY'
 Settings.define :emr_runner,        :description => 'Path to the elastic-mapreduce command (~ etc will be expanded)'
 Settings.define :emr_root,          :description => 'S3 url to use as the base for Elastic MapReduce storage'
-Settings.define :key_pair_file,     :description => 'AWS Key pair file', :finally => lambda{ Settings.key_pair_file = File.expand_path(Settings.key_pair_file) }
-Settings.define :key_pair,          :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file, '.pem') }
+Settings.define :key_pair_file,     :description => 'AWS Key pair file', :finally => lambda{ Settings.key_pair_file = File.expand_path(Settings.key_pair_file.to_s) }
+Settings.define :key_pair,          :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file.to_s, '.pem') }
 Settings.define :instance_type,     :description => 'AWS instance type to use', :default => 'm1.small'
 Settings.define :master_instance_type, :description => 'Overrides the instance type for the master node', :finally => lambda{ Settings.master_instance_type ||= Settings.instance_type }
 Settings.define :jobflow
