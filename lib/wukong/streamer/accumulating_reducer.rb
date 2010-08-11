@@ -83,7 +83,6 @@
          super
          # don't finalize if we never saw any field at all
          finalize(){|record| emit record } unless (self.key == :__first_pass__)
-         after_stream
        end
      end
 
