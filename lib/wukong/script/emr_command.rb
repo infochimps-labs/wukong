@@ -2,7 +2,7 @@ require 'right_aws'
 require 'configliere/config_block'
 Settings.read(File.expand_path('~/.wukong/emr.yaml'))
 Settings.define :emr_credentials_file, :description => 'A .json file holding your AWS access credentials. See http://bit.ly/emr_credentials_file for format'
-Settings.define :access_key,           :description => 'AWS Access key', :env_var => 'AWS_ACCESS_KEY_ID'
+Settings.define :access_key,           :description => 'AWS Access key',        :env_var => 'AWS_ACCESS_KEY_ID'
 Settings.define :secret_access_key,    :description => 'AWS Secret Access key', :env_var => 'AWS_SECRET_ACCESS_KEY'
 Settings.define :emr_runner,           :description => 'Path to the elastic-mapreduce command (~ etc will be expanded)'
 Settings.define :emr_root,             :description => 'S3 url to use as the base for Elastic MapReduce storage'
@@ -27,7 +27,6 @@ module Wukong
       S3Util.store(this_script_filename, mapper_s3_uri)
       S3Util.store(this_script_filename, reducer_s3_uri)
       S3Util.store(File.expand_path('~/ics/wukong/bin/bootstrap.sh'), bootstrap_s3_uri)
-      # S3Util.store(File.expand_path('/tmp/wukong-libs.jar'), wukong_libs_s3_uri)
     end
 
     def execute_emr_runner
@@ -45,7 +44,6 @@ module Wukong
         "--bootstrap-action=#{bootstrap_s3_uri}",
         "--log-uri=#{log_s3_uri}",
         "--stream",
-        # "--cache-archive=#{wukong_libs_s3_uri}#vendor",
         "--mapper=#{mapper_s3_uri} ",
         "--reducer=#{reducer_s3_uri} ",
         "--input=#{input_paths} --output=#{output_path}",
@@ -53,6 +51,11 @@ module Wukong
       ]
       Log.info 'Follow along at http://localhost:9000/job'
       execute_command!( File.expand_path(Settings.emr_runner), *command_args )
+    end
+
+    def emr_ship_jars
+      S3Util.store(File.expand_path('/tmp/wukong-libs.jar'), wukong_libs_s3_uri)
+      # "--cache-archive=#{wukong_libs_s3_uri}#vendor",
     end
 
     def emr_credentials

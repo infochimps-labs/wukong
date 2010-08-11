@@ -2,7 +2,6 @@
 Dir[File.dirname(__FILE__)+'/vendor/**/lib'].each{|dir| $: << dir }
 require 'rubygems'
 require 'wukong'
-require 'wukong/script/emr_command'
 
 class FooStreamer < Wukong::Streamer::LineStreamer
   def initialize *args
