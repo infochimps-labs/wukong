@@ -1,9 +1,16 @@
 #!/usr/bin/env ruby
+$stderr.puts `jar xvf *.jar `
+$stderr.puts `tar xvjf *.tar.bz2 `
+$stderr.puts `ls -lR . /mnt/var/lib/hadoop/mapred/taskTracker/archive `
 
-Dir[File.dirname(__FILE__)+'/**/lib'].each{|dir| $: << dir }
+Dir['/mnt/var/lib/hadoop/mapred/taskTracker/archive/**/lib'].each{|dir| $: << dir }
 require 'rubygems'
 require 'wukong'
-require 'wukong/script/emr_command'
+begin
+  require 'wukong/script/emr_command'
+rescue
+  nil
+end
 
 class FooStreamer < Wukong::Streamer::LineStreamer
   def initialize *args
@@ -15,6 +22,11 @@ class FooStreamer < Wukong::Streamer::LineStreamer
     yield [@line_no, *args]
     @line_no += 1
   end
+end
+
+case
+when ($0 =~ /mapper\.rb/) then Settings[:map] = true
+when ($0 =~ /reducer\.rb/) then Settings[:reduce] = true
 end
 
 Wukong::Script.new(FooStreamer, FooStreamer).run

@@ -26,7 +26,8 @@ module Wukong
       S3Util.store(this_script_filename, mapper_s3_uri)
       S3Util.store(this_script_filename, reducer_s3_uri)
       S3Util.store(File.expand_path('~/ics/wukong/bin/bootstrap.sh'), bootstrap_s3_uri)
-      S3Util.store(File.expand_path('/tmp/wukong-libs.jar'), wukong_libs_s3_uri)
+      S3Util.store(File.expand_path('/tmp/wukong-libs.tar.bz2'), wukong_libs_s3_uri)
+      S3Util.store(File.expand_path('/tmp/wukong-libs.jar'), s3_path('bin', "wukong-libs.jar"))
     end
 
     def execute_emr_runner
@@ -34,13 +35,14 @@ module Wukong
         :hadoop_version, :availability_zone, :key_pair, :key_pair_file,
       ].map{|args| Settings.dashed_flag_for(*args) }
       command_args += [
-        %Q{--enable-debugging --verbose --debug --access-id #{Settings.access_key} --private-key #{Settings.secret_access_key} },
+        %Q{--verbose --debug --access-id #{Settings.access_key} --private-key #{Settings.secret_access_key} },
         "--stream",
         "--mapper=#{mapper_s3_uri}",
         "--reducer=#{reducer_s3_uri}",
         "--input=#{mapper_s3_uri} --output=#{Settings.emr_root+'/foo-out.tsv'}",
-        "--log-uri=#{log_s3_uri}",
-        "--cache-archive=s3://emr.infinitemonkeys.info/wukong-libs.tar#wukong-libs.tar",
+        #"--enable-debugging --log-uri=#{log_s3_uri}",
+        "--cache-archive=#{s3_path('bin', "wukong-libs.jar")}#wukong-libs.jar",
+        "--cache=#{wukong_libs_s3_uri}##{File.basename wukong_libs_s3_uri}",
         "--bootstrap-action=#{bootstrap_s3_uri}",
       ]
       if Settings.jobflow
@@ -71,7 +73,7 @@ module Wukong
       s3_path('bin', "bootstrap-#{job_handle}.sh")
     end
     def wukong_libs_s3_uri
-      s3_path('bin', "wukong-libs.jar")
+      s3_path('bin', "wukong-libs.tar.bz2")
     end
 
     def s3_path *path_segs
