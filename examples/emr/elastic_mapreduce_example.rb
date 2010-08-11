@@ -4,6 +4,7 @@ $stderr.puts `tar xvjf *.tar.bz2 `
 $stderr.puts `ls -lR . /mnt/var/lib/hadoop/mapred/taskTracker/archive `
 
 Dir['/mnt/var/lib/hadoop/mapred/taskTracker/archive/**/lib'].each{|dir| $: << dir }
+Dir['./**/lib'].each{|dir| $: << dir }
 require 'rubygems'
 require 'wukong'
 begin
