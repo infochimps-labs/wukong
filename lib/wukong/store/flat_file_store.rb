@@ -1,6 +1,6 @@
 require 'fileutils'; include FileUtils
 
-module Monkeyshines
+module Wukong
   module Store
     #
     class FlatFileStore < Store::Base
@@ -10,7 +10,7 @@ module Monkeyshines
       # +filename_root+  : first part of name for files
       #
       def initialize options={}
-        Log.debug "New #{self.class} as #{options.inspect}"
+        super options
         self.filename = options[:filename] or raise "Missing filename in #{self.class}"
         self.filemode = options[:filemode] || 'r'
         skip!(options[:skip]) if options[:skip]
@@ -21,7 +21,6 @@ module Monkeyshines
       #
       def each &block
         file.each do |line|
-          next if line[0..0] == '#'
           attrs = line.chomp.split("\t")
           next if attrs.blank?
           yield *attrs
@@ -54,6 +53,10 @@ module Monkeyshines
         @file = nil
       end
 
+      def flush
+        @file.flush if @file
+      end
+
       # Ensure the file's directory exists
       def mkdir!
         dir = File.dirname(filename)
@@ -64,7 +67,7 @@ module Monkeyshines
 
       # write to the file
       def save obj
-        file << obj.to_flat.join("\t")+"\n"
+        file.puts obj
         obj
       end
       
@@ -74,14 +77,10 @@ module Monkeyshines
         File.size(filename)
       end
 
-      def set key, *args, &block
-        tok, obj = block.call
-        save obj
-      end
-
-      # delegates to +#save+ -- writes the object to the file
+      # delegates to +#save+ -- writes the object to the file. Returns self for chaining on the stream.
       def <<(obj)
         save obj
+	self
       end
 
     end
