@@ -47,7 +47,8 @@ module Wukong
         "--mapper=#{mapper_s3_uri} ",
         "--reducer=#{reducer_s3_uri} ",
         "--input=#{input_paths} --output=#{output_path}",
-        "--arg '-D mapred.reduce.tasks=0'"
+        # to specify zero reducers:
+        # "--arg '-D mapred.reduce.tasks=0'"
       ]
       Log.info 'Follow along at http://localhost:9000/job'
       execute_command!( File.expand_path(Settings.emr_runner), *command_args )
