@@ -86,14 +86,14 @@ module Wukong
     #   thus, requiring a working hadoop install), or to run in local mode
     #   (script --map | sort | script --reduce)
     #
-    Settings.define :default_run_mode, :default => 'hadoop',          :description => 'Run mode: local, hadoop, emr (elastic mapreduce)', :wukong => true, :hide_help => false
-    Settings.define :map_command,                                     :description => "shell command to run as mapper, in place of this wukong script", :wukong => true
-    Settings.define :reduce_command,                                  :description => "shell command to run as reducer, in place of this wukong script", :wukong => true
-    Settings.define :run,                                             :description => "run the script's workflow: Specify 'hadoop' to use hadoop streaming; 'local' to run your_script.rb --map | sort | your_script.rb --reduce; 'emr' to launch on the amazon cloud.", :wukong => true
-    Settings.define :map,                                             :description => "run the script's map phase. Reads/writes to STDIN/STDOUT.", :wukong => true
-    Settings.define :reduce,                                          :description => "run the script's reduce phase. Reads/writes to STDIN/STDOUT. You can only choose one of --run, --map or --reduce.", :wukong => true
-    Settings.define :dry_run,                                         :description => "echo the command that will be run, but don't run it", :wukong => true
-    Settings.define :rm,                                              :description => "Recursively remove the destination directory. Only used in hadoop mode.", :wukong => true
+    Settings.define :default_run_mode,   :default => 'hadoop', :description => 'Run mode: local, hadoop, emr (elastic mapreduce)', :wukong => true, :hide_help => false
+    Settings.define :map_command,                              :description => "shell command to run as mapper, in place of this wukong script", :wukong => true
+    Settings.define :reduce_command,                           :description => "shell command to run as reducer, in place of this wukong script", :wukong => true
+    Settings.define :run,      :env_var => 'WUKONG_RUN_MODE',    :description => "run the script's workflow: Specify 'hadoop' to use hadoop streaming; 'local' to run your_script.rb --map | sort | your_script.rb --reduce; 'emr' to launch on the amazon cloud; 'map' or 'reduce' to run that phase.", :wukong => true
+    Settings.define :map,                                      :description => "run the script's map phase. Reads/writes to STDIN/STDOUT.", :wukong => true
+    Settings.define :reduce,                                   :description => "run the script's reduce phase. Reads/writes to STDIN/STDOUT. You can only choose one of --run, --map or --reduce.", :wukong => true
+    Settings.define :dry_run,                                  :description => "echo the command that will be run, but don't run it", :wukong => true
+    Settings.define :rm,                                       :description => "Recursively remove the destination directory. Only used in hadoop mode.", :wukong => true
 
     #
     # Instantiate the Script with the Mapper and the Reducer class (each a
@@ -204,7 +204,7 @@ module Wukong
     # use the running framework to relaunch the script in map and in reduce mode
     #
     def execute_command! *args
-      command = args.flatten.compact.join(" \\\n    ")
+      command = args.flatten.reject(&:blank?).join(" \\\n    ")
       Log.info "Running\n\n#{command}\n"
       if options[:dry_run]
         Log.info '== [Not running preceding command: dry run] =='

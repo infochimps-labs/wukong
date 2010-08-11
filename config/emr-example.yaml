@@ -1,0 +1,48 @@
+#
+# Elastic MapReduce config in wukong
+#
+
+#
+# Infrastructure options
+#
+
+# == Fill all your information into yet another file with your amazon key
+:emr_credentials_file:          ~/.wukong/credentials.json
+#
+# == Use the credentials file, set the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env vars, or enter them here:
+# :access_key:                  ASDFAHKHASDF
+# :secret_access_key:           ADSGHASDFJASDFASDF
+#
+# == Path to your keypair file
+# :key_pair_file:               ~/.wukong/keypairs/gibbon.pem
+# == Keypair will be named after your file, or force the name:
+# :key_pair:                    ~
+
+# == Path to the Amazon elastic-mapreduce runner. Get a copy from
+#    http://elasticmapreduce.s3.amazonaws.com/elastic-mapreduce-ruby.zip
+:emr_runner:                    ~/ics/hadoop/elastic-mapreduce/elastic-mapreduce
+
+#
+# Cluster Config
+#
+:num_instances:                 1
+:instance_type:                 m2.xlarge
+:master_instance_type:          ~
+:hadoop_version:                '0.20'
+# :availability_zone:           us-east-1b
+
+#
+# Running and reporting options
+#
+:alive:                         true
+:enable_debugging:              true
+:emr_runner_verbose:            true
+:emr_runner_debug:              ~
+:step_action:                   CANCEL_AND_WAIT         # CANCEL_AND_WAIT, TERMINATE_JOB_FLOW or CONTINUE
+
+#
+# Remote Paths
+#
+:emr_root:                      s3n://emr.infinitemonkeys.info
+
+

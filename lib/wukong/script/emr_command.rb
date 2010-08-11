@@ -1,13 +1,14 @@
 require 'right_aws'
 require 'configliere/config_block'
 Settings.read(File.expand_path('~/.wukong/emr.yaml'))
-Settings.define :access_key,        :description => 'AWS Access key', :env_var => 'AWS_ACCESS_KEY_ID'
-Settings.define :secret_access_key, :description => 'AWS Secret Access key', :env_var => 'AWS_SECRET_ACCESS_KEY'
-Settings.define :emr_runner,        :description => 'Path to the elastic-mapreduce command (~ etc will be expanded)'
-Settings.define :emr_root,          :description => 'S3 url to use as the base for Elastic MapReduce storage'
-Settings.define :key_pair_file,     :description => 'AWS Key pair file', :finally => lambda{ Settings.key_pair_file = File.expand_path(Settings.key_pair_file.to_s) }
-Settings.define :key_pair,          :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file.to_s, '.pem') }
-Settings.define :instance_type,     :description => 'AWS instance type to use', :default => 'm1.small'
+Settings.define :emr_credentials_file, :description => 'A .json file holding your AWS access credentials. See http://bit.ly/emr_credentials_file for format'
+Settings.define :access_key,           :description => 'AWS Access key', :env_var => 'AWS_ACCESS_KEY_ID'
+Settings.define :secret_access_key,    :description => 'AWS Secret Access key', :env_var => 'AWS_SECRET_ACCESS_KEY'
+Settings.define :emr_runner,           :description => 'Path to the elastic-mapreduce command (~ etc will be expanded)'
+Settings.define :emr_root,             :description => 'S3 url to use as the base for Elastic MapReduce storage'
+Settings.define :key_pair_file,        :description => 'AWS Key pair file', :finally => lambda{ Settings.key_pair_file = File.expand_path(Settings.key_pair_file.to_s) if Settings.key_pair_file }
+Settings.define :key_pair,             :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file.to_s, '.pem') if Settings.key_pair_file }
+Settings.define :instance_type,        :description => 'AWS instance type to use', :default => 'm1.small'
 Settings.define :master_instance_type, :description => 'Overrides the instance type for the master node', :finally => lambda{ Settings.master_instance_type ||= Settings.instance_type }
 Settings.define :jobflow
 module Wukong
@@ -26,33 +27,43 @@ module Wukong
       S3Util.store(this_script_filename, mapper_s3_uri)
       S3Util.store(this_script_filename, reducer_s3_uri)
       S3Util.store(File.expand_path('~/ics/wukong/bin/bootstrap.sh'), bootstrap_s3_uri)
-      S3Util.store(File.expand_path('/tmp/wukong-libs.tar.bz2'), wukong_libs_s3_uri)
-      S3Util.store(File.expand_path('/tmp/wukong-libs.jar'), s3_path('bin', "wukong-libs.jar"))
+      # S3Util.store(File.expand_path('/tmp/wukong-libs.jar'), wukong_libs_s3_uri)
     end
 
     def execute_emr_runner
-      command_args = [
-        :hadoop_version, :availability_zone, :key_pair, :key_pair_file,
-      ].map{|args| Settings.dashed_flag_for(*args) }
-      command_args += [
-        %Q{--verbose --debug --access-id #{Settings.access_key} --private-key #{Settings.secret_access_key} },
-        "--stream",
-        "--mapper=#{mapper_s3_uri}",
-        "--reducer=#{reducer_s3_uri}",
-        "--input=#{mapper_s3_uri} --output=#{Settings.emr_root+'/foo-out.tsv'}",
-        #"--enable-debugging --log-uri=#{log_s3_uri}",
-        "--cache-archive=#{s3_path('bin', "wukong-libs.jar")}#wukong-libs.jar",
-        "--cache=#{wukong_libs_s3_uri}##{File.basename wukong_libs_s3_uri}",
-        "--bootstrap-action=#{bootstrap_s3_uri}",
-      ]
+      command_args = []
+      command_args << Settings.dashed_flags(:hadoop_version, :enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
+      command_args += emr_credentials
       if Settings.jobflow
-        command_args << "--jobflow=#{Settings[:jobflow]}"
-       else
-        command_args << '--alive --create'
-        command_args << "--name=#{job_name}"
-        command_args += [ [:instance_type, :slave_instance_type] , :master_instance_type, :num_instances, ].map{|args| Settings.dashed_flag_for(*args) }
+        command_args << Settings.dashed_flag_for(:jobflow)
+      else
+        command_args << Settings.dashed_flag_for(:alive)
+        command_args << "--create --name=#{job_name}"
+        command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type).join(' ')
       end
+      command_args += [
+        "--bootstrap-action=#{bootstrap_s3_uri}",
+        "--log-uri=#{log_s3_uri}",
+        "--stream",
+        # "--cache-archive=#{wukong_libs_s3_uri}#vendor",
+        "--mapper=#{mapper_s3_uri} ",
+        "--reducer=#{reducer_s3_uri} ",
+        "--input=#{input_paths} --output=#{output_path}",
+        "--arg '-D mapred.reduce.tasks=0'"
+      ]
+      Log.info 'Follow along at http://localhost:9000/job'
       execute_command!( File.expand_path(Settings.emr_runner), *command_args )
+    end
+
+    def emr_credentials
+      command_args = []
+      if Settings.emr_credentials_file
+        command_args << "--credentials #{File.expand_path(Settings.emr_credentials_file)}"
+      else
+        command_args << %Q{--access-id #{Settings.access_key} --private-key #{Settings.secret_access_key} }
+      end
+      command_args << Settings.dashed_flags(:availability_zone, :key_pair, :key_pair_file).join(' ')
+      command_args
     end
 
     # A short name for this job
@@ -61,22 +72,22 @@ module Wukong
     end
 
     def mapper_s3_uri
-      s3_path(job_handle+'-mapper.rb')
+      emr_s3_path(job_handle+'-mapper.rb')
     end
     def reducer_s3_uri
-      s3_path(job_handle+'-reducer.rb')
+      emr_s3_path(job_handle+'-reducer.rb')
     end
     def log_s3_uri
-      s3_path('log', job_handle)
+      emr_s3_path('log', job_handle)
     end
     def bootstrap_s3_uri
-      s3_path('bin', "bootstrap-#{job_handle}.sh")
+      emr_s3_path('bin', "bootstrap-#{job_handle}.sh")
     end
     def wukong_libs_s3_uri
-      s3_path('bin', "wukong-libs.tar.bz2")
+      emr_s3_path('bin', "wukong-libs.jar")
     end
 
-    def s3_path *path_segs
+    def emr_s3_path *path_segs
       File.join(Settings.emr_root, path_segs.flatten.compact)
     end
 
