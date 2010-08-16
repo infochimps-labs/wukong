@@ -4,69 +4,80 @@ module Wukong
 
     # ===========================================================================
     #
-    # Hadoop Environment
-    #
-
-    # ===========================================================================
-    #
     # Hadoop Options
     #
+    Settings.define :hadoop_home, :default => '/usr/lib/hadoop', :description => "Path to hadoop installation; ENV['HADOOP_HOME'] by default. HADOOP_HOME/bin/hadoop is used to run hadoop.", :env_var => 'HADOOP_HOME', :wukong => true
+    Settings.define :hadoop_runner,                            :description => "Path to hadoop script. Usually set --hadoop_home instead of this.", :wukong => true
 
     #
-    # Translate the simplified args to their hairy-assed hadoop equivalents
+    # Translate simplified args to their hairy hadoop equivalents
     #
-    Settings.define :max_node_map_tasks,     :jobconf => true, :description => 'mapred.tasktracker.map.tasks.maximum', :wukong => true
-    Settings.define :max_node_reduce_tasks,  :jobconf => true, :description => 'mapred.tasktracker.reduce.tasks.maximum', :wukong => true
-    Settings.define :map_tasks,              :jobconf => true, :description => 'mapred.map.tasks', :wukong => true
-    Settings.define :reduce_tasks,           :jobconf => true, :description => 'mapred.reduce.tasks', :wukong => true
-    Settings.define :sort_fields,            :jobconf => true, :description => 'stream.num.map.output.key.fields', :wukong => true
-    Settings.define :key_field_separator,    :jobconf => true, :description => 'map.output.key.field.separator', :wukong => true
-    Settings.define :partition_fields,       :jobconf => true, :description => 'num.key.fields.for.partition', :wukong => true
-    Settings.define :output_field_separator, :jobconf => true, :description => 'stream.map.output.field.separator', :wukong => true
-    Settings.define :map_speculative,        :jobconf => true, :description => 'mapred.map.tasks.speculative.execution', :wukong => true
-    Settings.define :timeout,                :jobconf => true, :description => 'mapred.task.timeout', :wukong => true
-    Settings.define :reuse_jvms,             :jobconf => true, :description => 'mapred.job.reuse.jvm.num.tasks', :wukong => true
-    Settings.define :respect_exit_status,    :jobconf => true, :description => 'stream.non.zero.exit.is.failure', :wukong => true
-    Settings.define :io_sort_record_percent, :jobconf => true, :description => 'io.sort.record.percent', :wukong => true
-    Settings.define :io_sort_mb,             :jobconf => true, :description => 'io.sort.mb', :wukong => true
+    Settings.define :max_node_map_tasks,     :jobconf => true, :description => 'mapred.tasktracker.map.tasks.maximum',                   :wukong => true
+    Settings.define :max_node_reduce_tasks,  :jobconf => true, :description => 'mapred.tasktracker.reduce.tasks.maximum',                :wukong => true
+    Settings.define :map_tasks,              :jobconf => true, :description => 'mapred.map.tasks',                                       :wukong => true
+    Settings.define :reduce_tasks,           :jobconf => true, :description => 'mapred.reduce.tasks',                                    :wukong => true
+    Settings.define :sort_fields,            :jobconf => true, :description => 'stream.num.map.output.key.fields',                       :wukong => true
+    Settings.define :key_field_separator,    :jobconf => true, :description => 'map.output.key.field.separator',                         :wukong => true
+    Settings.define :partition_fields,       :jobconf => true, :description => 'num.key.fields.for.partition',                           :wukong => true
+    Settings.define :output_field_separator, :jobconf => true, :description => 'stream.map.output.field.separator',                      :wukong => true
+    Settings.define :map_speculative,        :jobconf => true, :description => 'mapred.map.tasks.speculative.execution',                 :wukong => true
+    Settings.define :timeout,                :jobconf => true, :description => 'mapred.task.timeout',                                    :wukong => true
+    Settings.define :reuse_jvms,             :jobconf => true, :description => 'mapred.job.reuse.jvm.num.tasks',                         :wukong => true
+    Settings.define :respect_exit_status,    :jobconf => true, :description => 'stream.non.zero.exit.is.failure',                        :wukong => true
+    Settings.define :io_sort_mb,             :jobconf => true, :description => 'io.sort.mb',                                             :wukong => true
+    Settings.define :io_sort_record_percent, :jobconf => true, :description => 'io.sort.record.percent',                                 :wukong => true
+    Settings.define :job_name,               :jobconf => true, :description => 'mapred.job.name',                                        :wukong => true
+    Settings.define :max_reduces_per_node,   :jobconf => true, :description => 'mapred.max.reduces.per.node',                            :wukong => true
+    Settings.define :max_reduces_per_cluster,:jobconf => true, :description => 'mapred.max.reduces.per.cluster',                         :wukong => true
+    Settings.define :max_maps_per_node,      :jobconf => true, :description => 'mapred.max.maps.per.node',                               :wukong => true
+    Settings.define :max_maps_per_cluster,   :jobconf => true, :description => 'mapred.max.maps.per.cluster',                            :wukong => true
+    Settings.define :max_record_length,      :jobconf => true, :description => 'mapred.linerecordreader.maxlength',                      :wukong => true # "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
-    Settings.define :job_name,               :jobconf => true, :description => 'mapred.job.name', :wukong => true
-    # mapred.linerecordreader.maxlength :description => "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
-    Settings.define :max_reduces_per_node,   :jobconf => true, :description => 'mapred.max.reduces.per.node',    :wukong => true
-    Settings.define :max_reduces_per_cluster,:jobconf => true, :description => 'mapred.max.reduces.per.cluster', :wukong => true
-    Settings.define :max_maps_per_node,      :jobconf => true, :description => 'mapred.max.maps.per.node',       :wukong => true
-    Settings.define :max_maps_per_cluster,   :jobconf => true, :description => 'mapred.max.maps.per.cluster',    :wukong => true
 
-    # emit a -jobconf hadoop option if the simplified command line arg is present
-    # if not, the resulting nil will be elided later
-    def jobconf option
-      if options[option]
-        "-jobconf %s=%s" % [options.description_for(option), options[option]]
-      end
+    #
+    # Assemble the hadoop command to execute
+    # and launch the hadoop runner to execute the script across all tasktrackers
+    #
+    def execute_hadoop_workflow
+      # If no reducer_klass and no reduce_command, then skip the reduce phase
+      options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
+      # Input paths join by ','
+      input_paths = @input_paths.join(',')
+      #
+      # Use Settings[:hadoop_home] to set the path your config install.
+      hadoop_commandline = [
+        hadoop_runner,
+        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
+        hadoop_jobconf_options,
+        "-D mapred.job.name '#{job_name}",
+        "-mapper  '#{map_commandline}'",
+        "-reducer '#{reduce_commandline}'",
+        "-input   '#{input_paths}'",
+        "-output  '#{output_path}'",
+        hadoop_recycle_env,
+        hadoop_other_args(input_paths, output_path),
+      ].flatten.compact.join(" \t\\\n  ")
+      Log.info "  Launching hadoop!"
+      execute_command!(hadoop_commandline)
     end
 
-    # Define what fields hadoop should treat as the keys
-    def hadoop_sort_args
-      [
+    def hadoop_jobconf_options
+      jobconf_options = []
+      # The fields should hadoop treat as the keys
+      jobconf_options += [
         jobconf(:key_field_separator),
         jobconf(:sort_fields),
       ]
-    end
-
-    # Define what fields hadoop should use to distribute records to reducers
-    def hadoop_partition_args
+      # Fields hadoop should use to distribute records to reducers
       unless options[:partition_fields].blank?
-        [
+        jobconf_options += [
           '-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner',
           jobconf(:output_field_separator),
           jobconf(:partition_fields),
         ]
       end
-    end
-
-    # Emit options for setting the number of mappers and reducers.
-    def hadoop_num_tasks_args
-      [
+      # Setting the number of mappers and reducers.
+      jobconf_options += [
         jobconf(:max_node_map_tasks),
         jobconf(:max_node_reduce_tasks),
         jobconf(:max_reduces_per_node),
@@ -76,15 +87,23 @@ module Wukong
         jobconf(:map_tasks),
         jobconf(:reduce_tasks)
       ]
+      jobconf_options.flatten.compact
     end
 
-    def hadoop_other_args input_path, output_path
+    # emit a -jobconf hadoop option if the simplified command line arg is present
+    # if not, the resulting nil will be elided later
+    def jobconf option
+      if options[option]
+        "-D %s=%s" % [options.description_for(option), options[option]]
+      end
+    end
+
+    def hadoop_other_args
       extra_str_args  = [ options[:extra_args] ]
       extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
-      options[:job_name] ||= "#{File.basename(this_script_filename)}---#{input_path}---#{output_path}".gsub(%r{[^\w/\.\-\+]+}, '')
-      extra_hsh_args = [:job_name, :map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
+      extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
       extra_str_args + extra_hsh_args
     end
 
@@ -98,29 +117,6 @@ module Wukong
     def hadoop_runner
       options[:hadoop_runner] || (options[:hadoop_home]+'/bin/hadoop')
     end
-
-    #
-    # Assemble the hadoop command to execute
-    #
-    def hadoop_command input_path, output_path
-      # If this is wrong, create a config/wukong-site.rb or
-      # otherwise set Settings[:hadoop_home] to the
-      # root of your config install.
-      [
-        hadoop_runner,
-        "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
-        hadoop_partition_args,
-        hadoop_sort_args,
-        hadoop_num_tasks_args,
-        "-mapper  '#{map_command}'",
-        "-reducer '#{reduce_command}'",
-        "-input   '#{input_path}'",
-        "-output  '#{output_path}'",
-        hadoop_recycle_env,
-        hadoop_other_args(input_path, output_path),
-      ].flatten.compact.join(" \t\\\n  ")
-    end
-
 
     module ClassMethods
       #
@@ -205,6 +201,7 @@ module Wukong
         ENV['stream_map_streamprocessor']
       end
     end
+
     # Standard ClassMethods-on-include trick
     def self.included base
       base.class_eval do
@@ -213,22 +210,3 @@ module Wukong
     end
   end
 end
-
-
-# -inputformat     <name of inputformat (class)> (“auto” by default)
-# -input           <additional DFS input path>
-# -python          <python command to use on nodes> (“python” by default)
-# -name            <job name> (“program.py” by default)
-# -numMapTasks     <number>
-# -numReduceTasks  <number> (no sorting or reducing will take place if this is 0)
-# -priority        <priority value> (“NORMAL” by default)
-# -libjar          <path to jar> (this jar gets put in the class path)
-# -libegg          <path to egg> (this egg gets put in the Python path)
-# -file            <local file> (this file will be put in the dir where the python program gets executed)
-# -cacheFile       hdfs://<host>:<fs_port>/<path to file>#<link name> (a link ”<link name>” to the given file will be in the dir)
-# -cacheArchive    hdfs://<host>:<fs_port>/<path to jar>#<link name> (link points to dir that contains files from given jar)
-# -cmdenv          <env var name>=<value>
-# -jobconf         <property name>=<value>
-# -addpath         yes (replace each input key by a tuple consisting of the path of the corresponding input file and the original key)
-# -fake            yes (fake run, only prints the underlying shell commands but does not actually execute them)
-# -memlimit        <number of bytes> (set an upper limit on the amount of memory that can be used)

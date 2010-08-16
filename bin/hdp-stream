@@ -30,6 +30,9 @@ echo "$cmd"
 
 $cmd
 
+# For a map-side-only job specify
+# -jobconf mapred.reduce.tasks=0                                                    \
+
 # Maybe?
 #
 #     -inputformat    org.apache.hadoop.mapred.KeyValueTextInputFormat \
