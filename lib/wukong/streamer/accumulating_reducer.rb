@@ -76,14 +76,10 @@
          raise "override the finalize method in your subclass"
        end
 
-       #
-       # Must make sure to finalize the last-seen accumulation.
-       #
-       def stream
-         super
-         # don't finalize if we never saw any field at all
+       # Finalize the last-seen group.
+       def after_stream *args
          finalize(){|record| emit record } unless (self.key == :__first_pass__)
-         after_stream
+         super *args
        end
      end
 

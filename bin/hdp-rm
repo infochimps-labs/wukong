@@ -1,11 +1,32 @@
 #!/usr/bin/env bash
 
+#
+# Documentation for hadoop fs -rmr says "acts just like Unix rm -rf command". If this
+# is true then we need to ignore directories that don't exist and still return 0.
+#
+
+#
+# All the dirty conditional logic here does is test whether a directory exists. If so, remove it
+#
 if [ "$1" == "-r" ] ; then
+  shift
+  if [ "$1" == "-skipTrash" ] ; then
     shift
-    action=rmr
+    hadoop fs -test -e "$@"
+    if [ "$?" == "0" ] ; then
+      # echo "File exists, skipping trash, removing it..."
+      echo hadoop dfs -rmr -skipTrash "$@"
+      exec hadoop dfs -rmr -skipTrash "$@"
+    fi
+  else
+    hadoop fs -test -e "$@"
+    if [ "$?" == "0" ] ; then
+            # echo "File exists, removing it..."
+      echo hadoop dfs -rmr "$@"
+      exec hadoop dfs -rmr "$@"
+    fi
+  fi
 else
-    action=rm
+  echo hadoop dfs -rm "$@"
+  exec hadoop dfs -rm "$@"
 fi
-echo hadoop dfs -$action "$@"
-# read -p "Hit ctrl-C to abort or enter to do this...."
-exec hadoop dfs -$action "$@"

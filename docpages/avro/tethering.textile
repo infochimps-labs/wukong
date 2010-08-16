@@ -1,0 +1,19 @@
+The idea is that folks would somehow write a Ruby application.  On startup, it starts a server speaking InputProtocol:
+
+http://svn.apache.org/viewvc/avro/trunk/share/schemas/org/apache/avro/mapred/tether/InputProtocol.avpr?view=markup
+
+Then it gets a port from the environment variable AVRO_TETHER_OUTPUT_PORT.  It connects to this port, using OutputProtocol, and uses the configure() message to send the port of its input server to its parent:
+
+http://svn.apache.org/viewvc/avro/trunk/share/schemas/org/apache/avro/mapred/tether/OutputProtocol.avpr?view=markup
+
+The meat of maps and reduces consists of the parent sending inputs to the child's with the input() message and the child sending outputs back to the parent with the output() message.
+
+If it helps any, there's a Java implementation of the child including a demo WordCount application:
+
+http://svn.apache.org/viewvc/avro/trunk/lang/java/src/test/java/org/apache/avro/mapred/tether/
+
+One nit, should you choose to accept this task, is that Avro's ruby RPC stuff will need to be enhanced.  It doesn't yet support request-only messages.  I can probably cajole someone to help with this and there's a workaround for debugging (switch things to HTTP).
+
+http://svn.apache.org/viewvc/avro/trunk/lang/ruby/lib/avro/ipc.rb?view=markup
+
+
