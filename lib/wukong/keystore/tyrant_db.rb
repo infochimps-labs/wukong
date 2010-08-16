@@ -66,17 +66,17 @@ module TokyoDbConnection
     ].freeze unless defined?(TokyoDbConnection::TyrantDb::DB_SERVERS)
 
     DB_PORTS = {
-      :screen_names    => 12002,
-      :search_ids      => 12003,
+      :tw_screen_names  => 12002,
+      :tw_search_ids    => 12003,
       #
-      :tw_user_info    => 14000,
-      :tw_wordbag      => 14101,
-      :tw_influence    => 14102,
-      :tw_trstrank     => 14103,
-      :tw_conversation => 14104,
+      :tw_user_info     => 14000,
+      :tw_wordbag       => 14101,
+      :tw_influence     => 14102,
+      :tw_trstrank      => 14103,
+      :tw_conversation  => 14104,
       #
-      :screen_names2   => 12004,
-      :search_ids2     => 12005,
+      :tw_screen_names2 => 12004,
+      :tw_search_ids2   => 12005,
       #
       :tw_user_info2    => 14200,
       :tw_wordbag2      => 14201,
@@ -84,7 +84,7 @@ module TokyoDbConnection
       :tw_trstrank2     => 14203,
       :tw_conversation2 => 14204,
       :tw_strong_links2 => 14205,
-      :tw_word_stats2   => 14206,
+      :tw_word_stats2   => 14210,
       #
       :ip_geo_census    => 14400,
     } unless defined?(TokyoDbConnection::TyrantDb::DB_PORTS)
@@ -123,7 +123,7 @@ module TokyoDbConnection
     end
 
     def handle_error action, e
-      warn "#{action} failed: #{e} #{e.backtrace.join("\t")}" ;
+      Log.warn "#{action} failed: #{e} #{e.backtrace.join("\t")}" ;
       invalidate!
     end
 

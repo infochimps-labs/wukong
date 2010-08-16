@@ -1,3 +1,9 @@
+h2. Wukong v.14.11 2010-08-31
+
+* Improvements to the pig conversion methods
+* @hdp-rm@ respects the -skipTrash method
+* 
+
 h2. Wukong v.14.11 2010-07-30
 
 * added the @max_(maps|reduces)_per_(node|cluster)@ jobconfs.
