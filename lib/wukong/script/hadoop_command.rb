@@ -48,12 +48,12 @@ module Wukong
       hadoop_commandline = [
         hadoop_runner,
         "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
-        hadoop_jobconf_options,
-        "-D mapred.job.name '#{job_name}",
         "-mapper  '#{mapper_commandline}'",
         "-reducer '#{reducer_commandline}'",
         "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
+        hadoop_jobconf_options,
+        "-jobconf mapred.job.name='#{job_name}'",
         hadoop_recycle_env,
         hadoop_other_args,
       ].flatten.compact.join(" \t\\\n  ")
@@ -94,7 +94,7 @@ module Wukong
     # if not, the resulting nil will be elided later
     def jobconf option
       if options[option]
-        "-D %s=%s" % [options.description_for(option), options[option]]
+        "-jobconf %s=%s" % [options.description_for(option), options[option]]
       end
     end
 
