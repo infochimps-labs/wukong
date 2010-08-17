@@ -55,7 +55,7 @@ module Wukong
         "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
         hadoop_recycle_env,
-        hadoop_other_args(input_paths, output_path),
+        hadoop_other_args,
       ].flatten.compact.join(" \t\\\n  ")
       Log.info "  Launching hadoop!"
       execute_command!(hadoop_commandline)
