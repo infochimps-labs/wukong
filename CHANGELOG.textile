@@ -1,4 +1,28 @@
-h2. Wukong v.14.11 2010-07-30
+h2. Wukong v1.5.0
+
+h4. Elastic Map-Reduce
+
+Use --run=emr to launch a job onto the Amazon Elastic MapReduce cloud.
+
+* copies the script to s3, as foo-mapper.rb and foo-reducer.rb (removing the need for the --map flag)
+* copies the wukong libs up as a .tar/bz2, and extracts it into the cwd
+* combines settings from commandline and yaml config, etc to configure and launch job
+
+It's still **way** shaky and I don't think anything but the sample app will run.  That sample app runs, tho.
+
+h4. Greatly simplified script launching.
+
+Incompatible changes to option handling and script launching:
+* Script doesn't use extra_options any more. You should relocate them to the initializer or to configliere.
+* there is no more default_mapper or default_reducer
+
+h2. Wukong v.14.12 2010-08-31
+
+* Improvements to the pig conversion methods
+* @hdp-rm@ respects the -skipTrash method
+
+
+h2. Wukong v1.4.11 2010-07-30
 
 * added the @max_(maps|reduces)_per_(node|cluster)@ jobconfs.
 * added jobconfs for io_job_mb and friends.

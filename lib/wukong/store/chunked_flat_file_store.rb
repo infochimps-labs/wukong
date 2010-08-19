@@ -1,22 +1,29 @@
-module Monkeyshines
+module Wukong
   module Store
-    class ChunkedFlatFileStore < Monkeyshines::Store::FlatFileStore
-      attr_accessor :filename_pattern, :chunk_monitor, :handle
+    class ChunkedFlatFileStore < Wukong::Store::FlatFileStore
+      attr_accessor :filename_pattern, :chunk_monitor, :handle, :chunktime, :rootdir
 
-      DEFAULT_OPTIONS = {
-        :chunktime    => 4*60*60, # default 4 hours
-        :pattern   => ":rootdir/:date/:handle+:timestamp-:pid.tsv",
-        :rootdir   => nil,
-        :filemode  => 'w',
-      }
+      # Move to configliere
+      Settings.define :chunk_file_pattern,   :default => ":rootdir/:date/:handle:timestamp-:pid.tsv",:description => "The pattern for chunked files."
+      Settings.define :chunk_file_chunktime, :default => 4*60*60,:description => "The time interval to keep a chunk file open."
+      Settings.define :chunk_file_rootdir,   :default => nil, :description => "The root directory for the chunked files."
+      
+      #Note that filemode is inherited from flat_file
 
-      def initialize _options
-        self.options = DEFAULT_OPTIONS.deep_merge(_options)
-        raise "You don't really want a chunk time this small: #{options[:chunktime]}" unless options[:chunktime] > 600
-        self.chunk_monitor    = Monkeyshines::Monitor::PeriodicMonitor.new( :time => options[:chunktime] )
-        self.handle           = options[:handle] || Monkeyshines::CONFIG[:handle]
-        self.filename_pattern = Monkeyshines::Utils::FilenamePattern.new(options[:pattern], :handle => handle, :rootdir => options[:rootdir])
-        super options.merge(:filename => filename_pattern.make())
+      def initialize options={}
+        # super wants a :filename in the options or it will fail. We need to get the initial filename
+        # set up before we call super, so we need all of the parts of the pattern set up. 
+        self.chunktime        = options[:chunktime] || Settings[:chunk_file_chunktime]
+        self.rootdir          = options[:rootdir]   || Settings[:chunk_file_rootdir]
+        self.handle           = options[:handle] 
+        pattern               = options[:pattern] || Settings[:chunk_file_pattern]
+        self.filename_pattern = FilenamePattern.new(pattern, :handle => handle, :rootdir => self.rootdir)
+        options[:filename]    = filename_pattern.make() 
+      
+        super options
+
+        Log.warn "You don't really want a chunk time this small: #{self.chunktime}" unless self.chunktime > 600
+        self.chunk_monitor    = Wukong::PeriodicMonitor.new( :time => self.chunktime )
         self.mkdir!
       end
 

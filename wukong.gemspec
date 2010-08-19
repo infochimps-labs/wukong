@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "1.4.11"
+  s.version = "1.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-07-30}
+  s.date = %q{2010-08-11}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it's efficient to process by lines
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
      "LICENSE.textile",
      "README.textile",
      "TODO.textile",
+     "bin/bootstrap.sh",
      "bin/cutc",
      "bin/cuttab",
      "bin/greptrue",
@@ -65,12 +66,15 @@ Gem::Specification.new do |s|
      "bin/wu-sum",
      "docpages/INSTALL.textile",
      "docpages/LICENSE.textile",
+     "docpages/README-elastic_map_reduce.textile",
      "docpages/README-performance.textile",
      "docpages/README-wulign.textile",
      "docpages/UsingWukong-part1-get_ready.textile",
      "docpages/UsingWukong-part2-ThinkingBigData.textile",
      "docpages/UsingWukong-part3-parsing.textile",
      "docpages/_config.yml",
+     "docpages/avro/avro_notes.textile",
+     "docpages/avro/tethering.textile",
      "docpages/bigdata-tips.textile",
      "docpages/code/api_response_example.txt",
      "docpages/code/parser_skeleton.rb",
@@ -84,6 +88,7 @@ Gem::Specification.new do |s|
      "docpages/news.html",
      "docpages/pig/PigLatinExpressionsList.txt",
      "docpages/pig/PigLatinReferenceManual.txt",
+     "docpages/pig/commandline_params.txt",
      "docpages/pig/cookbook.html",
      "docpages/pig/images/hadoop-logo.jpg",
      "docpages/pig/images/instruction_arrow.png",
@@ -132,6 +137,7 @@ Gem::Specification.new do |s|
      "examples/corpus/words_to_bigrams.rb",
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
+     "examples/emr/elastic_mapreduce_example.rb",
      "examples/keystore/cassandra_batch_test.rb",
      "examples/keystore/conditional_outputter_example.rb",
      "examples/network_graph/adjacency_list.rb",
@@ -193,6 +199,8 @@ Gem::Specification.new do |s|
      "lib/wukong/rdf.rb",
      "lib/wukong/schema.rb",
      "lib/wukong/script.rb",
+     "lib/wukong/script/avro_command.rb",
+     "lib/wukong/script/emr_command.rb",
      "lib/wukong/script/hadoop_command.rb",
      "lib/wukong/script/local_command.rb",
      "lib/wukong/store.rb",
@@ -251,6 +259,7 @@ Gem::Specification.new do |s|
      "examples/corpus/words_to_bigrams.rb",
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
+     "examples/emr/elastic_mapreduce_example.rb",
      "examples/keystore/cassandra_batch_test.rb",
      "examples/keystore/conditional_outputter_example.rb",
      "examples/network_graph/adjacency_list.rb",
