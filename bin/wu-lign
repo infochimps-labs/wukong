@@ -7,6 +7,7 @@ USAGE= %Q{
 # space aligned file that is still suitable for further processing. For example,
 # given the log-file input
 #
+#     # cat tag_usage.tsv
 #     2009-07-21T21:39:40 day     65536   3.15479 68750   1171316
 #     2009-07-21T21:39:45 doing   65536   1.04533 26230   1053956
 #     2009-07-21T21:41:53 hapaxlegomenon  65536   0.87574e-05     23707   10051141
@@ -17,6 +18,7 @@ USAGE= %Q{
 #
 # wulign will reformat it to read
 #
+#     # cat tag_usage.tsv | wu-lign
 #     2009-07-21T21:39:40 day                   65536   3.154791234 68750    1171316
 #     2009-07-21T21:39:45 doing                 65536   1.045330000 26230    1053956
 #     2009-07-21T21:41:53 hapaxlegomenon        65536   0.000008757 23707   10051141
@@ -27,26 +29,6 @@ USAGE= %Q{
 #
 # The fields are still tab-delimited by exactly one tab -- only spaces are used to
 # pad out fields. You can still use cuttab and friends to manipulate columns.
-#
-# wulign isn't intended to be smart, or correct, or reliable -- only to be
-# useful for previewing and organizing tab-formatted files. In general
-# wulign(foo).split("\t").map(&:strip) *should* give output semantically
-# equivalent to its input. (That is, the only changes should be insertion of
-# spaces and re-formatting of numerics.) But still -- reserve its use for human
-# inspection only.
-#
-# (Note: tab characters in this source code file have been converted to spaces;
-# replace whitespace with tab in the first example if you'd like to play along at
-# home.)
-#
-# h2. How it works
-#
-# Wu-lign takes the first 500ish lines, splits into fields on TAB characters,
-# and tries to guess the format (int, float, or string) for each. It builds a
-# consensus of the width and type for corresponding columns in the chunk.  If a
-# column has mixed numeric and string formats it degrades to :mixed, which is
-# basically treated as :string. If a column has mixed :float and :int elements all
-# of them are formatted as float.
 #
 # h2. Command-line arguments
 #
@@ -65,6 +47,15 @@ USAGE= %Q{
 #     2009-07-21T21:44:00 concert           500   2.9290e-01      13367    9733414
 #     ....
 #
+# h2. How it works
+#
+# Wu-lign takes the first 500ish lines, splits into fields on TAB characters,
+# and tries to guess the format (int, float, or string) for each. It builds a
+# consensus of the width and type for corresponding columns in the chunk.  If a
+# column has mixed numeric and string formats it degrades to :mixed, which is
+# basically treated as :string. If a column has mixed :float and :int elements all
+# of them are formatted as float.
+#
 # h2. Notes
 #
 # * Header rows: the first line is used for width alignment but not for type detection.
@@ -82,6 +73,14 @@ USAGE= %Q{
 #
 # * wulign parses only plain-jane 'TSV files': no quoting or escaping; every tab
 #   delimits a field, every newline a record.
+#
+# wulign isn't intended to be smart, or correct, or reliable -- only to be
+# useful for previewing and organizing tab-formatted files. In general
+# wulign(foo).split("\t").map(&:strip) *should* give output semantically
+# equivalent to its input. (That is, the only changes should be insertion of
+# spaces and re-formatting of numerics.) But still -- reserve its use for human
+# inspection only.
+#
 }
 
 if ARGV[0] == '--help'
