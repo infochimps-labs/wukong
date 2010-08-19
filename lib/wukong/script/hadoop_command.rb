@@ -32,6 +32,7 @@ module Wukong
     Settings.define :max_maps_per_node,      :jobconf => true, :description => 'mapred.max.maps.per.node',                               :wukong => true
     Settings.define :max_maps_per_cluster,   :jobconf => true, :description => 'mapred.max.maps.per.cluster',                            :wukong => true
     Settings.define :max_record_length,      :jobconf => true, :description => 'mapred.linerecordreader.maxlength',                      :wukong => true # "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
+    Settings.define :min_input_split_size,   :jobconf => true, :description => 'mapred.min.split.size',                                  :wukong => true
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
 
     #
@@ -48,14 +49,14 @@ module Wukong
       hadoop_commandline = [
         hadoop_runner,
         "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
-        hadoop_jobconf_options,
-        "-D mapred.job.name '#{job_name}",
-        "-mapper  '#{map_commandline}'",
-        "-reducer '#{reduce_commandline}'",
+        "-mapper  '#{mapper_commandline}'",
+        "-reducer '#{reducer_commandline}'",
         "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
+        hadoop_jobconf_options,
+        "-jobconf mapred.job.name='#{job_name}'",
         hadoop_recycle_env,
-        hadoop_other_args(input_paths, output_path),
+        hadoop_other_args,
       ].flatten.compact.join(" \t\\\n  ")
       Log.info "  Launching hadoop!"
       execute_command!(hadoop_commandline)
@@ -94,7 +95,7 @@ module Wukong
     # if not, the resulting nil will be elided later
     def jobconf option
       if options[option]
-        "-D %s=%s" % [options.description_for(option), options[option]]
+        "-jobconf %s=%s" % [options.description_for(option), options[option]]
       end
     end
 
