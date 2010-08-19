@@ -30,9 +30,7 @@ I'm pushing to release "Wukong 3.0 the actual 1.0 release".
     * Standardize the notion that wukong classes have a "key"; by default, it will be to_a.first for Structs/TypedStructs. This shouldn't break anything.
     * May make some things that are derived classes into mixin'ed modules
     * Will probably change the name of AccumulatingReducer into just Accumulator, and have all Accumulator-derived classes include Accumulator; I'll make sure the old names continue to work though.
-
-
-* 
+ 
 
 h2. Help!
 

@@ -1,3 +1,8 @@
+h2. Wukong v1.5.3
+
+* A couple of bugfixes. Sorry about that.
+* Documentation fixes
+
 h2. Wukong v1.5.0
 
 h4. Elastic Map-Reduce
