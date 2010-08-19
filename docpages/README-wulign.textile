@@ -38,7 +38,7 @@ wu-lign isn't intended to be smart, or correct, or reliable -- only to be useful
 
 h2. How it works 
 
-Wu-Lign takes the first 1000 lines, splits by TAB characters into fields, and tries to guess the format -- int, float, or string -- for each. It builds a consensus of the width and type for corresponding columns in the chunk.  If a column has mixed numeric and string formats it degrades to :mixed, which is basically treated as :string. If a column has mixed :float and :int elements all of them are formatted as float.
+Wu-Lign takes the first 500ish lines, splits into fields on TAB characters, and tries to guess the format (int, float, or string) for each. It builds a consensus of the width and type for corresponding columns in the chunk.  If a column has mixed numeric and string formats it degrades to :mixed, which is basically treated as :string. If a column has mixed :float and :int elements all of them are formatted as float.
 
 h2. Command-line arguments
 
@@ -58,8 +58,8 @@ will format the fourth column with "%8.4e", while the first three columns and fi
 
 h2. Notes
 
-* It has no knowledge of header rows. An all-text first line will screw everything up.
-* It also requires a unanimous vote. One screwy line can coerce the whole mess to :mixed; width formatting will still be applied, though.
-* It won't set columns wider than 70 chars -- this allows for the occasional super-wide column without completely breaking your screen.
-* For :float values, wu-lign tries to guess at the right number of significant digits to the left and right of the decimal point.
-* wu-lign does not parse 'TSV files' in their strict sense -- there is no quoting or escaping; every tab delimits a field, every newline a record.
+* Header rows: the first line is used for width alignment but not for type detection.  This means that an initial row of text headers will inform column spacing but still allow a column of floats (say) to be properly aligned as floats.
+* It requires a unanimous vote. One screwy line can coerce the whole mess to :mixed; width formatting will still be applied, though.
+* It won't set columns wider than 100 chars -- this allows for the occasional super-wide column without completely breaking your screen.
+* For :float values, wulign tries to guess at the right number of significant digits to the left and right of the decimal point.
+* wulign parses only plain-jane 'TSV files': no quoting or escaping; every tab delimits a field, every newline a record.
