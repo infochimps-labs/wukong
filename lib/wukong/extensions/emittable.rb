@@ -1,4 +1,3 @@
-
 Object.class_eval do
   def to_flat() [to_s] end
 end
@@ -63,9 +62,8 @@ class Integer
   #
   def self.unbooleanize bool
     case bool
-    when 0, '0', false, nil
-    then 0
-    else 1
+    when 0, '0', false, nil then 0
+    else                         1
     end
   end
 end
