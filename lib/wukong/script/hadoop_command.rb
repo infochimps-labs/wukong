@@ -32,6 +32,7 @@ module Wukong
     Settings.define :max_maps_per_node,      :jobconf => true, :description => 'mapred.max.maps.per.node',                               :wukong => true
     Settings.define :max_maps_per_cluster,   :jobconf => true, :description => 'mapred.max.maps.per.cluster',                            :wukong => true
     Settings.define :max_record_length,      :jobconf => true, :description => 'mapred.linerecordreader.maxlength',                      :wukong => true # "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
+    Settings.define :min_split_size,         :jobconf => true, :description => 'mapred.min.split.size',                                  :wukong => true
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
 
     #
@@ -97,7 +98,8 @@ module Wukong
         jobconf(:max_maps_per_node),
         jobconf(:max_maps_per_cluster),
         jobconf(:map_tasks),
-        jobconf(:reduce_tasks)
+        jobconf(:reduce_tasks),
+        jobconf(:min_split_size),
       ]
       jobconf_options.flatten.compact
     end

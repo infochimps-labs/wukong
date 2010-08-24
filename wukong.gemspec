@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "1.5.2"
+  s.version = "1.5.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2010-08-11}
+  s.date = %q{2010-08-19}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it's efficient to process by lines
@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
      "bin/hdp-bzip",
      "bin/hdp-cat",
      "bin/hdp-catd",
+     "bin/hdp-cp",
      "bin/hdp-du",
      "bin/hdp-get",
      "bin/hdp-kill",
@@ -138,6 +139,7 @@ Gem::Specification.new do |s|
      "examples/count_keys.rb",
      "examples/count_keys_at_mapper.rb",
      "examples/emr/elastic_mapreduce_example.rb",
+     "examples/emr/emr.yaml",
      "examples/keystore/cassandra_batch_test.rb",
      "examples/keystore/conditional_outputter_example.rb",
      "examples/network_graph/adjacency_list.rb",
@@ -185,6 +187,7 @@ Gem::Specification.new do |s|
      "lib/wukong/extensions/string.rb",
      "lib/wukong/extensions/struct.rb",
      "lib/wukong/extensions/symbol.rb",
+     "lib/wukong/filename_pattern.rb",
      "lib/wukong/keystore/cassandra_conditional_outputter.rb",
      "lib/wukong/keystore/redis_db.rb",
      "lib/wukong/keystore/tyrant_db.rb",
@@ -205,6 +208,7 @@ Gem::Specification.new do |s|
      "lib/wukong/script/local_command.rb",
      "lib/wukong/store.rb",
      "lib/wukong/store/base.rb",
+     "lib/wukong/store/chh_chunked_flat_file_store.rb",
      "lib/wukong/store/chunked_flat_file_store.rb",
      "lib/wukong/store/conditional_store.rb",
      "lib/wukong/store/factory.rb",
@@ -222,6 +226,7 @@ Gem::Specification.new do |s|
      "lib/wukong/streamer/count_keys.rb",
      "lib/wukong/streamer/count_lines.rb",
      "lib/wukong/streamer/counting_reducer.rb",
+     "lib/wukong/streamer/em_streamer.rb",
      "lib/wukong/streamer/filter.rb",
      "lib/wukong/streamer/line_streamer.rb",
      "lib/wukong/streamer/list_reducer.rb",

@@ -109,10 +109,18 @@ module Wukong
       end
       #
       # The last portion of the class in underscored form
-      # note memoization
+      # memoized
       #
-      def self.resource_name
-        @resource_name ||= self.to_s.gsub(%r{.*::}, '').underscore.to_sym
+      def resource_name
+        @resource_name ||= self.class_basename.underscore.to_sym
+      end
+      # The last portion of the class name
+      # memoized
+      #
+      # @example
+      #   This::That::TheOther.new.class_basename   # => TheOther
+      def class_basename
+        @class_basename ||= self.to_s.gsub(%r{.*::}, '')
       end
     end
 

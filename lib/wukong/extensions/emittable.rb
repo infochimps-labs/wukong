@@ -1,4 +1,3 @@
-
 Object.class_eval do
   def to_flat() [to_s] end
 end
@@ -54,29 +53,17 @@ Hash.class_eval do
   end
 end
 
-class Time
-  # strftime() format to flatten a date
-  FLAT_FORMAT = "%Y%m%d%H%M%S"
-  # Flatten
-  def to_flat
-    strftime(FLAT_FORMAT)
-  end
-end
-
-class Date
-  # strftime() format to flatten a date
-  FLAT_FORMAT = "%Y%m%d"
-  # Flatten
-  def to_flat
-    strftime(FLAT_FORMAT)
-  end
-end
-
-class DateTime < Date
-  # strftime() format to flatten a date
-  FLAT_FORMAT = "%Y%m%d%H%M%S"
-  # Flatten
-  def to_flat
-    strftime(FLAT_FORMAT)
+class Integer
+  #
+  # Express boolean as 1 (true) or 0 (false).  In contravention of typical ruby
+  # semantics (but in a way that is more robust for wukong-like batch
+  # processing), the number 0, the string '0', nil and false are all considered
+  # false. (This also makes the method idempotent: repeated calls give same result.)
+  #
+  def self.unbooleanize bool
+    case bool
+    when 0, '0', false, nil then 0
+    else                         1
+    end
   end
 end
