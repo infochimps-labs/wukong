@@ -63,11 +63,6 @@ module Wukong
 
     def hadoop_jobconf_options
       jobconf_options = []
-      # The fields should hadoop treat as the keys
-      jobconf_options += [
-        jobconf(:key_field_separator),
-        jobconf(:sort_fields),
-      ]
       # Fields hadoop should use to distribute records to reducers
       unless options[:partition_fields].blank?
         jobconf_options += [
@@ -76,6 +71,23 @@ module Wukong
           jobconf(:partition_fields),
         ]
       end
+      # The fields should hadoop treat as the keys
+      jobconf_options += [
+        # -partitioner                          org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
+        # -D mapred.output.key.comparator.class=org.apache.hadoop.mapred.lib.KeyFieldBasedComparator \
+        # -D mapred.text.key.comparator.options=-k2,2nr\
+        # -D mapred.text.key.partitioner.options=-k1,2\
+        # -D mapred.text.key.partitioner.options=\"-k1,$partfields\"
+        # -D stream.num.map.output.key.fields=\"$sortfields\"
+        #
+        # -D stream.map.output.field.separator=\"'/t'\"
+        # -D    map.output.key.field.separator=. \
+        # -D       mapred.data.field.separator=. \
+        # -D map.output.key.value.fields.spec=6,5,1-3:0- \
+        # -D reduce.output.key.value.fields.spec=0-2:5- \
+        jobconf(:key_field_separator),
+        jobconf(:sort_fields),
+      ]
       # Setting the number of mappers and reducers.
       jobconf_options += [
         jobconf(:max_node_map_tasks),
