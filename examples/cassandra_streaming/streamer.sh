@@ -11,6 +11,7 @@ dest_col_family=${dest_col_family-Wordbag}
 hostname=`hostname`
 
 # Path to cassandra and hadoop dirs
+script_dir=$(readlink -f `dirname $0`)
 CASSANDRA_HOME=${CASSANDRA_HOME-/usr/local/share/cassandra}
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
@@ -21,7 +22,7 @@ for jar in `/bin/ls -1 $CASSANDRA_HOME/build/lib/jars/*.jar $CASSANDRA_HOME/lib/
 done
 
 ${HADOOP_HOME}/bin/hadoop                                                                        \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar                         \
+     jar ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar                                 \
     -D stream.map.output=cassandra_avro_output                                                   \
     -D stream.io.identifier.resolver.class=org.apache.cassandra.hadoop.streaming.AvroResolver    \
     -D cassandra.output.keyspace="$dest_keyspace"                                                \
@@ -33,7 +34,7 @@ ${HADOOP_HOME}/bin/hadoop                                                       
     -libjars $ARCHIVES                                                                           \
     -file cassandra.avpr                                                                         \
     -outputformat org.apache.cassandra.hadoop.ColumnFamilyOutputFormat                           \
-    -mapper  	 "ruby /home/jacob/Programming/cassandra_streaming_example/avromapper.rb --map " \
+    -mapper  	 "ruby $script_dir/avromapper.rb --map "                                         \
     -input       "$input_file"                                                                   \
     -output  	 "$output_file"                                                                  \
     "$@"
