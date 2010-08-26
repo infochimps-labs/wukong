@@ -26,20 +26,21 @@
             { "name" : "name",                  "type" : "bytes"},
             { "name" : "value",                 "type" : "bytes"},
             { "name" : "clock",                 "type" : "Clock"},
-            { "name" : "ttl",                   "type" : [ "int", "null" ]    } ]},
+            { "name" : "ttl",                   "type" : "int"   } ]},
         { "name" : "SuperColumn",               "type" : "record",	"fields" : [
             { "name" : "name",                  "type" : "bytes"},
             { "name" : "columns",               "type" : { "type" : "array",        "items" : "Column" } } ]},
         { "name" : "ColumnOrSuperColumn",       "type" : "record",	"fields" : [
-            { "name" : "column",                "type" : [ "Column",      "null" ]},
-            { "name" : "super_column",          "type" : [ "SuperColumn", "null" ]    } ]},
+            { "name" : "column",                "type" : "Column" },
+            { "name" : "super_column",          "type" : "null"     } ]},
         { "name" : "Deletion",                  "type" : "record",	"fields" : [
             { "name" : "clock",                 "type" : "Clock"},
             { "name" : "super_column",          "type" : [ "bytes", "null" ]},
             { "name" : "predicate",             "type" : [ "SlicePredicate", "null" ]    } ]},
         { "name" : "Mutation",                  "type" : "record",	"fields" : [
-            { "name" : "column_or_supercolumn", "type" : [ "ColumnOrSuperColumn", "null" ]},
-            { "name" : "deletion",              "type" : [ "Deletion",            "null" ]} ]},
+            { "name" : "column_or_supercolumn", "type" : "ColumnOrSuperColumn" },
+            { "name" : "deletion",              "type" : "null" }
+        ]},
         { "name" : "StreamingMutation",         "type" : "record",	"fields" : [
             { "name" : "key",	                "type" : "bytes"       },
             { "name" : "mutation",	        "type" : "Mutation"    } ]},
