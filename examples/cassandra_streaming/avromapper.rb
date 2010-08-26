@@ -9,7 +9,7 @@ require 'avro'
 require 'wukong'
 require 'wukong/periodic_monitor'
 
-Settings.define :cassandra_avro_schema, :default => (File.dirname(__FILE__)+'/cassandra.avpr')
+Settings.define :cassandra_avro_schema, :default => (File.dirname(__FILE__)+'/smutation.avpr') # cassandra.avpr
 Settings.define :cassandra_thrift_uri,  :default => `hostname`.chomp.strip+':9160'
 Settings.define :action, :description => 'thrift or avro', :default => 'avro'
 
