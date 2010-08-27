@@ -14,14 +14,14 @@ hostname=`hostname`
 script_dir=$(readlink -f `dirname $0`)
 CASSANDRA_HOME=${CASSANDRA_HOME-/usr/local/share/cassandra}
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
-
+avro_file=${avro_file-$CASSANDRA_HOME/interface/avro/cassandra.avpr}
 
 ARCHIVES=`/bin/ls -1 $CASSANDRA_HOME/build/apache-cassandra*.jar`
 for jar in `/bin/ls -1 $CASSANDRA_HOME/build/lib/jars/*.jar $CASSANDRA_HOME/lib/*.jar`; do
     ARCHIVES=$ARCHIVES,$jar
 done
 
-${HADOOP_HOME}/bin/hadoop                                                                        \
+echo ${HADOOP_HOME}/bin/hadoop                                                                        \
      jar ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar                                 \
     -D stream.map.output=cassandra_avro_output                                                   \
     -D stream.io.identifier.resolver.class=org.apache.cassandra.hadoop.streaming.AvroResolver    \
@@ -32,7 +32,7 @@ ${HADOOP_HOME}/bin/hadoop                                                       
     -D cassandra.thrift.port=9160                                                                \
     -D mapred.reduce.tasks=0                                                                     \
     -libjars $ARCHIVES                                                                           \
-    -file cassandra.avpr                                                                         \
+    -file $avro_file                                                                             \
     -outputformat org.apache.cassandra.hadoop.ColumnFamilyOutputFormat                           \
     -mapper  	 "ruby $script_dir/avromapper.rb --map "                                         \
     -input       "$input_file"                                                                   \

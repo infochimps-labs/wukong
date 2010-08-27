@@ -20,6 +20,15 @@
             { "name" : "column_names",          "type" : [ { "type" : "array",        "items" : "bytes"},  "null" ]},
             { "name" : "slice_range",           "type" : [ "SliceRange", "null" ]    } ]},
 
+        { "name": "StupidColumnMutation", "type": "record",
+          "fields": [
+              { "name" : "key",	                "type" : "bytes"  },
+              { "name" : "name",                "type" : "bytes"  },
+              { "name" : "value",               "type" : "bytes"  },
+              { "name" : "timestamp",	        "type" : "long"   },
+              { "name" : "ttl",                 "type" : "int"    }
+          ]},
+        
         { "name" : "Clock",                     "type" : "record",	"fields" : [
             { "name" : "timestamp",	"type" : "long"   } ]},
         { "name" : "Column",                    "type" : "record",	"fields" : [
