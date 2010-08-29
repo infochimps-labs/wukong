@@ -1,0 +1,36 @@
+
+
+h2. Bulk Streaming use cases
+
+* Take a bunch of nightly calculations and need to flood it into the DB -- http://sna-projects.com/blog/2009/06/building-a-1-tb-data-cycle-at-linkedin-with-hadoop-and-project-voldemort/ In this case, it's important that the bulk load happen efficiently but with low stress on the DB.  I'm willing to make it so that data streams to each cassandra node in the sort order and pre-partitioned just like the node wants to use it. Should run at the full streaming speed of the disk.
+
+* Building a new table or moving a legacy database over to cassandra.  I want to write from one or several nodes, probably not in the cluster, and data will be completely unpartitioned.  I might be able to make some guarantees about uniqueness of keys and rows (that is, you'll generally only see a key once, and/or when you see a key it will contain the entire row).  20k inserts/s / receiving node.
+
+* Using cassandra to replace HDFS. Replication is for compute, not for availability -- so efficient writing at consistency level ANY is important. Would like to get 100k inserts/s per receiving node. 
+
+* A brand new user wants to just stuff his goddamn data into the goddamn database and start playing with it. It had better be not-terribly-slow, and it had better be really easy to take whatever insane format it shows up in and cram that into the data hole.  It should also be conceptually straighforward: it should look like I'm writing hashes or hashes of hashes.
+
+
+===========================================================================
+From http://sna-projects.com/blog/2009/06/building-a-1-tb-data-cycle-at-linkedin-with-hadoop-and-project-voldemort/
+
+Here are the times taken:
+
+* 100GB: 28mins (400 mappers, 90 reducers)
+* 512GB: 2hrs, 16mins (2313 mappers, 350 reducers)
+* 1TB: 5hrs, 39mins (4608 mappers, 700 reducers)
+
+Data transfer between the clusters happens at a steady rate bound by the disk or network. For our Amazon instances this is around 40MB/second.
+
+Online Performance
+
+Lookup time for a single Voldemort node compares well to a single MySQL instance as well. To test this we ran local tests against the 100GB per-node data from the 1 TB test. This test as well was run on an Amazon Extra Large instance with 15GB of RAM and the 4 ephemeral disks in a RAID 10 configuration. To run the tests we simulated we simulated 1 million requests from a real request stream recorded on our production system against each of storage systems. We see the following performance for 1 million requests against a single node:
+	                 MySQL   	Voldemort
+Reqs per sec. 	         727    	1291
+Median req. time 	0.23 ms 	0.05 ms
+Avg. req. time   	13.7 ms 	7.7 ms
+
+99th percentile req. time
+	127.2 ms 	100.7 ms
+
+These numbers are both for local requests with no network involved as the only intention is to benchmark the storage layer of these systems.

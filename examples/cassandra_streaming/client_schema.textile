@@ -1,0 +1,318 @@
+
+
+h3. Operations
+
+* Add/insert one value
+    
+  Mutate        ks, [col_ref], 'val', ts, ttl }
+
+* Add/insert multiple cols to same row
+  
+  MutateRow     ks, supercol_or_nil, { [col, val, ts, ttl], [col,val,ts,ttl],...}}
+  MutateCRow    ks,                  { [col, val, ts, ttl], [col,val,ts,ttl],...}}
+  MutateSCRow   ks, supercol,        { [col, val, ts, ttl], [col,val,ts,ttl],...}}
+
+
+  pycassa       cf.insert('key1',
+                  { '1': {'sub1': 'val1', 'sub2': 'val2'},
+                    '2': {'sub3': 'val3', 'sub4': 'val4'} })
+
+  pycassa       cf.remove('key1', super_column='1')
+
+  pycassa       cf.get_range(super_column='2')
+  pycassa       cf.get('key1')
+  pycassa       cf.get('key1', super_column='2')
+  pycassa       cf.multiget(['key1'], super_column='2')
+
+  pycassa       Test.objects.get_count(t.key)
+
+                get_indexed_slices
+                get_range
+
+  
+* Get one, many or all columns from given row
+
+  get           key, super_column, columns, column_start, column_finish, column_reversed, column_count, consistency
+  
+  Multiget      ks, supercol_or_nil, [col1, col2, ...] or nil
+
+* Get one, many or all columns from a slice of sequential rows
+
+  get_range
+
+* Remove one column from a row
+  
+  remove
+  
+* Remove many columns from a row
+  
+* Remove all columns in a row
+
+
+h4. Hector
+
+http://github.com/rantav/hector/tree/master/src/main/java/me/prettyprint/cassandra/examples/
+
+      keyspace              = client.getKeyspace("Keyspace1");
+      ColumnPath columnPath = new ColumnPath("Standard1");
+      columnPath.setColumn(bytes("column-name"));
+
+      // insert
+      keyspace.insert("key", columnPath, bytes("value"));
+      insert(final String key, final String value)
+
+      // read
+      Column col = keyspace.getColumn("key", columnPath);
+      System.out.println("Read from cassandra: " + string(col.getValue()));
+      get(final String key)
+
+      delete(final String key)
+
+h4. fauna/cassandra
+
+
+        client.insert(:Users, "5", {'screen_name' => "buttonscat"})
+        client.insert(:UserRelationships, "5", {"user_timeline" => {UUID.new => "1"}})
+        timeline = client.get(:UserRelationships, "5", "user_timeline")
+
+
+  # Insert a row for a key. Pass a flat hash for a regular column family, and
+  # a nested hash for a super column family. Supports the <tt>:consistency</tt>,
+  # <tt>:timestamp</tt> and <tt>:ttl</tt> options.
+  def insert(column_family, key, hash, options = {})
+
+  
+  ## Delete
+  # _mutate the element at the column_family:key:[column]:[sub_column]
+  # path you request. Supports the <tt>:consistency</tt> and <tt>:timestamp</tt>
+  # options.
+  def remove(column_family, key, *columns_and_options)
+
+
+### Read
+
+  # Count the elements at the column_family:key:[super_column] path you
+  # request. Supports the <tt>:consistency</tt> option.
+  def count_columns(column_family, key, *columns_and_options)
+  
+  # Multi-key version of Cassandra#count_columns. Supports options <tt>:count</tt>,
+  # <tt>:start</tt>, <tt>:finish</tt>, <tt>:reversed</tt>, and <tt>:consistency</tt>.
+  # FIXME Not real multi; needs server support
+  def multi_count_columns(column_family, keys, *options)
+
+  
+  # Multi-key version of Cassandra#get_columns. Supports the <tt>:consistency</tt>
+  # option.
+  # FIXME Not real multi; needs to use a Column predicate
+  def multi_get_columns(column_family, keys, *options)
+
+  # Return a hash (actually, a Cassandra::OrderedHash) or a single value
+  # representing the element at the column_family:key:[column]:[sub_column]
+  # path you request. Supports options <tt>:count</tt>, <tt>:start</tt>,
+  # <tt>:finish</tt>, <tt>:reversed</tt>, and <tt>:consistency</tt>.
+  def get(column_family, key, *columns_and_options)
+
+  # Multi-key version of Cassandra#get. Supports options <tt>:count</tt>,
+  # <tt>:start</tt>, <tt>:finish</tt>, <tt>:reversed</tt>, and <tt>:consistency</tt>.
+  def multi_get(column_family, keys, *columns_and_options)
+
+  # Return true if the column_family:key:[column]:[sub_column] path you
+  # request exists. Supports the <tt>:consistency</tt> option.
+  def exists?(column_family, key, *columns_and_options)
+
+  # Return a list of keys in the column_family you request. Requires the
+  # table to be partitioned with OrderPreservingHash. Supports the
+  # <tt>:count</tt>, <tt>:start</tt>, <tt>:finish</tt>, and <tt>:consistency</tt>
+  # options.
+  def get_range(column_family, options = {})
+
+  # Count all rows in the column_family you request. Requires the table
+  # to be partitioned with OrderPreservingHash. Supports the <tt>:start</tt>,
+  # <tt>:finish</tt>, and <tt>:consistency</tt> options.
+  def count_range(column_family, options = {})  
+  
+
+h3. Modifiers
+
+* Consistency level
+* Show tombstones or not
+* range
+
+h4. Thrift Interface
+
+ColumnOrSuperColumn                   get              (string keyspace, string key,        ColumnPath   column_path,                              ConsistencyLevel consistency_level)
+i32                                   get_count        (string keyspace, string key,        ColumnParent column_parent,                            ConsistencyLevel consistency_level)
+list<ColumnOrSuperColumn>             get_slice        (string keyspace, string key,        ColumnParent column_parent, SlicePredicate predicate,  ConsistencyLevel consistency_level)
+map<string,list<ColumnOrSuperColumn>> multiget_slice   (string keyspace, list<string> keys, ColumnParent column_parent, SlicePredicate predicate,  ConsistencyLevel consistency_level)
+list<KeySlice>                        get_range_slices (string keyspace, KeyRange range,    ColumnParent column_parent, SlicePredicate predicate,  ConsistencyLevel consistency_level)
+void                                  insert           (string keyspace, string key,        ColumnPath   column_path, binary value, i64 timestamp, ConsistencyLevel consistency_level)
+void                                  remove           (string keyspace, string key,        ColumnPath   column_path,               i64 timestamp, ConsistencyLevel consistency_level)
+void                                  batch_mutate     (string keyspace, map<string,map<string,list<Mutation>>> mutation_map,                      ConsistencyLevel consistency_level)
+
+
+
+h3. Old Schema
+
+        { "name" : "AccessLevel",               "type" : "enum",       "symbols" : [ "NONE", "READONLY", "READWRITE", "FALL" ]  },
+        { "name" : "ColumnPath",                "type" : "record",    "fields" : [
+            { "name" : "column_family",         "type" : "string"},
+            { "name" : "super_column",          "type" : [ "bytes", "null" ]},
+            { "name" : "column",                "type" : [ "bytes", "null" ] } ]},
+        { "name" : "ColumnParent",              "type" : "record",	"fields" : [
+            { "name" : "column_family",         "type" : "string"},
+            { "name" : "super_column",          "type" : [ "bytes", "null" ] } ]},
+        { "name" : "SliceRange",                "type" : "record",	"fields" : [
+            { "name" : "start",                 "type" : "bytes"},
+            { "name" : "finish",                "type" : "bytes"},
+            { "name" : "reversed",              "type" : "boolean"},
+            { "name" : "count",                 "type" : "int"},
+            { "name" : "bitmasks",              "type" : [ { "type" : "array",        "items" : "bytes"},  "null" ]    } ]},
+        { "name" : "SlicePredicate",            "type" : "record",	"fields" : [
+            { "name" : "column_names",          "type" : [ { "type" : "array",        "items" : "bytes"},  "null" ]},
+            { "name" : "slice_range",           "type" : [ "SliceRange", "null" ]    } ]},
+
+        { "name" : "Clock",                     "type" : "record",	"fields" : [
+            { "name" : "timestamp",	"type" : "long"   } ]},
+        { "name" : "Column",                    "type" : "record",	"fields" : [
+            { "name" : "name",                  "type" : "bytes"},
+            { "name" : "value",                 "type" : "bytes"},
+            { "name" : "clock",                 "type" : "Clock"},
+            { "name" : "ttl",                   "type" : "int"   } ]},
+        { "name" : "SuperColumn",               "type" : "record",	"fields" : [
+            { "name" : "name",                  "type" : "bytes"},
+            { "name" : "columns",               "type" : { "type" : "array",        "items" : "Column" } } ]},
+        { "name" : "ColumnOrSuperColumn",       "type" : "record",	"fields" : [
+            { "name" : "column",                "type" : "Column" },
+            { "name" : "super_column",          "type" : "null"     } ]},
+        { "name" : "Deletion",                  "type" : "record",	"fields" : [
+            { "name" : "clock",                 "type" : "Clock"},
+            { "name" : "super_column",          "type" : [ "bytes", "null" ]},
+            { "name" : "predicate",             "type" : [ "SlicePredicate", "null" ]    } ]},
+        { "name" : "Mutation",                  "type" : "record",	"fields" : [
+            { "name" : "column_or_supercolumn", "type" : "ColumnOrSuperColumn" },
+            { "name" : "deletion",              "type" : "null" }        ]},
+        { "name" : "StreamingMutation",         "type" : "record",	"fields" : [
+            { "name" : "key",	                "type" : "bytes"       },
+            { "name" : "mutation",	        "type" : "Mutation"    } ]},
+
+        { "name" : "IndexType",                 "type" : "enum",	"symbols" : [ "KEYS" ]},
+        { "name" : "ColumnDef",                 "type" : "record",	"fields" : [
+            { "name" : "name",                  "type" : "bytes"},
+            { "name" : "validation_class",      "type" : "string"},
+            { "name" : "index_type",            "type" : [ "IndexType", "null" ]},
+            { "name" : "index_name",            "type" : [ "string", "null" ]    } ]},
+        { "name" : "CfDef",                     "type" : "record",	"fields" : [
+            { "name" : "keyspace",              "type" : "string"},
+            { "name" : "name",                  "type" : "string"},
+            { "name" : "column_type",           "type" : [ "string", "null" ]},
+            { "name" : "clock_type",            "type" : [ "string", "null" ]},
+            { "name" : "comparator_type",       "type" : [ "string", "null" ]},
+            { "name" : "subcomparator_type",    "type" : [ "string", "null" ]},
+            { "name" : "reconciler",            "type" : [ "string", "null" ]},
+            { "name" : "comment",               "type" : [ "string", "null" ]},
+            { "name" : "row_cache_size",        "type" : [ "double", "null" ]},
+            { "name" : "preload_row_cache",     "type" : [ "boolean", "null" ]},
+            { "name" : "key_cache_size",        "type" : [ "double", "null" ]},
+            { "name" : "read_repair_chance",    "type" : [ "double", "null" ]},
+            { "name" : "gc_grace_seconds",      "type" : [ "int", "null" ]},
+            { "name" : "column_metadata",       "type" : [ { "type" : "array",        "items" : "ColumnDef"},  "null" ]},
+            { "name" : "id",                    "type" : [ "int", "null" ]    } ]},
+        { "name" : "KsDef",                     "type" : "record",	"fields" : [
+            { "name" : "name",                  "type" : "string"},  { "name" : "strategy_class",	"type" : "string"},
+            { "name" : "strategy_options",      "type" : [ { "type" : "map",        "values" : "string"},  "null" ]},
+            { "name" : "replication_factor",    "type" : "int"},  { "name" : "cf_defs",	"type" : { "type" : "array",        "items" : "CfDef"      }    } ]},
+        { "name" : "MutationsMapEntry",         "type" : "record",	"fields" : [ { "name" : "key",	"type" : "bytes"},  { "name" : "mutations",	"type" : { "type" : "map",        "values" : { "type" : "array",          "items" : "Mutation"        }      }    } ]},
+        { "name" : "CoscsMapEntry",             "type" : "record",	"fields" : [ { "name" : "key",	"type" : "bytes"},  { "name" : "columns",	"type" : { "type" : "array",        "items" : "ColumnOrSuperColumn"      }    } ]},
+        { "name" : "ConsistencyLevel",          "type" : "enum",	"symbols" : [ "ZERO", "ONE", "QUORUM", "DCQUORUM", "DCQUORUMSYNC", "ALL" ]},
+        { "name" : "InvalidRequestException",   "type" : "error",	"fields" : [ { "name" : "why",	"type" : [ "string", "null" ]    } ]},
+        { "name" : "NotFoundException",         "type" : "error",	"fields" : [ { "name" : "why",	"type" : [ "string", "null" ]    } ]},
+        { "name" : "UnavailableException",      "type" : "error",	"fields" : [ { "name" : "why",	"type" : [ "string", "null" ]    } ]},
+        { "name" : "TimedOutException",         "type" : "error",	"fields" : [ { "name" : "why",	"type" : [ "string", "null" ]    } ]  }
+    ],
+
+"messages" : {
+    "get" : {
+        "request" : [ { "name" : "key",               "type" : "bytes"},
+                      { "name" : "column_path",       "type" : "ColumnPath"},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel"
+                      } ],
+        "response" : "ColumnOrSuperColumn",
+        "errors" : [ "InvalidRequestException", "NotFoundException", "UnavailableException", "TimedOutException" ]
+    },
+    "get_slice" : {
+        "request" : [ { "name" : "key",               "type" : "bytes"},
+                      { "name" : "column_parent",     "type" : "ColumnParent"},
+                      { "name" : "predicate",         "type" : "SlicePredicate"},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel"
+                      } ],
+        "response" : { "type" : "array", "items" : "ColumnOrSuperColumn" },
+        "errors" : [ "InvalidRequestException", "UnavailableException", "TimedOutException" ]
+    },
+    "multiget_slice" : {
+        "request" : [ { "name" : "keys",              "type" : { "type" : "array", "items" : "bytes" }},
+                      { "name" : "column_parent",     "type" : "ColumnParent"},
+                      { "name" : "predicate",         "type" : "SlicePredicate"},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel"
+                      } ],
+        "response" : {                                "type" : "array", "items" : "CoscsMapEntry" },
+        "errors" : [ "InvalidRequestException", "UnavailableException", "TimedOutException" ]
+    },
+    "get_count" : {
+        "request" : [ { "name" : "key",               "type" : "bytes"},
+                      { "name" : "column_parent",     "type" : "ColumnParent"},
+                      { "name" : "predicate",         "type" : "SlicePredicate"},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel"
+                      } ],
+        "response" : "int",
+        "errors" : [ "InvalidRequestException", "UnavailableException", "TimedOutException" ]
+    },
+    "insert" : {
+        "request" : [ { "name" : "key",               "type" : "bytes"},
+                      { "name" : "column_parent",     "type" : "ColumnParent"},
+                      { "name" : "column",	      "type" : "Column"},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel"
+                      } ],
+        "response" : "null",
+        "errors" : [ "InvalidRequestException", "UnavailableException", "TimedOutException" ]
+    },
+    "remove" : {
+        "request" : [ { "name" : "key",               "type" : "bytes"},
+                      { "name" : "column_path",       "type" : "ColumnPath"},
+                      { "name" : "clock",             "type" : "Clock"},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel"
+                      } ],
+        "response" : "null",
+        "errors" : [ "InvalidRequestException", "UnavailableException", "TimedOutException" ]
+    },
+    "batch_mutate" : {
+        "request" : [ { "name" : "mutation_map",      "type" : { "type" : "array", "items" : "MutationsMapEntry" }},
+                      { "name" : "consistency_level", "type" : "ConsistencyLevel" } ],
+        "response" : "null",
+        "errors" : [ "InvalidRequestException", "UnavailableException", "TimedOutException" ]
+    },
+    "system_add_keyspace" : {
+        "request" : [ { "name" : "ks_def",            "type" : "KsDef"
+                      } ],
+        "response" : "null",
+        "errors" : [ "InvalidRequestException" ]
+    },
+    "set_keyspace" : {
+        "request" : [ { "name" : "keyspace",          "type" : "string"
+                      } ],
+        "response" : "null",
+        "errors" : [ "InvalidRequestException" ]
+    },
+    "describe_keyspaces" : {
+        "request" : [ ],
+        "response" : { "type" : "array", "items" : "string"  }
+    },
+    "describe_cluster_name" : {
+        "request" : [ ],
+        "response" : "string"
+    },
+    "describe_version" : {
+        "request" : [ ],
+        "response" : "string"
+    }
+}
+}
