@@ -21,7 +21,7 @@ for jar in `/bin/ls -1 $CASSANDRA_HOME/build/lib/jars/*.jar $CASSANDRA_HOME/lib/
     ARCHIVES=$ARCHIVES,$jar
 done
 
-echo ${HADOOP_HOME}/bin/hadoop                                                                        \
+${HADOOP_HOME}/bin/hadoop                                                                        \
      jar ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar                                 \
     -D stream.map.output=cassandra_avro_output                                                   \
     -D stream.io.identifier.resolver.class=org.apache.cassandra.hadoop.streaming.AvroResolver    \

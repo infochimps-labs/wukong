@@ -70,6 +70,17 @@ class SmutWriter
 
   def smutation key, name, value
     {
+      'key'         => key,
+      'mutation'    => {
+        'name'      => name.to_s,
+        'value'     => value.to_s,
+        'timestamp' => Time.epoch_microseconds
+      }
+    }
+  end
+
+  def smutation_from_trunk_bad key, name, value
+    {
       'key'      => key,
       'mutation' => { 'column_or_supercolumn' => { 'column' => {
             'name'  => name.to_s,
