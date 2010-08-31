@@ -15,6 +15,13 @@ module Wukong
       end
 
       #
+      # Class needs to have an id method
+      #
+      # FIXME: id should instead be key
+      def streaming_save
+        self.class.streaming_insert id, self
+      end
+      #
       # Flatten attributes for storage in the DB.
       #
       # * omits elements whose value is nil
@@ -45,8 +52,17 @@ module Wukong
         # uses object's #to_db_hash method
         def insert id, hsh
           # safely
-          puts("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
+          # Log.debug("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
           cassandra_db.insert(table_name, id.to_s, hsh.to_db_hash)
+          # end
+        end
+
+        # Insert into the cassandra database
+        # uses object's #to_db_hash method
+        def streaming_insert id, hsh
+          # safely
+          # Log.debug("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
+          cassandra_db.put(id.to_s, hsh.to_db_hash)
           # end
         end
 
