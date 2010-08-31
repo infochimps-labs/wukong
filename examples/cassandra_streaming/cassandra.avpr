@@ -236,8 +236,17 @@
       "name" : "key",
       "type" : "bytes"
     }, {
-      "name" : "mutation",
-      "type" : "Mutation"
+      "name" : "name",
+      "type" : "bytes"
+    }, {
+      "name" : "value",
+      "type" : "bytes"
+    }, {
+      "name" : "timestamp",
+      "type" : "long"
+    }, {
+      "name" : "ttl",
+      "type" : "int"
     } ]
   }, {
     "type" : "record",

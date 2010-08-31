@@ -45,7 +45,7 @@ module Wukong
         # uses object's #to_db_hash method
         def insert id, hsh
           # safely
-          puts("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
+          # Log.debug("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
           cassandra_db.insert(table_name, id.to_s, hsh.to_db_hash)
           # end
         end

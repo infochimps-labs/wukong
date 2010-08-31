@@ -1,0 +1,73 @@
+
+
+Start
+
+5 c1.xlarge
+  2000 writes/sec
+  40   clients
+
+4 m2.xlarge
+
+      :java_max_heap                => "12500M",          #
+      # :flush_data_buffer_size     => 32,                # 32,
+      # :flush_index_buffer_size    => 8,                 # 8,
+      # :binary_memtable_throughput => 256,               # 256,
+      # :memtable_flush_after       => 60,                # 60,
+      # :memtable_throughput        => 64,                # 64,
+      # :memtable_ops               => 0.3,               # 0.3,
+      # :column_index_size          => 64,                # 64,
+      # :in_memory_compaction_limit => 64                 # 64
+      :concurrent_reads             => 8,                 # 8
+      :concurrent_writes            => 250,               # 32
+
+/usr/bin/java -ea                                                       \
+    -Xms128M                                                            \
+    -Xmx12500M                                                          \
+    -XX:TargetSurvivorRatio=90                                          \
+    -XX:+AggressiveOpts                                                 \
+    -XX:+UseParNewGC                                                    \
+    -XX:+UseConcMarkSweepGC                                             \
+    -XX:+CMSParallelRemarkEnabled                                       \
+    -XX:+HeapDumpOnOutOfMemoryError                                     \
+    -XX:SurvivorRatio=128                                               \
+    -XX:MaxTenuringThreshold=0                                          \
+    -Djava.rmi.server.hostname=ec2-184-73-20-37.compute-1.amazonaws.com \
+    -Dcom.sun.management.jmxremote.port=12345                           \
+    -Dcom.sun.management.jmxremote.ssl=false                            \
+    -Dcom.sun.management.jmxremote.authenticate=false                   \
+    -Dcassandra                                                         \
+    -Dstorage-config=/etc/cassandra                                     \
+    -Dcassandra-foreground=yes                                          \
+    -cp /etc/cassandra:/usr/local/share/cassandra/build/classes:/usr/local/share/cassandra/lib/antlr-3.1.3.jar:/usr/local/share/cassandra/lib/avro-1.3.3-sources~cust1.jar:/usr/local/share/cassandra/lib/avro-1.3.3~cust2.jar:/usr/local/share/cassandra/lib/clhm-production.jar:/usr/local/share/cassandra/lib/commons-cli-1.1.jar:/usr/local/share/cassandra/lib/commons-codec-1.2.jar:/usr/local/share/cassandra/lib/commons-collections-3.2.1.jar:/usr/local/share/cassandra/lib/commons-lang-2.4.jar:/usr/local/share/cassandra/lib/guava-r05.jar:/usr/local/share/cassandra/lib/hadoop-core-0.20.1.jar:/usr/local/share/cassandra/lib/high-scale-lib.jar:/usr/local/share/cassandra/lib/jackson-core-asl-1.4.0.jar:/usr/local/share/cassandra/lib/jackson-mapper-asl-1.4.0.jar:/usr/local/share/cassandra/lib/jetty-6.1.21.jar:/usr/local/share/cassandra/lib/jetty-util-6.1.21.jar:/usr/local/share/cassandra/lib/jline-0.9.94.jar:/usr/local/share/cassandra/lib/json-simple-1.1.jar:/usr/local/share/cassandra/lib/jug-2.0.0.jar:/usr/local/share/cassandra/lib/libthrift-r959516.jar:/usr/local/share/cassandra/lib/log4j-1.2.16.jar:/usr/local/share/cassandra/lib/servlet-api-2.5-20081211.jar:/usr/local/share/cassandra/lib/slf4j-api-1.5.8.jar:/usr/local/share/cassandra/lib/slf4j-log4j12-1.5.8.jar:/usr/local/share/cassandra/lib/snakeyaml-1.6.jar\
+    org.apache.cassandra.thrift.CassandraDaemon
+
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          81.83    0.00    1.96    0.00    0.00   16.21
+
+Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+sda1            155.12         9.45     11450.39         48      58168
+sdb               2.76         0.00        22.05          0        112
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          83.72    0.00    3.80    0.20    0.00   12.29
+
+Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+sda1             66.53         1.59      3921.91          8      19688
+sdb             100.20         0.00      6686.85          0      33568
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          66.40    0.00    5.00    0.80    0.40   27.40
+
+Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+sda1              2.40         0.00        19.20          0         96
+sdb             186.80         0.00     15318.40          0      76592
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+          80.98    0.00    6.08    1.99    0.00   10.96
+
+Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+sda1            113.97         0.00      7426.75          0      37208
+sdb             360.28         1.60     29232.73          8     146456
+
+    

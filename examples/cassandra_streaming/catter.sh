@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#
+# Cat a binary-encoded avro file into the bulk loader
+#
+
 input_file="$1" 		 ; shift
 output_file="$1" 		 ; shift
 map_script=${1-/bin/cat}	 ; shift
@@ -28,17 +32,14 @@ ${HADOOP_HOME}/bin/hadoop                                                       
     -D cassandra.output.keyspace="$dest_keyspace"                                                \
     -D cassandra.output.columnfamily="$dest_col_family"                                          \
     -D cassandra.partitioner.class=org.apache.cassandra.dht.RandomPartitioner                    \
-    -D cassandra.thrift.address=10.204.53.166                                                     \
+    -D cassandra.thrift.address="10.104.9.68"                                                    \
     -D cassandra.thrift.port=9160                                                                \
-    -D mapreduce.output.columnfamilyoutputformat.batch.threshold=4090                            \
     -D mapred.reduce.tasks=0                                                                     \
-    -D mapred.max.maps.per.node=5 \
     -libjars $ARCHIVES                                                                           \
     -file $avro_file                                                                             \
     -outputformat org.apache.cassandra.hadoop.ColumnFamilyOutputFormat                           \
-    -mapper  	 "ruby $script_dir/avromapper.rb --map "                                         \
+    -mapper  	 `which cat`                                                                     \
     -input       "$input_file"                                                                   \
     -output  	 "$output_file"                                                                  \
     "$@"
 
-#
