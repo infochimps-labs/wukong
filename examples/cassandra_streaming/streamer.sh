@@ -6,7 +6,7 @@ map_script=${1-/bin/cat}	 ; shift
 reduce_script=${1-/usr/bin/uniq} ; shift
 
 dest_keyspace=${dest_keyspace-soc_net_tw}
-dest_col_family=${dest_col_family-Wordbag}
+dest_col_family=${dest_col_family-TwitterUser}
 
 hostname=`hostname`
 
