@@ -123,6 +123,7 @@ module Wukong
       end
 
       def write_directly key, col_name, value
+        Log.info "Insert(row_key => #{key}, col_name => #{col_name}, value => #{value}"
         @enc.write_bytes(key)
         @enc.write_bytes(col_name)
         @enc.write_bytes(value)
@@ -135,9 +136,8 @@ module Wukong
       # be inserted and write directly one at a time
       #
       def put id, hsh
-        hsh.each do |k,v|
-          write_directly(id, k, v)
-          # puts "Insert(row_key => #{id}, column_name => #{k}, value => #{v})"
+        hsh.each do |attr, val|
+          write_directly(id, attr, val)
         end
       end
 

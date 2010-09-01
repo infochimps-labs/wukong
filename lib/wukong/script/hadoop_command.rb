@@ -39,6 +39,10 @@ module Wukong
     # Assemble the hadoop command to execute
     # and launch the hadoop runner to execute the script across all tasktrackers
     #
+    # FIXME: Should add some simple logic to ensure that commands are in the
+    # right order or hadoop will complain. ie. -D options MUST come before
+    # others
+    #
     def execute_hadoop_workflow
       # If no reducer_klass and no reduce_command, then skip the reduce phase
       options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
@@ -49,14 +53,15 @@ module Wukong
       hadoop_commandline = [
         hadoop_runner,
         "jar #{Settings[:hadoop_home]}/contrib/streaming/hadoop-*streaming*.jar",
+        hadoop_jobconf_options,
+        "-D mapred.job.name='#{job_name}'",
+        hadoop_other_args,
         "-mapper  '#{mapper_commandline}'",
         "-reducer '#{reducer_commandline}'",
         "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
-        hadoop_jobconf_options,
-        "-jobconf mapred.job.name='#{job_name}'",
         hadoop_recycle_env,
-        hadoop_other_args,
+        # "-jobconf mapred.job.name='#{job_name}'",
       ].flatten.compact.join(" \t\\\n  ")
       Log.info "  Launching hadoop!"
       execute_command!(hadoop_commandline)
@@ -108,7 +113,8 @@ module Wukong
     # if not, the resulting nil will be elided later
     def jobconf option
       if options[option]
-        "-jobconf %s=%s" % [options.description_for(option), options[option]]
+        # "-jobconf %s=%s" % [options.description_for(option), options[option]]
+        "-D %s=%s" % [options.description_for(option), options[option]]
       end
     end
 
