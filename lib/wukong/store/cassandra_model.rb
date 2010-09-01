@@ -136,8 +136,8 @@ module Wukong
       #
       def put id, hsh
         hsh.each do |k,v|
-          # write_directly(id, k, v)
-          puts "Insert(row_key => #{id}, column_name => #{k}, value => #{v})"
+          write_directly(id, k, v)
+          # puts "Insert(row_key => #{id}, column_name => #{k}, value => #{v})"
         end
       end
 

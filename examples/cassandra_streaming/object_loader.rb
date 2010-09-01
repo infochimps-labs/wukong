@@ -1,6 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+
+$: << '/home/jacob/Programming/wuclan/lib'
+$: << '/home/jacob/Programming/wukong/lib'
+$: << '/home/jacob/Programming/wukong/lib/wukong'
+$: << '/home/jacob/Programming/wukong/lib/wukong/store'
+
 require 'wukong'
 require 'wukong/periodic_monitor'
 require 'wuclan/twitter' ; include Wuclan::Twitter
@@ -18,8 +24,8 @@ class ObjectLoader < Wukong::Streamer::StructStreamer
   # Blindly expects objects streaming by to have a "streaming_save" method
   #
   def process object, *_
-    object.save
-    # object.streaming_save
+    # object.save
+    object.streaming_save
     @log.periodically(object.to_flat)
   end
 end
