@@ -6,7 +6,7 @@ map_script=${1-/bin/cat}	 ; shift
 reduce_script=${1-/usr/bin/uniq} ; shift
 
 dest_keyspace=${dest_keyspace-soc_net_tw}
-dest_col_family=${dest_col_family-TwitterUser}
+dest_col_family=${dest_col_family-Wordbag}
 
 hostname=`hostname`
 
@@ -28,17 +28,19 @@ ${HADOOP_HOME}/bin/hadoop                                                       
     -D cassandra.output.keyspace="$dest_keyspace"                                                \
     -D cassandra.output.columnfamily="$dest_col_family"                                          \
     -D cassandra.partitioner.class=org.apache.cassandra.dht.RandomPartitioner                    \
-    -D cassandra.thrift.address=10.244.42.4                                                      \
+    -D cassandra.thrift.address=10.244.42.4,10.204.53.166,10.204.54.190,10.244.42.31,10.244.42.176,10.244.42.112,10.244.42.143,10.244.42.79 \
     -D cassandra.thrift.port=9160                                                                \
-    -D mapreduce.output.columnfamilyoutputformat.batch.threshold=4090                            \
+    -D mapreduce.output.columnfamilyoutputformat.batch.threshold=1024                            \
     -D mapred.reduce.tasks=0                                                                     \
-    -D mapred.max.maps.per.node=5                                                                \
+    -D mapred.max.maps.per.node=5 \
     -libjars $ARCHIVES                                                                           \
     -file $avro_file                                                                             \
     -outputformat org.apache.cassandra.hadoop.ColumnFamilyOutputFormat                           \
-    -mapper  	 "ruby $script_dir/object_loader.rb --map "                                      \
+    -mapper  	 "ruby $script_dir/avromapper.rb --map "                                         \
     -input       "$input_file"                                                                   \
     -output  	 "$output_file"                                                                  \
     "$@"
 
-#
+
+
+
