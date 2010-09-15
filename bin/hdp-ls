@@ -7,4 +7,5 @@ else
     action=ls
 fi
 
-exec hadoop dfs -$action "$@"
+HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
+exec $HADOOP_HOME/bin/hadoop dfs -$action "$@"
