@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
-
 require 'rubygems'
+require 'wukong'
+require 'wukong/store/cassandra'
+
+# hdp-catd s3://s3hdfs.infinitemonkeys.info/data/sn/tw/fixd/objects/twitter_user | head
 
 ::CASSANDRA_DB_SEEDS = %w[ 10.244.42.4 ].map{|s| "#{s}:9160"}.sort_by{ rand }
-
-$: << '/home/jacob/Programming/wuclan/lib'
-$: << '/home/jacob/Programming/wukong/lib'
-$: << '/home/jacob/Programming/wukong/lib/wukong'
-$: << '/home/jacob/Programming/wukong/lib/wukong/store'
 
 require 'cassandra/0.7'
 require 'wukong'
@@ -15,26 +13,10 @@ require 'wukong/periodic_monitor'
 require 'wuclan/twitter' ; include Wuclan::Twitter
 require 'wuclan/twitter/cassandra_db'
 
-Settings.define :log_interval,    :default => 3
+Settings.define :log_interval,    :default => 1_000
 Settings.define :dest_keyspace,   :default => 'soc_net_tw'
 Settings.define :dest_col_family, :default => 'TwitterUser'
 Settings.define :cassandra_home,  :env_var => 'CASSANDRA_HOME', :default => '/usr/local/share/cassandra'
-
-class ObjectLoader < Wukong::Streamer::StructStreamer
-  def initialize *args
-    super(*args)
-    @log = PeriodicMonitor.new
-  end
-
-  #
-  # Blindly expects objects streaming by to have a "streaming_save" method
-  #
-  def process object, *_
-    # object.save
-    object.streaming_save
-    @log.periodically(object.to_flat)
-  end
-end
 
 class CassandraScript < Wukong::Script
   def hadoop_other_args *args
@@ -68,4 +50,4 @@ class CassandraScript < Wukong::Script
 
 end
 
-CassandraScript.new(ObjectLoader, nil).run
+CassandraScript.new(Wukong::Store::Cassandra::StructLoader, nil).run
