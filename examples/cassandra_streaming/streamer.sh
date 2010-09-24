@@ -27,12 +27,12 @@ ${HADOOP_HOME}/bin/hadoop                                                       
     -D stream.io.identifier.resolver.class=org.apache.cassandra.hadoop.streaming.AvroResolver    \
     -D cassandra.output.keyspace="$dest_keyspace"                                                \
     -D cassandra.output.columnfamily="$dest_col_family"                                          \
+    -D cassandra.thrift.address=10.204.41.193,10.204.30.11,10.204.58.238,10.204.239.133,10.196.191.31,10.204.103.21,10.202.74.223,10.202.143.95 \
     -D cassandra.partitioner.class=org.apache.cassandra.dht.RandomPartitioner                    \
-    -D cassandra.thrift.address=10.244.42.4,10.204.53.166,10.204.54.190,10.244.42.31,10.244.42.176,10.244.42.112,10.244.42.143,10.244.42.79 \
     -D cassandra.thrift.port=9160                                                                \
     -D mapreduce.output.columnfamilyoutputformat.batch.threshold=1024                            \
     -D mapred.reduce.tasks=0                                                                     \
-    -D mapred.max.maps.per.node=5 \
+    -D mapred.map.tasks.speculative.execution=false                                              \
     -libjars $ARCHIVES                                                                           \
     -file $avro_file                                                                             \
     -outputformat org.apache.cassandra.hadoop.ColumnFamilyOutputFormat                           \
@@ -41,6 +41,11 @@ ${HADOOP_HOME}/bin/hadoop                                                       
     -output  	 "$output_file"                                                                  \
     "$@"
 
+    # -D cassandra.thrift.address=10.204.54.190,10.244.42.31,10.244.42.176,10.244.42.112,10.244.42.143,10.244.42.79,10.244.42.4,10.204.53.166 \
+    # -D cassandra.thrift.address=10.204.221.230,10.243.79.223,10.245.19.159,10.242.154.159,10.242.153.155,10.242.153.203 \
+
+
+# cat /tmp/mj-flip/chimchim-info.log | cut -f5 | ruby -e 'puts $stdin.readlines.map{|l| l.chomp.gsub(/ip-([0-9\-]+)\..*/,"\\1").gsub(/-/,".") }.join(",")'
 
 
 

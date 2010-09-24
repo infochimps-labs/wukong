@@ -13,7 +13,7 @@ require 'wukong/periodic_monitor'
 require 'wuclan/twitter' ; include Wuclan::Twitter
 require 'wuclan/twitter/cassandra_db'
 
-Settings.define :log_interval,    :default => 1_000
+Settings.define :log_interval,    :default => 1
 Settings.define :dest_keyspace,   :default => 'soc_net_tw'
 Settings.define :dest_col_family, :default => 'TwitterUser'
 Settings.define :cassandra_home,  :env_var => 'CASSANDRA_HOME', :default => '/usr/local/share/cassandra'
