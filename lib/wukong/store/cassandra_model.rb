@@ -54,10 +54,7 @@ module Wukong
         # Insert into the cassandra database
         # uses object's #to_db_hash method
         def insert id, hsh
-          # safely
-          # Log.debug("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
           cassandra_db.insert(table_name, id.to_s, hsh.to_db_hash)
-          # end
         end
 
         def streaming_writer
@@ -68,26 +65,14 @@ module Wukong
         # Use avro and stream into cassandra
         #
         def streaming_insert id, hsh
-          # safely
-          # Log.debug("Insert #{[table_name, id, hsh.to_db_hash].inspect}")
           streaming_writer.put(id.to_s, hsh.to_db_hash)
-          # end
         end
 
         # Insert into the cassandra database
         # calls out to object's #from_db_hash method
         def load id
-          # safely("Fetch #{args.inspect}") do
           hsh = cassandra_db.get(self.class_basename, id.to_s)
           from_db_hash(hsh) if hsh
-          # end
-        end
-
-        # Wrapper for DB operations to catch errors
-        def safely action, &block
-          begin
-            block.call
-          rescue StandardError => e ; handle_error(action, e); end
         end
 
         # invalidates cassandra connection on errors where that makes sense.

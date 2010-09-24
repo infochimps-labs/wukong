@@ -196,6 +196,12 @@ module Wukong
         "#{File.basename(this_script_filename)}---#{input_paths}---#{output_path}".gsub(%r{[^\w/\.\-\+]+}, '')
     end
 
+    # Wrapper for dangerous operations to catch errors
+    def safely action, &block
+      begin
+        block.call
+      rescue StandardError => e ; handle_error(action, e); end
+    end
 
   protected
 
