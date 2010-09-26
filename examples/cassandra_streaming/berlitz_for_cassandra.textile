@@ -1,0 +1,22 @@
+
+
+
+* concurrent_reads, concurrent_writes
+
+* ColumnFamily, SuperColumnFamily
+
+* Keyspace
+
+create temp table uncommonplaces (
+  id integer primary key asc,
+  nvisits integer)
+  ;
+
+
+mmap means index data files and index files
+  mmap in cassandra consumes up to 2GB
+
+  the data we store in the ring is immutable (most of it) or live but independently replay-able (some of it). If I lost say an hour of writes, that's not such a big deal; I could re-play or loa. Is it safe 
+  
+
+* Don't use the cli.  Use Ruby (irb) or Python

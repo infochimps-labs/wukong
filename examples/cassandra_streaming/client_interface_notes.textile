@@ -1,0 +1,161 @@
+
+To use the standard interface, create a ColumnFamily instance.
+
+    >>> cf = pycassa.ColumnFamily(client, 'Test ColumnFamily')
+
+The value returned by an insert is the timestamp used for insertion, or int(time.time() * 1e6). You may replace this function with your own (see Extra Documentation).
+
+    >>> cf.insert('foo', {'column1': 'val1'})
+    1261349837816957
+    >>> cf.get('foo')
+    {'column1': 'val1'}
+
+Insert also acts to update values.
+
+    >>> cf.insert('foo', {'column1': 'val2'})
+    1261349910511572
+    >>> cf.get('foo')
+    {'column1': 'val2'}
+
+You may insert multiple columns at once.
+
+    >>> cf.insert('bar', {'column1': 'val3', 'column2': 'val4'})
+    1261350013606860
+    >>> cf.multiget(['foo', 'bar'])
+    {'foo': {'column1': 'val2'}, 'bar': {'column1': 'val3', 'column2': 'val4'}}
+    >>> cf.get_count('bar')
+    2
+
+get_range() returns an iterable. Call it with list() to convert it to a list.
+
+    >>> list(cf.get_range())
+    [('bar', {'column1': 'val3', 'column2': 'val4'}), ('foo', {'column1': 'val2'})]
+    >>> list(cf.get_range(row_count=1))
+    [('bar', {'column1': 'val3', 'column2': 'val4'})]
+
+You can remove entire keys or just a certain column.
+
+    >>> cf.remove('bar', columns=['column1'])
+    1261350220106863
+    >>> cf.get('bar')
+    {'column2': 'val4'}
+    >>> cf.remove('bar')
+    1261350226926859
+    >>> cf.get('bar')
+    Traceback (most recent call last):
+    ...
+    cassandra.ttypes.NotFoundException: NotFoundException()
+
+pycassa retains the behavior of Cassandra in that get_range() may return removed keys for a while. Cassandra will eventually delete them, so that they disappear.
+
+    >>> cf.remove('foo')
+    >>> cf.remove('bar')
+    >>> list(cf.get_range())
+    [('bar', {}), ('foo', {})]
+
+    ... After some amount of time
+
+    >>> list(cf.get_range())
+    []
+
+Class Mapping
+-------------
+
+You can also map existing classes using ColumnFamilyMap.
+
+    >>> class Test(object):
+    ...     string_column       = pycassa.String(default='Your Default')
+    ...     int_str_column      = pycassa.IntString(default=5)
+    ...     float_str_column    = pycassa.FloatString(default=8.0)
+    ...     float_column        = pycassa.Float64(default=0.0)
+    ...     datetime_str_column = pycassa.DateTimeString() # default=None
+
+The defaults will be filled in whenever you retrieve instances from the Cassandra server and the column doesn't exist. If, for example, you add columns in the future, you simply add the relevant column and the default will be there when you get old instances.
+
+IntString, FloatString, and DateTimeString all use string representations for storage. Float64 is stored as a double and is native-endian. Be aware of any endian issues if you use it on different architectures, or perhaps make your own column type.
+
+    >>> Test.objects = pycassa.ColumnFamilyMap(Test, cf)
+
+All the functions are exactly the same, except that they return instances of the supplied class when possible.
+
+    >>> t = Test()
+    >>> t.key = 'maptest'
+    >>> t.string_column = 'string test'
+    >>> t.int_str_column = 18
+    >>> t.float_column = t.float_str_column = 35.8
+    >>> from datetime import datetime
+    >>> t.datetime_str_column = datetime.now()
+    >>> Test.objects.insert(t)
+    1261395560186855
+
+    >>> Test.objects.get(t.key).string_column
+    'string test'
+    >>> Test.objects.get(t.key).int_str_column
+    18
+    >>> Test.objects.get(t.key).float_column
+    35.799999999999997
+    >>> Test.objects.get(t.key).datetime_str_column
+    datetime.datetime(2009, 12, 23, 17, 6, 3)
+
+    >>> Test.objects.multiget([t.key])
+    {'maptest': <__main__.Test object at 0x7f8ddde0b9d0>}
+    >>> list(Test.objects.get_range())
+    [<__main__.Test object at 0x7f8ddde0b710>]
+    >>> Test.objects.get_count(t.key)
+    7
+
+    >>> Test.objects.remove(t)
+    1261395603906864
+    >>> Test.objects.get(t.key)
+    Traceback (most recent call last):
+    ...
+    cassandra.ttypes.NotFoundException: NotFoundException()
+
+Note that, as mentioned previously, get_range() may continue to return removed rows for some time:
+
+    >>> Test.objects.remove(t)
+    1261395603756875
+    >>> list(Test.objects.get_range())
+    [<__main__.Test object at 0x7fac9c85ea90>]
+    >>> list(Test.objects.get_range())[0].string_column
+    'Your Default'
+
+SuperColumns
+------------
+
+To use SuperColumns, pass super=True to the ColumnFamily constructor.
+
+    >>> cf = pycassa.ColumnFamily(client, 'Test SuperColumnFamily', super=True)
+    >>> cf.insert('key1', {'1': {'sub1': 'val1', 'sub2': 'val2'}, '2': {'sub3': 'val3', 'sub4': 'val4'}})
+
+    >>> cf.get('key1')
+    {'1': {'sub2': 'val2', 'sub1': 'val1'}, '2': {'sub4': 'val4', 'sub3': 'val3'}}
+    >>> cf.remove('key1', super_column='1')
+    1261490176976864
+    >>> cf.get('key1')
+    {'2': {'sub4': 'val4', 'sub3': 'val3'}}
+    >>> cf.get('key1', super_column='2')
+    {'sub3': 'val3', 'sub4': 'val4'}
+    >>> cf.multiget(['key1'], super_column='2')
+    {'key1': {'sub3': 'val3', 'sub4': 'val4'}}
+    >>> list(cf.get_range(super_column='2'))
+    [('key1', {'sub3': 'val3', 'sub4': 'val4'})]
+
+You may also use a ColumnFamilyMap with SuperColumns:
+
+    >>> Test.objects = pycassa.ColumnFamilyMap(Test, cf)
+    >>> t = Test()
+    >>> t.key = 'key1'
+    >>> t.super_column = 'super1'
+    >>> t.string_column = 'foobar'
+    >>> t.int_str_column = 5
+    >>> t.float_column = t.float_str_column = 35.8
+    >>> t.datetime_str_column = datetime.now()
+    >>> Test.objects.insert(t)
+    >>> Test.objects.get(t.key)
+    {'super1': <__main__.Test object at 0x20ab350>}
+    >>> Test.objects.multiget([t.key])
+    {'key1': {'super1': <__main__.Test object at 0x20ab550>}}
+
+These output values retain the same format as given by the Cassandra thrift interface.
+2
