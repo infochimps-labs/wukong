@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'wukong'
+require 'wukong/streamer/count_keys'
+
+#
+# Run locally for testing:
+#
+# hdp-cat /hdfs/sometable.tsv | head -n100 | ./hdp-bin --column=4 --bin_width=0.1 --map | sort | ./hdp-bin --reduce
+#
+# Run on a giant dataset:
+#
+# hdp-bin --run --column=4 --bin_width=0.1 /hdfs/sometable.tsv /hdfs/sometable_col4_binned
+#
+
+Settings.define :column,    :default => 1,   :type => Integer, :description => "The column to bin"
+Settings.define :bin_width, :default => 0.5, :type => Float,   :description => "What should the bin width be?"
+
+module HadoopBinning
+  
+  class Mapper < Wukong::Streamer::RecordStreamer
+
+    def initialize *args
+      super(*args)
+      @bin_width = options.bin_width
+      @column    = options.column
+    end
+    
+    def process *args
+      yield bin_field(args[@column])
+    end
+
+    def bin_field field
+      (field.to_f/@bin_width).round*@bin_width
+    end
+    
+  end
+
+  class Reducer < Wukong::Streamer::CountKeys; end
+  
+end
+
+Wukong::Script.new(HadoopBinning::Mapper, HadoopBinning::Reducer).run
