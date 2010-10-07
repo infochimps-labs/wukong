@@ -12,7 +12,7 @@ module Wukong
       def initialize options={}
         # super wants a :filename in the options or it will fail. We need to get the initial filename
         # set up before we call super, so we need all of the parts of the pattern set up.
-        self.rootdir          = options[:rootdir]   || Settings[:chunk_file_rootdir]
+        self.rootdir          = options[:rootdir] || Settings[:chunk_file_rootdir]
         self.handle           = options[:handle]
         pattern               = options[:pattern] || Settings[:chunk_file_pattern]
         self.filename_pattern = FilenamePattern.new(pattern, :handle => handle, :rootdir => self.rootdir)

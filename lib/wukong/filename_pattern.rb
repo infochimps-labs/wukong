@@ -16,12 +16,12 @@ module Wukong
       # walk through pattern, replacing tokens (eg :time or :pid) with the
       # corresponding value.
       #
+      # Don't use ':' in a pattern except to introduce a token
+      # and separate tokens with '-', '+' '/' or '.'
+      #
       def make token_vals={}
         token_vals = token_val_defaults.merge token_vals
         token_vals[:timestamp] ||= Time.now.utc.strftime("%Y%m%d%H%M%S")
-        # CHH_NOTE: The following is broken for patterns that need a ":" or 
-        # patterns that need text following a token with no special chars in 
-        # between.
         val = pattern.gsub(/:(\w+)/){ replace($1, token_vals)  }
         val
       end
@@ -39,7 +39,7 @@ module Wukong
         case token
         when :pid           then pid
         when :hostname      then hostname
-        when :handle        then token_vals[:handle] 
+        when :handle        then token_vals[:handle]
         when :handle_prefix then token_vals[:handle].to_s[0..5]
         when :timestamp     then token_vals[:timestamp]
         when :date          then token_vals[:timestamp][ 0..7]
@@ -56,7 +56,7 @@ module Wukong
 
       # Memoized: the hostname for the machine running this script.
       def hostname
-        @hostname ||= ENV['HOSTNAME'] || `hostname`.delete("\n")
+        @hostname ||= ENV['HOSTNAME'] || `hostname`.chomp
       end
       # Memoized: the Process ID for this invocation.
       def pid
@@ -64,9 +64,10 @@ module Wukong
       end
 
       # Characters deemed safe in a filename;
-      SAFE_CHARS = 'a-zA-Z0-9_\-\.\+\/\;'
+      SAFE_CHARS = 'a-zA-Z0-9_\-\.\+\/'
+      RE_SAFE_FILENAME = %r{[^#{SAFE_CHARS}]+}moxi
       def self.sanitize str
-        str.gsub(%r{[^#{SAFE_CHARS}]+}, '-')
+        str.gsub(RE_SAFE_FILENAME, '-')
       end
 
     end
