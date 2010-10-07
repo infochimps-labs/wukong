@@ -1,7 +1,3 @@
-require 'avro'
-
-Settings.define :cassandra_avro_schema, :default => ('/usr/local/share/cassandra/interface/avro/cassandra.avpr')
-
 module Wukong
   module Store
     #
@@ -15,14 +11,14 @@ module Wukong
       # Store model to the DB
       #
       def save
-        self.class.insert id, self
+        self.class.insert key, self.to_db_hash
       end
 
       #
       # Store model using avro writer
       #
       def streaming_save
-        self.class.streaming_insert id, self
+        self.class.streaming_insert key, self
       end
       #
       # Flatten attributes for storage in the DB.
@@ -36,7 +32,7 @@ module Wukong
       #
       def to_db_hash
         db_hsh = {}
-        to_hash.each{|k,v| db_hsh[k] = v.to_s unless v.nil? }
+        to_hash.each{|k,v| db_hsh[k.to_s] = v.to_s unless v.nil? }
         db_hsh
       end
 
@@ -53,8 +49,9 @@ module Wukong
 
         # Insert into the cassandra database
         # uses object's #to_db_hash method
-        def insert id, hsh
-          cassandra_db.insert(table_name, id.to_s, hsh.to_db_hash)
+        def insert key, *args
+          hsh = args.first
+          cassandra_db.insert(table_name, key.to_s, hsh)
         end
 
         def streaming_writer
@@ -64,14 +61,14 @@ module Wukong
         #
         # Use avro and stream into cassandra
         #
-        def streaming_insert id, hsh
-          streaming_writer.put(id.to_s, hsh.to_db_hash)
+        def streaming_insert key, hsh
+          streaming_writer.put(key.to_s, hsh.to_db_hash)
         end
 
         # Insert into the cassandra database
         # calls out to object's #from_db_hash method
-        def load id
-          hsh = cassandra_db.get(self.class_basename, id.to_s)
+        def load key
+          hsh = cassandra_db.get(self.class_basename, key.to_s)
           from_db_hash(hsh) if hsh
         end
 
@@ -120,9 +117,9 @@ module Wukong
       # Iterate through each key value pair in the hash to
       # be inserted and write directly one at a time
       #
-      def put id, hsh
+      def put key, hsh
         hsh.each do |attr, val|
-          write_directly(id, attr, val)
+          write_directly(key, attr, val)
         end
       end
 
@@ -137,5 +134,23 @@ module Wukong
       end
     end
 
+  end
+end
+
+Hash.class_eval do
+  #
+  # Flatten attributes for storage in the DB.
+  #
+  # * omits elements whose value is nil
+  # * calls to_s on everything else
+  # * This means that blank strings are preserved;
+  # * and that false is saved as 'false'
+  #
+  # Override if you think something fancier than that should happen.
+  #
+  def to_db_hash
+    db_hsh = {}
+    to_hash.each{|k,v| db_hsh[k.to_s] = v.to_s unless v.nil? }
+    db_hsh
   end
 end
