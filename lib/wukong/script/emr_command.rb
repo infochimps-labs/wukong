@@ -1,20 +1,22 @@
 require 'right_aws'
 require 'configliere/config_block'
-Settings.read(File.expand_path('~/.wukong/emr.yaml'))
+#
 Settings.define :emr_credentials_file, :description => 'A .json file holding your AWS access credentials. See http://bit.ly/emr_credentials_file for format'
 Settings.define :access_key,           :description => 'AWS Access key',        :env_var => 'AWS_ACCESS_KEY_ID'
 Settings.define :secret_access_key,    :description => 'AWS Secret Access key', :env_var => 'AWS_SECRET_ACCESS_KEY'
 Settings.define :emr_runner,           :description => 'Path to the elastic-mapreduce command (~ etc will be expanded)'
 Settings.define :emr_root,             :description => 'S3 bucket and path to use as the base for Elastic MapReduce storage, organized by job name'
 Settings.define :emr_data_root,        :description => 'Optional '
-Settings.define :emr_bootstrap_script, :description => 'Bootstrap actions for Elastic Map Reduce machine provisioning', :default => '~/.wukong/emr_bootstrap.sh', :type => :filename
-Settings.define :emr_keep_alive,       :description => 'Whether to keep machine running after job invocation', :type => :boolean
+Settings.define :emr_bootstrap_script, :description => 'Bootstrap actions for Elastic Map Reduce machine provisioning', :default => '~/.wukong/emr_bootstrap.sh', :type => :filename, :finally => lambda{ Settings.emr_bootstrap_script = File.expand_path(Settings.emr_bootstrap_script) }
+Settings.define :alive,                :description => 'Whether to keep machine running after job invocation', :type => :boolean
 #
 Settings.define :key_pair_file,        :description => 'AWS Key pair file',                               :type => :filename
 Settings.define :key_pair,             :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file.to_s, '.pem') if Settings.key_pair_file }
 Settings.define :instance_type,        :description => 'AWS instance type to use',                        :default => 'm1.small'
 Settings.define :master_instance_type, :description => 'Overrides the instance type for the master node', :finally => lambda{ Settings.master_instance_type ||= Settings.instance_type }
 Settings.define :jobflow,              :description => "ID of an existing EMR job flow. Wukong will create a new job flow"
+#
+Settings.read(File.expand_path('~/.wukong/emr.yaml'))
 
 module Wukong
   #
@@ -31,7 +33,7 @@ module Wukong
       Log.info "  Copying this script to the cloud."
       S3Util.store(this_script_filename, mapper_s3_uri)
       S3Util.store(this_script_filename, reducer_s3_uri)
-      S3Util.store(Settings.emr_bootstrap_script, bootstrap_s3_uri)
+      S3Util.store(File.expand_path(Settings.emr_bootstrap_script), bootstrap_s3_uri)
     end
 
     def copy_jars_to_cloud
@@ -41,22 +43,22 @@ module Wukong
 
     def execute_emr_runner
       command_args = []
-      command_args << Settings.dashed_flags(:hadoop_version, :enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
-      command_args += emr_credentials
       if Settings.jobflow
         command_args << Settings.dashed_flag_for(:jobflow)
       else
-        command_args << Settings.dashed_flag_for(:emr_keep_alive, :alive)
         command_args << "--create --name=#{job_name}"
+        command_args << Settings.dashed_flag_for(:alive)
         command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type).join(' ')
       end
+      command_args << Settings.dashed_flags(:hadoop_version, :enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
+      command_args += emr_credentials
       command_args += [
         "--bootstrap-action=#{bootstrap_s3_uri}",
         "--log-uri=#{log_s3_uri}",
         "--stream",
         "--mapper=#{mapper_s3_uri} ",
         "--reducer=#{reducer_s3_uri} ",
-        "--input=#{input_paths} --output=#{output_path}",
+        "--input=#{input_paths.join(",")} --output=#{output_path}",
         # to specify zero reducers:
         # "--arg '-D mapred.reduce.tasks=0'"
       ]
@@ -99,10 +101,10 @@ module Wukong
       emr_s3_path(job_handle, 'code', job_handle+'-reducer.rb')
     end
     def log_s3_uri
-      emr_s3_path(job_handle, 'log', job_handle)
+      emr_s3_path(job_handle, 'log', 'emr_jobs')
     end
     def bootstrap_s3_uri
-      emr_s3_path(job_handle, 'bin', "bootstrap-#{job_handle}.sh")
+      emr_s3_path(job_handle, 'bin', "emr_bootstrap.sh")
     end
     def wukong_libs_s3_uri
       emr_s3_path(job_handle, 'code', "wukong-libs.jar")
@@ -133,15 +135,15 @@ module Wukong
         def s3
           @s3 ||= RightAws::S3Interface.new(
             Settings.access_key, Settings.secret_access_key,
-            {:multi_thread => true, :logger => Log})
+            {:multi_thread => true, :logger => Log, :port => 80, :protocol => 'http' })
         end
         def bucket_and_path_from_uri uri
           uri =~ %r{^s3\w*://([\w\.\-]+)\W*(.*)} and return([$1, $2])
         end
         def store filename, uri
-          Log.debug "    #{filename} => #{uri}"
           dest_bucket, dest_key = bucket_and_path_from_uri(uri)
-          contents = File.open(filename)
+          Log.debug "    #{filename} => #{dest_bucket} / #{dest_key}"
+          contents = File.read(filename)
           s3.store_object(:bucket => dest_bucket, :key => dest_key, :data => contents)
         end
       end

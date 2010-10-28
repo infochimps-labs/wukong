@@ -24,4 +24,5 @@ class FooStreamer < Wukong::Streamer::LineStreamer
   end
 end
 
+Settings.resolve!
 Wukong::Script.new(FooStreamer, FooStreamer).run
