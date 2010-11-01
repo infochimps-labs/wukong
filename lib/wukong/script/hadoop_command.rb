@@ -34,6 +34,7 @@ module Wukong
     Settings.define :max_record_length,      :jobconf => true, :description => 'mapred.linerecordreader.maxlength',                      :wukong => true # "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
     Settings.define :min_split_size,         :jobconf => true, :description => 'mapred.min.split.size',                                  :wukong => true
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
+    Settings.define :split_on_xml_tag,                         :description => "Parse XML document by specifying the tag name: 'anything found between <tag> and </tag> will be treated as one record for map tasks'", :wukong => true
 
     #
     # Assemble the hadoop command to execute
@@ -120,6 +121,9 @@ module Wukong
 
     def hadoop_other_args
       extra_str_args  = [ options[:extra_args] ]
+      if Settings.split_on_xml_tag
+        extra_str_args << %Q{-inputreader 'StreamXmlRecord,begin=<#{Settings.split_on_xml_tag}>,end=</#{Settings.split_on_xml_tag}>'}
+      end
       extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
