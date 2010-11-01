@@ -103,9 +103,8 @@ module Wukong
       # otherwise they must be uniformly strings
       #
       def from_hash(hsh, has_symbol_keys=false)
-        keys = self.keys
-        keys = keys.map(&:to_sym) if has_symbol_keys
-        self.new *hsh.values_of(*keys)
+        extract_keys = has_symbol_keys ? self.keys.map(&:to_sym) : self.keys.map(&:to_s)
+        self.new *hsh.values_of(*extract_keys)
       end
       #
       # The last portion of the class in underscored form

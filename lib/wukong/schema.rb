@@ -50,6 +50,35 @@ class << Yaml       ; def to_pig() 'chararray'     end ; end if defined?(Yaml)
 class << Json       ; def to_pig() 'chararray'     end ; end if defined?(Json)
 class << Regex      ; def to_pig() 'chararray'     end ; end if defined?(Regex)
 
+
+#
+# Basic types: Avro conversion
+#
+class << Integer    ; def to_avro() 'int'           end ; end
+class << Bignum     ; def to_avro() 'long'          end ; end
+class << Float      ; def to_avro() 'float'         end ; end
+class << Symbol     ; def to_avro() 'string'        end ; end
+class << Date       ; def to_avro() 'long'          end ; end
+class << Time       ; def to_avro() 'long'          end ; end
+class << DateTime   ; def to_avro() 'long'          end ; end
+class << String     ; def to_avro() 'string'        end ; end
+class << Text       ; def to_avro() 'string'        end ; end if defined?(Text)
+class << Blob       ; def to_avro() 'bytearray'     end ; end if defined?(Blob)
+class << Boolean    ; def to_avro() 'bytearray'     end ; end if defined?(Boolean)
+class String        ; def to_avro() self.to_s ;     end ; end
+class Symbol        ; def to_avro() self.to_s ;     end ; end
+
+class << BigDecimal ; def to_avro() 'long'          end ; end if defined?(BigDecimal)
+class << EpochTime  ; def to_avro() 'integer'       end ; end if defined?(EpochTime)
+class << FilePath   ; def to_avro() 'string'        end ; end if defined?(FilePath)
+class << Flag       ; def to_avro() 'string'        end ; end if defined?(Flag)
+class << IPAddress  ; def to_avro() 'string'        end ; end if defined?(IPAddress)
+class << URI        ; def to_avro() 'string'        end ; end if defined?(URI)
+class << Csv        ; def to_avro() 'string'        end ; end if defined?(Csv)
+class << Yaml       ; def to_avro() 'string'        end ; end if defined?(Yaml)
+class << Json       ; def to_avro() 'string'        end ; end if defined?(Json)
+class << Regex      ; def to_avro() 'string'        end ; end if defined?(Regex)
+
 module Wukong
   #
   # Export model's structure for loading and manipulating in other frameworks,
@@ -208,6 +237,24 @@ module Wukong
         str.join("\n")
       end
 
+
+
+
+      #
+      # Avro
+      #
+      def to_avro
+        require 'json' # yikes
+        h = {}
+        h[:name]   = self.name
+        h[:type]   = "record"
+        h[:fields] =  []
+        members.zip(mtypes).each do |member, type|
+          h[:fields] << {:name => member.to_s, :type => type.to_avro}
+        end
+        h.to_json
+      end
+      
     end
     # standard stanza for making methods appear on the class itself on include
     def self.included base

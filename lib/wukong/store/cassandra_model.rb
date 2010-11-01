@@ -11,7 +11,7 @@ module Wukong
       # Store model to the DB
       #
       def save
-        self.class.insert id, self
+        self.class.insert key, self.to_db_hash
       end
 
       #
@@ -26,7 +26,7 @@ module Wukong
       #
       def to_db_hash
         db_hsh = {}
-        to_hash.each{|k,v| db_hsh[k] = v.to_s unless v.nil? }
+        to_hash.each{|k,v| db_hsh[k.to_s] = v.to_s unless v.nil? }
         db_hsh
       end
 
@@ -43,14 +43,15 @@ module Wukong
 
         # Insert into the cassandra database
         # uses object's #to_db_hash method
-        def insert id, hsh
-          cassandra_db.insert(table_name, id.to_s, hsh.to_db_hash)
+        def insert key, *args
+          hsh = args.first
+          cassandra_db.insert(table_name, key.to_s, hsh)
         end
 
         # Insert into the cassandra database
         # calls out to object's #from_db_hash method
-        def load id
-          hsh = cassandra_db.get(self.class_basename, id.to_s)
+        def load key
+          hsh = cassandra_db.get(self.class_basename, key.to_s)
           from_db_hash(hsh) if hsh
         end
 
@@ -67,5 +68,23 @@ module Wukong
       end
     end
 
+  end
+end
+
+Hash.class_eval do
+  #
+  # Flatten attributes for storage in the DB.
+  #
+  # * omits elements whose value is nil
+  # * calls to_s on everything else
+  # * This means that blank strings are preserved;
+  # * and that false is saved as 'false'
+  #
+  # Override if you think something fancier than that should happen.
+  #
+  def to_db_hash
+    db_hsh = {}
+    to_hash.each{|k,v| db_hsh[k.to_s] = v.to_s unless v.nil? }
+    db_hsh
   end
 end

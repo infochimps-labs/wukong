@@ -3,7 +3,7 @@ Settings.define :cassandra_keyspace, :default => 'soc_net_tw',                  
 
 module Wukong
   module Store
-    module Cassandra
+    module CassandraStore
       autoload :StructLoader, 'wukong/store/cassandra/struct_loader'
     end
   end

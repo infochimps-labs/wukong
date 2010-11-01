@@ -19,9 +19,9 @@ class Time
   def self.parse_safely dt
     return nil if dt.blank?
     begin
-      case dt
-      when Time                         then dt.utc
-      when (dt.to_s =~ /\A\d{14}Z?\z/)  then parse(dt.to_s+'Z', true)
+      case
+      when dt.is_a?(Time)               then dt.utc
+      when (dt.to_s =~ /\A\d{14}\z/)    then parse(dt.to_s+'Z', true)
       else                                   parse(dt.to_s,     true).utc
       end
     rescue StandardError => e

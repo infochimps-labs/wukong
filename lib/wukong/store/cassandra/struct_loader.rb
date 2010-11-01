@@ -1,3 +1,7 @@
+require 'avro'
+
+Settings.define :cassandra_avro_schema, :default => ('/usr/local/share/cassandra/interface/avro/cassandra.avpr')
+
 module Wukong::Store::Cassandra
   class StructLoader < Wukong::Streamer::StructStreamer
     def initialize *args

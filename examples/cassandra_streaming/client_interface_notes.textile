@@ -1,3 +1,42 @@
+Method calls
+
+get
+  * ColumnOrSuperColumn get(string keyspace, string key, ColumnPath column_path, ConsistencyLevel consistency_level) 
+    Get the Column or SuperColumn at the given column_path. If no value is present, NotFoundException is thrown. (This is the only method that can throw an exception under non-failure conditions.)
+
+get_slice
+  * list<ColumnOrSuperColumn> get_slice(string keyspace, string key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) 
+    Get the group of columns contained by column_parent (either a ColumnFamily name or a ColumnFamily/SuperColumn name pair) specified by the given SlicePredicate struct.
+
+multiget_slice
+  * map<string,list<ColumnOrSuperColumn>> multiget_slice(string keyspace, list<string> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) 
+    Retrieves slices for column_parent and predicate on each of the given keys in parallel. Keys are a `list<string> of the keys to get slices for.
+    This is similar to get_range_slices (Cassandra 0.6) or get_range_slice (Cassandra 0.5) except operating on a set of non-contiguous keys instead of a range of keys.
+
+get_count
+  * i32 get_count(string keyspace, string key, ColumnParent column_parent, ConsistencyLevel consistency_level) 
+    Counts the columns present in column_parent.
+    The method is not O(1). It takes all the columns from disk to calculate the answer. The only benefit of the method is that you do not need to pull all the columns over Thrift interface to count them.
+
+get_range_slices        Requires Cassandra 0.6
+  * list<KeySlice> get_range_slices(string keyspace, ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level) 
+    Replaces get_range_slice. Returns a list of slices for the keys within the specified KeyRange. Unlike get_key_range, this applies the given predicate to all keys in the range, not just those with undeleted matching data.
+
+insert
+  * void insert(string keyspace, string key, ColumnPath column_path, binary value, i64 timestamp, ConsistencyLevel consistency_level) 
+    Insert or update a Column consisting of (column_path.column, value, timestamp) at the given column_path.column_family and optional column_path.super_column. Note that column_path.column is here required, since a SuperColumn cannot directly contain binary values -- it can only contain sub-Columns.
+
+batch_mutate    Requires Cassandra 0.6
+  * void batch_mutate(string keyspace, map<string,map<string,list<Mutation>>> mutation_map, ConsistencyLevel consistency_level) 
+    Executes the specified mutations on the keyspace. mutation_map is a map<string, map<string, list<Mutation>>>; the outer map maps the key to the inner map, which maps the column family to the Mutation; can be read as: map<key : string, map<column_family : string, list<Mutation>>>. To be more specific, the outer map key is a row key, the inner map key is the column family name.
+    A Mutation specifies columns to insert, update or delete. See Mutation and Deletion above for more details.
+
+remove
+  * void remove(string keyspace, string key, ColumnPath column_path, i64 timestamp, ConsistencyLevel consistency_level) 
+    Remove data from the row specified by key at the granularity specified by column_path, and the given timestamp. Note that all the values in column_path besides column_path.column_family are truly optional: you can remove the entire row by just specifying the ColumnFamily, or you can remove a SuperColumn or a single Column by specifying those levels too. Note that the timestamp is needed, so that if the commands are replayed in a different order on different nodes, the same result is produced. 
+
+
+===========================================================================
 
 To use the standard interface, create a ColumnFamily instance.
 
