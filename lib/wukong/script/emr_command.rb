@@ -8,6 +8,7 @@ Settings.define :emr_runner,           :description => 'Path to the elastic-mapr
 Settings.define :emr_root,             :description => 'S3 bucket and path to use as the base for Elastic MapReduce storage, organized by job name'
 Settings.define :emr_data_root,        :description => 'Optional '
 Settings.define :emr_bootstrap_script, :description => 'Bootstrap actions for Elastic Map Reduce machine provisioning', :default => '~/.wukong/emr_bootstrap.sh', :type => :filename, :finally => lambda{ Settings.emr_bootstrap_script = File.expand_path(Settings.emr_bootstrap_script) }
+Settings.define :emr_extra_args,       :description => 'kludge: allows you to stuff extra args into the elastic-mapreduce invocation', :type => Array, :wukong => true
 Settings.define :alive,                :description => 'Whether to keep machine running after job invocation', :type => :boolean
 #
 Settings.define :key_pair_file,        :description => 'AWS Key pair file',                               :type => :filename
@@ -48,20 +49,22 @@ module Wukong
       else
         command_args << "--create --name=#{job_name}"
         command_args << Settings.dashed_flag_for(:alive)
-        command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type).join(' ')
+        command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type, :hadoop_version).join(' ')
+        command_args << Settings.dashed_flags(:availability_zone, :key_pair, :key_pair_file).join(' ')
+        command_args << "--bootstrap-action=#{bootstrap_s3_uri}"
       end
-      command_args << Settings.dashed_flags(:hadoop_version, :enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
+      command_args << Settings.dashed_flags(:enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
       command_args += emr_credentials
       command_args += [
-        "--bootstrap-action=#{bootstrap_s3_uri}",
         "--log-uri=#{log_s3_uri}",
         "--stream",
         "--mapper=#{mapper_s3_uri} ",
         "--reducer=#{reducer_s3_uri} ",
         "--input=#{input_paths.join(",")} --output=#{output_path}",
-        # to specify zero reducers:
-        # "--arg '-D mapred.reduce.tasks=0'"
       ]
+      # eg to specify zero reducers:
+      # Settings[:emr_extra_args] = "--arg '-D mapred.reduce.tasks=0'"
+      command_args += Settings.emr_extra_args
       Log.info 'Follow along at http://localhost:9000/job'
       execute_command!( File.expand_path(Settings.emr_runner), *command_args )
     end
@@ -73,7 +76,6 @@ module Wukong
       else
         command_args << %Q{--access-id #{Settings.access_key} --private-key #{Settings.secret_access_key} }
       end
-      command_args << Settings.dashed_flags(:availability_zone, :key_pair, :key_pair_file).join(' ')
       command_args
     end
 
