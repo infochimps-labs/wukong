@@ -122,7 +122,7 @@ module Wukong
     def hadoop_other_args
       extra_str_args  = [ options[:extra_args] ]
       if Settings.split_on_xml_tag
-        extra_str_args << %Q{-inputreader 'StreamXmlRecord,begin=<#{Settings.split_on_xml_tag}>,end=</#{Settings.split_on_xml_tag}>'}
+        extra_str_args << %Q{-inputreader 'StreamXmlRecordReader,begin=<#{Settings.split_on_xml_tag}>,end=</#{Settings.split_on_xml_tag}>'}
       end
       extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
