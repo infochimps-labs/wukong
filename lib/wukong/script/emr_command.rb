@@ -42,6 +42,10 @@ module Wukong
       # "--cache-archive=#{wukong_libs_s3_uri}#vendor",
     end
 
+    def hadoop_options_for_emr_runner
+      [hadoop_jobconf_options, hadoop_other_args].flatten.compact.map{|hdp_opt| "--arg '#{hdp_opt}'"}
+    end
+
     def execute_emr_runner
       command_args = []
       if Settings.jobflow
@@ -64,7 +68,8 @@ module Wukong
       ]
       # eg to specify zero reducers:
       # Settings[:emr_extra_args] = "--arg '-D mapred.reduce.tasks=0'"
-      command_args += Settings.emr_extra_args
+      command_args += Settings[:emr_extra_args] unless Settings[:emr_extra_args].blank?
+      command_args += hadoop_options_for_emr_runner
       Log.info 'Follow along at http://localhost:9000/job'
       execute_command!( File.expand_path(Settings.emr_runner), *command_args )
     end
