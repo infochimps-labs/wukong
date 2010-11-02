@@ -54,8 +54,6 @@ module Wukong
     # others
     #
     def execute_hadoop_workflow
-      # If no reducer_klass and no reduce_command, then skip the reduce phase
-      options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
       # Input paths join by ','
       input_paths = @input_paths.join(',')
       #
@@ -81,6 +79,8 @@ module Wukong
       # Fixup these options
       options[:reuse_jvms] = '-1'             if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false' if (options[:ignore_exit_status] == true)
+      # If no reducer_klass and no reduce_command, then skip the reduce phase
+      options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
       # Fields hadoop should use to distribute records to reducers
       unless options[:partition_fields].blank?
         jobconf_options += [
