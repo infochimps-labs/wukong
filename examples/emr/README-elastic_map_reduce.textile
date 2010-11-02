@@ -1,14 +1,31 @@
 
-# Download the Amazon elastic-mapreduce runner from http://elasticmapreduce.s3.amazonaws.com/elastic-mapreduce-ruby.zip
+# Sign up for elastic map reduce and S3 at Amazon AWS.
 
-# Create a bucket and path to hold your EMR logs, scripts and other ephemera. For instance you might choose 'emr.yourdomain.com' as the bucket and '/wukong' as a scoping path within that bucket. In that case you will refer to it with a path like s3n://emr.yourdomain.com/wukong (see notes below about s3n:// vs. s3:// URLs).
+# Download the Amazon elastic-mapreduce runner: either the official version at http://elasticmapreduce.s3.amazonaws.com/elastic-mapreduce-ruby.zip or the infochimps fork (which has support for Ruby 1.9) at http://github.com/infochimps/elastic-mapreduce .
+
+# Create a bucket and path to hold your EMR logs, scripts and other ephemera. For instance you might choose 'emr.yourdomain.com' as the bucket and '/wukong' as a scoping path within that bucket. In that case you will refer to it with a path like s3://emr.yourdomain.com/wukong (see notes below about s3n:// vs. s3:// URLs).
 
 # Copy the contents of wukong/examples/emr/dot_wukong_dir to ~/.wukong
-# Edit emr.yaml -- it has instructions for the 
 
+# Edit emr.yaml and credentials.json, adding your keys where appropriate and  following the other instructions. Start with a single-node m1.small cluster as you'll probably have some false starts beforethe flow of logging in, checking the logs, etc becomes clear.
 
+# You should now be good to launch a program. We'll give it the @--alive@ flag so that the machine sticks around if there were any issues:
 
+   ./elastic_mapreduce_example.rb --run=emr --alive s3://emr.yourdomain.com/wukong/data/input s3://emr.yourdomain.com/wukong/data/output
 
+# If you visit the "AWS console":http://bit.ly/awsconsole you should now see a jobflow with two steps. The first sets up debugging for the job; the second is your hadoop task.
+
+# The "AWS console":http://bit.ly/awsconsole also has the public IP of the master node. You can log in to the machine directly:
+
+<pre>
+  ssh -i /path/to/your/keypair.pem hadoop@ec2-148-37-14-128.compute-1.amazonaws.com
+</pre>
+
+h3. Lorkbong
+
+Lorkbong (named after the staff carried by Sun Wukong) is a very very simple example Heroku app that lets you trigger showing job status or launching a new job, either by visiting a special URL or by triggering a rake task. Get its code from
+
+  http://github.com/mrflip/lorkbong
 
 h3. s3n:// vs. s3:// URLs
 
