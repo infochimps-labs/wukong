@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x  # turn on tracing
 
 # A url directory with the scripts you'd like to stuff into the machine
 REMOTE_FILE_URL_BASE="http://github.com/infochimps/wukong"

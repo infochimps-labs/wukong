@@ -42,18 +42,22 @@ module Wukong
     end
 
     def execute_emr_runner
+      fix_paths!
       command_args = []
       if Settings.jobflow
         command_args << Settings.dashed_flag_for(:jobflow)
       else
         command_args << "--create --name=#{job_name}"
         command_args << Settings.dashed_flag_for(:alive)
-        command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type).join(' ')
+        command_args << Settings.dashed_flags(
+          :num_instances, [:instance_type, :slave_instance_type], :master_instance_type,
+          :hadoop_version, :availability_zone ).join(' ')
+        command_args << Settings.dashed_flags(:key_pair, :key_pair_file).join(' ')
+        command_args << "--bootstrap-action=#{bootstrap_s3_uri}"
       end
-      command_args << Settings.dashed_flags(:hadoop_version, :enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
+      command_args << Settings.dashed_flags(:enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
       command_args += emr_credentials
       command_args += [
-        "--bootstrap-action=#{bootstrap_s3_uri}",
         "--log-uri=#{log_s3_uri}",
         "--stream",
         "--mapper=#{mapper_s3_uri} ",
@@ -73,7 +77,6 @@ module Wukong
       else
         command_args << %Q{--access-id #{Settings.access_key} --private-key #{Settings.secret_access_key} }
       end
-      command_args << Settings.dashed_flags(:availability_zone, :key_pair, :key_pair_file).join(' ')
       command_args
     end
 

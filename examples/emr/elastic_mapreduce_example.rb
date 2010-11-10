@@ -2,6 +2,7 @@
 Dir[File.dirname(__FILE__)+'/vendor/**/lib'].each{|dir| $: << dir }
 require 'rubygems'
 require 'wukong'
+require 'wukong/script/emr_command'
 
 #
 # * Copy the emr.yaml from here into ~/.wukong/emr.yaml
@@ -24,5 +25,4 @@ class FooStreamer < Wukong::Streamer::LineStreamer
   end
 end
 
-Settings.resolve!
 Wukong::Script.new(FooStreamer, FooStreamer).run
