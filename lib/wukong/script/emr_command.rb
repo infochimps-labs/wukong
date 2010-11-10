@@ -1,22 +1,25 @@
 require 'right_aws'
 require 'configliere/config_block'
 #
+EMR_CONFIG_DIR = '~/.wukong' unless defined?(EMR_CONFIG_DIR)
+#
 Settings.define :emr_credentials_file, :description => 'A .json file holding your AWS access credentials. See http://bit.ly/emr_credentials_file for format'
 Settings.define :access_key,           :description => 'AWS Access key',        :env_var => 'AWS_ACCESS_KEY_ID'
 Settings.define :secret_access_key,    :description => 'AWS Secret Access key', :env_var => 'AWS_SECRET_ACCESS_KEY'
 Settings.define :emr_runner,           :description => 'Path to the elastic-mapreduce command (~ etc will be expanded)'
 Settings.define :emr_root,             :description => 'S3 bucket and path to use as the base for Elastic MapReduce storage, organized by job name'
 Settings.define :emr_data_root,        :description => 'Optional '
-Settings.define :emr_bootstrap_script, :description => 'Bootstrap actions for Elastic Map Reduce machine provisioning', :default => '~/.wukong/emr_bootstrap.sh', :type => :filename, :finally => lambda{ Settings.emr_bootstrap_script = File.expand_path(Settings.emr_bootstrap_script) }
+Settings.define :emr_bootstrap_script, :description => 'Bootstrap actions for Elastic Map Reduce machine provisioning', :default => EMR_CONFIG_DIR+'/emr_bootstrap.sh', :type => :filename, :finally => lambda{ Settings.emr_bootstrap_script = File.expand_path(Settings.emr_bootstrap_script) }
+Settings.define :emr_extra_args,       :description => 'kludge: allows you to stuff extra args into the elastic-mapreduce invocation', :type => Array, :wukong => true
 Settings.define :alive,                :description => 'Whether to keep machine running after job invocation', :type => :boolean
 #
-Settings.define :key_pair_file,        :description => 'AWS Key pair file',                               :type => :filename
-Settings.define :key_pair,             :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file.to_s, '.pem') if Settings.key_pair_file }
+Settings.define :keypair_file,        :description => 'AWS Key pair file',                               :type => :filename
+Settings.define :keypair,             :description => "AWS Key pair name. If not specified, it's taken from keypair_file's basename", :finally => lambda{ Settings.keypair ||= File.basename(Settings.keypair_file.to_s, '.pem') if Settings.keypair_file }
 Settings.define :instance_type,        :description => 'AWS instance type to use',                        :default => 'm1.small'
 Settings.define :master_instance_type, :description => 'Overrides the instance type for the master node', :finally => lambda{ Settings.master_instance_type ||= Settings.instance_type }
 Settings.define :jobflow,              :description => "ID of an existing EMR job flow. Wukong will create a new job flow"
 #
-Settings.read(File.expand_path('~/.wukong/emr.yaml'))
+Settings.read(File.expand_path(EMR_CONFIG_DIR+'/emr.yaml'))
 
 module Wukong
   #
@@ -41,18 +44,20 @@ module Wukong
       # "--cache-archive=#{wukong_libs_s3_uri}#vendor",
     end
 
+    def hadoop_options_for_emr_runner
+      [hadoop_jobconf_options, hadoop_other_args].flatten.compact.map{|hdp_opt| "--arg '#{hdp_opt}'"}
+    end
+
     def execute_emr_runner
-      fix_paths!
+      # fix_paths!
       command_args = []
       if Settings.jobflow
         command_args << Settings.dashed_flag_for(:jobflow)
       else
         command_args << "--create --name=#{job_name}"
         command_args << Settings.dashed_flag_for(:alive)
-        command_args << Settings.dashed_flags(
-          :num_instances, [:instance_type, :slave_instance_type], :master_instance_type,
-          :hadoop_version, :availability_zone ).join(' ')
-        command_args << Settings.dashed_flags(:key_pair, :key_pair_file).join(' ')
+        command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type, :hadoop_version).join(' ')
+        command_args << Settings.dashed_flags(:availability_zone, :keypair, :keypair_file).join(' ')
         command_args << "--bootstrap-action=#{bootstrap_s3_uri}"
       end
       command_args << Settings.dashed_flags(:enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
@@ -63,9 +68,11 @@ module Wukong
         "--mapper=#{mapper_s3_uri} ",
         "--reducer=#{reducer_s3_uri} ",
         "--input=#{input_paths.join(",")} --output=#{output_path}",
-        # to specify zero reducers:
-        # "--arg '-D mapred.reduce.tasks=0'"
       ]
+      # eg to specify zero reducers:
+      # Settings[:emr_extra_args] = "--arg '-D mapred.reduce.tasks=0'"
+      command_args += Settings[:emr_extra_args] unless Settings[:emr_extra_args].blank?
+      command_args += hadoop_options_for_emr_runner
       Log.info 'Follow along at http://localhost:9000/job'
       execute_command!( File.expand_path(Settings.emr_runner), *command_args )
     end
