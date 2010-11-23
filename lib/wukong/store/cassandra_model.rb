@@ -32,9 +32,10 @@ module Wukong
       #
       def to_db_hash
         db_hsh = {}
-        to_hash.each{|k,v| db_hsh[k.to_s] = v.to_s unless v.nil? }
+        each_pair{|k,v| db_hsh[k.to_s] = v.to_s unless v.nil? }
         db_hsh
       end
+
 
       module ClassMethods
         # Cassandra column family -- taken from the class name by default.
