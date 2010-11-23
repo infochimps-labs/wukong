@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x  # turn on tracing
 
 # A url directory with the scripts you'd like to stuff into the machine
 REMOTE_FILE_URL_BASE="http://github.com/infochimps/wukong"
@@ -24,7 +25,7 @@ sudo apt-get install -y unzip build-essential git-core ruby ruby1.8-dev rubygems
 echo "`date` Unchaining rubygems from the tyrrany of ubuntu" 
 sudo gem install --no-rdoc --no-ri rubygems-update --version=1.3.7 ; sudo /var/lib/gems/1.8/bin/update_rubygems; sudo gem update --no-rdoc --no-ri --system ; gem --version ;
 
-echo "`date` Installing wukong gems" 
+echo "`date` Installing wukong and related gems" 
 sudo gem install --no-rdoc --no-ri addressable extlib htmlentities configliere yard wukong right_aws uuidtools cheat
 sudo gem list 
 

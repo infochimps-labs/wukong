@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+# encoding: ASCII-8BIT
+require 'set'
+
+unless ARGV.empty?
+  unless ARGV.include?('--help')
+    puts "\n**\nSorry, uniq-ord only works in-line: cat foo.txt bar.tsv | uniq-ord\n**" ; puts
+  end
+  puts <<USAGE
+uniq-ord is ike the uniq command but doesn't depend on prior sorting: it tracks
+each line and only emits the first-seen instance of that line.
+
+The algorithm is /very/ simplistic: it uses ruby's built-in hash to track lines.
+This can produce false positives, meaning that a line of output might be removed
+even if it hasn't been seen before.  It may also consume an unbounded amount of
+memory (though less than the input text). With a million lines it will consume
+about 70 MB of memory and have more than 1 in a million chance of false
+positive. On a billion lines it will consume many GB and have over 25% odds of
+incorrectly skipping a line.
+
+However, it's really handy for dealing with in-order lists from the command line.
+USAGE
+  exit(0)
+end
+
+# # Logging
+#
+# MB = 1024*1024
+# LOG_INTERVAL = 100_000
+# $start = Time.now; $iter = 0; $size = 0
+# def log_line
+#   elapsed = (Time.now - $start).to_f
+#   $stderr.puts("%5d s\t%10.1f l/s\t%5dk<\t%5dk>\t%5d MB\t%9.1f MB/s\t%11d b/l"%[ elapsed, $iter/elapsed, $iter/1000, LINES.count/1000, $size/MB, ($size/MB)/elapsed, $size/$iter ])
+# end
+
+LINES = Set.new
+$stdin.each do |line|
+  next if LINES.include?(line.hash)
+  puts line
+  LINES << line.hash
+  # $iter += 1 ; $size += line.length
+  # log_line if ($iter % LOG_INTERVAL == 0)
+end
+# log_line
+
+#
+# # 2.1 GB data, 1M lines, 2000 avg chars/line
+#
+# # Used:   RSS:     71_988 kB     VSZ:     2_509_152 kB
+# # Stats:   38 s  25_859.1 l/s  1000k<  1000k>  1976 MB         51.1 MB/s       2072 b/l
+# # Time:   real     0m41.4 s      user  0m31.6 s          sys  0m8.3 s     pct    96.48
+#
+# # 4.1 GB data, 5.6M lines, 800 avg chars/line
+#
+# # Used:   RSS:    330_644 kB     VSZ:     2_764_236 kB
+# # Stats:  861     6_538.2 l/s  5632k<  5632k>  4158 MB          4.8 MB/s        774 b/l
+# # Time:   real    14m24.6 s     user  13m8.8 s           sys 0m12. s       pct   92.61
+#
+

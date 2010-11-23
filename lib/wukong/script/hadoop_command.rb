@@ -34,6 +34,16 @@ module Wukong
     Settings.define :max_record_length,      :jobconf => true, :description => 'mapred.linerecordreader.maxlength',                      :wukong => true # "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
     Settings.define :min_split_size,         :jobconf => true, :description => 'mapred.min.split.size',                                  :wukong => true
     Settings.define :noempty,                                  :description => "don't create zero-byte reduce files (hadoop mode only)", :wukong => true
+    Settings.define :split_on_xml_tag,                         :description => "Parse XML document by specifying the tag name: 'anything found between <tag> and </tag> will be treated as one record for map tasks'", :wukong => true
+
+    # emit a -jobconf hadoop option if the simplified command line arg is present
+    # if not, the resulting nil will be elided later
+    def jobconf option
+      if options[option]
+        # "-jobconf %s=%s" % [options.description_for(option), options[option]]
+        "-D %s=%s" % [options.description_for(option), options[option]]
+      end
+    end
 
     #
     # Assemble the hadoop command to execute
@@ -44,8 +54,6 @@ module Wukong
     # others
     #
     def execute_hadoop_workflow
-      # If no reducer_klass and no reduce_command, then skip the reduce phase
-      options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
       # Input paths join by ','
       input_paths = @input_paths.join(',')
       #
@@ -61,7 +69,6 @@ module Wukong
         "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
         hadoop_recycle_env,
-        # "-jobconf mapred.job.name='#{job_name}'",
       ].flatten.compact.join(" \t\\\n  ")
       Log.info "  Launching hadoop!"
       execute_command!(hadoop_commandline)
@@ -69,62 +76,40 @@ module Wukong
 
     def hadoop_jobconf_options
       jobconf_options = []
+      # Fixup these options
+      options[:reuse_jvms] = '-1'             if (options[:reuse_jvms] == true)
+      options[:respect_exit_status] = 'false' if (options[:ignore_exit_status] == true)
+      # If no reducer_klass and no reduce_command, then skip the reduce phase
+      options[:reduce_tasks] = 0 if (! reducer_klass) && (! options[:reduce_command]) && (! options[:reduce_tasks])
       # Fields hadoop should use to distribute records to reducers
       unless options[:partition_fields].blank?
         jobconf_options += [
-          '-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner',
-          jobconf(:output_field_separator),
           jobconf(:partition_fields),
+          jobconf(:output_field_separator),
         ]
       end
-      # The fields should hadoop treat as the keys
       jobconf_options += [
-        # -partitioner                          org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
-        # -D mapred.output.key.comparator.class=org.apache.hadoop.mapred.lib.KeyFieldBasedComparator \
-        # -D mapred.text.key.comparator.options=-k2,2nr\
-        # -D mapred.text.key.partitioner.options=-k1,2\
-        # -D mapred.text.key.partitioner.options=\"-k1,$partfields\"
-        # -D stream.num.map.output.key.fields=\"$sortfields\"
-        #
-        # -D stream.map.output.field.separator=\"'/t'\"
-        # -D    map.output.key.field.separator=. \
-        # -D       mapred.data.field.separator=. \
-        # -D map.output.key.value.fields.spec=6,5,1-3:0- \
-        # -D reduce.output.key.value.fields.spec=0-2:5- \
-        jobconf(:key_field_separator),
-        jobconf(:sort_fields),
-      ]
-      # Setting the number of mappers and reducers.
-      jobconf_options += [
-        jobconf(:max_node_map_tasks),
-        jobconf(:max_node_reduce_tasks),
-        jobconf(:max_reduces_per_node),
-        jobconf(:max_reduces_per_cluster),
-        jobconf(:max_maps_per_node),
-        jobconf(:max_maps_per_cluster),
-        jobconf(:map_tasks),
-        jobconf(:reduce_tasks),
-        jobconf(:min_split_size),
-      ]
+        :key_field_separator,  :sort_fields,
+        :map_tasks,            :reduce_tasks,
+        :max_node_map_tasks,   :max_node_reduce_tasks,
+        :max_reduces_per_node, :max_reduces_per_cluster,
+        :max_maps_per_node,    :max_maps_per_cluster,
+        :min_split_size,
+        :map_speculative,
+        :timeout,
+        :reuse_jvms, :respect_exit_status
+      ].map{|opt| jobconf(opt)}
       jobconf_options.flatten.compact
-    end
-
-    # emit a -jobconf hadoop option if the simplified command line arg is present
-    # if not, the resulting nil will be elided later
-    def jobconf option
-      if options[option]
-        # "-jobconf %s=%s" % [options.description_for(option), options[option]]
-        "-D %s=%s" % [options.description_for(option), options[option]]
-      end
     end
 
     def hadoop_other_args
       extra_str_args  = [ options[:extra_args] ]
-      extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
-      options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
-      options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
-      extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
-      extra_str_args + extra_hsh_args
+      if Settings.split_on_xml_tag
+        extra_str_args << %Q{-inputreader 'StreamXmlRecordReader,begin=<#{Settings.split_on_xml_tag}>,end=</#{Settings.split_on_xml_tag}>'}
+      end
+      extra_str_args   << ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
+      extra_str_args   << ' -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner' unless options[:partition_fields].blank?
+      extra_str_args
     end
 
     def hadoop_recycle_env
@@ -153,42 +138,6 @@ module Wukong
       #     filename = os.path.split(filepath)[-1]
       #   Thanks to Todd Lipcon for directing me to that hack.
       #
-
-      # "HADOOP_HOME"                             =>"/usr/lib/hadoop-0.20/bin/..",
-      # "HADOOP_IDENT_STRING"                     =>"hadoop",
-      # "HADOOP_LOGFILE"                          =>"hadoop-hadoop-tasktracker-ip-10-242-14-223.log",
-      # "HADOOP_LOG_DIR"                          =>"/usr/lib/hadoop-0.20/bin/../logs",
-      # "HOME"                                    =>"/var/run/hadoop-0.20",
-      # "JAVA_HOME"                               =>"/usr/lib/jvm/java-6-sun",
-      # "LD_LIBRARY_PATH"                         =>"/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386/client:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/i386:/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386/client:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/i386",
-      # "PATH"                                    =>"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games",
-      # "USER"                                    =>"hadoop",
-      #
-      # "dfs_block_size"                          =>"134217728",
-      # "map_input_start"                         =>"0",
-      # "map_input_length"                        =>"125726898",
-      # "mapred_output_key_class"                 =>"org.apache.hadoop.io.Text",
-      # "mapred_output_value_class"               =>"org.apache.hadoop.io.Text",
-      # "mapred_output_format_class"              =>"org.apache.hadoop.mapred.TextOutputFormat",
-      # "mapred_output_compression_codec"         =>"org.apache.hadoop.io.compress.DefaultCodec",
-      # "mapred_output_compression_type"          =>"BLOCK",
-      # "mapred_task_partition"                   =>"0",
-      # "mapred_tasktracker_map_tasks_maximum"    =>"4",
-      # "mapred_tasktracker_reduce_tasks_maximum" =>"2",
-      # "mapred_tip_id"                           =>"task_200910221152_0023_m_000000",
-      # "mapred_task_id"                          =>"attempt_200910221152_0023_m_000000_0",
-      # "mapred_job_tracker"                      =>"ec2-174-129-141-78.compute-1.amazonaws.com:8021",
-      #
-      # "mapred_input_dir"                        =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/ripd/com.tw/com.twitter.search/20090809",
-      # "map_input_file"                          =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/ripd/com.tw/com.twitter.search/20090809/com.twitter.search+20090809233441-56735-womper.tsv.bz2",
-      # "mapred_working_dir"                      =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip",
-      # "mapred_work_output_dir"                  =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/tmp/twsearch-20090809/_temporary/_attempt_200910221152_0023_m_000000_0",
-      # "mapred_output_dir"                       =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/tmp/twsearch-20090809",
-      # "mapred_temp_dir"                         =>"/mnt/tmp/hadoop-hadoop/mapred/temp",
-      # "PWD"                                     =>"/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work",
-      # "TMPDIR"                                  =>"/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work/tmp",
-      # "stream_map_streamprocessor"              =>"%2Fusr%2Fbin%2Fruby1.8+%2Fmnt%2Fhome%2Fflip%2Fics%2Fwuclan%2Fexamples%2Ftwitter%2Fparse%2Fparse_twitter_search_requests.rb+--map+--rm",
-      # "user_name"                               =>"flip",
 
       # HDFS pathname to the input file currently being processed.
       def input_file
@@ -230,3 +179,52 @@ module Wukong
     end
   end
 end
+
+        # -partitioner                          org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner \
+        # -D mapred.output.key.comparator.class=org.apache.hadoop.mapred.lib.KeyFieldBasedComparator \
+        # -D mapred.text.key.comparator.options=-k2,2nr\
+        # -D mapred.text.key.partitioner.options=-k1,2\
+        # -D mapred.text.key.partitioner.options=\"-k1,$partfields\"
+        # -D stream.num.map.output.key.fields=\"$sortfields\"
+        #
+        # -D stream.map.output.field.separator=\"'/t'\"
+        # -D    map.output.key.field.separator=. \
+        # -D       mapred.data.field.separator=. \
+        # -D map.output.key.value.fields.spec=6,5,1-3:0- \
+        # -D reduce.output.key.value.fields.spec=0-2:5- \
+
+      # "HADOOP_HOME"                             =>"/usr/lib/hadoop-0.20/bin/..",
+      # "HADOOP_IDENT_STRING"                     =>"hadoop",
+      # "HADOOP_LOGFILE"                          =>"hadoop-hadoop-tasktracker-ip-10-242-14-223.log",
+      # "HADOOP_LOG_DIR"                          =>"/usr/lib/hadoop-0.20/bin/../logs",
+      # "HOME"                                    =>"/var/run/hadoop-0.20",
+      # "JAVA_HOME"                               =>"/usr/lib/jvm/java-6-sun",
+      # "LD_LIBRARY_PATH"                         =>"/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386/client:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/i386:/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386/client:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.10/jre/../lib/i386",
+      # "PATH"                                    =>"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games",
+      # "USER"                                    =>"hadoop",
+      #
+      # "dfs_block_size"                          =>"134217728",
+      # "map_input_start"                         =>"0",
+      # "map_input_length"                        =>"125726898",
+      # "mapred_output_key_class"                 =>"org.apache.hadoop.io.Text",
+      # "mapred_output_value_class"               =>"org.apache.hadoop.io.Text",
+      # "mapred_output_format_class"              =>"org.apache.hadoop.mapred.TextOutputFormat",
+      # "mapred_output_compression_codec"         =>"org.apache.hadoop.io.compress.DefaultCodec",
+      # "mapred_output_compression_type"          =>"BLOCK",
+      # "mapred_task_partition"                   =>"0",
+      # "mapred_tasktracker_map_tasks_maximum"    =>"4",
+      # "mapred_tasktracker_reduce_tasks_maximum" =>"2",
+      # "mapred_tip_id"                           =>"task_200910221152_0023_m_000000",
+      # "mapred_task_id"                          =>"attempt_200910221152_0023_m_000000_0",
+      # "mapred_job_tracker"                      =>"ec2-174-129-141-78.compute-1.amazonaws.com:8021",
+      #
+      # "mapred_input_dir"                        =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/ripd/com.tw/com.twitter.search/20090809",
+      # "map_input_file"                          =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/ripd/com.tw/com.twitter.search/20090809/com.twitter.search+20090809233441-56735-womper.tsv.bz2",
+      # "mapred_working_dir"                      =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip",
+      # "mapred_work_output_dir"                  =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/tmp/twsearch-20090809/_temporary/_attempt_200910221152_0023_m_000000_0",
+      # "mapred_output_dir"                       =>"hdfs://ec2-174-129-141-78.compute-1.amazonaws.com/user/flip/tmp/twsearch-20090809",
+      # "mapred_temp_dir"                         =>"/mnt/tmp/hadoop-hadoop/mapred/temp",
+      # "PWD"                                     =>"/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work",
+      # "TMPDIR"                                  =>"/mnt/hadoop/mapred/local/taskTracker/jobcache/job_200910221152_0023/attempt_200910221152_0023_m_000000_0/work/tmp",
+      # "stream_map_streamprocessor"              =>"%2Fusr%2Fbin%2Fruby1.8+%2Fmnt%2Fhome%2Fflip%2Fics%2Fwuclan%2Fexamples%2Ftwitter%2Fparse%2Fparse_twitter_search_requests.rb+--map+--rm",
+      # "user_name"                               =>"flip",

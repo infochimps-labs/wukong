@@ -1,3 +1,7 @@
+h2. Wukong v1.5.4
+
+* EMR support now works very well
+
 h2. Wukong v1.5.3
 
 * A couple of bugfixes. Sorry about that.
