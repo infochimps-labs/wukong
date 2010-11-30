@@ -145,6 +145,7 @@ module Wukong
       when 'map'              then mapper_klass.new(self.options).stream
       when 'reduce'           then reducer_klass.new(self.options).stream
       when 'local'            then execute_local_workflow
+      when 'cassandra'        then execute_hadoop_workflow
       when 'hadoop', 'mapred' then execute_hadoop_workflow
       when 'emr'
         require 'wukong/script/emr_command'

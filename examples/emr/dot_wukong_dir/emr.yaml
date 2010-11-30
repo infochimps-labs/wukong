@@ -40,7 +40,7 @@
 # == Wukong is opinionated about the paths and locations of scripts and
 #    everything. It will organize files by job name within the following path:
 #
-:emr_root:                      s3n://s3n.infinitemonkeys.info/emr
+:emr_root:                      s3://s3n.infinitemonkeys.info/emr
 
 # == If you specify the :emr_data_root path, then relative pathnames -- ones that
 #    do not look like a URI (s3://yadda/yada) and do not start with a '/' -- will
@@ -62,7 +62,7 @@
 #
 # Running and reporting options
 #
-:emr_keep_alive:                false
+:alive:                         true
 :enable_debugging:              true
 :emr_runner_verbose:            true
 :emr_runner_debug:              ~
