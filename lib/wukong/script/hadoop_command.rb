@@ -72,7 +72,6 @@ module Wukong
       # Fields hadoop should use to distribute records to reducers
       unless options[:partition_fields].blank?
         jobconf_options += [
-          '-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner',
           jobconf(:output_field_separator),
           jobconf(:partition_fields),
         ]
@@ -121,6 +120,7 @@ module Wukong
     def hadoop_other_args
       extra_str_args  = [ options[:extra_args] ]
       extra_str_args               += ' -lazyOutput' if options[:noempty]  # don't create reduce file if no records
+      extra_str_args               += ' -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner' unless options[:partition_fields].blank?
       options[:reuse_jvms]          = '-1'     if (options[:reuse_jvms] == true)
       options[:respect_exit_status] = 'false'  if (options[:ignore_exit_status] == true)
       extra_hsh_args = [:map_speculative, :timeout, :reuse_jvms, :respect_exit_status].map{|opt| jobconf(opt)  }
