@@ -68,6 +68,7 @@ module Wukong
         "-reducer '#{reducer_commandline}'",
         "-input   '#{input_paths}'",
         "-output  '#{output_path}'",
+        "-file    '#{this_script_filename}'",
         hadoop_recycle_env,
       ].flatten.compact.join(" \t\\\n  ")
       Log.info "  Launching hadoop!"
