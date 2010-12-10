@@ -173,7 +173,8 @@ module Wukong
     #
     def mapper_commandline
       if mapper_klass
-        "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+        # "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+        "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --map " + non_wukong_params
       else
         options[:map_command]
       end
