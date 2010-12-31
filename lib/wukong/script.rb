@@ -187,7 +187,7 @@ module Wukong
     #
     def reducer_commandline
       if reducer_klass
-         "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+         "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --reduce " + non_wukong_params
       else
         options[:reduce_command]
       end
