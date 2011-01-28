@@ -13,6 +13,7 @@ REVISION
 TAGS*
 tmtags
 *_flymake.*
+*_flymake
 *.tmproj
 .project
 .settings

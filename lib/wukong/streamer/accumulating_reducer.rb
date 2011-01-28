@@ -57,15 +57,12 @@
        # start! is called on the the first record of the new key
        #
        def start! *args
-         raise %Q{start! is the new reset! -- it has args now, namely the first
-         record of the new key.  It doesn\'t want #super either}
        end
 
        #
        # Override this to accumulate each record for the given key in turn.
        #
        def accumulate *args, &block
-         raise "override the accumulate method in your subclass"
        end
 
        #
@@ -73,7 +70,6 @@
        # You must override this method.
        #
        def finalize
-         raise "override the finalize method in your subclass"
        end
 
        # Finalize the last-seen group.
