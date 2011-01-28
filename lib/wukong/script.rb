@@ -128,8 +128,8 @@ module Wukong
       Settings.resolve!
       @options = Settings
       options.merge extra_options
-      @mapper  = (case mapper  when Class then mapper.new(options)  when nil then nil else mapper  ; end)
-      @reducer = (case reducer when Class then reducer.new(options) when nil then nil else reducer ; end)
+      @mapper  = (case mapper  when Class then mapper.new  when nil then nil else mapper  ; end)
+      @reducer = (case reducer when Class then reducer.new when nil then nil else reducer ; end)
       @output_path = options.rest.pop
       @input_paths = options.rest.reject(&:blank?)
       if (input_paths.blank? || output_path.blank?) && (not options[:dry_run]) && (not ['map', 'reduce'].include?(run_mode))

@@ -2,7 +2,6 @@
 require 'rubygems'
 $: << File.dirname(__FILE__)+'/../../lib'
 require 'wukong'
-require 'wukong/models/graph'; include Wukong::Models
 
 #
 # Takes any number of flavors of directed edge with the form
@@ -88,17 +87,27 @@ module GenMultiEdge
       yield self.multi_edge
     end
   end
-
-  #
-  # Sort on the first two keys: each @[src, dest]@ pair winds up at the same
-  # reducer.
-  #
-  class Script < Wukong::Script
-    def default_options
-      super.merge :sort_fields => 2
-    end
-  end
-
-  # Execute the script
-  Script.new(Mapper, Reducer).run
 end
+
+Edge = TypedStruct.new(
+  [:src,              Integer],
+  [:dest,             Integer]
+  )
+
+MultiEdge = TypedStruct.new(
+  [:src,              Integer],
+  [:dest,             Integer],
+  [:a_follows_b,      Integer],
+  [:b_follows_a,      Integer],
+  [:a_replies_b,      Integer],
+  [:b_replies_a,      Integer],
+  [:a_atsigns_b,      Integer],
+  [:b_atsigns_a,      Integer],
+  [:a_retweets_b,     Integer],
+  [:b_retweets_a,     Integer],
+  [:a_favorites_b,    Integer],
+  [:b_favorites_a,    Integer]
+  )
+
+# Execute the script
+Script.new(Mapper, Reducer, :sort_fields => 2).run

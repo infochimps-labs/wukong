@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
-
-require 'rubygems'
-require 'wukong'
+$: << File.dirname(__FILE__)+'/../lib'
+require 'wukong/script'
 require 'wukong/streamer/count_keys'
-
 
 #
 # Ch3ck out dis moist azz code bitches!!
@@ -70,14 +68,14 @@ class Reducer < Wukong::Streamer::AccumulatingReducer
     table << "TRSTRANK_TABLE = " << count_bin.inspect
     table.close
   end
-  
+
   #
-  # Return percentile of a given trstrank for a given follower bracket 
+  # Return percentile of a given trstrank for a given follower bracket
   #
   def percentile bin, rank
-    ((count_less_than(bin,rank) + 0.5*frequency_of(bin,rank))/ total_num(bin) )*100.0 
+    ((count_less_than(bin,rank) + 0.5*frequency_of(bin,rank))/ total_num(bin) )*100.0
   end
-  
+
   #
   # Return the count of values less than rank
   #
@@ -119,7 +117,7 @@ class Reducer < Wukong::Streamer::AccumulatingReducer
     big_list.uniq.sort{|x,y| x.first <=> y.first}
   end
 
-  
+
   #
   # Nothing to see here, move along
   #
@@ -132,11 +130,11 @@ class Reducer < Wukong::Streamer::AccumulatingReducer
     num.times do |i|
       x = pair1.first + (i+1).to_f*dx
       y = m*x + b
-      points << [x,y] 
+      points << [x,y]
     end
     points                                                       # return an array of pairs
   end
-  
+
 end
 
 Wukong::Script.new(Mapper,Reducer).run

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-require 'rubygems'
-require 'wukong'
+$: << File.dirname(__FILE__)+'/../../lib'
+require 'wukong/script'
 
 # Run as (local mode)
 #
@@ -15,14 +15,14 @@ require 'wukong'
 #   cat input.tsv | ./examples/stupidly_simple_filter.rb --map input.tsv | more
 #
 
-#
-# A very simple mapper -- looks for a regex match in one field,
-# and emits the whole record if the field matches
-#
-class GrepMapper < Wukong::Streamer::RecordStreamer
-
+class Mapper < LineStreamer
+  include Filter
   MATCHER = %r{(ford|mercury|saab|mazda|isuzu)}
 
+  #
+  # A very simple mapper -- looks for a regex match in one field,
+  # and emits the whole record if the field matches
+  #
   #
   # Given a series of records like:
   #
@@ -31,13 +31,10 @@ class GrepMapper < Wukong::Streamer::RecordStreamer
   #
   # emits only the lines matching that regex
   #
-  def process rsrc, id, timestamp, text, *rest
-    yield [rsrc, id, timestamp, text, *rest] if line =~ MATCHER
+  def emit? line
+    MATCHER.match line
   end
 end
 
 # Execute the script
-Wukong::Script.new(
-  GrepMapper,
-  nil
-  ).run
+Wukong.run(Mapper)

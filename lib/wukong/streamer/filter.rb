@@ -12,8 +12,8 @@ module Wukong
       #
       # Subclass and re-define the emit? method
       #
-      def process *record, &block
-        yield record if emit?(record)
+      def process *record
+        yield record if emit?(*record)
       end
     end
   end
