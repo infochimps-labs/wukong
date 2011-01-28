@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'wukong'
+require 'wukong/script'
 
 module WordCount
   class Mapper < Wukong::Streamer::LineStreamer
@@ -10,22 +10,22 @@ module WordCount
     # This is pretty simpleminded:
     # * downcase the word
     # * Split at any non-alphanumeric boundary, including '_'
-    # * However, preserve the special cases of 's or 't at the end of a
+    # * However, preserve the special cases of 's, 'd or 't at the end of a
     #   word.
     #
-    #   tokenize("Jim's dawg won't hunt: dawg_hunt error #3007a4")
-    #   # => ["jim's", "dawd", "won't", "hunt", "dawg", "hunt", "error", "3007a4"]
+    #   tokenize("Ability is a poor man's wealth #johnwoodenquote")
+    #   # => ["ability", "is", "a", "poor", "man's", "wealth", "johnwoodenquote"]
     #
     def tokenize str
-      return [] unless str
+      return [] if str.blank?
       str = str.downcase;
       # kill off all punctuation except [stuff]'s or [stuff]'t
       # this includes hyphens (words are split)
       str = str.
         gsub(/[^a-zA-Z0-9\']+/, ' ').
-        gsub(/(\w)\'([st])\b/, '\1!\2').gsub(/\'/, ' ').gsub(/!/, "'")
+        gsub(/(\w)\'([std])\b/, '\1!\2').gsub(/\'/, ' ').gsub(/!/, "'")
       # Busticate at whitespace
-      words = str.strip.split(/\s+/)
+      words = str.split(/\s+/)
       words.reject!{|w| w.blank? }
       words
     end
@@ -39,31 +39,13 @@ module WordCount
   end
 
   #
-  # Accumulate the sum record-by-record:
+  # You can stack up all the values in a list then sum them at once.
   #
-  class Reducer0 < Wukong::Streamer::Base
-    attr_accessor :key_count
-    def process word, count
-      @last_word ||= word
-      if (@last_word == word)
-        self.key_count += 1
-      else
-        yield [ @last_word, key_count ]
-        @last_word = word
-      end
-    end
-    def stream
-      emit @last_word, key_count
-    end
-  end
-
+  # This isn't good style, as it means the whole list is held in memory
   #
-  # You can stack up all the values in a list then sum them at once:
-  #
-  require 'active_support/core_ext/enumerable'
   class Reducer1 < Wukong::Streamer::ListReducer
     def finalize
-      yield [ key, values.map(&:last).map(&:to_i).sum ]
+      yield [ key, values.map(&:last).map(&:to_i).inject(0){|x,tot| x+tot } ]
     end
   end
 
@@ -71,11 +53,10 @@ module WordCount
   # A bit kinder to your memory manager: accumulate the sum record-by-record:
   #
   class Reducer2 < Wukong::Streamer::AccumulatingReducer
-    attr_accessor :key_count
-    def start!(*args)      self.key_count =  0 end
-    def accumulate(*args)  self.key_count += 1 end
+    def start!(*args)      @key_count =  0 end
+    def accumulate(*args)  @key_count += 1 end
     def finalize
-      yield [ key, key_count ]
+      yield [ key, @key_count ]
     end
   end
 
@@ -85,11 +66,10 @@ module WordCount
   require 'wukong/streamer/count_keys'
   class Reducer3 < Wukong::Streamer::CountKeys
   end
-
 end
 
 # Execute the script
-Wukong::Script.new(
+Wukong.run(
   WordCount::Mapper,
-  WordCount::Reducer1
-  ).run
+  WordCount::Reducer
+  )

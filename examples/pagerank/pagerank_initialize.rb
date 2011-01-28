@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $: << File.dirname(__FILE__)+'/../../lib'
-require 'wukong'
-require 'wukong/streamer/set_reducer'
+require 'wukong/script'
+require 'wukong/streamer/list_reducer'
 
 module PageRank
   class Script < Wukong::Script
@@ -15,10 +15,6 @@ module PageRank
     def map_command
       %Q{/usr/bin/cut -d"\t" -f2,3}
     end
-
-    def default_options
-      super.merge :extra_args => ' -jobconf io.sort.record.percent=0.25 '
-    end
   end
 
   #
@@ -28,18 +24,18 @@ module PageRank
   #
   class Reducer < Wukong::Streamer::ListReducer
     def accumulate src, dest
-      self.values << dest
+      @values << dest
     end
 
     # Emit src, initial pagerank, and flattened dests list
     def finalize
-      self.values = ['dummy'] if self.values.blank?
-      yield [key, 1.0, self.values.to_a.join(",")]
+      @values = ['dummy'] if @values.blank?
+      yield [key, 1.0, @values.to_a.join(",")]
     end
   end
 
   # Execute the script
-  Script.new(nil, PageRank::Reducer).run
+  Script.new(nil, PageRank::Reducer, :io_sort_record_percent => 0.25).run
 end
 
 

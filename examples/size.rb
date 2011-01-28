@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 $: << File.dirname(__FILE__)+'/../lib'
-require 'wukong'
+require 'wukong/script'
 
 module Size
   #
@@ -56,5 +56,6 @@ end
 # Execute the script
 Size::Script.new(
   nil,
-  Size::Reducer
+  Size::Reducer,
+  :reduce_tasks => 1
   ).run

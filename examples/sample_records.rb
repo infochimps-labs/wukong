@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 $: << File.dirname(__FILE__)+'/../lib'
-require 'rubygems'
-require 'wukong'
+require 'wukong/script'
+
+Settings.define :sampling_fraction, :type => Float, :required => true, :description => "floating-point number between 0 and 1 giving the fraction of lines to emit: at sampling_fraction=1 all records are emitted, at 0 none are."
 
 #
 # Probabilistically emit some fraction of record/lines
@@ -15,29 +16,18 @@ class Mapper < Wukong::Streamer::LineStreamer
   include Wukong::Streamer::Filter
 
   #
-  # floating-point number between 0 and 1 giving the fraction of lines to emit:
-  # at sampling_fraction=1 all records are emitted, at 0 none are.
-  #
-  # Takes its value from a mandatory command-line option
-  #
-  def sampling_fraction
-    @sampling_fraction ||= ( options[:sampling_fraction] && options[:sampling_fraction].to_f ) or
-      raise "Please supply a --sampling_fraction= argument, a decimal number between 0 and 1"
-  end
-
-  #
   # randomly decide to emit +sampling_fraction+ fraction of lines
   #
   def emit? line
-    rand < self.sampling_fraction
+    rand < Settings.sampling_fraction
   end
 end
 
 #
 # Executes the script
 #
-Wukong::Script.new( Mapper,
+Wukong.run( Mapper,
   nil,
   :reduce_tasks => 0,
   :reuse_jvms   => true
-  ).run
+  )

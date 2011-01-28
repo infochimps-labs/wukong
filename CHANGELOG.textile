@@ -1,3 +1,35 @@
+h2. Wukong v2.0.0
+
+h4. Important changes
+
+* Passing options to streamers is now deprecated. Use @Settings@ instead. 
+
+* Streamer by default has a periodic monitor that logs (to STDERR by default) every 10_000 lines or 30 seconds
+
+* Examples cleaned up, should all run
+
+h4. Simplified syntax
+
+* you can now pass Script.new an *instance* of Streamer to use as mapper or reducer
+* Adding an experimental sugar:
+
+  <pre>
+    #!/usr/bin/env ruby
+    require 'wukong/script'
+
+    LineStreamer.map do |line|
+      emit line.reverse
+    end.run
+  </pre>
+
+  Note that you can now tweet a wukong script.
+
+* It's now recommended that at the top of a wukong script you say
+  <pre>
+    require 'wukong/script'
+  </pre>
+  Among other benefits, this lets you refer to wukong streamers without prefix.  
+
 h2. Wukong v1.5.4
 
 * EMR support now works very well

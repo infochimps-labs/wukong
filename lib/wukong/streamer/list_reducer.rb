@@ -8,13 +8,13 @@ module Wukong
 
       # start with an empty list
       def start! *args
-        self.values = []
+        @values = []
       end
 
       # aggregate all records.
       # note that this accumulates the full *record* -- key, value, everything.
       def accumulate *record
-        self.values << record
+        @values << record
       end
 
       # emit the key and all records, tab-separated
@@ -24,7 +24,7 @@ module Wukong
       # values)
       #
       def finalize
-        yield [key, values.to_flat.join(";")].flatten
+        yield [key, @values.to_flat.join(";")].flatten
       end
     end
   end

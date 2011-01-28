@@ -1,13 +1,5 @@
-
-
-
 * add GEM_PATH to hadoop_recycle_env
-
-* Hadoop_command function received an array for the input_path parameter
 
 ** We should be able to specify comma *or* space separated paths; the last
    space-separated path in Settings.rest becomes the output file, the others are
    used as the input_file list.
-
-* Make configliere Settings and streamer_instance.options() be the same
-  thing. (instead of almost-but-confusingly-not-always the same thing).

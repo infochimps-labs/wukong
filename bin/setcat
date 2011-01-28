@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+#
+# This script is useful for debugging. it dumps your environment to STDERR
+# and otherwise runs as `cat`
+#
+
+set >&2
+
+cat
+true
