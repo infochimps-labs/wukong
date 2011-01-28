@@ -2,27 +2,22 @@
 
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
-OUTPUT="$1" ; shift
+input_file=${1} 		; shift
+output_file=${1} 		; shift
 
-INPUTS=''
-for foo in $@; do 
-  INPUTS="$INPUTS -input $foo\
-"
-done
+if [ "$output_file" == "" ] ; then echo "$0 input_file output_file" ; exit ; fi
 
-echo "Removing output directory $OUTPUT"
-hadoop fs -rmr $OUTPUT
+HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
 cmd="${HADOOP_HOME}/bin/hadoop \
-     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar		   \
-    -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			   \
-    -jobconf     mapred.output.compress=true                                               \
-    -jobconf     mapred.output.compression.codec=org.apache.hadoop.io.compress.BZip2Codec  \
-    -jobconf     mapred.reduce.tasks=1                                                     \
-    -mapper  	 \"/bin/cat\"                                                              \
-    -reducer	 \"/bin/cat\"                                                              \
-    $INPUTS
-    -output  	 $OUTPUT                                                                   \
+     jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar	\
+    -Dmapred.output.compress=true                                               \
+    -Dmapred.output.compression.codec=org.apache.hadoop.io.compress.BZip2Codec  \
+    -Dmapred.reduce.tasks=1                                                     \
+    -mapper  	 \"/bin/cat\"                                                   \
+    -reducer	 \"/bin/cat\"                                                   \
+    -input       \"$input_file\"                                                \
+    -output  	 \"$output_file\"                                               \
     "
 echo $cmd
 $cmd

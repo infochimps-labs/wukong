@@ -176,6 +176,7 @@ module Wukong
     def mapper_commandline
       if mapper
         "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+        # "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --map " + non_wukong_params
       else
         options[:map_command]
       end
@@ -188,7 +189,8 @@ module Wukong
     #
     def reducer_commandline
       if reducer
-         "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+        "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+        # "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --reduce " + non_wukong_params
       else
         options[:reduce_command]
       end
