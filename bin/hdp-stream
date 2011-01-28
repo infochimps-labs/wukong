@@ -15,6 +15,7 @@ HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 cmd="${HADOOP_HOME}/bin/hadoop \
      jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar		
     -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner 			
+    -jobconf     "mapred.job.name=`basename $0`-$map_script-$input_file-$output_file"  
     -jobconf     num.key.fields.for.partition=\"$partfields\"				
     -jobconf 	 stream.num.map.output.key.fields=\"$sortfields\"
     -jobconf     stream.map.output.field.separator=\"'/t'\"
