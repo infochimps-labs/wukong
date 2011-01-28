@@ -1,8 +1,10 @@
 require 'pathname'
+require 'configliere' ; Configliere.use(:commandline, :env_var, :define)
+require 'wukong'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
-require 'configliere' ; Configliere.use(:commandline, :env_var, :define)
 require 'rbconfig' # for uncovering ruby_interpreter_path
+require 'wukong/streamer' ; include Wukong::Streamer
 module Wukong
   # == How to run a Wukong script
   #
@@ -122,7 +124,7 @@ module Wukong
     #   end
     #   MyScript.new(MyMapper, nil).run
     #
-    def initialize mapper, reducer_klass=nil, extra_options={}
+    def initialize mapper, reducer=nil, extra_options={}
       Settings.resolve!
       @options = Settings
       options.merge extra_options
@@ -172,7 +174,7 @@ module Wukong
     # In local mode, it's given to the system() call
     #
     def mapper_commandline
-      if @mapper
+      if mapper
         "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
       else
         options[:map_command]
@@ -228,8 +230,9 @@ module Wukong
     #
     def maybe_overwrite_output_paths! output_path
       if (options[:overwrite] || options[:rm]) && (run_mode == 'hadoop')
-        Log.info "Removing output file #{output_path}"
-        `hdp-rm -r '#{output_path}'`
+        cmd = %Q{#{hadoop_runner} fs -rmr '#{output_path}'}
+        Log.info "Removing output file #{output_path}: #{cmd}"
+        puts `#{cmd}`
       end
     end
 

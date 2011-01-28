@@ -81,9 +81,42 @@ module Wukong
         puts ["bad_record-"+key, *args].join("\t")
       end
 
+      # A periodic logger to track progress
       def monitor
         @monitor ||= PeriodicMonitor.new
       end
+
+      # Defines a process method on the fly to execute the given mapper.
+      #
+      # This is still experimental.
+      # Among other limitations, you can't use ++yield++ -- you have to call
+      # emit() directly.
+      def map &mapper_block
+        @mapper_block = mapper_block.to_proc
+        self.instance_eval do
+          def process *args, &block
+            instance_exec(*args, &@mapper_block)
+          end
+        end
+        self
+      end
+
+      # Creates a new object of this class and injects the given block
+      # as the process method
+      def self.map *args, &block
+        self.new.map *args, &block
+      end
+
+      # Delegates back to Wukong to run this instance as a mapper
+      def run options={}
+        Wukong.run(self, nil, options)
+      end
+
+      # Creates a new object of this class and runs it
+      def self.run options={}
+        Wukong.run(self.new, nil, options)
+      end
+
     end
   end
 end
