@@ -4,13 +4,17 @@ module Wukong
 
       # Options, initially set from the command-line args -- see
       # Script#process_argv!
-      attr_accessor :options
+      attr_reader :own_options
 
       #
       # Accepts option hash from script runner
       #
       def initialize options={}
-        self.options = options
+        @own_options = options
+      end
+
+      def options
+        Settings.deep_merge own_options
       end
 
       #
@@ -24,6 +28,7 @@ module Wukong
           process(*record) do |output_record|
             emit output_record
           end
+          monitor.periodically(record.to_s[0..1000])
         end
         after_stream
       end
@@ -74,6 +79,10 @@ module Wukong
       def bad_record! key, *args
         warn "Bad record #{args.inspect[0..400]}"
         puts ["bad_record-"+key, *args].join("\t")
+      end
+
+      def monitor
+        @monitor ||= PeriodicMonitor.new
       end
     end
   end

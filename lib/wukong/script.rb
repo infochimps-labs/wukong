@@ -63,7 +63,7 @@ module Wukong
   class Script
     include Wukong::HadoopCommand
     include Wukong::LocalCommand
-    attr_reader :mapper_klass, :reducer_klass, :options
+    attr_reader :mapper, :reducer, :options
     attr_reader :input_paths, :output_path
 
     # ---------------------------------------------------------------------------
@@ -122,12 +122,12 @@ module Wukong
     #   end
     #   MyScript.new(MyMapper, nil).run
     #
-    def initialize mapper_klass, reducer_klass=nil, extra_options={}
+    def initialize mapper, reducer_klass=nil, extra_options={}
       Settings.resolve!
-      @options = Settings.dup
-      options.merge! extra_options
-      @mapper_klass  = mapper_klass
-      @reducer_klass = reducer_klass
+      @options = Settings
+      options.merge extra_options
+      @mapper  = (case mapper  when Class then mapper.new(options)  when nil then nil else mapper  ; end)
+      @reducer = (case reducer when Class then reducer.new(options) when nil then nil else reducer ; end)
       @output_path = options.rest.pop
       @input_paths = options.rest.reject(&:blank?)
       if (input_paths.blank? || output_path.blank?) && (not options[:dry_run]) && (not ['map', 'reduce'].include?(run_mode))
@@ -142,8 +142,8 @@ module Wukong
     #
     def run
       case run_mode
-      when 'map'              then mapper_klass.new(self.options).stream
-      when 'reduce'           then reducer_klass.new(self.options).stream
+      when 'map'              then mapper.stream
+      when 'reduce'           then reducer.stream
       when 'local'            then execute_local_workflow
       when 'cassandra'        then execute_hadoop_workflow
       when 'hadoop', 'mapred' then execute_hadoop_workflow
@@ -172,7 +172,7 @@ module Wukong
     # In local mode, it's given to the system() call
     #
     def mapper_commandline
-      if mapper_klass
+      if @mapper
         "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
       else
         options[:map_command]
@@ -185,7 +185,7 @@ module Wukong
     # In local mode, it's given to the system() call
     #
     def reducer_commandline
-      if reducer_klass
+      if reducer
          "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
       else
         options[:reduce_command]
