@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../lib'
+$: << File.dirname(__FILE__)+'/../../lib'
 require 'wukong/script'
 require 'wukong/streamer/count_keys'
 

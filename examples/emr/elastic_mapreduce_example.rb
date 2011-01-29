@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 Dir[File.dirname(__FILE__)+'/vendor/**/lib'].each{|dir| $: << dir }
 require 'rubygems'
-require 'wukong'
+require 'wukong/script'
 require 'wukong/script/emr_command'
 
 #

@@ -15,10 +15,6 @@
      #
      class AccumulatingReducer < Wukong::Streamer::Base
        attr_accessor :key
-       def initialize options
-         super options
-         self.key = :__first_pass__
-       end
 
        #
        # override for multiple-field keys, etc.
@@ -70,6 +66,11 @@
        # You must override this method.
        #
        def finalize
+       end
+
+       # make a sentinel
+       def before_stream
+         self.key = :__first_pass__
        end
 
        # Finalize the last-seen group.
