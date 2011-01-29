@@ -10,13 +10,12 @@ if [ "$output_file" == "" ] ; then echo "$0 input_file output_file [mapper=/bin/
 HADOOP_HOME=${HADOOP_HOME-/usr/lib/hadoop}
 
 # Can add fun stuff like
-# -jobconf mapred.map.tasks=3                                                       \
-# -jobconf mapred.reduce.tasks=3                                                    \
+# -Dmapred.reduce.tasks=0                                                    \
 
 exec ${HADOOP_HOME}/bin/hadoop \
      jar         ${HADOOP_HOME}/contrib/streaming/hadoop-*streaming*.jar		\
     "$@"                                                                                \
-    -D          "mapred.job.name=`basename $0`-$map_script-$input_file-$output_file"    \
+    -Dmapred.job.name=`basename $0`-$map_script-$input_file-$output_file                \
     -mapper  	"$map_script"  								\
     -reducer	"$reduce_script"							\
     -input      "$input_file"								\

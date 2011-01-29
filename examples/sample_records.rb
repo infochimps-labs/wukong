@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../lib'
+require 'rubygems'
 require 'wukong/script'
 
 Settings.define :sampling_fraction, :type => Float, :required => true, :description => "floating-point number between 0 and 1 giving the fraction of lines to emit: at sampling_fraction=1 all records are emitted, at 0 none are."

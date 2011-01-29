@@ -1,18 +1,7 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'wukong/script'
 
-MONTHS = {
-  'Jan' => '01',
-  'Feb' => '02',
-  'Mar' => '03',
-  'Apr' => '04',
-  'May' => '05',
-  'Jun' => '06',
-  'Jul' => '07',
-  'Aug' => '08',
-  'Sep' => '09',
-  'Oct' => '10',
-  'Nov' => '11',
-  'Dec' => '12',
-}
 module ApacheLogParser
   class Mapper < Wukong::Streamer::LineStreamer
 
@@ -36,6 +25,7 @@ module ApacheLogParser
        \s\"([^\"]*)\"                   # referer             "http://infochimps.org/search?query=CAC"
        \s\"([^\"]*)\"                   # ua                  "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
       \z}x)
+    MONTHS = { 'Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04', 'May' => '05', 'Jun' => '06', 'Jul' => '07', 'Aug' => '08', 'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12', }
 
     # Use the regex to break line into fields
     # Emit each record as flat line
@@ -45,14 +35,13 @@ module ApacheLogParser
       if m
         (ip, j1, j2,
           ts_day, ts_mo, ts_year,
-          ts_hour, ts_min, ts_sec, req_tz,
+          ts_hour, ts_min, ts_sec, tz,
           http_method, path, protocol,
           response_code, duration,
           referer, ua, *cruft) = m.captures
-        # DateTime.parse("#{datepart} #{timepart}").to_flat # this takes way too long
-        req_date = [ts_year, MONTHS[ts_mo], ts_day].join("")
-        req_time = [ts_hour, ts_min, ts_sec].join("")
-        yield [:logline, ip, req_date, req_time, http_method, protocol, path, response_code, duration, referer, ua, req_tz]
+        date = [ts_year, MONTHS[ts_mo], ts_day].join("")
+        time = [ts_hour, ts_min, ts_sec].join("")
+        yield [:logline, ip, date, time, http_method, protocol, path, response_code, duration, referer, ua, tz]
       else
         yield [:unparseable, line]
       end
@@ -61,7 +50,7 @@ module ApacheLogParser
   end
 end
 
-Wukong::Script.new(ApacheLogParser::Mapper, nil, :sort_fields => 7).run
+Wukong.run(ApacheLogParser::Mapper, nil, :sort_fields => 7)
 
 # 55.55.155.55 - - [04/Feb/2008:11:37:52 +0000] 301 "GET /robots.txt HTTP/1.1" 185 "-" "WebAlta Crawler/2.0 (http://www.webalta.net/ru/about_webmaster.html) (Windows; U; Windows NT 5.1; ru-RU)" "-"
 
