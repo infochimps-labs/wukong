@@ -19,27 +19,11 @@ require 'bucket_counter'
 #   word_a  word_c
 #   word_b  word_c
 #
-class SentenceCoocurrence < Wukong::Streamer::RecordStreamer
-  def initialize *args
-    super *args
-    @bucket = BucketCounter.new
-  end
-
+class SentenceBigrams < Wukong::Streamer::RecordStreamer
   def process title, idx, *words
-    @bucket << words[0..-2].zip(words[1..-1])
-    dump_bucket if @bucket.full?
-  end
-
-  def dump_bucket
-    @bucket.each do |pair_key, count|
-      emit [pair_key, count]
+    words[0..-2].zip(words[1..-1]).each do |word_a, word_b|
+      yield [word_a, word_b]
     end
-    $stderr.puts "bucket stats: #{@bucket.stats.inspect}"
-    @bucket.clear
-  end
-
-  def after_stream
-    dump_bucket
   end
 end
 
@@ -47,19 +31,22 @@ end
 # Combine multiple bucket counts into a single on
 #
 class CombineBuckets < Wukong::Streamer::AccumulatingReducer
+  def get_key *fields
+    fields[0..1]
+  end
   def start! *args
     @total = 0
   end
-  def accumulate word, count
-    @total += count.to_i
+  def accumulate *fields
+    @total += 1
   end
   def finalize
-    yield [@total, key] if @total > 20
+    yield [@total, key].flatten
   end
 end
 
 Wukong.run(
-  SentenceCoocurrence,
+  SentenceBigrams,
   CombineBuckets,
   :io_sort_record_percent => 0.3,
   :io_sort_mb => 300
