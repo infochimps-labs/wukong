@@ -1,5 +1,5 @@
 require 'pathname'
-require 'configliere' ; Configliere.use(:commandline, :env_var, :define)
+require 'configliere' ; Settings.use(:commandline, :env_var, :define)
 require 'wukong'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'

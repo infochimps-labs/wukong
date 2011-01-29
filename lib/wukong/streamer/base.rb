@@ -69,7 +69,6 @@ module Wukong
       # Process each record in turn, yielding the records to emit
       #
       def process *args, &block
-        raise "override the process method in your implementation: it should process each record."
       end
 
       #
@@ -91,7 +90,7 @@ module Wukong
       # This is still experimental.
       # Among other limitations, you can't use ++yield++ -- you have to call
       # emit() directly.
-      def map &mapper_block
+      def mapper &mapper_block
         @mapper_block = mapper_block.to_proc
         self.instance_eval do
           def process *args, &block
@@ -103,8 +102,8 @@ module Wukong
 
       # Creates a new object of this class and injects the given block
       # as the process method
-      def self.map *args, &block
-        self.new.map *args, &block
+      def self.mapper *args, &block
+        self.new.mapper *args, &block
       end
 
       # Delegates back to Wukong to run this instance as a mapper

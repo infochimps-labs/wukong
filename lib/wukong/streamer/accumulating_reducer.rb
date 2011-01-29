@@ -79,6 +79,5 @@
          super *args
        end
      end
-
    end
 end

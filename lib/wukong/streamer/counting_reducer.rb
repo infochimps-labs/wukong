@@ -3,7 +3,7 @@ module Wukong
     #
     # Emit each unique key and the count of its occurrences
     #
-    class CountKeys < Wukong::Streamer::AccumulatingReducer
+    class CountingReducer < Wukong::Streamer::AccumulatingReducer
 
       # reset the counter to zero
       def start! *args

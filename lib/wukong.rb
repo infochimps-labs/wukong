@@ -1,4 +1,4 @@
-require 'configliere'; Configliere.use :define
+require 'configliere'; Settings.use :define
 require 'wukong/extensions'
 require 'wukong/datatypes'
 require 'wukong/periodic_monitor'
