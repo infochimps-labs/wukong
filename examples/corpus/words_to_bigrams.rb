@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-require 'wukong'
+require 'rubygems'
+require 'wukong/script'
 
 #
 # Bigram counts

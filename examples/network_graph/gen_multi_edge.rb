@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-$: << File.dirname(__FILE__)+'/../../lib'
 require 'wukong'
 
 #

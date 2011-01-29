@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../lib'
+require 'rubygems'
 require 'wukong/script'
 
 module Size

@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
-
 require 'rubygems'
-require 'wukong'
+require 'wukong/script'
 
 require 'bloomfilter-rb'
 

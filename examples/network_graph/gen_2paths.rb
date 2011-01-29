@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-$: << File.dirname(__FILE__)+'/../../lib'
-require 'wukong'
+require 'rubygems'
+require 'wukong/script'
 
 class Edge < Struct.new(:src, :dest)
 end
