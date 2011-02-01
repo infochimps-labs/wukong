@@ -2,10 +2,6 @@
 require 'rubygems'
 require 'wukong/script'
 
-#
-#
-#
-
 module PageRank
   #
   # Damping factor (prob. of a 'random' jump)
@@ -13,16 +9,12 @@ module PageRank
   #
   DAMPING_FACTOR = 0.85
 
-  #
   # Each user's line looks like
-  #
   #   user_a    pagerank        id1,id2,...,idN
-  #
   # we need to disperse this user's pagerank to each of id1..idN, and
   # rendezvous the list of outbound links at user_a's reducer as well.
-  #
   module Iterating
-    class Mapper < Wukong::Streamer::Base
+    class PagerankMapper < Wukong::Streamer::Base
       #
       # Send pagerank to each page, and send the dests list back to self
       #
@@ -34,9 +26,7 @@ module PageRank
         yield_own_dest_list   src, dests_str,       &block
       end
 
-      #
       # Take the source node's pagerank and distribute it among all the out-nodes
-      #
       def yield_pagerank_shares src, pagerank, dests
         pagerank_share = pagerank.to_f / dests.length
         dests.each do |dest|
@@ -44,15 +34,13 @@ module PageRank
         end
       end
 
-      #
       # Dispatch this user's out-node list to rendezvous with itself.
-      #
       def yield_own_dest_list src, dests_str
         yield [src, 'd', dests_str]
       end
     end
 
-    class Reducer < Wukong::Streamer::AccumulatingReducer
+    class PagerankReducer < Wukong::Streamer::AccumulatingReducer
       attr_accessor :node_id, :pagerank, :dests_str
       # Begin reduction with 0 accumulated pagerank and no dests as yet
       def start! node_id, *args
@@ -78,11 +66,7 @@ module PageRank
       end
     end
 
-    class Script < Wukong::Script
-      def default_options
-        super.merge :extra_args => ' -jobconf io.sort.record.percent=0.25 '
-      end
-    end
-    Script.new(Mapper, Reducer).run
+    Wukong.run(PagerankMapper, PagerankReducer,
+      :extra_args => ' -jobconf io.sort.record.percent=0.25 ')
   end
 end
