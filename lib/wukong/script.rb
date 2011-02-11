@@ -1,4 +1,5 @@
 require 'pathname'
+require 'wukong/extensions'
 require 'configliere' ; Settings.use(:commandline, :env_var, :define)
 require 'wukong'
 require 'wukong/script/hadoop_command'

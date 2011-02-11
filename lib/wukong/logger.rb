@@ -13,7 +13,7 @@ module Wukong
   #     I, [2009-07-26T19:58:46-05:00 #12332]: Up to 2000 char message
   #
   def self.logger
-    return @logger if @logger
+    return @logger if defined?(@logger)
     require 'logger'
     @logger = Logger.new STDERR
     @logger.instance_eval do

@@ -1,5 +1,5 @@
-require 'configliere'; Settings.use :define
 require 'wukong/extensions'
+require 'configliere'; Settings.use :define
 require 'wukong/datatypes'
 require 'wukong/periodic_monitor'
 require 'wukong/logger'

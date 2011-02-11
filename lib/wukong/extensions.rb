@@ -2,8 +2,8 @@
 # These pull in the minimal functionality of the extlib|activesupport family of
 # gems.
 #
-require 'wukong/extensions/blank'
-require 'wukong/extensions/class'
+require 'extlib/blank'
+require 'extlib/class'
 require 'wukong/extensions/enumerable'
 require 'wukong/extensions/symbol'
 require 'wukong/extensions/hash'

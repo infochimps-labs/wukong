@@ -103,7 +103,7 @@ module Wukong
       # Creates a new object of this class and injects the given block
       # as the process method
       def self.mapper *args, &block
-        self.new.mapper *args, &block
+        self.new.mapper(*args, &block)
       end
 
       # Delegates back to Wukong to run this instance as a mapper

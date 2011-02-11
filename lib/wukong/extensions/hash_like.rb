@@ -64,7 +64,7 @@ module Wukong
     # Analagous to Hash#merge
     #
     def merge *args
-      self.dup.merge! *args
+      self.dup.merge!(*args)
     end
     def merge! hsh, &block
       raise "can't handle block arg yet" if block
@@ -104,7 +104,7 @@ module Wukong
       #
       def from_hash(hsh, has_symbol_keys=false)
         extract_keys = has_symbol_keys ? self.keys.map(&:to_sym) : self.keys.map(&:to_s)
-        self.new *hsh.values_of(*extract_keys)
+        self.new(*hsh.values_of(*extract_keys))
       end
       #
       # The last portion of the class in underscored form
