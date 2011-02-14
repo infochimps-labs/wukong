@@ -128,7 +128,7 @@ module Wukong
     def initialize mapper, reducer=nil, extra_options={}
       Settings.resolve!
       @options = Settings
-      options.merge extra_options
+      options.merge! extra_options
       @mapper  = (case mapper  when Class then mapper.new  when nil then nil else mapper  ; end)
       @reducer = (case reducer when Class then reducer.new when nil then nil else reducer ; end)
       @output_path = options.rest.pop
