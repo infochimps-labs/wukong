@@ -28,9 +28,9 @@ class PeriodicMonitor
     if ready?
       @last_report = Time.now
       if block
-        block.call(iter, *args)
+        emit block.call(self, *args)
       else
-        self.emit progress(*args)
+        emit progress(*args)
       end
     end
   end

@@ -28,9 +28,13 @@ module Wukong
           process(*record) do |output_record|
             emit output_record
           end
-          monitor.periodically(record.to_s[0..1000])
+          track(record)
         end
         after_stream
+      end
+
+      def track record
+        monitor.periodically(record.to_s[0..1000])
       end
 
       def each_record &block
