@@ -174,10 +174,14 @@ module Wukong
     # In hadoop mode, this is given to the hadoop streaming command.
     # In local mode, it's given to the system() call
     #
-    def mapper_commandline
+    def mapper_commandline(run_option=:local)
       if mapper
-        "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
-        # "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --map " + non_wukong_params
+        case run_option
+        when :local then
+          "#{ruby_interpreter_path} #{this_script_filename} --map " + non_wukong_params
+        when :hadoop then
+          "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --map " + non_wukong_params
+        end
       else
         options[:map_command]
       end
@@ -188,10 +192,14 @@ module Wukong
     # In hadoop mode, this is given to the hadoop streaming command.
     # In local mode, it's given to the system() call
     #
-    def reducer_commandline
+    def reducer_commandline(run_option=:local)
       if reducer
-        "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
-        # "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --reduce " + non_wukong_params
+        case run_option
+        when :local then
+          "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+        when :hadoop then
+          "#{ruby_interpreter_path} #{File.basename(this_script_filename)} --reduce " + non_wukong_params
+        end
       else
         options[:reduce_command]
       end
