@@ -231,6 +231,7 @@ module Wukong
       else
         maybe_overwrite_output_paths! output_path
         $stdout.puts `#{command}`
+        raise "Streaming command failed!" unless $?.success?
       end
     end
 
