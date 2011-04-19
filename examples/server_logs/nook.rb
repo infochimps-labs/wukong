@@ -19,21 +19,27 @@ Settings.define :target_scheme, :default => 'http',      :description => "Reques
 #
 #
 class NookMapper < ApacheLogParser
-
   # create a Logline object from each record and serialize it flat to disk
   def process line
     super(line) do |logline|
-      # yield logline
-      resp = fetcher.get("/your/mom")
-      yield [resp.status, resp.body, resp.headers.inspect]
+      start = Time.now
+      resp = fetcher.get(logline.path, :user_agent => logline.ua, :referer => logline.referer)
+      yield [Time.now.to_flat, (Time.now - start).to_f, resp.status, resp.body.size, logline.path, resp.body]
+    end
+  end
+
+  def track record
+    monitor.periodically do |m|
+      m.progress
     end
   end
 
   # a mock fetcher with a uniformly distributed variable delay
   def fetcher
-    @fetcher ||= Faraday::Connection.new do |f|
+    @fetcher ||= Faraday::Connection.new(:url => 'http://localhost:80/') do |f|
       f.use Faraday::Adapter::Dummy do |dummy|
-        dummy.delay = Proc.new{|env| 0.1 + 0.9 * rand() }
+        dummy.delay = Proc.new{|env| 0.05  } # 0.2 * rand()
+        # dummy.body = Proc.new{|env| env[:url] }
       end
     end
   end

@@ -11,12 +11,6 @@ class Logline < Struct.new(
     end
   end
 
-  def is_page?
-    page_type == :page
-  end
-
-
-
   #
   # Regular expression to parse an apache log line.
   #
