@@ -13,8 +13,8 @@ Settings.define :emr_bootstrap_script, :description => 'Bootstrap actions for El
 Settings.define :emr_extra_args,       :description => 'kludge: allows you to stuff extra args into the elastic-mapreduce invocation', :type => Array, :wukong => true
 Settings.define :alive,                :description => 'Whether to keep machine running after job invocation', :type => :boolean
 #
-Settings.define :keypair_file,        :description => 'AWS Key pair file',                               :type => :filename
-Settings.define :keypair,             :description => "AWS Key pair name. If not specified, it's taken from keypair_file's basename", :finally => lambda{ Settings.keypair ||= File.basename(Settings.keypair_file.to_s, '.pem') if Settings.keypair_file }
+Settings.define :key_pair_file,        :description => 'AWS Key pair file',                               :type => :filename
+Settings.define :key_pair,             :description => "AWS Key pair name. If not specified, it's taken from key_pair_file's basename", :finally => lambda{ Settings.key_pair ||= File.basename(Settings.key_pair_file.to_s, '.pem') if Settings.key_pair_file }
 Settings.define :instance_type,        :description => 'AWS instance type to use',                        :default => 'm1.small'
 Settings.define :master_instance_type, :description => 'Overrides the instance type for the master node', :finally => lambda{ Settings.master_instance_type ||= Settings.instance_type }
 Settings.define :jobflow,              :description => "ID of an existing EMR job flow. Wukong will create a new job flow"
@@ -45,7 +45,9 @@ module Wukong
     end
 
     def hadoop_options_for_emr_runner
-      [hadoop_jobconf_options, hadoop_other_args].flatten.compact.map{|hdp_opt| "--arg '#{hdp_opt}'"}
+      [hadoop_jobconf_options, hadoop_other_args].flatten.compact.uniq.map do |hdp_opt|
+        hdp_opt.split(' ').map {|part| "--arg '#{part}'"}
+      end.flatten
     end
 
     def execute_emr_runner
@@ -57,7 +59,7 @@ module Wukong
         command_args << "--create --name=#{job_name}"
         command_args << Settings.dashed_flag_for(:alive)
         command_args << Settings.dashed_flags(:num_instances, [:instance_type, :slave_instance_type], :master_instance_type, :hadoop_version).join(' ')
-        command_args << Settings.dashed_flags(:availability_zone, :keypair, :keypair_file).join(' ')
+        command_args << Settings.dashed_flags(:availability_zone, :key_pair, :key_pair_file).join(' ')
         command_args << "--bootstrap-action=#{bootstrap_s3_uri}"
       end
       command_args << Settings.dashed_flags(:enable_debugging, :step_action, [:emr_runner_verbose, :verbose], [:emr_runner_debug, :debug]).join(' ')
