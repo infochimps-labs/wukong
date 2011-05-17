@@ -252,7 +252,7 @@ module Wukong
     # the map/reducer phase scripts
     def non_wukong_params
       options.
-        reject{|param, val| options.param_definitions[param][:wukong] }.
+        reject{|param, val| options.definition_of(param, :wukong) }.
         map{|param,val| "--#{param}=#{val}" }.
         join(" ")
     end

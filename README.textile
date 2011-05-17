@@ -19,7 +19,6 @@ The **main documentation** lives on the "Wukong Pages.":http://mrflip.github.com
 * Wukong is licensed under the "Apache License":http://mrflip.github.com/wukong/LICENSE.html (same as Hadoop)
 * "More info":http://mrflip.github.com/wukong/moreinfo.html
 
-
 h2. Help!
 
 Send Wukong questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code

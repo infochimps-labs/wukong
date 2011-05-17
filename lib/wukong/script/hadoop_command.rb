@@ -40,8 +40,8 @@ module Wukong
     # if not, the resulting nil will be elided later
     def jobconf option
       if options[option]
-        # "-jobconf %s=%s" % [options.description_for(option), options[option]]
-        "-D %s=%s" % [options.description_for(option), options[option]]
+        # "-jobconf %s=%s" % [options.definition_of(option, :description), options[option]]
+        "-D %s=%s" % [options.definition_of(option, :description), options[option]]
       end
     end
 
