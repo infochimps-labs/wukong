@@ -231,6 +231,7 @@ module Wukong
       else
         maybe_overwrite_output_paths! output_path
         $stdout.puts `#{command}`
+        raise "Streaming command failed!" unless $?.success?
       end
     end
 
@@ -251,7 +252,7 @@ module Wukong
     # the map/reducer phase scripts
     def non_wukong_params
       options.
-        reject{|param, val| options.param_definitions[param][:wukong] }.
+        reject{|param, val| options.definition_of(param, :wukong) }.
         map{|param,val| "--#{param}=#{val}" }.
         join(" ")
     end
