@@ -25,6 +25,9 @@ module Wukong
     Settings.define :max_record_length,      :jobconf => true, :description => 'mapred.linerecordreader.maxlength',                      :wukong => true # "Safeguards against corrupted data: lines longer than this (in bytes) are treated as bad records."
     Settings.define :max_reduces_per_cluster,:jobconf => true, :description => 'mapred.max.reduces.per.cluster',                         :wukong => true
     Settings.define :max_reduces_per_node,   :jobconf => true, :description => 'mapred.max.reduces.per.node',                            :wukong => true
+    Settings.define :max_tracker_failures,   :jobconf => true, :description => 'mapred.max.tracker.failures',                            :wukong => true
+    Settings.define :max_map_attempts,       :jobconf => true, :description => 'mapred.map.max.attempts',                                :wukong => true
+    Settings.define :max_reduce_attempts,    :jobconf => true, :description => 'mapred.reduce.max.attempts',                             :wukong => true
     Settings.define :min_split_size,         :jobconf => true, :description => 'mapred.min.split.size',                                  :wukong => true
     Settings.define :output_field_separator, :jobconf => true, :description => 'stream.map.output.field.separator',                      :wukong => true
     Settings.define :partition_fields,       :jobconf => true, :description => 'num.key.fields.for.partition',                           :wukong => true
@@ -100,6 +103,8 @@ module Wukong
         :partition_fields,         :sort_fields,
         :reduce_tasks,             :respect_exit_status,
         :reuse_jvms,               :timeout,
+        :max_tracker_failures,     :max_map_attempts,
+        :max_reduce_attempts
       ].map{|opt| jobconf(opt)}
       jobconf_options.flatten.compact
     end
