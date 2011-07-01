@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wukong}
-  s.version = "2.0.0"
+  s.version = "2.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2011-01-29}
+  s.date = %q{2011-07-01}
   s.description = %q{  Treat your dataset like a:
 
       * stream of lines when it's efficient to process by lines
@@ -139,6 +139,7 @@ Gem::Specification.new do |s|
     "examples/contrib/jeans/sizes.rb",
     "examples/corpus/bucket_counter.rb",
     "examples/corpus/dbpedia_abstract_to_sentences.rb",
+    "examples/corpus/sentence_bigrams.rb",
     "examples/corpus/sentence_coocurrence.rb",
     "examples/corpus/words_to_bigrams.rb",
     "examples/emr/README.textile",
@@ -162,7 +163,10 @@ Gem::Specification.new do |s|
     "examples/server_logs/apache_log_parser.rb",
     "examples/server_logs/breadcrumbs.rb",
     "examples/server_logs/logline.rb",
+    "examples/server_logs/nook.rb",
+    "examples/server_logs/nook/faraday_dummy_adapter.rb",
     "examples/server_logs/user_agent.rb",
+    "examples/simple_word_count.rb",
     "examples/size.rb",
     "examples/stats/avg_value_frequency.rb",
     "examples/stats/binning_percentile_estimator.rb",
@@ -252,13 +256,14 @@ Gem::Specification.new do |s|
   ]
   s.homepage = %q{http://mrflip.github.com/wukong}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.2}
+  s.rubygems_version = %q{1.5.0}
   s.summary = %q{Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease.}
   s.test_files = [
     "examples/contrib/jeans/normalize.rb",
     "examples/contrib/jeans/sizes.rb",
     "examples/corpus/bucket_counter.rb",
     "examples/corpus/dbpedia_abstract_to_sentences.rb",
+    "examples/corpus/sentence_bigrams.rb",
     "examples/corpus/sentence_coocurrence.rb",
     "examples/corpus/words_to_bigrams.rb",
     "examples/emr/elastic_mapreduce_example.rb",
@@ -275,7 +280,10 @@ Gem::Specification.new do |s|
     "examples/server_logs/apache_log_parser.rb",
     "examples/server_logs/breadcrumbs.rb",
     "examples/server_logs/logline.rb",
+    "examples/server_logs/nook.rb",
+    "examples/server_logs/nook/faraday_dummy_adapter.rb",
     "examples/server_logs/user_agent.rb",
+    "examples/simple_word_count.rb",
     "examples/size.rb",
     "examples/stats/avg_value_frequency.rb",
     "examples/stats/binning_percentile_estimator.rb",
