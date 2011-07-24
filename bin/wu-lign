@@ -98,8 +98,8 @@ FORMAT_GUESSING_LINES = 500
 # widest column to set
 MAX_MAX_WIDTH = 100
 
-INT_RE   = /\A\d+\z/
-FLOAT_RE = /\A(\d+)(?:\.(\d+))?(?:e-?\d+)?\z/
+INT_RE   = /\A[\d,]+\z/
+FLOAT_RE = /\A([\d,]+)(?:\.(\d+))?(?:e-?\d+)?\z/
 
 def get_type val
   case
@@ -161,7 +161,7 @@ format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, 
   case type
   when :mixed, nil then lambda{|s| "%-#{width}s" % s }
   when :str        then lambda{|s| "%-#{width}s" % s }
-  when :int        then lambda{|s| "%#{width}d"  % s.to_i }
+  when :int        then lambda{|s| "%#{width}d"  % s.gsub(/\D+/, "").to_i }
   when :float      then lambda{|s| "%#{maxmag+minmag+2}.#{minmag}f" % s.to_f }
   else raise "oops type #{type}"  end
 end
