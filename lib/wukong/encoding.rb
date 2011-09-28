@@ -68,7 +68,7 @@ module Wukong
   #
   def self.decode_str str, strategy=:xml
     case strategy
-    when :xml        then HTMLEntities.decode_entities(str)
+    when :xml        then self.html_encoder.decode(str)
     when :url        then Addressable::URI.unencode_component(str)
     else raise "Don't know how to decode with strategy #{strategy}"
     end
