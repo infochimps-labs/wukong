@@ -4,21 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{wukong}
-  s.version = "2.0.1"
+  s.name = "wukong"
+  s.version = "2.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = %q{2011-07-01}
-  s.description = %q{  Treat your dataset like a:
-
-      * stream of lines when it's efficient to process by lines
-      * stream of field arrays when it's efficient to deal directly with fields
-      * stream of lightweight objects when it's efficient to deal with objects
-
-  Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
-}
-  s.email = %q{flip@infochimps.org}
+  s.date = "2011-11-04"
+  s.description = "  Treat your dataset like a:\n\n      * stream of lines when it's efficient to process by lines\n      * stream of field arrays when it's efficient to deal directly with fields\n      * stream of lightweight objects when it's efficient to deal with objects\n\n  Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.\n"
+  s.email = "flip@infochimps.org"
   s.executables = ["hdp-du", "hdp-sync", "hdp-wc", "wu-lign", "wu-sum", "hdp-parts_to_keys.rb"]
   s.extra_rdoc_files = [
     "LICENSE.textile",
@@ -180,6 +173,7 @@ Gem::Specification.new do |s|
     "lib/wukong/datatypes.rb",
     "lib/wukong/datatypes/enum.rb",
     "lib/wukong/datatypes/fake_types.rb",
+    "lib/wukong/decorator.rb",
     "lib/wukong/encoding.rb",
     "lib/wukong/encoding/asciize.rb",
     "lib/wukong/extensions.rb",
@@ -254,46 +248,10 @@ Gem::Specification.new do |s|
     "spec/wukong/script_spec.rb",
     "wukong.gemspec"
   ]
-  s.homepage = %q{http://mrflip.github.com/wukong}
+  s.homepage = "http://mrflip.github.com/wukong"
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.0}
-  s.summary = %q{Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease.}
-  s.test_files = [
-    "examples/contrib/jeans/normalize.rb",
-    "examples/contrib/jeans/sizes.rb",
-    "examples/corpus/bucket_counter.rb",
-    "examples/corpus/dbpedia_abstract_to_sentences.rb",
-    "examples/corpus/sentence_bigrams.rb",
-    "examples/corpus/sentence_coocurrence.rb",
-    "examples/corpus/words_to_bigrams.rb",
-    "examples/emr/elastic_mapreduce_example.rb",
-    "examples/ignore_me/counting.rb",
-    "examples/ignore_me/grouper.rb",
-    "examples/network_graph/adjacency_list.rb",
-    "examples/network_graph/breadth_first_search.rb",
-    "examples/network_graph/gen_2paths.rb",
-    "examples/network_graph/gen_multi_edge.rb",
-    "examples/network_graph/gen_symmetric_links.rb",
-    "examples/pagerank/pagerank.rb",
-    "examples/pagerank/pagerank_initialize.rb",
-    "examples/sample_records.rb",
-    "examples/server_logs/apache_log_parser.rb",
-    "examples/server_logs/breadcrumbs.rb",
-    "examples/server_logs/logline.rb",
-    "examples/server_logs/nook.rb",
-    "examples/server_logs/nook/faraday_dummy_adapter.rb",
-    "examples/server_logs/user_agent.rb",
-    "examples/simple_word_count.rb",
-    "examples/size.rb",
-    "examples/stats/avg_value_frequency.rb",
-    "examples/stats/binning_percentile_estimator.rb",
-    "examples/stats/rank_and_bin.rb",
-    "examples/stupidly_simple_filter.rb",
-    "examples/word_count.rb",
-    "spec/spec_helper.rb",
-    "spec/wukong/encoding_spec.rb",
-    "spec/wukong/script_spec.rb"
-  ]
+  s.rubygems_version = "1.8.10"
+  s.summary = "Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
