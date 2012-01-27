@@ -4,6 +4,9 @@ module Wukong
   #
   module LocalCommand
 
+    Settings.define :sort_command, :default => 'sort'
+    Settings.define :sort_args,    :default => [], :description => 'Extra params to send to the sort function eg: Settings.sort_args = ["-t", "\t", "-S", "200M"]'
+
     def execute_local_workflow
       Log.info "  Reading STDIN / Writing STDOUT"
       execute_command!(local_commandline)
@@ -12,7 +15,7 @@ module Wukong
     # program, including arg, to sort input between mapper and reducer in local
     # mode. You could override to for example run 'sort -n' (numeric sort).
     def local_mode_sort_commandline
-      'sort'
+      [ Settings.sort_command, Settings.sort_args ].flatten.join(" ")
     end
 
     #
