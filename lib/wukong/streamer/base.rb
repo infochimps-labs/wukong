@@ -73,6 +73,7 @@ module Wukong
       # Process each record in turn, yielding the records to emit
       #
       def process *args, &block
+        yield(args)
       end
 
       #
@@ -81,7 +82,7 @@ module Wukong
       #
       def bad_record! key, *args
         warn "Bad record #{args.inspect[0..400]}"
-        puts ["bad_record-"+key, *args].join("\t")
+        puts ["bad_record-"+key.to_s, *args].join("\t")
       end
 
       # A periodic logger to track progress
