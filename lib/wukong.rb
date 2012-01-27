@@ -10,6 +10,7 @@ module Wukong
   autoload :Streamer,        'wukong/streamer'
   autoload :Store,           'wukong/store'
   autoload :FilenamePattern, 'wukong/filename_pattern'
+  autoload :Decorator,       'wukong/decorator'
 
   def self.run mapper, reducer=nil, options={}
     Wukong::Script.new(mapper, reducer, options).run
