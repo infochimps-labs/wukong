@@ -32,8 +32,7 @@ You may also define:
 
 * **easy way to dump to log** --
 
-* The **bad_record!** should have an easy hook
-
+* The **bad_record!** should have an easy hook to say "shit the bed if there are too many bad records"
     
     on_bad_record do |junk|
       @bad_record_count += 1  # ?? how do I make it not instance-y

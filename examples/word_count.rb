@@ -23,10 +23,10 @@ module WordCount
       # this includes hyphens (words are split)
       str = str.
         gsub(/[^a-zA-Z0-9\']+/, ' ').
-        gsub(/(\w)\'([std])\b/, '\1!\2').gsub(/\'/, ' ').gsub(/!/, "'")
+        gsub(/(\w)\'([stdm]|re|ve|ll)\b/, '\1!\2').gsub(/\'/, ' ').gsub(/!/, "'")
       # Busticate at whitespace
       words = str.split(/\s+/)
-      words.reject!{|w| w.blank? }
+      words.reject!{|w| w.length < 3 }
       words
     end
 
@@ -45,7 +45,7 @@ module WordCount
   #
   class Reducer1 < Wukong::Streamer::ListReducer
     def finalize
-      yield [ key, values.map(&:last).map(&:to_i).inject(0){|x,tot| x+tot } ]
+      yield [ values.map(&:last).map(&:to_i).inject(0){|x,tot| x+tot }, key ]
     end
   end
 
@@ -56,7 +56,7 @@ module WordCount
     def start!(*args)      @key_count =  0 end
     def accumulate(*args)  @key_count += 1 end
     def finalize
-      yield [ key, @key_count ]
+      yield [ @key_count, key ]
     end
   end
 
@@ -71,5 +71,5 @@ end
 # Execute the script
 Wukong.run(
   WordCount::Mapper,
-  WordCount::Reducer
+  WordCount::Reducer2
   )
