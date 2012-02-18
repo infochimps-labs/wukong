@@ -34,3 +34,5 @@ css
 /images
 /javascripts
 /_site
+.yardoc
+doc
