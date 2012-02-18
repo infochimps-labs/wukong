@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  mrflip.github.com/wukong - Tutorial
+title:  infochimps-labs.github.com/wukong - Tutorial
 collapse: false
 ---
 
@@ -279,5 +279,5 @@ locality. In general, write your map/reduce scripts to use natural keys (the scr
 h2. More...
 
 There are many useful examples (including an actually-useful version of this
-WordCount script) in the "examples/ directory.":http://github.com/mrflip/wukong/tree/master/examples
+WordCount script) in the "examples/ directory.":http://github.com/infochimps-labs/wukong/tree/master/examples
 

@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  mrflip.github.com/wukong
+title:  infochimps-labs.github.com/wukong
 collapse: true
 ---
 h1(gemheader). wukong %(small):: hadoop made easy%
@@ -71,7 +71,7 @@ h2. Documentation index
 
 h2. Credits
 
-Wukong was written by "Philip (flip) Kromer":http://mrflip.com (flip@infochimps.org / "@mrflip":http://twitter.com/mrflip) for the "infochimps project":http://infochimps.org
+Wukong was written by "Philip (flip) Kromer":http://infochimps-labs.com (flip@infochimps.org / "@infochimps":http://twitter.com/infochimps) for the "infochimps project":http://infochimps.org
 
 Patches submitted by:
 * gemified by Ben Woosley (ben.woosley@gmail.com)

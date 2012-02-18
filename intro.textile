@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  mrflip.github.com/wukong
+title:  infochimps-labs.github.com/wukong
 collapse: false
 ---
 h1(gemheader). Intro %(small):: 3 simple examples%

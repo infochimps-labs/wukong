@@ -12,14 +12,14 @@ maruku:
   png_url:      /images/latex
 
 header_ref:     '.html'    # .html for subdirs, / for main.
-assets_path:    '/'        # http://github.mrflip.com
+assets_path:    '/'        # http://github.infochimps-labs.com
 
-gemuser:        mrflip
+gemuser:        infochimps-labs
 gemname:        wukong
 gemversion:     0.1.1
-title:          mrflip.github.com/wukong
+title:          infochimps-labs.github.com/wukong
 
-keywords:       [ 'wukong,hadoop,ruby,mrflip,infochimps,map,reduce,streaming,dumbo,happy,mrtoolkit,script,simple' ]
+keywords:       [ 'wukong,hadoop,ruby,infochimps-labs,infochimps,map,reduce,streaming,dumbo,happy,mrtoolkit,script,simple' ]
 description:    "Wukong: Hadoop made so easy a Chimpanzee could run it."
 header_files:
   - INSTALL

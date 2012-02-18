@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  mrflip.github.com/wukong - Using Wukong and Wuclan, Part 3 - Parsing
+title:  infochimps-labs.github.com/wukong - Using Wukong and Wuclan, Part 3 - Parsing
 collapse: false
 ---
 

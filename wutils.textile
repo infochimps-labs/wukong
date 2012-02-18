@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  mrflip.github.com/wukong - wu-utils utilities
+title:  infochimps-labs.github.com/wukong - wu-utils utilities
 collapse: false
 ---
 

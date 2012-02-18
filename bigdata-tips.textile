@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  mrflip.github.com/wukong - Lessons Learned working with Big Data
+title:  infochimps-labs.github.com/wukong - Lessons Learned working with Big Data
 collapse: false
 ---
 
@@ -111,7 +111,7 @@ The meaning of a key depends on its semantics. Is a URL a key?
 
 * A location: (compare: "The head of household residing at 742 Evergreen Terr, Springfield USA")
 * An entity handle (URI): (compare: "Homer J Simpson (aka Max Power)")
-* An observation of that entity: Many URLs are handles to a __stream__ -- http://twitter.com/mrflip names the resource "mrflip's twitter stream", but loading that page offers only the last 20 entries in that stream. (compare: "The collection of all words spoken by the residents of 742 Evergreen Terr, Springfield USA")
+* An observation of that entity: Many URLs are handles to a __stream__ -- http://twitter.com/infochimps names the resource "infochimps-labs's twitter stream", but loading that page offers only the last 20 entries in that stream. (compare: "The collection of all words spoken by the residents of 742 Evergreen Terr, Springfield USA")
   
 h2(#bashide). The command line is an IDE
 
