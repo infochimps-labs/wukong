@@ -50,13 +50,10 @@ describe :streamers, :helpers => true do
     end
   end
 
-  describe Wukong::Streamer::Proxy do
+  describe Wukong::Streamer::Map do
     let(:test_proc){ ->(rec){ emit(rec.reverse) } }
     subject{ described_class.new( test_proc ) }
 
-    it 'is created with a proc' do
-      subject.proc.should be(test_proc)
-    end
     it 'emits the output of the proc' do
       subject.should_receive(:emit).with("won ytineres")
       subject.call("serenity now")
@@ -68,8 +65,8 @@ describe :streamers, :helpers => true do
     it 'works in an example flow flow' do
       test_sink = test_array_sink
       Wukong.flow(:simple) do
-        source([1,1,1,2,2,3,5,5])     |
-          make(:streamer, :group)     |
+        source(:iter, [1,1,1,2,2,3,5,5] )     |
+          group                               |
           map{|rec| emit [rec.first, rec.length] } |
           test_sink
         run

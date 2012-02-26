@@ -1,5 +1,82 @@
 module Wukong
-  module Stage
+  class Stage
+
+    # stage to receive emitted messages
+    attr_reader :next_stage
+
+    # invoked on each record in turn
+    # override this in your subclass
+    def call(record)
+    end
+
+    # passes a record on down the line
+    def emit(record, status=nil, headers={})
+      if not next_stage then warn("No next_stage set for #{self}") ; return ; end
+      next_stage.call(record)
+    end
+
+    # called at the end of a run
+    def finally
+      next_stage.finally if next_stage
+    end
+
+    #
+    # Graph connections
+    #
+
+    def into(stage=nil, &block)
+      stage ||= block
+      stage = Wukong::Stage.make(:streamer, :map, stage) if stage.is_a?(Proc)
+      @next_stage = stage
+    end
+
+    def |(*args, &block)
+      into(*args, &block)
+    end
+
+    #
+    # Graph Sugar
+    #
+
+    def select(pred=nil, &block)
+      self.into(Wukong::Stage.select(pred, &block))
+    end
+
+    def reject(pred=nil, &block)
+      self.into(Wukong::Stage.reject(pred, &block))
+    end
+
+    def self.select(pred=nil, &block)
+      case
+      when Wukong::Stage.has(:filter, pred) then pred
+      when pred.respond_to?(:match)  then Wukong::Filter::RegexpFilter.new(pred)
+      when pred.is_a?(Proc)          then Wukong::Filter::ProcFilter.new(pred)
+      when pred.nil? && block_given? then Wukong::Filter::ProcFilter.new(block)
+      else raise "Can't make a filter from #{pred.inspect}"
+      end
+    end
+
+    def self.reject(pred=nil, &block)
+      case
+      when Wukong::Stage.has(:filter, pred) then pred
+      when pred.respond_to?(:match)  then Wukong::Filter::RegexpRejecter.new(pred)
+      when pred.is_a?(Proc)          then Wukong::Filter::ProcRejecter.new(pred)
+      when pred.nil? && block_given? then Wukong::Filter::ProcRejecter.new(block)
+      else raise "Can't make a filter from #{pred.inspect}"
+      end
+    end
+
+    #
+    # Assembly -- find and identify by handle
+    #
+
+    def self.handle
+      self.to_s.demodulize.underscore.to_sym
+    end
+
+    def self.unregister!(type)
+      Wukong::Stage.send(:unregister, type, self)
+    end
 
     class << self
       # gets class for given streamer
@@ -36,67 +113,6 @@ module Wukong
 
       def unregister(type, klass)
         @@registry[type].delete(klass.handle)
-      end
-    end
-
-    class Base
-      # stage to receive emitted messages
-      attr_reader :next_stage
-
-      # invoked on each record in turn
-      # override this in your subclass
-      def call(record)
-      end
-
-      # passes a record on down the line
-      def emit(record, status=nil, headers={})
-        if not next_stage then warn("No next_stage set for #{self}") ; return ; end
-        next_stage.call(record)
-      end
-
-      # called at the end of a run
-      def finally
-        next_stage.finally if next_stage
-      end
-
-      #
-      # Graph connections
-      #
-
-      def into(stage)
-        @next_stage = stage
-      end
-
-      def |(stage)
-        into(stage)
-      end
-
-      def >(stage)
-        into(stage)
-      end
-
-      #
-      # Graph Sugar
-      #
-
-      def select(pred=nil, &block)
-        self.into(Wukong::Flow.select(pred, &block))
-      end
-
-      def reject(pred=nil, &block)
-        self.into(Wukong::Flow.reject(pred, &block))
-      end
-
-      #
-      # Assembly -- find and identify by handle
-      #
-
-      def self.handle
-        self.to_s.demodulize.underscore.to_sym
-      end
-
-      def self.unregister!(type)
-        Wukong::Stage.send(:unregister, type, self)
       end
     end
 

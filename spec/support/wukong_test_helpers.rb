@@ -29,4 +29,20 @@ module WukongTestHelpers
     [ new_fhs[1].string, new_fhs[2].string ]
   end
 
+  def example_script_filename(name)
+    CODE_ROOT('examples', name)
+  end
+
+  def example_script_contents(name)
+    File.read(example_script_filename(name))
+  end
+
+  def sample_data_filename(name)
+    CODE_ROOT('data', name)
+  end
+
+  def sample_data(name)
+    File.open(sample_data_filename(name))
+  end
+
 end

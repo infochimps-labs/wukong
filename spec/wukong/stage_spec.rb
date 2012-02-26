@@ -3,7 +3,7 @@ require 'wukong'
 
 describe :stages, :helpers => true do
 
-  describe Wukong::Stage::Base do
+  describe Wukong::Stage do
     subject{ test_streamer }
     let(:test_re){ /^h/ }
 
@@ -18,10 +18,6 @@ describe :stages, :helpers => true do
     it "aliases 'into' as '|'" do
       subject.should_receive(:into).with(mock_streamer)
       subject | mock_streamer
-    end
-    it "aliases 'into' as '>'" do
-      subject.should_receive(:into).with(mock_streamer)
-      subject > mock_streamer
     end
 
     context '#select' do
