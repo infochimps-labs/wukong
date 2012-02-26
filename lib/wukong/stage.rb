@@ -43,13 +43,25 @@ module Wukong
       # stage to receive emitted messages
       attr_reader :next_stage
 
+      # invoked on each record in turn
+      # override this in your subclass
       def call(record)
       end
 
+      # passes a record on down the line
       def emit(record, status=nil, headers={})
         if not next_stage then warn("No next_stage set for #{self}") ; return ; end
         next_stage.call(record)
       end
+
+      # called at the end of a run
+      def finally
+        next_stage.finally if next_stage
+      end
+
+      #
+      # Graph connections
+      #
 
       def into(stage)
         @next_stage = stage

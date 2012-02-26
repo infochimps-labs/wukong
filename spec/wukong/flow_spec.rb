@@ -6,7 +6,7 @@ describe 'wukong', :helpers => true do
 
   describe Wukong::Flow::Simple do
     it 'works with a simple example' do
-      test_sink = example_array_sink
+      test_sink = test_array_sink
       Wukong.flow(:simple) do
         source(1..100) | limit(7) | test_sink
         run

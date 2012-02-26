@@ -7,6 +7,14 @@ describe :stages, :helpers => true do
     subject{ test_streamer }
     let(:test_re){ /^h/ }
 
+    context '#finally' do
+      it 'calls #finally on the next stage' do
+        test_streamer.into(test_filter)
+        test_filter.should_receive(:finally)
+        test_streamer.finally
+      end
+    end
+
     it "aliases 'into' as '|'" do
       subject.should_receive(:into).with(mock_streamer)
       subject | mock_streamer
@@ -26,7 +34,7 @@ describe :stages, :helpers => true do
       end
 
       it 'creates a ProcFilter given a proc' do
-        test_proc = lambda{|rec| rec.odd? }
+        test_proc = ->(rec){ rec.odd? }
         subject.select(test_proc)
         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
         subject.next_stage.proc.should be(test_proc)
@@ -52,7 +60,7 @@ describe :stages, :helpers => true do
       end
 
       it 'creates a ProcFilter given a proc' do
-        test_proc = lambda{|rec| rec.odd? }
+        test_proc = ->(rec){ rec.odd? }
         subject.reject(test_proc)
         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
         subject.next_stage.proc.should be(test_proc)

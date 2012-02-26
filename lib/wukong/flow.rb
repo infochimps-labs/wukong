@@ -54,6 +54,7 @@ module Wukong
 
       def run
         source.run
+        source.finally
       end
 
       def make(*args, &block)   Wukong::Flow.make(*args, &block) ; end

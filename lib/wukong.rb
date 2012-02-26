@@ -17,6 +17,7 @@ require 'wukong/mixin/from_file'
 require 'wukong/flow'          # coordinates wukong stages
 require 'wukong/stage'         # base object for building blocks
 require 'wukong/streamer'      # processes records in series
+require 'wukong/filter'        # passes through only records that meet `accept?`
 require 'wukong/source'        # generates raw records from outside
 require 'wukong/sink'          # dispatch raw records to outside
 
