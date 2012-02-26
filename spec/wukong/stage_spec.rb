@@ -7,6 +7,15 @@ describe :stages, :helpers => true do
     subject{ test_streamer }
     let(:test_re){ /^h/ }
 
+    it "aliases 'into' as '|'" do
+      subject.should_receive(:into).with(mock_streamer)
+      subject | mock_streamer
+    end
+    it "aliases 'into' as '>'" do
+      subject.should_receive(:into).with(mock_streamer)
+      subject > mock_streamer
+    end
+
     context '#select' do
       it 'creates a RegexpFilter given a regexp' do
         subject.select(test_re)

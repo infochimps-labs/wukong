@@ -59,34 +59,20 @@ module Wukong
         into(stage)
       end
 
+      def >(stage)
+        into(stage)
+      end
+
       #
       # Graph Sugar
       #
 
-      def self.select(pred=nil, &block)
-        case
-        when Wukong::Stage.has(:filter, pred) then pred
-        when pred.respond_to?(:match)  then Wukong::Filter::RegexpFilter.new(pred)
-        when pred.is_a?(Proc)          then Wukong::Filter::ProcFilter.new(pred)
-        when pred.nil? && block_given? then Wukong::Filter::ProcFilter.new(block)
-        else raise "Can't make a filter from #{pred.inspect}"
-        end
-      end
       def select(pred=nil, &block)
-        self.into(self.class.select(pred, &block))
+        self.into(Wukong::Flow.select(pred, &block))
       end
 
-      def self.reject(pred=nil, &block)
-        case
-        when Wukong::Stage.has(:filter, pred) then pred
-        when pred.respond_to?(:match)  then Wukong::Filter::RegexpRejecter.new(pred)
-        when pred.is_a?(Proc)          then Wukong::Filter::ProcRejecter.new(pred)
-        when pred.nil? && block_given? then Wukong::Filter::ProcRejecter.new(block)
-        else raise "Can't make a filter from #{pred.inspect}"
-        end
-      end
       def reject(pred=nil, &block)
-        self.into(self.class.reject(pred, &block))
+        self.into(Wukong::Flow.reject(pred, &block))
       end
 
       #

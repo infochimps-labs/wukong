@@ -2,6 +2,7 @@
 
 shared_context 'wukong', :helpers => true do
   let(:mock_record){ mock }
+  let(:mock_streamer){ mock }
 
   let(:example_array_sink){ Wukong::Sink::ArrayCapture.new }
 
@@ -9,6 +10,8 @@ shared_context 'wukong', :helpers => true do
   let(:test_streamer_klass){ Class.new(Wukong::Streamer::Base){ def call(record) emit(record) ; end } }
 
   let(:test_streamer){ test_streamer_klass.new }
+
+  let(:test_filter){ Wukong.flow.select{|rec| rec =~ /^h/ } }
 end
 
 
