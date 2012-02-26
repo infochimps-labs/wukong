@@ -1,7 +1,7 @@
 require File.expand_path('../spec_helper', File.dirname(__FILE__))
 require 'wukong'
 
-describe :streamers, :streamers => true do
+describe :streamers, :helpers => true do
   describe Wukong::Streamer do
     context 'registry' do
       it 'contains standard streamers' do
@@ -27,7 +27,7 @@ describe :streamers, :streamers => true do
       end
     end
   end
-  
+
   describe Wukong::Streamer::Identity do
     it 'outputs every record, unmodified' do
       subject.should_receive(:emit).with(mock_record)
@@ -53,7 +53,7 @@ describe :streamers, :streamers => true do
   describe Wukong::Streamer::Proxy do
     let(:test_proc){ ->(rec){ emit(rec.reverse) } }
     subject{ described_class.new( test_proc ) }
-    
+
     it 'is created with a proc' do
       subject.proc.should be(test_proc)
     end
@@ -62,23 +62,25 @@ describe :streamers, :streamers => true do
       subject.call("serenity now")
     end
   end
-  
-  describe Wukong::Filter::ProcFilter do
-    let(:test_proc){ lambda{|rec| rec =~ /^h/ } }
-    subject{ described_class.new(test_proc) }
-    
-    its("proc"){ should be_a(Proc) }
-    
-    it 'evaluates the proc' do
-      test_proc.should_receive(:call).with(mock_record)
-      subject.call(mock_record)
+
+  describe Wukong::Streamer::Group do
+
+    it 'works in an example flow flow' do
+      test_sink = test_array_sink
+      Wukong.flow(:simple) do
+        source([1,1,1,2,2,3,5,5])     |
+          make(:streamer, :group)     |
+          map{|rec| emit [rec.first, rec.length] } |
+          test_sink
+        run
+      end
+      test_sink.records.should == [ [1,3], [2,2], [3,1], [5,2] ]
     end
 
-    it 'passes records according to the truthiness the block returns' do
-      subject.accept?("howdy" ).should be_true
-      subject.accept?("hello" ).should be_true    
-      subject.accept?("byebye").should_not be_true
-    end
+    # it 'calls end_group at the end'
+    # 
+    # it 'on an empty stream'
+    
   end
 
 end
