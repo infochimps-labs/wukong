@@ -15,7 +15,7 @@ module Wukong
       end
     end
 
-    class Proxy < Wukong::Streamer::Base
+    class Map < Wukong::Streamer::Base
       attr_reader :proc
       def initialize(proc)
         @proc = proc
