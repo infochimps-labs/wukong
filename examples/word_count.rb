@@ -1,15 +1,12 @@
+# cat README.md | bin/wu-map examples/tiny_count.rb | sort  | bin/wu-red examples/tiny_count.rb  | sort -n
 
-
-flow(:mapper) do
-
+mapper do |input|
   cleaner  = map{|line| emit line.gsub(/\W+/, ' ') }
   splitter = map{|line| line.split.each{|word| emit(word) } }
 
-  source($stdin) | cleaner | splitter | reject{|word| word.length < 3 } > stdout
+  input | cleaner | splitter | reject{|word| word.length < 3 }
 end
 
-flow(:reducer) do
-  bundle = make(:sink, :array_capture)
-
-  source($stdin) | bundle
+reducer do |input|
+  input | map{|rec| emit [rec.length, rec.first] } | to_tsv
 end
