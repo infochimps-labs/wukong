@@ -51,15 +51,11 @@ describe :streamers, :streamers => true do
   end
 
   describe Wukong::Streamer::Proxy do
-    let(:test_proc){ lambda{|rec| rec.reverse } }
+    let(:test_proc){ ->(rec){ emit(rec.reverse) } }
     subject{ described_class.new( test_proc ) }
+    
     it 'is created with a proc' do
       subject.proc.should be(test_proc)
-    end
-    it 'delegates :call to the proc' do
-      test_proc.should_receive(:call).with(mock_record).and_return(:fnord)
-      subject.should_receive(:emit).with(:fnord)
-      subject.call(mock_record)
     end
     it 'emits the output of the proc' do
       subject.should_receive(:emit).with("won ytineres")

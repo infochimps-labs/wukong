@@ -25,7 +25,7 @@ module Wukong
       end
 
       def call(*args)
-        proc.call(self, *args)
+        self.instance_exec(*args, &proc)
       end
     end
 

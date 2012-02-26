@@ -1,9 +1,15 @@
 
 
-flow(:word_count) do
+flow(:mapper) do
 
-  cleaner  = map{|s, line| s.emit line.gsub(/\W+/, ' ') }
-  splitter = map{|s, line| line.split.each{|word| s.emit(word) } }
+  cleaner  = map{|line| emit line.gsub(/\W+/, ' ') }
+  splitter = map{|line| line.split.each{|word| emit(word) } }
 
-  source($stdin) | cleaner | splitter | reject{|word| word.length < 3 } | stdout
+  source($stdin) | cleaner | splitter | reject{|word| word.length < 3 } > stdout
+end
+
+flow(:reducer) do
+  bundle = make(:sink, :array_capture)
+
+  source($stdin) | bundle
 end
