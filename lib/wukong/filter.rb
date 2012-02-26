@@ -2,7 +2,7 @@ module Wukong
 
   module Filter
 
-    class Base < Wukong::Stage::Base
+    class Base < Wukong::Stage
       def accept?(*args)
         true
       end

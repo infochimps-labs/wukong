@@ -1,7 +1,7 @@
 module Wukong
   module Streamer
 
-    class Base < Wukong::Stage::Base
+    class Base < Wukong::Stage
       def initialize
         reset!
         super
@@ -16,13 +16,11 @@ module Wukong
     end
 
     class Map < Wukong::Streamer::Base
-      attr_reader :proc
-      def initialize(proc)
-        @proc = proc
-      end
-
-      def call(*args)
-        self.instance_exec(*args, &proc)
+      # @param [Proc] proc to delegate for call
+      # @yield if proc is omitted, block must be supplied
+      def initialize(prc=nil, &block)
+        prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
+        define_singleton_method(:call, prc)
       end
     end
 

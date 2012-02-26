@@ -1,7 +1,7 @@
 module Wukong
   module Source
 
-    class Base < Wukong::Stage::Base
+    class Base < Wukong::Stage
       def run
         each do |record|
           emit(record)
@@ -13,7 +13,7 @@ module Wukong
       end
     end
 
-    class Proxy < Wukong::Source::Base
+    class Iter < Wukong::Source::Base
       # the enumerable object to delegate
       attr_reader :obj
 
@@ -26,20 +26,20 @@ module Wukong
       end
     end
 
-    # class IO < Wukong::Source::Base
-    #   attr_reader :file
-    #
-    #   def each(&block)
-    #     file.each do |line|
-    #       yield line.chomp
-    #     end
-    #   end
-    # end
-    #
-    # # emits each line from $stdin
-    # class Stdin < Wukong::Source::IO
-    #   def file() $stdin ; end
-    # end
+    class IO < Wukong::Source::Base
+      attr_reader :file
+
+      def each(&block)
+        file.each do |line|
+          yield line.chomp
+        end
+      end
+    end
+
+    # emits each line from $stdin
+    class Stdin < Wukong::Source::IO
+      def file() $stdin ; end
+    end
 
     class Integers < Wukong::Source::Base
       def each
