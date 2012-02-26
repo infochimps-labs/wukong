@@ -18,6 +18,6 @@ require 'wukong/streamer'      # processes records in series
 require 'wukong/source'        # generates raw records from outside
 require 'wukong/sink'          # dispatch raw records to outside
 
-require 'wukong/serialization' # converts raw blobs into structured records and vice/versa
+require 'wukong/formatter'     # converts raw blobs into structured records and vice/versa
 
 # require 'wukong/map_reduce'    # the standard stream-sort-group-stream map/reduce flow

@@ -2,6 +2,8 @@
 
 shared_context 'wukong', :helpers => true do
   let(:mock_record){ mock }
+
+  let(:example_array_sink){ Wukong::Sink::ArrayCapture.new }
 end
 
 
