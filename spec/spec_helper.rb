@@ -1,11 +1,11 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+CODE_ROOT = File.expand_path("..", File.dirname(__FILE__)) unless defined?(CODE_ROOT)
+def CODE_ROOT(*path_segs) File.expand_path(File.join(*path_segs), CODE_ROOT) ; end
 
-require 'wukong'
-require 'spec'
-require 'spec/autorun'
+$LOAD_PATH.unshift(CODE_ROOT('lib'))
+$LOAD_PATH.unshift(CODE_ROOT('spec', 'support'))
 
-Spec::Runner.configure do |config|
+Dir[CODE_ROOT('spec', 'support', '*.rb')].each{|f| require f }
 
+RSpec.configure do |config|
+  include WukongTestHelpers
 end
-
