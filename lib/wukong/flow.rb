@@ -33,6 +33,13 @@ module Wukong
         Wukong::Stage.make(type, src, *args, &block)
       end
 
+      def map(&block)
+        make(:streamer, :proxy, block)
+      end
+
+      def select(*args, &block) Wukong::Stage::Base.select(*args, &block) ; end
+      def reject(*args, &block) Wukong::Stage::Base.reject(*args, &block) ; end
+
       def limit(num) ; make(:streamer, :limit, num) ; end
       def stdin()  @stdin  ||= make(:source, :proxy, $stdin ) ; end
       def stdout() @stdout ||= make(:sink,   :stdout) ; end
