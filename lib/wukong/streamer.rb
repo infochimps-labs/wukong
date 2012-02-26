@@ -18,6 +18,17 @@ module Wukong
       end
     end
 
+    class Proxy < Wukong::Streamer::Base
+      attr_reader :proc
+      def initialize(proc)
+        @proc = proc
+      end
+
+      def call(*args)
+        proc.call(self, *args)
+      end
+    end
+
     class Identity < Wukong::Streamer::Base
       def call(record)
         emit(record)
@@ -57,7 +68,7 @@ module Wukong
 
   module Filter
 
-    class Base
+    class Base < Wukong::Stage::Base
       def accept?(*args)
         true
       end
@@ -67,9 +78,9 @@ module Wukong
       end
     end
 
-    class None < Wukong::Filter::Base
+    module Invert
       def accept?(*args)
-        false
+        not super
       end
     end
 
@@ -77,6 +88,46 @@ module Wukong
       def accept?(*args)
         true
       end
+    end
+
+    class None < Wukong::Filter::Base
+      def accept?(*args)
+        false
+      end
+    end
+
+    class ProcFilter < Wukong::Filter::Base
+      # evaluated on each record to decide whether to filter
+      attr_reader :proc
+
+      def initialize(proc)
+        @proc = proc
+      end
+
+      def accept?(*args)
+        proc.call(*args)
+      end
+    end
+
+    class ProcRejecter < Wukong::Filter::ProcFilter
+      def accept?(*args)
+        not super
+      end
+    end
+
+    class RegexpFilter < Wukong::Filter::Base
+      attr_reader :re
+      def initialize(re)
+        @re = re
+      end
+
+      def accept?(*args)
+        re.match(*args)
+      end
+    end
+
+    class RegexpRejecter < Wukong::Filter::RegexpFilter
+      include Wukong::Filter::Invert
     end
 
   end

@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+require 'rubygems' unless defined?(Gem)
+$LOAD_PATH.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
+require 'wukong'
+
+Settings.use :commandline
+Settings.resolve!
+
+script = Settings.rest.pop
+
+Wukong.module_eval do
+  extend Wukong::Mixin::FromFile
+
+  graph_from_file = from_file(script)
+
+  graph_from_file.run
+end
