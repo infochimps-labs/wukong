@@ -55,6 +55,14 @@ module Wukong
 
       def make(*args, &block)   Wukong::Stage.make(*args, &block)   ; end
 
+      [:map, :limit, :group, :monitor].each do |meth|
+        define_method(meth){|*args, &block| make(:streamer, meth, *args, &block) }
+      end
+
+      [:from_json, :to_json, :from_tsv, :to_tsv].each do |meth|
+        define_method(meth){|*args, &block| make(:formatter, meth, *args, &block) }
+      end
+
       def iter(enumerable) ;   make(:source, :iter, enumerable)    ; end
       def stdin()  @stdin  ||= make(:source, :iter, $stdin)        ; end
       def stdout() @stdout ||= make(:sink,   :stdout)              ; end
@@ -62,14 +70,6 @@ module Wukong
 
       def select(*args, &block) Wukong::Stage.select(*args, &block) ; end
       def reject(*args, &block) Wukong::Stage.reject(*args, &block) ; end
-
-      [:map, :limit, :group].each do |meth|
-        define_method(meth){|*args, &block| make(:streamer, meth, *args, &block) }
-      end
-
-      [:from_json, :to_json, :from_tsv, :to_tsv].each do |meth|
-        define_method(meth){|*args, &block| make(:formatter, meth, *args, &block) }
-      end
 
     end
 

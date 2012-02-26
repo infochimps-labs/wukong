@@ -56,6 +56,7 @@ describe 'wukong', :helpers => true do
 
       it 'works as expected' do
         subject.new.call("hi mom").should == "mom ih"
+        subject.new.bob.should == 1
       end
 
       after{ Wukong::Streamer.send(:remove_const, :FromMeth) if Wukong::Streamer.const_defined?(:FromMeth) }

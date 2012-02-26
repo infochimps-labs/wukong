@@ -24,7 +24,7 @@ module Wukong
 
     # Execute the script file in the context of the Wukong module
     def run
-      Log.info( "Running #{script_file} with settings #{settings}")
+      Log.debug( "Running #{script_file} with settings #{settings}")
       script_file = self.script_file
       mode        = settings.mode
       Wukong.module_eval do
