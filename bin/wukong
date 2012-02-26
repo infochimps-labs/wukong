@@ -7,4 +7,9 @@ Settings.use :commandline
 Settings.resolve!
 script_file = Settings.rest.pop
 
+case File.basename($0)
+when 'wu-map' then Settings.mode = :mapper
+when 'wu-red' then Settings.mode = :reducer
+end
+
 Wukong::Script.new(script_file, Settings).run
