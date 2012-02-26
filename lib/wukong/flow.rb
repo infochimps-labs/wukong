@@ -17,19 +17,26 @@ module Wukong
         @handle = handle
       end
 
-      def source(src=nil)
-        @source = src if src
+      def source(src=nil, *args, &block)
+        @source = make(:source, src, *args, &block) if src
         @source
       end
 
-      def make(type, handle, *args, &block)
-        Wukong::Stage.make(type, handle, *args, &block)
+      def run
+        source.run
       end
 
-      def limit(num) ; make(:streamer, limit, num) ; end
-      def stdin()  @stdin  ||= make(:source, :stdin) ; end
-      def stdout() @stdout ||= make(:sink,  :stdout)  ; end
-      def stderr() @stderr ||= make(:sink,  :stderr)  ; end
+      def make(type, src, *args, &block)
+        if src.respond_to?(:each) && (! src.respond_to?(:emit))
+          args.unshift(src) ; src = :proxy
+        end
+        Wukong::Stage.make(type, src, *args, &block)
+      end
+
+      def limit(num) ; make(:streamer, :limit, num) ; end
+      def stdin()  @stdin  ||= make(:source, :proxy, $stdin ) ; end
+      def stdout() @stdout ||= make(:sink,   :stdout) ; end
+      def stderr() @stderr ||= make(:sink,   :stderr) ; end
     end
 
     class Simple < Wukong::Flow::Base

@@ -3,7 +3,7 @@ require 'wukong'
 
 describe :sources, :helpers => true do
 
-  describe Wukong::Source::Stdin do
+  describe Wukong::Source::Proxy do
 
   end
 end

@@ -2,20 +2,34 @@ module Wukong
   module Stage
 
     class << self
+      # gets class for given streamer
+      def klass_for(type, handle)
+        @@registry[type][handle]
+      end
+
+      # returns a new instance of given type
+      def make(type, klass, *args, &block)
+        klass = klass_for(type, klass) unless klass.is_a?(Class)
+        klass.new(*args, &block)
+      end
+
+    protected
+
       # holds registered classes
       @@registry = Hash.new{|h, k| h[k] = {} } unless defined?(@@registry)
+
+      def all
+        @@registry
+      end
+
       # adds given streamer to registry
       def register(type, klass)
         @@registry[type][klass.handle] = klass
       end
 
-      # gets class for given streamer
-      def klass_for(type, handle) @@registry[type][handle] ; end
-      # returns a new instance of given type
-      def make(type, handle, *args, &block)
-        klass_for(type, handle).new(*args, &block)
+      def unregister(type, klass)
+        @@registry[type].delete(klass.handle)
       end
-    protected :register
     end
 
     class Base
@@ -31,12 +45,19 @@ module Wukong
       end
 
       def into(stage)
-        p [self, @next_stage, stage]
         @next_stage = stage
+      end
+
+      def |(stage)
+        into(stage)
       end
 
       def self.handle
         self.to_s.demodulize.underscore.to_sym
+      end
+
+      def self.unregister!(type)
+        Wukong::Stage.send(:unregister, type, self)
       end
     end
 
