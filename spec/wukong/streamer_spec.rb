@@ -17,14 +17,6 @@ describe :streamers, :helpers => true do
       it{ should respond_to(:call) }
       it{ should respond_to(:emit) }
       it{ should respond_to(:finally) }
-      it{ should respond_to(:reset!) }
-    end
-
-    context "#initialize" do
-      it 'calls reset!' do
-        described_class.any_instance.should_receive(:reset!)
-        described_class.new
-      end
     end
   end
 
@@ -38,6 +30,13 @@ describe :streamers, :helpers => true do
   describe Wukong::Streamer::Counter do
     context "when first created" do
       its(:count){ should eq(0) }
+    end
+    
+    context "#initialize" do
+      it 'calls reset!' do
+        described_class.any_instance.should_receive(:reset!)
+        described_class.new
+      end
     end
 
     context "#reset" do
@@ -63,15 +62,13 @@ describe :streamers, :helpers => true do
   describe Wukong::Streamer::Group do
 
     it 'works in an example flow flow' do
-      test_sink = test_array_sink
+      test_sink = test_array_sink()
+      example_input   = %w[ a a a    b b      c        d d     ]
+      expected_output =   [ ['a',3], ['b',2], ['c',1], ['d',2] ]
       Wukong.flow(:simple) do
-        source(:iter, [1,1,1,2,2,3,5,5] )     |
-          group                               |
-          map{|rec| emit [rec.first, rec.length] } |
-          test_sink
-        run
-      end
-      test_sink.records.should == [ [1,3], [2,2], [3,1], [5,2] ]
+        source(:iter, example_input ) | group | counter | test_sink
+      end.run
+      test_sink.records.should == expected_output
     end
 
     # it 'calls end_group at the end'

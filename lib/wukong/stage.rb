@@ -9,15 +9,28 @@ module Wukong
     def call(record)
     end
 
+    def start
+    end
+
     # passes a record on down the line
     def emit(record, status=nil, headers={})
-      if not next_stage then warn("No next_stage set for #{self}") ; return ; end
-      next_stage.call(record)
+      next_stage.call(record) if next_stage
     end
 
     # called at the end of a run
     def finally
       next_stage.finally if next_stage
+    end
+
+    def tell(event, *info)
+      if respond_to?(event)
+        self.send(event, *info)
+      elsif next_stage
+        next_stage.tell(event, *info)
+      else
+        warn("No next_stage set for #{self}")
+        return
+      end
     end
 
     #

@@ -2,12 +2,23 @@ require 'log4r'
 Log = Log4r::Logger.new('wukong')
 Log.outputters = Log4r::Outputter.stderr
 
+# require 'logger'
+# Log = Logger.new(STDERR)
+
 require 'configliere'
 require 'gorillib'
 require 'gorillib/string/inflections'
 require 'gorillib/string/constantize'
 
-require 'log_buddy'; LogBuddy.init :logger => Log
+require 'log_buddy'; LogBuddy.init :log_to_stdout => false, :logger => Log
+
+LogBuddy::Utils.module_eval do
+  def arg_and_blk_debug(arg, blk)
+    result = eval(arg, blk.binding)
+    result_str = obj_to_string(result, :quote_strings => true)
+    LogBuddy.debug(%[#{arg} = #{result_str}])
+  end
+end
 
 begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
 require 'multi_json'

@@ -4,14 +4,30 @@ require 'wukong'
 describe 'wukong', :helpers => true do
   subject{ described_class.new(:example) }
 
-  describe Wukong::Flow::Simple do
-    it 'works with a simple example' do
-      test_sink = test_array_sink
+  describe Wukong::Flow do
+    let(:test_sink){ test_array_sink }
+    let(:example_flow) do
+      test_sink = test_sink()
       Wukong.flow(:simple) do
         source(:iter, 1..100) | limit(7) | test_sink
-        run
       end
-      test_sink.records.should == (1..7).to_a
+    end
+
+    it 'works with a simple example' do
+      example_flow.run
+      test_array_sink.records.should == (1..7).to_a
+    end
+
+    context '#run' do
+      let(:test_sink){ mock }
+      it 'announces events and calls methods in right order' do
+        test_sink = test_sink()
+        test_sink.should_receive(:tell).with(:beg_stream).ordered
+        test_sink.should_receive(:call).exactly(7).times.ordered
+        test_sink.should_receive(:finally).once.ordered
+        test_sink.should_receive(:tell).with(:end_stream).ordered
+        example_flow.run
+      end
     end
 
     context '#make' do
