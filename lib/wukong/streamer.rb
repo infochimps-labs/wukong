@@ -2,14 +2,6 @@ module Wukong
   module Streamer
 
     class Base < Wukong::Stage
-      def initialize
-        reset!
-        super
-      end
-
-      def reset!
-      end
-
       def Base.inherited(subklass)
         Wukong::Stage.send(:register, :streamer, subklass)
       end
@@ -34,13 +26,38 @@ module Wukong
       # Count of records this run
       attr_reader :count
 
+      def initialize
+        reset!
+      end
+
       def reset!
         @count = 0
       end
 
+      def beg_group(*args)
+        reset!
+      end
+
+      def end_group(key)
+        emit( [key, count] )
+      end
+
       def call(record)
         @count += 1
-        super(record)
+      end
+    end
+
+    class GroupArrays < Wukong::Streamer::Base
+      def beg_group
+        @records = []
+      end
+
+      def end_group(key)
+        emit(key, @records)
+      end
+
+      def call(record)
+        @records << record
       end
     end
 
@@ -60,16 +77,13 @@ module Wukong
     end
 
     class Group < Wukong::Streamer::Base
-      def initialize
-      end
-
       def start(key, *vals)
         @key = key
-        @records = []
+        next_stage.tell(:beg_group, @key)
       end
 
       def end_group
-        emit(@records)
+        next_stage.tell(:end_group, @key)
       end
 
       def call( (key, *vals) )
@@ -78,7 +92,7 @@ module Wukong
           end_group
           start(key, *vals)
         end
-        @records << key
+        emit( [key, *vals] )
       end
 
       def finally
@@ -88,5 +102,4 @@ module Wukong
     end
 
   end
-
 end

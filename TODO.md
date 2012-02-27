@@ -36,13 +36,15 @@
 
   - Names of some classes would have to change where there's a collision.
 
-
 * I'm not sure which I prefer:
   - `Wukong::Limit`           -- simplest. puts lots of stuff in flat namespace. Have to come up with clever names (eg `Iter` for `Enumerable`)
   - `Wukong::LimitStreamer`   -- flat namespace. Lets you have direct-analogue names (`EnumerableStreamer`)
   - `Wukong::Streamer::Limit` -- responsibly namespaced. File tree is manageable. Still have to come up with clever names (eg `Iter` for `Enumerable`).
 
   I went with the last one because I believe most interaction will be through the sugar methods, so by the principle of 'light, predictable magic or no magic' I go with proper deep namespacing.
+
+* sometimes we'd like blocks to "emit the return", sometimes to call emit.
+  - should emit take an array, emitting each?
 
 ### Streamers
 

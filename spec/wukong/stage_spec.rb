@@ -33,7 +33,6 @@ describe :stages, :helpers => true do
         test_proc = ->(rec){ rec.odd? }
         subject.select(test_proc)
         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
-        subject.next_stage.proc.should be(test_proc)
         subject.next_stage.should      be_accept(3)
         subject.next_stage.should_not  be_accept(2)
       end
@@ -59,7 +58,6 @@ describe :stages, :helpers => true do
         test_proc = ->(rec){ rec.odd? }
         subject.reject(test_proc)
         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
-        subject.next_stage.proc.should be(test_proc)
         subject.next_stage.should_not  be_accept(3)
         subject.next_stage.should      be_accept(2)
       end

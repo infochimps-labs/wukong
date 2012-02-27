@@ -31,21 +31,24 @@ module Wukong
     end
 
     class ProcFilter < Wukong::Filter::Base
-      # evaluated on each record to decide whether to filter
-      attr_reader :proc
-
-      def initialize(proc)
-        @proc = proc
-      end
-
-      def accept?(*args)
-        proc.call(*args)
+      # @param [Proc] proc to delegate for call
+      # @yield if proc is omitted, block must be supplied
+      def initialize(prc=nil, &block)
+        prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
+        define_singleton_method(:accept?, prc)
       end
     end
 
     class ProcRejecter < Wukong::Filter::ProcFilter
+      # @param [Proc] proc to delegate for call
+      # @yield if proc is omitted, block must be supplied
+      def initialize(prc=nil, &block)
+        prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
+        define_singleton_method(:reject?, prc)
+      end
+
       def accept?(*args)
-        not super
+        not reject?(*args)
       end
     end
 

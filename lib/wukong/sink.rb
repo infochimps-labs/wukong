@@ -3,6 +3,9 @@ module Wukong
   module Sink
 
     class Base < Wukong::Stage
+      def tell(event, *info)
+      end
+
       def Base.inherited(subklass)
         Wukong::Stage.send(:register, :sink, subklass)
       end
@@ -26,7 +29,7 @@ module Wukong
       def file() $stderr ; end
     end
 
-    class ArrayCapture < Wukong::Sink::Base
+    class ArraySink < Wukong::Sink::Base
       attr_reader :records
 
       def initialize
@@ -37,6 +40,10 @@ module Wukong
       def call(record)
         self.records << record
       end
+
+      def tell(event, *info)
+      end
+
     end
   end
 end
