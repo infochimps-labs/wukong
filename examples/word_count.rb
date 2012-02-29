@@ -1,13 +1,17 @@
-# cat data/jabberwocky.txt | bin/wu-map examples/tiny_count.rb | sort  | bin/wu-red examples/tiny_count.rb  | sort -n | tail
+# cat data/jabberwocky.txt | bin/wu-map examples/word_count.rb | sort  | bin/wu-red examples/word_count.rb  | sort -nk2 | tail
 
 mapper do |input|
-  cleaner  = map{|line| emit line.downcase.gsub(/\W+/, ' ').strip }
+  cleaner  = map{|line| line.downcase.gsub(/\W+/, ' ').strip }
 
-  splitter = map{|line| line.split.each{|word| emit(word) } }
+  splitter = project{|line| line.split.each{|word| emit(word) } }
 
   input | cleaner | splitter | reject{|word| word.length < 3 }
 end
 
-reducer do |input|
-  input | map{|rec| emit [rec.length, rec.first] } | to_tsv
+# implicit group
+
+reducer do |group|
+  group | counter  |    # emit count of each group
+    map(&:reverse) |    # swap to make [count, term]
+    to_tsv              # output as TSV
 end
