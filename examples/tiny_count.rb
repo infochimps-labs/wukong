@@ -1,2 +1,8 @@
-mapper{|i|  i |->(l){ l.downcase.split(/\W+/).each{|w| emit(w) if w.size>2 }}
-reducer{|i| i | counter |->(r){ emit r.reverse }|to_tsv }
+mapper{|i| i |
+  ->(l){ l.downcase.split(/\W+/) } |
+  select{|w| w.size>2 } }
+
+reducer{|i| i |
+  counter |
+  map(&:reverse) |
+  to_tsv }
