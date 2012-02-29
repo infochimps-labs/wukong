@@ -29,7 +29,7 @@ module Wukong
 
     class FromTsv < Wukong::Formatter::Base
       def call(record)
-        emit record.split(/\t/)
+        emit record.chomp.split(/\t/)
       end
     end
     

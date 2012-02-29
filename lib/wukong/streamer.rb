@@ -7,12 +7,36 @@ module Wukong
       end
     end
 
-    class Map < Wukong::Streamer::Base
+    #
+    # Use a ProcStreamer when you want to decide whether to emit
+    # (for example, if you'd like to emit more than one record, or to emit an
+    # actual nil). Use a map when you want to emit exactly one record out per
+    # record in.
+    #
+    class ProcStreamer < Wukong::Streamer::Base
       # @param [Proc] proc to delegate for call
       # @yield if proc is omitted, block must be supplied
       def initialize(prc=nil, &block)
         prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
         define_singleton_method(:call, prc)
+      end
+    end
+
+    #
+    # Evaluates the block and emits the result if non-nil
+    #
+    class Map < Wukong::Streamer::Base
+      attr_reader :blk
+
+      # @param [Proc] proc to delegate for call
+      # @yield if proc is omitted, block must be supplied
+      def initialize(blk=nil, &block)
+        @blk = blk || block or raise "Please supply a proc or a block to #{self.class}.new"
+      end
+
+      def call(*args)
+        result = blk.call(*args)
+        emit result unless result.nil?
       end
     end
 

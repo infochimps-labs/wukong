@@ -63,6 +63,7 @@ module Wukong
       define_method(meth){|*args, &block| make(:formatter, meth, *args, &block) }
     end
 
+    def project(*args, &block) make(:streamer, :proc_streamer, *args, &block) ; end
     def iter(enumerable) ;   make(:source, :iter, enumerable)    ; end
     def stdin()  @stdin  ||= make(:source, :iter, $stdin)        ; end
     def stdout() @stdout ||= make(:sink,   :stdout)              ; end
