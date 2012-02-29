@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem 'gorillib',       "~> 0.1.8"
 gem 'configliere',    "~> 0.4.8"
+gem 'icss',           :git => 'git://github.com/infochimps-labs/icss.git'
 
 gem 'multi_json',     "~> 1.1"
 gem 'yajl-ruby',      "~> 1.1", :platform => :mri
@@ -14,6 +15,7 @@ group :development do
   gem 'log_buddy'
   gem 'addressable'
   gem 'htmlentities'
+  gem 'pry'
 end
 
 group :docs do

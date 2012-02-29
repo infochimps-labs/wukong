@@ -60,21 +60,21 @@ module Wukong
     end
 
     def self.select(pred=nil, &block)
+      pred ||= block
       case
       when Wukong::Stage.has(:filter, pred) then pred
       when pred.respond_to?(:match)  then Wukong::Filter::RegexpFilter.new(pred)
       when pred.is_a?(Proc)          then Wukong::Filter::ProcFilter.new(pred)
-      when pred.nil? && block_given? then Wukong::Filter::ProcFilter.new(block)
       else raise "Can't make a filter from #{pred.inspect}"
       end
     end
 
     def self.reject(pred=nil, &block)
+      pred ||= block
       case
       when Wukong::Stage.has(:filter, pred) then pred
       when pred.respond_to?(:match)  then Wukong::Filter::RegexpRejecter.new(pred)
       when pred.is_a?(Proc)          then Wukong::Filter::ProcRejecter.new(pred)
-      when pred.nil? && block_given? then Wukong::Filter::ProcRejecter.new(block)
       else raise "Can't make a filter from #{pred.inspect}"
       end
     end
