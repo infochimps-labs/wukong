@@ -42,7 +42,7 @@ module Wukong
     end
 
     def source(src=nil, *args, &block)
-      @source = make(:source, src, *args, &block) if src
+      @source = Wukong.make_source(src, *args, &block) if src
       @source
     end
 
@@ -53,21 +53,19 @@ module Wukong
       source.tell(:end_stream)
     end
 
-    def make(*args, &block)   Wukong::Stage.make(*args, &block)   ; end
-
     [:map, :limit, :group, :monitor, :counter].each do |meth|
-      define_method(meth){|*args, &block| make(:streamer, meth, *args, &block) }
+      define_method(meth){|*args, &block| Wukong.make_streamer(meth, *args, &block) }
     end
 
     [:from_json, :to_json, :from_tsv, :to_tsv].each do |meth|
-      define_method(meth){|*args, &block| make(:formatter, meth, *args, &block) }
+      define_method(meth){|*args, &block| Wukong.make_formatter(meth, *args, &block) }
     end
 
-    def project(*args, &block) make(:streamer, :proc_streamer, *args, &block) ; end
-    def iter(enumerable) ;   make(:source, :iter, enumerable)    ; end
-    def stdin()  @stdin  ||= make(:source, :iter, $stdin)        ; end
-    def stdout() @stdout ||= make(:sink,   :stdout)              ; end
-    def stderr() @stderr ||= make(:sink,   :stderr)              ; end
+    def project(*args, &block) Wukong.make_streamer(:proc_streamer, *args, &block) ; end
+    def iter(enumerable) ;   Wukong.make_source(:iter, enumerable)    ; end
+    def stdin()  @stdin  ||= Wukong.make_source(:iter, $stdin)        ; end
+    def stdout() @stdout ||= Wukong.make_sink(  :stdout)              ; end
+    def stderr() @stderr ||= Wukong.make_sink(  :stderr)              ; end
 
     def select(*args, &block) Wukong::Stage.select(*args, &block) ; end
     def reject(*args, &block) Wukong::Stage.reject(*args, &block) ; end

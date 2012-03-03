@@ -9,9 +9,14 @@ require 'configliere'
 require 'gorillib'
 require 'gorillib/string/inflections'
 require 'gorillib/string/constantize'
+require 'gorillib/mash'
+require 'gorillib/metaprogramming/delegation'
+require 'pathname'
+
+begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
+require 'multi_json'
 
 require 'log_buddy'; LogBuddy.init :log_to_stdout => false, :logger => Log
-
 LogBuddy::Utils.module_eval do
   def arg_and_blk_debug(arg, blk)
     result = eval(arg, blk.binding)
@@ -20,11 +25,10 @@ LogBuddy::Utils.module_eval do
   end
 end
 
-begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
-require 'multi_json'
-
 require 'wukong/mixin/from_file'
 require 'wukong/settings'
+require 'wukong/registry'
+require 'wukong/path_helpers'
 
 require 'wukong/flow'          # coordinates wukong stages
 require 'wukong/stage'         # base object for building blocks

@@ -37,8 +37,58 @@ You can instead run it in Hadoop mode, and it will launch the job across a distr
 ## A Dataflow is a Data Flow
 
 
+## Syntax 
+   
+   read('/foo/bar')         # source( FileSource.new('/foo/bar') )
+   writes('/foo/bar')       # sink(   FileSink.new('/foo/bar') )
+
+   ... | file('/foo/bar')   # this we know is a source
+   file('/foo/bar') | ...   # this we know is a sink
+   file('/foo/bar')         # don't know; maybe we can guess later
+
+#### Serialization / Deserialization
+
+   from_tsv
+   parse(:tsv)
+
+* gz/bz2/zip/snappy ; tsv/csv/json/xml/avro/netbinary ; apache_log ; flat ; regexp ; 
+
+## Data
+
+Data consists of
+
+- record
+- schema
+- metadata
 
 
+   
+## Catalog
+
+
+### Sources / Sinks
+
+Sources have a `continuous`(?) flag: keep reading on end of stream, or finish? (or, maybe they always are reading, and the EOS is an event that might or might not trigger a shutdown)
+
+* stdin / stdout / stderr
+* file (filesystem, s3, hdfs) - tail/read; write
+  - source: poll for file pattern
+  - sink:   roll output filename
+* hanuman log (hierarchical)
+* database 
+  - source: must specify query
+  - sink:   must specify [ key / identifying fields ; update|create ; payload fields ]
+* http request
+* http stream
+* socket / rpc
+* jabber / amqp / twitter
+* syslog / syslog-ng
+* exec file
+
+
+### Switch
+
+Uses record field to choose output
 
 
     

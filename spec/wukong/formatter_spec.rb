@@ -5,7 +5,8 @@ describe 'wukong', :helpers => true do
 
   describe Wukong::Formatter::Base do
     it 'is not registered as anything' do
-      Wukong::Stage.send(:all).any?{|type, hsh| hsh.has_value?(Wukong::Formatter::Base) }.should be_false
+      Wukong.should_not have_streamer( Wukong::Formatter::Base)
+      Wukong.should_not have_formatter(Wukong::Formatter::Base)
     end
   end
 
