@@ -4,12 +4,17 @@ module Wukong
     class Base < Wukong::Stage
       def run
         each do |record|
-          emit(record)
+          begin
+            emit(record)
+          rescue StandardError => e
+            warn "#{e}\t#{e.backtrace.first}\t#{record}"
+            next
+          end
         end
       end
 
       def Base.inherited(subklass)
-        Wukong::Stage.send(:register, :source, subklass)
+        Wukong.register_source(subklass)
       end
     end
 

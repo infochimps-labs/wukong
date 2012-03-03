@@ -3,9 +3,9 @@ module Wukong
 
     class Base < Wukong::Streamer::Base
       def Base.inherited(subklass)
-        Wukong::Stage.send(:register, :formatter, subklass)
+        Wukong.register_formatter(subklass)
       end
-      unregister!(:streamer)
+      Wukong.unregister_streamer(self)
     end
 
     require 'multi_json'
@@ -20,7 +20,7 @@ module Wukong
         emit MultiJson.decode(record)
       end
     end
-    
+
     class ToTsv < Wukong::Formatter::Base
       def call(record)
         emit record.join("\t")
@@ -32,7 +32,7 @@ module Wukong
         emit record.chomp.split(/\t/)
       end
     end
-    
+
   end
-  
+
 end

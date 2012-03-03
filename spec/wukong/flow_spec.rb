@@ -30,12 +30,6 @@ describe 'wukong', :helpers => true do
       end
     end
 
-    context '#make' do
-      it 'creates named class' do
-        subject.make(:source, :iter, []).should be_a(Wukong::Source::Iter)
-      end
-    end
-
     context '#stdin' do
       its(:stdin){ should be_a(Wukong::Source::Iter) }
     end
@@ -52,8 +46,8 @@ describe 'wukong', :helpers => true do
     context '.streamer' do
       subject{ Wukong.streamer('from_meth'){ def call(rec) rec.reverse ; end ; def bob() 1 ; end } }
       it 'raises an error if the handle is not a valid identifier' do
-        ->{ Wukong.streamer('1love')     }.should raise_error(ArgumentError, /no funny/)
-        ->{ Wukong.streamer('this/that') }.should raise_error(ArgumentError, /no funny/)
+        ->{ Wukong.streamer('1love')      }.should raise_error(ArgumentError, /no funny/)
+        ->{ Wukong.streamer('this/that')  }.should raise_error(ArgumentError, /no funny/)
         ->{ Wukong.streamer('This::That') }.should raise_error(ArgumentError, /no funny/)
       end
 

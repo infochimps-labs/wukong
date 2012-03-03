@@ -3,7 +3,7 @@ module Wukong
 
     class Base < Wukong::Stage
       def Base.inherited(subklass)
-        Wukong::Stage.send(:register, :streamer, subklass)
+        Wukong.register_streamer(subklass)
       end
     end
 

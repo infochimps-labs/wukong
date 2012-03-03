@@ -7,7 +7,7 @@ describe :streamers, :helpers => true do
       it 'contains standard streamers' do
         [:identity, :counter, :limit].each do |handle|
           klass = "Wukong::Streamer::#{handle.to_s.camelize}".constantize
-          Wukong::Stage.klass_for(:streamer, handle).should == klass
+          Wukong.streamer_klass(handle).should == klass
         end
       end
     end
@@ -31,7 +31,7 @@ describe :streamers, :helpers => true do
     context "when first created" do
       its(:count){ should eq(0) }
     end
-    
+
     context "#initialize" do
       it 'calls reset!' do
         described_class.any_instance.should_receive(:reset!)
@@ -50,7 +50,7 @@ describe :streamers, :helpers => true do
   end
 
   describe Wukong::Streamer::Map do
-    let(:test_proc){ ->(rec){ emit(rec.reverse) } }
+    let(:test_proc){ ->(rec){ rec.reverse } }
     subject{ described_class.new( test_proc ) }
 
     it 'emits the output of the proc' do
@@ -72,9 +72,9 @@ describe :streamers, :helpers => true do
     end
 
     # it 'calls end_group at the end'
-    # 
+    #
     # it 'on an empty stream'
-    
+
   end
 
 end

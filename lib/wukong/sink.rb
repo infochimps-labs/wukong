@@ -7,7 +7,7 @@ module Wukong
       end
 
       def Base.inherited(subklass)
-        Wukong::Stage.send(:register, :sink, subklass)
+        Wukong.register_sink(subklass)
       end
     end
 
