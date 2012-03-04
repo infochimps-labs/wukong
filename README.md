@@ -91,10 +91,24 @@ Sources have a `continuous`(?) flag: keep reading on end of stream, or finish? (
 Uses record field to choose output
 
 
-    
-    
-## Rapid development
+## Internals
+
+The fundamental principle of Hanuman is *don't do the thing, coordinate the boxes that do the thing*. Wukong is a pragmatic collection of dataflow primitives that let you shit done quickly, nimbly and readably. They each emphasize scalability, readability and rapid development (and not, for instance, performance or universality).
+
+Wukong/Hanuman are chiefly concerned with three specific types of graphs:
+
+* **dataflow**   -- chains of simple modules to handle continuous data processing -- coordinates Flume, Unix pipes, ZeroMQ, Esper.
+* **workflows**  -- episodic jobs sequences, joined by dependency links -- comparable to Rake, Azkaban or Oozie.
+* **map/reduce** -- Hadoop's standard *disordered/partitioned stream > partition, sort & group > process groups* workflow. Comparable to MRJob and Dumbo.
+
+In addition, wukong stages may be deployed into
+
+* **http middlware**: lightweight distributed API handlers -- comparable to Rack, Goliath or Twisted.
+* **queue workers**: asynchronously triggered jobs -- 
 
 
+## Questions
 
-    wukong --map
+* **filename helpers**: 
+  - `':data_dir:/this/that/:script:-:user:-:timestamp:.:ext:'`?
+  - `path_to(:data_dir, 'this/that', "???")`?

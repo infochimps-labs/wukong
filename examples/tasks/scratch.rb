@@ -5,10 +5,19 @@ require 'wukong/job'
 
 Wukong.job do
 
+  directory(path_to(:output_dir, 'scratch/jabberwocky')) do
+
+  end
+
   task('nl') do
     description 'assign line numbers'
-    input       Wukong.path_to(:example_data, 'jabberwocky.txt')
+    input       Wukong.path_to(:data_dir, 'jabberwocky.txt')
     output      TMP_DIR('')
   end
+
+
+
+  gemset()
+  bundler_gem() # bun
 
 end

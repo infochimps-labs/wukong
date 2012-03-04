@@ -31,6 +31,7 @@ group :test do
   gem  'guard',       "~> 1.0"
   gem  'guard-rspec', "~> 0.6"
   gem  'guard-yard'
+  gem  'guard-process'
 
   if RUBY_PLATFORM.include?('darwin')
     gem 'growl',      "~> 1"
