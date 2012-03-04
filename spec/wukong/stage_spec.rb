@@ -20,9 +20,9 @@ describe :stages, :helpers => true do
       subject | mock_streamer
     end
 
-    context '#make_source' do
+    context '#create_source' do
       it 'creates right subclass of Wukong::Source' do
-        Wukong.make_source(:iter, []).should be_a(Wukong::Source::Iter)
+        Wukong.create_source(:iter, []).should be_a(Wukong::Source::Iter)
       end
     end
 

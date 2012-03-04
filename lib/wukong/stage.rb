@@ -44,7 +44,7 @@ module Wukong
 
     def into(stage=nil, &block)
       stage ||= block
-      stage = Wukong.make_streamer(:map, stage) if stage.is_a?(Proc)
+      stage = Wukong.create_streamer(:map, stage) if stage.is_a?(Proc)
       @next_stage = stage
     end
 
@@ -67,20 +67,20 @@ module Wukong
     def self.select(pred=nil, &block)
       pred ||= block
       case
-      when Wukong.has_streamer?(pred) then pred
+      when Wukong.streamer_exists?(pred) then pred
       when pred.respond_to?(:match)  then Wukong::Filter::RegexpFilter.new(pred)
       when pred.is_a?(Proc)          then Wukong::Filter::ProcFilter.new(pred)
-      else raise "Can't make a filter from #{pred.inspect}"
+      else raise "Can't create a filter from #{pred.inspect}"
       end
     end
 
     def self.reject(pred=nil, &block)
       pred ||= block
       case
-      when Wukong.has_streamer?(pred) then pred
+      when Wukong.streamer_exists?(pred) then pred
       when pred.respond_to?(:match)  then Wukong::Filter::RegexpRejecter.new(pred)
       when pred.is_a?(Proc)          then Wukong::Filter::ProcRejecter.new(pred)
-      else raise "Can't make a filter from #{pred.inspect}"
+      else raise "Can't create a filter from #{pred.inspect}"
       end
     end
 
@@ -99,16 +99,16 @@ module Wukong
       # end
 
       # # returns a new instance of given type
-      # def make(type, klass, *args, &block)
+      # def create(type, klass, *args, &block)
       #   klass = klass_for(type, klass) unless klass.is_a?(Class)
       #   if not klass
-      #     raise "Can't make '#{type}' '#{klass}': registry #{all.inspect}"
+      #     raise "Can't create '#{type}' '#{klass}': registry #{all.inspect}"
       #   end
       #   klass.new(*args, &block)
       # end
 
       # def has(type, obj)
-      #   all[type].has_value?(obj)
+      #   all[type].value_exists?(obj)
       # end
 
     end
