@@ -24,7 +24,7 @@ module Wukong
   # retry_delay       -- Retry delay in seconds (defaults to 2). Requires Chef >= 0.10.4.
   # supports          -- A hash of options that hint providers as to the capabilities of this resource.
   #
-  class Task < Stage
+  module Task
 
     #
     # * `:nothing` -- do nothing - useful if you want to specify a resource, but only notify it of other actions.
@@ -32,7 +32,7 @@ module Wukong
     # In the absence of another default action, `:nothing` is the default.
     #
     # @param [:delayed, :immediately] timing
-    def action
+    def trigger
     end
 
     def run
@@ -48,31 +48,44 @@ module Wukong
     # Take action on this resource if another resource changes state. Works similarly to notifies, but the direction of the relationship is reversed.
     def subscribes ;  end
 
+    def depends(tasks)
+      tasks = Array(tasks)
+    end
+
+    module ClassMethods
+    end
+    def self.included(base)
+      base.send(:include, Wukong::Stage)
+      base.extend(ClassMethods)
+    end
   end
 
 
-  Task.class_eval do
+  module Task
     #
     #
-    class DirectoryTask < Wukong::Task
-      action :create,     String,         :description => "Create this directory only if it does not exist. If it exists, do nothing"
-      action :update,     String,         :description => "Update this directory"
-      action :delete,     String,         :description => "Delete this directory"
+    class DirectoryTask
+      include Wukong::Task
+      #
+      action :create,                     :description => "Create this directory only if it does not exist. If it exists, do nothing"
+      action :update,                     :description => "Update this directory, whether it exists or not"
+      action :delete,                     :description => "Delete this directory, whether it exists or not"
       self.default_action = :create
       #
-      field :path, String,                :description => "The path to the directory; by default, the name"
-      field :mode, String,                :description => "The octal mode of the directory, e.g. '0755'. Numeric values are *not allowed* -- there's too much danger of saying '755' when you mean 'octal 0755'"
+      field :path,      String,           :description => "The path to the directory; by default, the name"
+      field :mode,      String,           :description => "The octal mode of the directory, e.g. '0755'. Numeric values are *not allowed* -- there's too much danger of saying '755' when you mean 'octal 0755'"
       field :recursive, :boolean,         :description => "recursive=true to operate on parents and leaf, false to operate on leaf only", :default => false,
         :summary => %Q{- delete: remove the base directory and then recursively delete its parents until one is non-empty.
                        - create: create recursively (ie, mkdir -p). Note: owner/group/mode only applies to the leaf directory, regardless of the value of this attribute.}
     end
 
     #
-    class FileTask < Wukong::Task
-      action :create,     String,         :description => "Create this file only if it does not exist. If it exists, do nothing"
-      action :update,     String,         :description => "Update this file"
-      action :delete,     String,         :description => "Delete this file"
-      action :touch,      String,         :description => "Touch this file (update the mtime/atime)"
+    class FileTask
+      include Wukong::Task
+      action :create,                     :description => "Create this file only if it does not exist. If it exists, do nothing"
+      action :update,                     :description => "Update this file, whether it exists or not"
+      action :delete,                     :description => "Delete this file, whether it exists or not"
+      action :touch,                      :description => "Touch this file (update the mtime/atime)"
       self.default_action = :create
       #
       field :path,        String,         :description => "Path to the file; by default, the resource's name"
@@ -83,10 +96,11 @@ module Wukong
     #
     # Creates a filesystem link, symbolic by default.
     #
-    class LnTask < Wukong::Task
-      action :create,     String,         :description => "Create this link only if it does not exist. If it exists, do nothing"
-      action :update,     String,         :description => "Update this link"
-      action :delete,     String,         :description => "Delete this link"
+    class LnTask
+      include Wukong::Task
+      action :create,                     :description => "Create this link only if it does not exist. If it exists, do nothing"
+      action :update,                     :description => "Update this link, whether it exists or not"
+      action :delete,                     :description => "Delete this link, whether it exists or not"
       self.default_action = :create
       #
       field :target_file, String,         :description => "Path to the created link; by default, same as options[:name]"
@@ -97,10 +111,11 @@ module Wukong
     #
     # Create file from a given template:
     #
-    class TemplateTask < Wukong::Task
-      action :create,     String,         :description => "Create this file only if it does not exist. If it exists, do nothing"
-      action :update,     String,         :description => "Update this file"
-      action :delete,     String,         :description => "Delete this file"
+    class TemplateTask
+      include Wukong::Task
+      action :create,                     :description => "Create this file only if it does not exist. If it exists, do nothing"
+      action :update,                     :description => "Update this file, whether it exists or not"
+      action :delete,                     :description => "Delete this file, whether it exists or not"
       self.default_action = :create
       #
       field :path,        String,         :description => "Path to the file; by default, same as options[:name]"
@@ -114,10 +129,11 @@ module Wukong
     #
     # Create a file from a remote file
     #
-    class RemoteFileTask < Wukong::Task
-      action :create,     String,         :description => "Create this file only if it does not exist. If it exists, do nothing"
-      action :update,     String,         :description => "Update this file"
-      action :delete,     String,         :description => "Delete this file"
+    class RemoteFileTask
+      include Wukong::Task
+      action :create,                     :description => "Create this file only if it does not exist. If it exists, do nothing"
+      action :update,                     :description => "Update this file, whether it exists or not"
+      action :delete,                     :description => "Delete this file, whether it exists or not"
       self.default_action = :create
       #
       field :path,        String,         :description => "Path to the file; by default, same as options[:name]"
@@ -129,15 +145,16 @@ module Wukong
     #
     # Send an HTTP request
     #
-    class HttpRequestTask < Wukong::Task
-      action :request,    String,         :description => "Send request using the :method option"
-      action :get,        String,         :description => "Send a GET request"
-      action :put,        String,         :description => "Send a PUT request"
-      action :patch,      String,         :description => "Send a PATCH request"
-      action :post,       String,         :description => "Send a POST request"
-      action :delete,     String,         :description => "Send a DELETE request"
-      action :head,       String,         :description => "Send a HEAD request"
-      action :options,    String,         :description => "Send an OPTIONS request"
+    class HttpRequestTask
+      include Wukong::Task
+      action :request,                    :description => "Send request using the :method option"
+      action :get,                        :description => "Send a GET request"
+      action :put,                        :description => "Send a PUT request"
+      action :patch,                      :description => "Send a PATCH request"
+      action :post,                       :description => "Send a POST request"
+      action :delete,                     :description => "Send a DELETE request"
+      action :head,                       :description => "Send a HEAD request"
+      action :options,                    :description => "Send an OPTIONS request"
       self.default_action = :get
       #
       field :url,         String,         :description => "The URL to send the request to"
@@ -147,9 +164,15 @@ module Wukong
     end
 
     #
+    # run a command
     #
-    class ExecuteTask < Wukong::Task
+    class ExecuteTask
+      include Wukong::Task
+      action :run,        :description => "runs the command"
+      action :revert,     :description => "reverse the effects of the primary command. If the `undo_command` field is unset, throws an error."
+      #
       field :command,     String,         :description => "The command to execute"
+      field :revert_cmd,  String,        :description => "Command to undo the effects of the primary command"
       field :code,        String,         :description => "Quoted script of code to execute"
       field :interpreter, String,         :description => "Script interpreter to use for code execution"
       field :flags,       [String, Hash], :description => "command line flags to pass to the interpreter when invoking. If a Hash, will be turned into `--key 'value'` pairs; all keys must be symbols or strings and all values must be strings"
@@ -161,9 +184,16 @@ module Wukong
       field :umask,       String,         :description => "Umask for files created by the command"
     end
 
+    #
     # schedule a (job? task?)
     #
-    class ScheduleTask < Wukong::Task
+    class ScheduleTask
+      include Wukong::Task
+      action :create,                     :description => "Create this scheduled task only if it does not exist. If it exists, do nothing"
+      action :update,                     :description => "Update this scheduled task, whether it exists or not"
+      action :delete,                     :description => "Delete this scheduled task, whether it exists or not"
+      self.default_action = :create
+      #
       field :minute,      Integer,        :description => "The minute this entry should run (0 - 59)            *"
       field :hour,        Integer,        :description => "The hour this entry should run (0 - 23)              *"
       field :day,         Integer,        :description => "The day of month this entry should run (1 - 31)      *"
@@ -178,7 +208,8 @@ module Wukong
     end
 
     # start a longrunning service in a new process
-    class SpawnTask < Wukong::Task
+    class SpawnTask
+      include Wukong::Task
     end
 
     #
@@ -197,15 +228,8 @@ module Wukong
     #     rule (/part-[mr]-\d+/ => lambda{|name| rename_part(name) }) do |r|
     #       # ...
     #     end
-    class RuleTask < Wukong::Task
-
-    end
-
-    #
-    #
-    # dependency times - newer-than edge?
-    #
-    class FileTask < Wukong::Task
+    class RuleTask
+      include Wukong::Task
     end
   end
 
