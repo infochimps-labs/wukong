@@ -20,12 +20,6 @@ describe :stages, :helpers => true do
       subject | mock_streamer
     end
 
-    context '#create_source' do
-      it 'creates right subclass of Wukong::Source' do
-        Wukong.create_source(:iter, []).should be_a(Wukong::Source::Iter)
-      end
-    end
-
     context '#select' do
       it 'creates a RegexpFilter given a regexp' do
         subject.select(test_re)

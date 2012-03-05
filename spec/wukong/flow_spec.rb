@@ -13,6 +13,12 @@ describe 'wukong', :helpers => true do
       end
     end
 
+    context '#add_stage' do
+      it 'creates right subclass of Wukong::Source' do
+        subject.add_stage(:source, :iter, []).should be_a(Wukong::Source::Iter)
+      end
+    end
+
     it 'works with a simple example' do
       example_flow.run
       test_array_sink.records.should == (1..7).to_a

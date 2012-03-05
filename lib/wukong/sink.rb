@@ -8,12 +8,31 @@ module Wukong
     def Sink.inherited(subklass)
       Wukong.register_sink(subklass)
     end
+  end
 
+  module Sink
+    class NullSink < Wukong::Sink
+      def call(record)
+        true # do nothing
+      end
+    end
+
+    # Write all lines to given file
     class IO < Wukong::Sink
-      attr_reader :file
-
       def call(record)
         file.puts(record)
+      end
+    end
+
+    class FileSink < Wukong::Sink::IO
+      attr_reader :filename
+
+      def initialize(filename)
+        @filename = filename
+      end
+
+      def file
+        @file ||= File.open(filename, "w")
       end
     end
 

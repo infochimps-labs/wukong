@@ -20,18 +20,18 @@ module Wukong
   class Flow < Wukong::Graph
 
     [:map, :limit, :group, :monitor, :counter].each do |meth|
-      define_method(meth){|*args, &block| Wukong.create_streamer(meth, *args, &block) }
+      define_method(meth){|*args, &block| add_stage(:streamer, meth, *args, &block) }
     end
 
     [:from_json, :to_json, :from_tsv, :to_tsv].each do |meth|
-      define_method(meth){|*args, &block| Wukong.create_formatter(meth, *args, &block) }
+      define_method(meth){|*args, &block| add_stage(:formatter, meth, *args, &block) }
     end
 
-    def project(*args, &block) Wukong.create_streamer(:proc_streamer, *args, &block) ; end
-    def iter(enumerable) ;   Wukong.create_source(:iter, enumerable)    ; end
-    def stdin()  @stdin  ||= Wukong.create_source(:iter, $stdin)        ; end
-    def stdout() @stdout ||= Wukong.create_sink(  :stdout)              ; end
-    def stderr() @stderr ||= Wukong.create_sink(  :stderr)              ; end
+    def project(*args, &block) add_stage(:streamer, :proc_streamer, *args, &block) ; end
+    def iter(enumerable) ;   add_stage(:source, :iter, enumerable)    ; end
+    def stdin()  @stdin  ||= add_stage(:source, :iter, $stdin)        ; end
+    def stdout() @stdout ||= add_stage(:sink,   :stdout)              ; end
+    def stderr() @stderr ||= add_stage(:sink,   :stderr)              ; end
 
     def select(*args, &block) Wukong::Stage.select(*args, &block) ; end
     def reject(*args, &block) Wukong::Stage.reject(*args, &block) ; end

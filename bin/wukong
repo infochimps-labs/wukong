@@ -14,8 +14,6 @@ when 'wu-map' then Settings.mode = :mapper
 when 'wu-red' then Settings.mode = :reducer
 end
 
-Wukong.module_eval do
-  from_file(script_file)
-end
+Wukong.from_file(Settings.script_file)
 
 Wukong::Script.new(Settings).run
