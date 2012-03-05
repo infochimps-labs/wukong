@@ -1,5 +1,6 @@
 module Wukong
-  class Sink < Wukong::Stage
+  class Sink
+    include Wukong::Stage
 
     def tell(event, *info)
     end

@@ -1,5 +1,6 @@
 module Wukong
-  class Streamer < Wukong::Stage
+  class Streamer
+    include Wukong::Stage
 
     # passes a record on down the line
     def emit(record, status=nil, headers={})

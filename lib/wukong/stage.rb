@@ -7,39 +7,10 @@ module Wukong
   #
   # * **field**: defined attributes of this stage
   #
-  class Stage
+  module Stage
 
     # stage to receive emitted messages
     attr_reader :next_stage
-
-    # TODO: implement me
-    def self.field(name, type, options)
-      attr_accessor(name)
-      options[:summary].gsub(/\n\s+/, "\n") if options[:summary]
-    end
-
-    def self.alias_field(name, existing_field_name)
-      alias_method name, existing_field_name
-    end
-
-    def self.action(name, type, options)
-      define_method(name){ raise "not implemented" }
-    end
-
-    class_attribute :default_action
-
-    def self.description(desc=nil)
-      @description = desc if desc
-      @description
-    end
-
-    field :description, String, :description => 'briefly documents this stage and its purpose'
-    alias_field :desc, :description
-    field :summary,     String, :description => 'a long-form description of the stage'
-    field :next_stage,  Stage, :description => 'stage to send output to'
-    field :prev_stage,  Stage, :description => 'stage to receive input from'
-
-    field :actions,     Array, :of => Symbol, :description => 'list of actions this stage responds to'
 
     # invoked on each record in turn
     # override this in your subclass
@@ -99,6 +70,7 @@ module Wukong
       self.into(Wukong::Stage.reject(pred, &block))
     end
 
+
     def self.select(pred=nil, &block)
       pred ||= block
       case
@@ -119,34 +91,53 @@ module Wukong
       end
     end
 
-    #
-    # Assembly -- find and identify by handle
-    #
+    module ClassMethods
 
-    def self.handle
-      self.to_s.demodulize.underscore.to_sym
+      #
+      # Assembly -- find and identify by handle
+      #
+
+      def handle
+        self.to_s.demodulize.underscore.to_sym
+      end
+
+      def class_defaults
+        field :description, String, :description => 'briefly documents this stage and its purpose'
+        alias_field :desc, :description
+        field :summary,     String, :description => 'a long-form description of the stage'
+        field :next_stage,  Stage, :description => 'stage to send output to'
+        field :prev_stage,  Stage, :description => 'stage to receive input from'
+
+        field :actions,     Array, :of => Symbol, :description => 'list of actions this stage responds to'
+
+        action :nothing, :description => 'ze goggles, zey do nussing'
+
+        class_attribute :default_action
+      end
+
+      # TODO: implement me
+      def field(name, type, options={})
+        attr_accessor(name)
+        options[:summary].gsub(/\n\s+/, "\n") if options[:summary]
+      end
+
+      def alias_field(name, existing_field_name)
+        alias_method name, existing_field_name
+      end
+
+      def action(name, options={})
+        define_method(name){ raise "not implemented" }
+      end
+
+      def description(desc=nil)
+        @description = desc if desc
+        @description
+      end
+
     end
-
-    class << self
-      # # gets class for given streamer
-      # def klass_for(type, handle)
-      #   @@registry[type][handle]
-      # end
-
-      # # returns a new instance of given type
-      # def create(type, klass, *args, &block)
-      #   klass = klass_for(type, klass) unless klass.is_a?(Class)
-      #   if not klass
-      #     raise "Can't create '#{type}' '#{klass}': registry #{all.inspect}"
-      #   end
-      #   klass.new(*args, &block)
-      # end
-
-      # def has(type, obj)
-      #   all[type].value_exists?(obj)
-      # end
-
+    def self.included(base)
+      base.extend(ClassMethods)
+      base.class_defaults
     end
-
   end
 end
