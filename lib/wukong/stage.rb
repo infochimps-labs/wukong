@@ -28,6 +28,11 @@ module Wukong
 
     class_attribute :default_action
 
+    def self.description(desc=nil)
+      @description = desc if desc
+      @description
+    end
+
     field :description, String, :description => 'briefly documents this stage and its purpose'
     alias_field :desc, :description
     field :summary,     String, :description => 'a long-form description of the stage'
