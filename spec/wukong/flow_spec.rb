@@ -51,7 +51,7 @@ describe 'wukong', :helpers => true do
         ->{ Wukong.streamer('This::That') }.should raise_error(ArgumentError, /no funny/)
       end
 
-      it{ should < Wukong::Streamer::Base }
+      it{ should < Wukong::Streamer }
       it{ should be_method_defined(:call) }
       it{ should be_method_defined(:bob) }
 
