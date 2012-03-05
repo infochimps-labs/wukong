@@ -1,5 +1,5 @@
 module Wukong
-  module Source
+  class Source
 
     # A FileListSource is a collection of files
     #
@@ -9,7 +9,7 @@ module Wukong
     #
     # @see_also http://rdoc.info/gems/rake/Rake/FileList
     #
-    class FileListSource < Wukong::Source::Base
+    class FileListSource < Wukong::Source
     end
   end
 end

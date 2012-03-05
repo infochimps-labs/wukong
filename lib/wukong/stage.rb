@@ -4,22 +4,52 @@ module Wukong
   registry(:streamer)
   registry(:formatter)
 
+  #
+  # * **field**: defined attributes of this stage
+  #
   class Stage
 
     # stage to receive emitted messages
     attr_reader :next_stage
+
+    # TODO: implement me
+    def self.field(name, type, options)
+      attr_accessor(name)
+      options[:summary].gsub(/\n\s+/, "\n") if options[:summary]
+    end
+
+    def self.alias_field(name, existing_field_name)
+      alias_method name, existing_field_name
+    end
+
+    def self.action(name, type, options)
+      define_method(name){ raise "not implemented" }
+    end
+
+    class_attribute :default_action
+
+    field :description, String, :description => 'briefly documents this stage and its purpose'
+    alias_field :desc, :description
+    field :summary,     String, :description => 'a long-form description of the stage'
+    field :next_stage,  Stage, :description => 'stage to send output to'
+    field :prev_stage,  Stage, :description => 'stage to receive input from'
+
+    field :actions,     Array, :of => Symbol, :description => 'list of actions this stage responds to'
 
     # invoked on each record in turn
     # override this in your subclass
     def call(record)
     end
 
-    def start
-    end
+    #
+    #
+    #
 
-    # passes a record on down the line
-    def emit(record, status=nil, headers={})
-      next_stage.call(record) if next_stage
+    #
+    # Methods
+    #
+
+    def start
     end
 
     # called at the end of a run

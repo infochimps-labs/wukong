@@ -1,24 +1,22 @@
 module Wukong
-  module Source
+  class Source < Wukong::Stage
 
-    class Base < Wukong::Stage
-      def run
-        each do |record|
-          begin
-            emit(record)
-          rescue StandardError => e
-            warn "#{e}\t#{e.backtrace.first}\t#{record}"
-            next
-          end
+    def run
+      each do |record|
+        begin
+          emit(record)
+        rescue StandardError => e
+          warn "#{e}\t#{e.backtrace.first}\t#{record}"
+          next
         end
-      end
-
-      def Base.inherited(subklass)
-        Wukong.register_source(subklass)
       end
     end
 
-    class Iter < Wukong::Source::Base
+    def Source.inherited(subklass)
+      Wukong.register_source(subklass)
+    end
+
+    class Iter < Wukong::Source
       # the enumerable object to delegate
       attr_reader :obj
 
@@ -31,7 +29,7 @@ module Wukong
       end
     end
 
-    class IO < Wukong::Source::Base
+    class IO < Wukong::Source
       attr_reader :file
 
       def each(&block)
@@ -46,7 +44,7 @@ module Wukong
       def file() $stdin ; end
     end
 
-    class Integers < Wukong::Source::Base
+    class Integers < Wukong::Source
       def each
         @num = 0
         loop{ yield @num ; @num += 1 }

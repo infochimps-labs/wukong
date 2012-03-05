@@ -12,7 +12,7 @@ module Wukong
     handle     = handle.to_s.underscore.to_sym
     klass_name = handle.to_s.camelize.to_sym
     raise ArgumentError, "Already defined" if Wukong::Streamer.const_defined?(klass_name)
-    klass = Class.new(Wukong::Streamer::Base, &block)
+    klass = Class.new(Wukong::Streamer, &block)
     Wukong::Streamer.const_set(klass_name, klass)
     klass
   end

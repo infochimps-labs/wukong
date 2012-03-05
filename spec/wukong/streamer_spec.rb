@@ -12,7 +12,7 @@ describe :streamers, :helpers => true do
       end
     end
   end
-  describe Wukong::Streamer::Base do
+  describe Wukong::Streamer do
     context "has stub methods so everything can call super" do
       it{ should respond_to(:call) }
       it{ should respond_to(:emit) }

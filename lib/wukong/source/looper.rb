@@ -1,5 +1,5 @@
 module Wukong
-  class Looper < Wukong::Source::Base
+  class Looper < Wukong::Source
 
     def each
       loop do

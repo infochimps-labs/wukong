@@ -33,11 +33,17 @@ require 'wukong/path_helpers'
 require 'wukong/graph'         # coordinates wukong stages
 require 'wukong/flow'          # graph of data flow stages
 require 'wukong/stage'         # base object for building blocks
+
+# Dataflow
+
 require 'wukong/streamer'      # processes records in series
 require 'wukong/filter'        # passes through only records that meet `accept?`
 require 'wukong/source'        # generates raw records from outside
 require 'wukong/sink'          # dispatch raw records to outside
-
 require 'wukong/formatter'     # converts raw blobs into structured records and vice/versa
+
+# Workflow
+
+require 'wukong/job'           # define a workflow
 
 require 'wukong/map_reduce'    # the standard stream-sort-group-stream map/reduce flow
