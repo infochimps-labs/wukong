@@ -18,6 +18,7 @@ module Wukong
       base.send(:include, Wukong::Stage)
       base.extend(ClassMethods)
       Wukong.register_source(base)
+      def base.inherited(subklass) Wukong.register_source(subklass) ; end
     end
   end
 

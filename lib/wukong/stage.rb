@@ -1,8 +1,4 @@
 module Wukong
-  registry(:source)
-  registry(:sink)
-  registry(:streamer)
-  registry(:formatter)
 
   #
   # * **field**: defined attributes of this stage
@@ -11,6 +7,8 @@ module Wukong
 
     # stage to receive emitted messages
     attr_reader :next_stage
+    # graph this stage belongs to
+    attr_accessor :graph
 
     # invoked on each record in turn
     # override this in your subclass
@@ -20,6 +18,11 @@ module Wukong
     #
     #
     #
+
+    # passes a record on down the line
+    def emit(record, status=nil, headers={})
+      next_stage.call(record) if next_stage
+    end
 
     #
     # Methods
@@ -50,7 +53,7 @@ module Wukong
 
     def into(stage=nil, &block)
       stage ||= block
-      stage = Wukong.create_streamer(:map, stage) if stage.is_a?(Proc)
+      stage = self.graph.add_stage(:streamer, :map, stage) if stage.is_a?(Proc)
       @next_stage = stage
     end
 
@@ -70,7 +73,6 @@ module Wukong
       self.into(Wukong::Stage.reject(pred, &block))
     end
 
-
     def self.select(pred=nil, &block)
       pred ||= block
       case
@@ -89,6 +91,13 @@ module Wukong
       when pred.is_a?(Proc)          then Wukong::Filter::ProcRejecter.new(pred)
       else raise "Can't create a filter from #{pred.inspect}"
       end
+    end
+
+    def to_s
+      "<~" + [
+        self.class.handle,
+        self.instance_variables.reject{|iv| iv.to_s =~ /^@(graph|next_stage|prev_stage)$/ }.map{|iv| "#{iv}=#{self.instance_variable_get(iv)}"  },
+        ].flatten.compact.join(" ") + "~>"
     end
 
     module ClassMethods

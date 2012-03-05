@@ -1,11 +1,11 @@
 module Wukong
   @@registries ||= Hash.new
 
-  def self.registry(type, base_klass=Object, options={})
+  def self.registry(type, options={})
     type = type.to_sym
     plural = options[:plural] || "#{type}s"
     return if @@registries[type]
-    @@registries[type] = Registry.new(base_klass)
+    @@registries[type] = Registry.new(type)
     self.singleton_class.class_eval do
       # def self.sources() @sources ; end
       define_method(plural){ @@registries[type] }
@@ -17,16 +17,18 @@ module Wukong
       define_method("unregister_#{type}"){ |handle| @@registries[type].unregister(handle) }
       # def self.source_exists?(handle) sources.exists?(handle) ; end
       define_method("#{type}_exists?"){       |handle| @@registries[type].exists?(handle) }
-      #
-      # def self.create_source(klass, *args, &block) sources.new(*args, &block) ; end
-      define_method("create_#{type}"){|*args, &block| @@registries[type].create(*args, &block) }
     end
   end
 
+  def self.create(type, *args, &block)
+    @@registries[type].create(*args, &block)
+  end
+
   class Registry < Mash
-    def initialize(base_klass)
-      super(){|h, k| h[k] = self.class.new }
-      @base_klass = base_klass
+    attr_reader :type
+
+    def initialize(type)
+      @type = type
     end
 
     def all
@@ -40,12 +42,16 @@ module Wukong
       self[handle]
     end
 
+    def find!(handle, *args)
+      find(handle, *args) or raise ArgumentError, "cannot find #{type} named '#{handle}'"
+    end
+
     def exists?(handle)
       self.has_key?(handle)
     end
 
     def create(handle, *args, &block)
-      find(handle).new(*args, &block)
+      find!(handle).new(*args, &block)
     end
 
     # add given class to registry

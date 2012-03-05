@@ -2,11 +2,6 @@ module Wukong
   class Streamer
     include Wukong::Stage
 
-    # passes a record on down the line
-    def emit(record, status=nil, headers={})
-      next_stage.call(record) if next_stage
-    end
-
     def Streamer.inherited(subklass)
       Wukong.register_streamer(subklass)
     end
