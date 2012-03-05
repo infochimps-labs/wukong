@@ -2,6 +2,8 @@ require 'zlib'
 require 'forkjoin'
 require 'archive/tar/minitar'
 
+# from http://www.igvita.com/2012/02/29/work-stealing-and-recursive-partitioning-with-fork-join/
+
 pool = ForkJoin::Pool.new
 
 jobs = Dir[ARGV[0].chomp('/') + '/*'].map do |dir|
