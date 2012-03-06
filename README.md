@@ -6,18 +6,16 @@ Wukong is a toolkit for rapid, agile development of dataflows at any scale.
 <a name="design"></a>
 ## Design Overview
 
-The fundamental principle of Hanuman is *powerful black boxes, beautiful glue*. In general, they don't do the thing -- they coordinate the boxes that do the thing, to let you implement rapidly, nimbly and readably. Hanuman elegantly describes high-level data flows; Wukong is a pragmatic collection of dataflow primitives. They both emphasize scalability, readability and rapid development over performance or universality.
+The fundamental principle of Wukong/Hanuman is *powerful black boxes, beautiful glue*. In general, they don't do the thing -- they coordinate the boxes that do the thing, to let you implement rapidly, nimbly and readably. Hanuman elegantly describes high-level data flows; Wukong is a pragmatic collection of dataflow primitives. They both emphasize scalability, readability and rapid development over performance or universality.
 
-Wukong/Hanuman are chiefly concerned with three specific types of graphs:
+Wukong/Hanuman are chiefly concerned with these specific types of graphs:
 
-* **dataflow**   -- chains of simple modules to handle continuous data processing -- coordinates Flume, Unix pipes, ZeroMQ, Esper, Storm.
-* **workflows**  -- episodic jobs sequences, joined by dependency links -- comparable to Rake, Azkaban or Oozie.
-* **map/reduce** -- Hadoop's standard *disordered/partitioned stream > partition, sort & group > process groups* workflow. Comparable to MRJob and Dumbo.
+* **dataflow**      -- chains of simple modules to handle continuous data processing -- coordinates Flume, Unix pipes, ZeroMQ, Esper, Storm.
+* **workflows**     -- episodic jobs sequences, joined by dependency links -- comparable to Rake, Azkaban or Oozie.
+* **map/reduce**    -- Hadoop's standard *disordered/partitioned stream > partition, sort & group > process groups* workflow. Comparable to MRJob and Dumbo.
+* **queue workers** -- pub/sub asynchronously triggered jobs -- comparable Resque, RabbitMQ/AMQP, Amazon Simple Worker, Heroku workers.
 
-In addition, wukong stages may be deployed into
-
-* **http middlware**: lightweight distributed API handlers -- comparable to Rack, Goliath or Twisted.
-* **queue workers**: asynchronously triggered jobs -- coordinated by Resque, RabbitMQ/AMQP, Amazon Simple Worker, Heroku workers.
+In addition, wukong stages may be deployed into **http middlware**: lightweight distributed API handlers -- comparable to Rack, Goliath or Twisted.
 
 When you're describing a Wukong/Hanuman flow, you're writing pure expressive ruby, not some hokey interpreted language or clumsy XML format. Thanks to JRuby, it can speak directly to Java-based components like Hadoop, Flume, Storm or Spark.
 
@@ -59,8 +57,20 @@ __________________________________________________________________________
 <a name="dataflows"></a>
 ## Dataflows
 
+
+Data flows 
+
+* you can have a consumer connect to a provider, or vice versa
+  - producer binds to a port, consumers connect to it: pub/sub
+  - consumers open a port, producer connects to many: megaphone
+
+* you can bring the provider on line first, and the consumers later, or vice versa.
+
+
 <a name="dataflow-syntax"></a>
 ## Syntax 
+
+**note: this is a scratch pad; actual syntax evolving rapidly and currently looks not much like the following**
    
    read('/foo/bar')         # source( FileSource.new('/foo/bar') )
    writes('/foo/bar')       # sink(   FileSink.new('/foo/bar') )
@@ -121,6 +131,21 @@ __________________________________________________________________________
 
 <a name="dataflows"></a>
 ## Workflows
+
+Wukong workflows work somewhat differently than you may be familiar with Rake and such.
+
+In wukong, a stage corresponds to a resource; you can then act on that resource.
+
+Consider first compiling a c program:
+
+    to build the executable, run `cc -o cake eggs.o milk.o flour.o sugar.o -I./include -L./lib`
+    to build files like '{file}.o', run `cc -c -o {file}.o {file}.c -I./include`
+
+In this case, you define the *steps*, implying the resources.
+
+
+
+
 
 ### Defining jobs
 
@@ -250,43 +275,61 @@ __________________________________________________________________________
 ### Workflow
 
 * **Rake**
+
   - [Rake Docs](http://rdoc.info/gems/rake/file/README.rdoc)
   - [Rake Tutorial](http://jasonseifer.com/2010/04/06/rake-tutorial) by Jason Seifer -- 2010, with a good overview of why Rake is useful
   - [Rake Tutorial](http://martinfowler.com/articles/rake.html) by Martin Fowler -- from 2005, so may lack some modernities
   - [Rake Tutorial](http://onestepback.org/index.cgi/Tech/Rake/Tutorial/RakeTutorialRules.red) -- from 2005, so may lack some modernities
   
 * **Rake Examples**
+
   - [resque's redis.rake](https://github.com/defunkt/resque/blob/master/lib/tasks/redis.rake) and [resque/tasks](https://github.com/defunkt/resque/blob/master/lib/resque/tasks.rb)
   - [rails' Rails Ties](https://github.com/rails/rails/tree/master/railties/lib/rails/tasks)
   
 * **Thor**
+
   - [Thor Wiki](https://github.com/wycats/thor/wiki)
   - 
+  
+* **Chef**
 
-* [**Gradle**](http://gradle.org/) -- a modern take on `ant` + `maven`. The [Gradle overview](http://gradle.org/overview) states its case.
+  - [Chef Wiki](http://wiki.opscode.com/display/chef/Home)
+  - specifically, [Chef Resources](http://wiki.opscode.com/display/chef/Resources)
+
+* **Other**
+
+  - [**Gradle**](http://gradle.org/) -- a modern take on `ant` + `maven`. The [Gradle overview](http://gradle.org/overview) states its case.
 
 <a name="refs-dataflow"></a>
 ### Dataflow
 
 * **Esper**
+
   - Must read: [StreamSQL Event Processing with Esper](http://www.igvita.com/2011/05/27/streamsql-event-processing-with-esper/)
   - [Esper docs](http://esper.codehaus.org/esper-4.5.0/doc/reference/en/html_single/index.html#epl_clauses)
   - [Esper EPL Reference](http://esper.codehaus.org/esper-4.5.0/doc/reference/en/html_single/index.html#epl_clauses)
 
 * **Storm**
+
   - [A Storm is coming: more details and plans for release](http://engineering.twitter.com/2011/08/storm-is-coming-more-details-and-plans.html)
   - [Storm: distributed and fault-tolerant realtime computation](http://www.slideshare.net/nathanmarz/storm-distributed-and-faulttolerant-realtime-computation) -- slideshare presentation
   - [Storm: the Hadoop of Realtime Processing](http://tech.backtype.com/preview-of-storm-the-hadoop-of-realtime-proce)
 
 * **Kafka**: LinkedIn's high-throughput messaging queue
+
   - [Kafka's Design: Why we built this](http://incubator.apache.org/kafka/design.html) 
 
 * **ZeroMQ**: tcp sockets like you think they should work
+
   - [ZeroMQ: A Modern & Fast Networking Stack](http://www.igvita.com/2010/09/03/zeromq-modern-fast-networking-stack/)
   - [ZeroMQ Guide](http://zguide.zeromq.org/page:all)
+  - [ZeroMQ: An Introduction](http://nichol.as/zeromq-an-introduction)
   - [Routing with Ruby & ZeroMQ Devices](http://www.igvita.com/2010/11/17/routing-with-ruby-zeromq-devices/)
-
+  - [Ruby bindings for ZeroMQ](http://zeromq.github.com/rbzmq/) and the [Ruby-FFI bindings](http://www.zeromq.org/bindings:ruby-ffi)
+  - [Learn ruby ZeroMQ](https://github.com/andrewvc/learn-ruby-zeromq) by @andrewvc
+  
 * **Other**
+
   - [Infopipes: An abstraction for multimedia streamin](http://web.cecs.pdx.edu/~black/publications/Mms062%203rd%20try.pdf) Black et al 2002
   - [Yahoo Pipes](http://pipes.yahoo.com/pipes/) 
   - [Yahoo Pipes wikipedia page](http://en.wikipedia.org/wiki/Yahoo_Pipes)
@@ -301,8 +344,10 @@ __________________________________________________________________________
 ### Data Processing
 
 * **Hadoop**
+
   - [Hadoop]()
   
   
 * **Spark/Mesos**
+
   - [Mesos](http://www.mesosproject.org/)
