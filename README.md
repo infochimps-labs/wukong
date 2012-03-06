@@ -55,81 +55,6 @@ each action
 __________________________________________________________________________
 
 <a name="dataflows"></a>
-## Dataflows
-
-
-Data flows 
-
-* you can have a consumer connect to a provider, or vice versa
-  - producer binds to a port, consumers connect to it: pub/sub
-  - consumers open a port, producer connects to many: megaphone
-
-* you can bring the provider on line first, and the consumers later, or vice versa.
-
-
-<a name="dataflow-syntax"></a>
-## Syntax 
-
-**note: this is a scratch pad; actual syntax evolving rapidly and currently looks not much like the following**
-   
-   read('/foo/bar')         # source( FileSource.new('/foo/bar') )
-   writes('/foo/bar')       # sink(   FileSink.new('/foo/bar') )
-
-   ... | file('/foo/bar')   # this we know is a source
-   file('/foo/bar') | ...   # this we know is a sink
-   file('/foo/bar')         # don't know; maybe we can guess later
-
-Here is an example Wukong script, `count_followers.rb`:
-
-    from :json
-    
-    mapper do |user|
-      year_month = Time.parse(user[:created_at]).strftime("%Y%M")
-      emit [ user[:followers_count], year_month ]
-    end   
-    
-    reducer do 
-      start{ @count = 0 }
-    
-      each do |followers_count, year_month|
-        @count += 1
-      end
-    
-      finally{ emit [*@group_key, @count] }
-    end
-    
-You can run this from the commandline:
-
-    wukong count_followers.rb users.json followers_histogram.tsv
-    
-It will run in local mode, effectively doing
-
-    cat users.json | {the map block} | sort | {the reduce block} > followers_histogram.tsv
-
-You can instead run it in Hadoop mode, and it will launch the job across a distributed Hadoop cluster
-
-    wukong --run=hadoop count_followers.rb users.json followers_histogram.tsv
-
-<a name="formatters"></a>
-#### Data Formats (Serialization / Deserialization)
-
-   from_tsv
-   parse(:tsv)
-
-* gz/bz2/zip/snappy ; tsv/csv/json/xml/avro/netbinary ; apache_log ; flat ; regexp ; 
-
-<a name="data-packets"></a>
-## Data Packets
-
-Data consists of
-
-- record
-- schema
-- metadata
-
-__________________________________________________________________________
-
-<a name="dataflows"></a>
 ## Workflows
 
 Wukong workflows work somewhat differently than you may be familiar with Rake and such.
@@ -142,10 +67,6 @@ Consider first compiling a c program:
     to build files like '{file}.o', run `cc -c -o {file}.o {file}.c -I./include`
 
 In this case, you define the *steps*, implying the resources.
-
-
-
-
 
 ### Defining jobs
 
@@ -254,6 +175,102 @@ The primitives correspond heavily with Rake and Chef. However, they extend them 
 * TODO: configliere needs context-specific config vars, so I only get information about the `launch` action in the `nukes` job when I run `nukes launch --help`
 
 
+
+__________________________________________________________________________
+
+<a name="dataflows"></a>
+## Dataflows
+
+
+Data flows 
+
+* you can have a consumer connect to a provider, or vice versa
+  - producer binds to a port, consumers connect to it: pub/sub
+  - consumers open a port, producer connects to many: megaphone
+
+* you can bring the provider on line first, and the consumers later, or vice versa.
+
+
+<a name="dataflow-syntax"></a>
+## Syntax 
+
+**note: this is a scratch pad; actual syntax evolving rapidly and currently looks not much like the following**
+   
+   read('/foo/bar')         # source( FileSource.new('/foo/bar') )
+   writes('/foo/bar')       # sink(   FileSink.new('/foo/bar') )
+
+   ... | file('/foo/bar')   # this we know is a source
+   file('/foo/bar') | ...   # this we know is a sink
+   file('/foo/bar')         # don't know; maybe we can guess later
+
+Here is an example Wukong script, `count_followers.rb`:
+
+    from :json
+    
+    mapper do |user|
+      year_month = Time.parse(user[:created_at]).strftime("%Y%M")
+      emit [ user[:followers_count], year_month ]
+    end   
+    
+    reducer do 
+      start{ @count = 0 }
+    
+      each do |followers_count, year_month|
+        @count += 1
+      end
+    
+      finally{ emit [*@group_key, @count] }
+    end
+    
+You can run this from the commandline:
+
+    wukong count_followers.rb users.json followers_histogram.tsv
+    
+It will run in local mode, effectively doing
+
+    cat users.json | {the map block} | sort | {the reduce block} > followers_histogram.tsv
+
+You can instead run it in Hadoop mode, and it will launch the job across a distributed Hadoop cluster
+
+    wukong --run=hadoop count_followers.rb users.json followers_histogram.tsv
+
+<a name="formatters"></a>
+#### Data Formats (Serialization / Deserialization)
+
+* tsv/csv
+* json
+* xml
+* avro
+* apache_log
+* flat 
+* regexp 
+* [Tagged Netstrings](http://tnetstrings.org/)
+* [ZeroMQ Property Language](http://rfc.zeromq.org/spec:4)
+
+* gz/bz2/zip/snappy 
+
+<a name="data-packets"></a>
+#### Data Packets
+
+Data consists of
+
+- record
+- schema
+- metadata
+
+## Delivery Guarantees
+
+Most messaging systems keep metadata about what messages have been consumed on the broker. That is, as a message is handed out to a consumer, the broker records that fact locally. This is a fairly intuitive choice, and indeed for a single machine server it is not clear where else it could go. Since the data structure used for storage in many messaging systems scale poorly, this is also a pragmatic choice--since the broker knows what is consumed it can immediately delete it, keeping the data size small.
+
+What is perhaps not obvious, is that getting the broker and consumer to come into agreement about what has been consumed is not a trivial problem. If the broker records a message as consumed immediately every time it is handed out over the network, then if the consumer fails to process the message (say because it crashes or the request times out or whatever) then that message will be lost. To solve this problem, many messaging systems add an acknowledgement feature which means that messages are only marked as sent not consumed when they are sent; the broker waits for a specific acknowledgement from the consumer to record the message as consumed. This strategy fixes the problem of losing messages, but creates new problems. First of all, if the consumer processes the message but fails before it can send an acknowledgement then the message will be consumed twice. The second problem is around performance, now the broker must keep multiple states about every single message (first to lock it so it is not given out a second time, and then to mark it as permanently consumed so that it can be removed). Tricky problems must be dealt with, like what to do with messages that are sent but never acknowledged.
+
+So clearly there are multiple possible message delivery guarantees that could be provided:
+
+* At most once—this handles the first case described. Messages are immediately marked as consumed, so they can't be given out twice, but many failure scenarios may lead to losing messages.
+* At least once—this is the second case where we guarantee each message will be delivered at least once, but in failure cases may be delivered twice.
+* Exactly once—this is what people actually want, each message is delivered once and only once.
+
+
 __________________________________________________________________________
 
 <a name="design-questions"></a>
@@ -266,6 +283,12 @@ __________________________________________________________________________
 * `class Wukong::Foo::Base` vs `class Wukong::Foo` 
   - the latter is more natural, and still allows 
   - I'd like 
+
+
+
+__________________________________________________________________________
+__________________________________________________________________________
+__________________________________________________________________________
 
 
 <a name="references"></a>
@@ -340,13 +363,16 @@ __________________________________________________________________________
 <a name="refs-dataflow"></a>
 ### Messaging Queue
 
+- [DripDrop](https://github.com/andrewvc/dripdrop) - a message passing library with a unified API abstracting HTTP, zeroMQ and websockets.
+
+
 <a name="refs-dataflow"></a>
 ### Data Processing
 
 * **Hadoop**
 
   - [Hadoop]()
-  
+ 
   
 * **Spark/Mesos**
 
