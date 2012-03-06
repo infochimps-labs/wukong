@@ -1,37 +1,7 @@
 
 Wukong is a toolkit for rapid, agile development of dataflows at any scale.
 
-
-Here is an example Wukong script, `count_followers.rb`:
-
-    from :json
-    
-    mapper do |user|
-      year_month = Time.parse(user[:created_at]).strftime("%Y%M")
-      emit [ user[:followers_count], year_month ]
-    end   
-    
-    reducer do 
-      start{ @count = 0 }
-    
-      each do |followers_count, year_month|
-        @count += 1
-      end
-    
-      finally{ emit [*@group_key, @count] }
-    end
-    
-You can run this from the commandline:
-
-    wukong count_followers.rb users.json followers_histogram.tsv
-    
-It will run in local mode, effectively doing
-
-    cat users.json | {the map block} | sort | {the reduce block} > followers_histogram.tsv
-
-You can instead run it in Hadoop mode, and it will launch the job across a distributed Hadoop cluster
-
-    wukong --run=hadoop count_followers.rb users.json followers_histogram.tsv
+(note: the syntax below is mostly false)
 
 <a name="design"></a>
 ## Design Overview
@@ -89,7 +59,6 @@ __________________________________________________________________________
 <a name="dataflows"></a>
 ## Dataflows
 
-
 <a name="dataflow-syntax"></a>
 ## Syntax 
    
@@ -99,6 +68,37 @@ __________________________________________________________________________
    ... | file('/foo/bar')   # this we know is a source
    file('/foo/bar') | ...   # this we know is a sink
    file('/foo/bar')         # don't know; maybe we can guess later
+
+Here is an example Wukong script, `count_followers.rb`:
+
+    from :json
+    
+    mapper do |user|
+      year_month = Time.parse(user[:created_at]).strftime("%Y%M")
+      emit [ user[:followers_count], year_month ]
+    end   
+    
+    reducer do 
+      start{ @count = 0 }
+    
+      each do |followers_count, year_month|
+        @count += 1
+      end
+    
+      finally{ emit [*@group_key, @count] }
+    end
+    
+You can run this from the commandline:
+
+    wukong count_followers.rb users.json followers_histogram.tsv
+    
+It will run in local mode, effectively doing
+
+    cat users.json | {the map block} | sort | {the reduce block} > followers_histogram.tsv
+
+You can instead run it in Hadoop mode, and it will launch the job across a distributed Hadoop cluster
+
+    wukong --run=hadoop count_followers.rb users.json followers_histogram.tsv
 
 <a name="formatters"></a>
 #### Data Formats (Serialization / Deserialization)
@@ -246,28 +246,6 @@ __________________________________________________________________________
 <a name="references"></a>
 ## References
 
-<a name="refs-dataflow"></a>
-### Dataflow
-
-* **Esper**
-  - Must read: [StreamSQL Event Processing with Esper](http://www.igvita.com/2011/05/27/streamsql-event-processing-with-esper/)
-  - [Esper docs](http://esper.codehaus.org/esper-4.5.0/doc/reference/en/html_single/index.html#epl_clauses)
-  - [Esper EPL Reference](http://esper.codehaus.org/esper-4.5.0/doc/reference/en/html_single/index.html#epl_clauses)
-
-* **Storm**
-  - [A Storm is coming: more details and plans for release](http://engineering.twitter.com/2011/08/storm-is-coming-more-details-and-plans.html)
-  - [Storm: distributed and fault-tolerant realtime computation](http://www.slideshare.net/nathanmarz/storm-distributed-and-faulttolerant-realtime-computation) -- slideshare presentation
-  - [Storm: the Hadoop of Realtime Processing](http://tech.backtype.com/preview-of-storm-the-hadoop-of-realtime-proce)
-
-* **Other**
-  - [Infopipes: An abstraction for multimedia streamin](http://web.cecs.pdx.edu/~black/publications/Mms062%203rd%20try.pdf) Black et al 2002
-  - [Yahoo Pipes](http://pipes.yahoo.com/pipes/) 
-  - [Yahoo Pipes wikipedia page](http://en.wikipedia.org/wiki/Yahoo_Pipes)
-  - [Streambase](http://www.streambase.com/products/streambasecep/faqs/) -- Why is is so goddamn hard to find out anything real about a project once it gets an enterprise version? Seriously, the consistent fundamental brokenness of enterprise product is astonishing. It's like they take inspiration from shitty major-label band websites but layer a whiteout of [web jargon bullshit](http://www.dack.com/web/bullshit.html) in place of inessential flash animation. Anyway I think Streambase is kinda similar but who the hell can tell.
-  - [Scribe](http://www.cloudera.com/blog/2008/11/02/configuring-and-using-scribe-for-hadoop-log-collection/)
-  - [Splunk Case Study](http://www.igvita.com/2008/10/22/distributed-logging-syslog-ng-splunk/)
-
-
 <a name="refs-workflow"></a>
 ### Workflow
 
@@ -287,6 +265,39 @@ __________________________________________________________________________
 
 * [**Gradle**](http://gradle.org/) -- a modern take on `ant` + `maven`. The [Gradle overview](http://gradle.org/overview) states its case.
 
+<a name="refs-dataflow"></a>
+### Dataflow
+
+* **Esper**
+  - Must read: [StreamSQL Event Processing with Esper](http://www.igvita.com/2011/05/27/streamsql-event-processing-with-esper/)
+  - [Esper docs](http://esper.codehaus.org/esper-4.5.0/doc/reference/en/html_single/index.html#epl_clauses)
+  - [Esper EPL Reference](http://esper.codehaus.org/esper-4.5.0/doc/reference/en/html_single/index.html#epl_clauses)
+
+* **Storm**
+  - [A Storm is coming: more details and plans for release](http://engineering.twitter.com/2011/08/storm-is-coming-more-details-and-plans.html)
+  - [Storm: distributed and fault-tolerant realtime computation](http://www.slideshare.net/nathanmarz/storm-distributed-and-faulttolerant-realtime-computation) -- slideshare presentation
+  - [Storm: the Hadoop of Realtime Processing](http://tech.backtype.com/preview-of-storm-the-hadoop-of-realtime-proce)
+
+* **Kafka**: LinkedIn's high-throughput messaging queue
+  - [Kafka's Design: Why we built this](http://incubator.apache.org/kafka/design.html) 
+
+* **ZeroMQ**: tcp sockets like you think they should work
+  - [ZeroMQ: A Modern & Fast Networking Stack](http://www.igvita.com/2010/09/03/zeromq-modern-fast-networking-stack/)
+  - [ZeroMQ Guide](http://zguide.zeromq.org/page:all)
+  - [Routing with Ruby & ZeroMQ Devices](http://www.igvita.com/2010/11/17/routing-with-ruby-zeromq-devices/)
+
+* **Other**
+  - [Infopipes: An abstraction for multimedia streamin](http://web.cecs.pdx.edu/~black/publications/Mms062%203rd%20try.pdf) Black et al 2002
+  - [Yahoo Pipes](http://pipes.yahoo.com/pipes/) 
+  - [Yahoo Pipes wikipedia page](http://en.wikipedia.org/wiki/Yahoo_Pipes)
+  - [Streambase](http://www.streambase.com/products/streambasecep/faqs/) -- Why is is so goddamn hard to find out anything real about a project once it gets an enterprise version? Seriously, the consistent fundamental brokenness of enterprise product is astonishing. It's like they take inspiration from shitty major-label band websites but layer a whiteout of [web jargon bullshit](http://www.dack.com/web/bullshit.html) in place of inessential flash animation. Anyway I think Streambase is kinda similar but who the hell can tell.
+  - [Scribe](http://www.cloudera.com/blog/2008/11/02/configuring-and-using-scribe-for-hadoop-log-collection/)
+  - [Splunk Case Study](http://www.igvita.com/2008/10/22/distributed-logging-syslog-ng-splunk/)
+
+<a name="refs-dataflow"></a>
+### Messaging Queue
+
+<a name="refs-dataflow"></a>
 ### Data Processing
 
 * **Hadoop**
