@@ -6,6 +6,10 @@
 
     foo bar --help
 
+* configliere: [ZeroMQ Property Language](http://rfc.zeromq.org/spec:4)
+
+
+* learn about [COSS - Consensus Oriented Specification System](http://www.digistan.org/spec:1/COSS)
 
 ## Syntax
 
