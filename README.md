@@ -68,6 +68,9 @@ Consider first compiling a c program:
 
 In this case, you define the *steps*, implying the resources.
 
+
+Something rake can't do (but we should be able to): make it so I can define a dependency that runs **last** 
+
 ### Defining jobs
 
     Wukong.job(:launch) do
@@ -158,7 +161,6 @@ define the `:undo` action:
 * `clobber` -- run, but clear all dependencies
 * `undo`    -- 
 * `clean`   -- 
-
 
 
 ### Utility and Filesystem tasks
