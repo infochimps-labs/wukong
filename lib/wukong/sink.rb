@@ -10,7 +10,7 @@ module Wukong
     end
   end
 
-  module Sink
+  class Sink
     class NullSink < Wukong::Sink
       def call(record)
         true # do nothing

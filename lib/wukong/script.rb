@@ -1,5 +1,6 @@
 require 'wukong'
 require 'wukong/script/hadoop_command'
+require 'wukong/experimental'
 
 #
 # Runner settings
@@ -13,6 +14,23 @@ Settings.define :script_file, :type => :filename, :description => "script file t
 module Wukong
   # adds ability to execute
   extend Wukong::Mixin::FromFile
+
+  def self.from_file(filename)
+    filename  = filename.to_s
+    filename += ".rb" if filename !~ /\.rb$/
+    super(filename)
+  end
+
+  def self.run(filename=nil)
+    if filename
+      self.from_file(filename)
+    else
+      Settings.resolve!
+    end
+    if @main_run then return false ; end
+    Wukong::Script.new(Settings).run
+    @main_run = true
+  end
 
   #
   # sources a script file,
@@ -48,7 +66,7 @@ module Wukong
     #
     def run
       case settings.mode
-      when :local            then execute_local_workflow
+      when :local           then execute_local_workflow
       when :hadoop, :mapred then execute_hadoop_workflow
       else
         run_flow
