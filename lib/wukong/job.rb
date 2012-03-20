@@ -85,7 +85,7 @@ module Wukong
       action :create,                     :description => "Create this file only if it does not exist. If it exists, do nothing"
       action :update,                     :description => "Update this file, whether it exists or not"
       action :delete,                     :description => "Delete this file, whether it exists or not"
-      action :touch,                      :description => "Touch this file (update the mtime/atime)"
+      action :touch,                      :description => "Touch this file (update the mtime/atime). Will raise a CantTouchThisError if the filesystem does not support mtime/atimes, unless you specify the `:please_hammer => \"don't hurt em\"` option."
       self.default_action = :create
       #
       field :path,        String,         :description => "Path to the file; by default, the resource's name"
@@ -194,17 +194,11 @@ module Wukong
       action :delete,                     :description => "Delete this scheduled task, whether it exists or not"
       self.default_action = :create
       #
-      field :minute,      Integer,        :description => "The minute this entry should run (0 - 59)            *"
-      field :hour,        Integer,        :description => "The hour this entry should run (0 - 23)              *"
-      field :day,         Integer,        :description => "The day of month this entry should run (1 - 31)      *"
-      field :month,       Integer,        :description => "The month this entry should run (1 - 12)             *"
-      field :weekday,     Integer,        :description => "The weekday this entry should run (0 - 6) (Sunday=0) *"
-      field :command,     String,         :description => "The command to run"
-      field :user,        String,         :description => "The user to run command as. Note: If you change the crontab user then the original user will still have the same crontab running until you explicity delete that crontab        root"
-      field :mailto,      String,         :description => "Set the MAILTO environment variable"
-      field :path,        String,         :description => "Set the PATH environment variable"
-      field :home,        String,         :description => "Set the HOME environment variable"
-      field :shell,       String,         :description => "Set the SHELL environment variable"
+      field :minute,      Integer,        :description => "The minute this entry should run (0 - 59)"
+      field :hour,        Integer,        :description => "The hour this entry should run (0 - 23)"
+      field :weekday,     Integer,        :description => "The weekday this entry should run (0 - 6) (Sunday=0)"
+      field :day,         Integer,        :description => "The day of month this entry should run (1 - 31)"
+      field :month,       Integer,        :description => "The month this entry should run (1 - 12)"
     end
 
     # start a longrunning service in a new process

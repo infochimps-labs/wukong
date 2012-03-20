@@ -1,3 +1,5 @@
+# TODO: this should be part of configliere
+
 module Wukong
 
   class Pathref < ::Pathname
@@ -15,7 +17,8 @@ module Wukong
     end
 
     class << self
-      def register_path(handle, pathsegs)
+      # TODO: does nothing with the options
+      def register_path(handle, pathsegs, options={})
         ROOT_PATHS[handle] = Array(pathsegs)
       end
 
