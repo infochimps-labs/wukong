@@ -15,6 +15,7 @@ module Wukong
     def initialize(handle, &block)
       @handle = handle
       @chain  = []
+      @resources = []
       instance_eval(&block) if block
     end
 
@@ -22,7 +23,7 @@ module Wukong
     # @example
     #   streamer(:iter, File.open('/foo/bar'))
     #
-    def add_a_stage(type, handle=nil, *args, &block)
+    def add_stage(type, handle=nil, *args, &block)
       stage = Wukong.create(type, handle, *args, &block)
       stage.graph = self
       @chain << stage

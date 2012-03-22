@@ -23,7 +23,7 @@ module Wukong
 
     def cooking_container(*args)
       p self
-      add_a_stage(:task, :container, *args)
+      add_resource(:task, :container, *args)
     end
   end
 end
@@ -44,7 +44,7 @@ module Kitchen
   end
 
   class Container
-    include Wukong::Stage
+    include Wukong::Task
     Wukong.register_task(self)
     #
     attr_reader :contents

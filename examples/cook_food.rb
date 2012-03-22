@@ -3,8 +3,9 @@ require File.expand_path('cook_food/kitchen', File.dirname(__FILE__))
 Wukong.job :cherry_pie do
 
   pie_tin = cooking_container('pie tin')
-  
 
+  pie_tin.add 'cherries'
+  
   # chain(:crust) do
   #   bowl  = cooking_container('medium mixing bowl')
   #   mixer = utensil('mixer')
