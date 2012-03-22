@@ -1,5 +1,8 @@
 # TODO: this should be part of configliere
 
+require 'gorillib/metaprogramming/delegation'
+require 'pathname'
+
 module Wukong
 
   class Pathref < ::Pathname

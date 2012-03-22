@@ -1,5 +1,3 @@
-
-
 shared_context 'wukong', :helpers => true do
   let(:mock_record){ mock }
   let(:mock_streamer){ mock }
@@ -30,7 +28,7 @@ module WukongTestHelpers
   end
 
   def example_script_filename(name)
-    CODE_ROOT('examples', name)
+    Wukong.path_to(:examples, name)
   end
 
   def example_script_contents(name)

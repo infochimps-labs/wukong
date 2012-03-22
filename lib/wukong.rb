@@ -13,6 +13,8 @@ require 'gorillib/mash'
 require 'gorillib/metaprogramming/delegation'
 require 'pathname'
 
+require 'active_support/concern'
+
 begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
 require 'multi_json'
 

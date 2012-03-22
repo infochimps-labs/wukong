@@ -4,6 +4,7 @@ module Wukong
   # * **field**: defined attributes of this stage
   #
   module Stage
+    extend ActiveSupport::Concern
 
     # stage to receive emitted messages
     attr_reader :next_stage
@@ -117,25 +118,28 @@ module Wukong
         field :next_stage,  Stage, :description => 'stage to send output to'
         field :prev_stage,  Stage, :description => 'stage to receive input from'
 
-        field :actions,     Array, :of => Symbol, :description => 'list of actions this stage responds to'
+        # field :actions,     Array, :of => Symbol, :description => 'list of actions this stage responds to'
 
-        action :nothing, :description => 'ze goggles, zey do nussing'
-
+        class_attribute :actions
+        self.actions ||= Hash.new
         class_attribute :default_action
+
+        define_action :nothing, :description => 'ze goggles, zey do nussing'
+
       end
 
       # TODO: implement me
       def field(name, type, options={})
         attr_accessor(name)
-        options[:summary].gsub(/\n\s+/, "\n") if options[:summary]
+        options[:summary].gsub(/([\r\n])\s+/, "\\1\n") if options[:summary]
       end
 
       def alias_field(name, existing_field_name)
         alias_method name, existing_field_name
       end
 
-      def action(name, options={})
-        define_method(name){ raise "not implemented" }
+      def define_action(name, options={}, &block)
+        self.actions = self.actions.merge(name => options.merge(:block => block))
       end
 
       def description(desc=nil)
@@ -144,9 +148,9 @@ module Wukong
       end
 
     end
-    def self.included(base)
-      base.extend(ClassMethods)
-      base.class_defaults
+    included do
+      self.extend(ClassMethods)
+      self.class_defaults
     end
   end
 end
