@@ -117,15 +117,6 @@ module Wukong
         field :summary,     String, :description => 'a long-form description of the stage'
         field :next_stage,  Stage, :description => 'stage to send output to'
         field :prev_stage,  Stage, :description => 'stage to receive input from'
-
-        # field :actions,     Array, :of => Symbol, :description => 'list of actions this stage responds to'
-
-        class_attribute :actions
-        self.actions ||= Hash.new
-        class_attribute :default_action
-
-        define_action :nothing, :description => 'ze goggles, zey do nussing'
-
       end
 
       # TODO: implement me
@@ -138,10 +129,6 @@ module Wukong
         alias_method name, existing_field_name
       end
 
-      def define_action(name, options={}, &block)
-        self.actions = self.actions.merge(name => options.merge(:block => block))
-      end
-
       def description(desc=nil)
         @description = desc if desc
         @description
@@ -149,7 +136,6 @@ module Wukong
 
     end
     included do
-      self.extend(ClassMethods)
       self.class_defaults
     end
   end
