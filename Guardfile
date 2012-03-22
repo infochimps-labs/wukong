@@ -28,3 +28,14 @@ end
 #     watch('examples/examples_helper.rb')
 #   end
 # end
+
+graph_output_dir = File.expand_path("/tmp/wukong-#{ENV['USER']}/graphs")
+FileUtils.mkdir_p(graph_output_dir)
+
+Dir['examples/**/*.gv'].each do |file|
+  graph_output_file = File.join(graph_output_dir, File.basename(file, '.gv')+".png")
+  cmd = "dot -Tpng -o #{graph_output_file} #{file}"
+  guard 'process', :name => "dot on #{file}", :command => cmd do
+    watch(file)
+  end
+end
