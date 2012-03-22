@@ -4,22 +4,25 @@ module Wukong
   registry(:streamer)
   registry(:formatter)
 
+  registry(:task)
+
   class Graph
     # a retrievable name for this graph
     attr_reader :handle
     # the sequence of stages on this graph
     attr_reader :chain
 
-    def initialize(handle)
+    def initialize(handle, &block)
       @handle = handle
       @chain  = []
+      instance_eval(&block) if block
     end
 
     #
     # @example
     #   streamer(:iter, File.open('/foo/bar'))
     #
-    def add_stage(type, handle=nil, *args, &block)
+    def add_a_stage(type, handle=nil, *args, &block)
       stage = Wukong.create(type, handle, *args, &block)
       stage.graph = self
       @chain << stage

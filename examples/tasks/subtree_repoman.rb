@@ -14,10 +14,12 @@ SUBTREES = {
 Wukong.job :subtree do
 
   SUBTREES.each do |repo_name, repo_info|
+    branch_name = "br-#{repo_name}"
+    #
     chain(repo_name) do
 
       remote_repo = github_repo("repo_name") do
-        update
+        action        :update
         account_name  Settings.github_acct
         description   "Chef cookbook for #{repo_name} from the Ironfan cookbook collection"
       end
@@ -27,19 +29,22 @@ Wukong.job :subtree do
         branch      :master
       end
 
-      script do
+      script "git subtree split for #{repo_name}" do
+        code    [ "git-subtree", "split", "-P", path, "-b", branch_name ]
+        expect  ""
       end
 
-      #
-      # subtree:hadoop:push
+      # subtree:#{repo_name}:push
       chain(:push) do
-        updates  remote_repo
-        creates  solo_checkout
-        pulls    solo_checkout, remote_repo
-        runs     split_subtree
-        pulls    solo_checkout, split_subtree
-        pushes   solo_checkout, remote_repo
-        add_to chain('subtree:push') # subtree:push will invoke this at most once
+        does :update, remote_repo
+        does :create, solo_checkout
+        does :pull,   solo_checkout, remote_repo
+        does :run,    split_subtree
+        does :pull,   solo_checkout, split_subtree
+        does :push,   solo_checkout, remote_repo
+
+        # subtree:push will invoke this at most once
+        chain('subtree:push') << self
       end
 
       chain
