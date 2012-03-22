@@ -12,9 +12,9 @@ Wukong.job :cherry_pie do
   #   bowl.add ingredient('egg',   '2')
   #   bowl.add ingredient('flour', '2 cups')
   #   bowl.add ingredient('sugar', '1 cup')
-  #   mixer.mix bowl
+  #   mixer.mix bowl, 'pie filling'
   #   #
-  #   mixer.transfer_contents pie_tin
+  #   bowl.transfer_contents pie_tin
   # end
 
   # chain(:filling) do
