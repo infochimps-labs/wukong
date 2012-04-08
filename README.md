@@ -3,6 +3,7 @@ Wukong is a toolkit for rapid, agile development of dataflows at any scale.
 
 (note: the syntax below is mostly false)
 
+
 <a name="design"></a>
 ## Design Overview
 
@@ -18,6 +19,18 @@ Wukong/Hanuman are chiefly concerned with these specific types of graphs:
 In addition, wukong stages may be deployed into **http middlware**: lightweight distributed API handlers -- comparable to Rack, Goliath or Twisted.
 
 When you're describing a Wukong/Hanuman flow, you're writing pure expressive ruby, not some hokey interpreted language or clumsy XML format. Thanks to JRuby, it can speak directly to Java-based components like Hadoop, Flume, Storm or Spark.
+
+
+<a name="design-rules"></a>
+### Story
+
+[Narrative Method Structure](http://avdi.org/talks/confident-code-rubymidwest-2011/confident-code.html)
+
+* Gather input
+* Perform work
+* Deliver results
+* Handle failure
+
 
 <a name="design-rules"></a>
 ### Design Rules

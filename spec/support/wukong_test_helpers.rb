@@ -1,3 +1,5 @@
+require 'gorillib/test_helpers/capture_output'
+
 shared_context 'wukong', :helpers => true do
   let(:mock_record){ mock }
   let(:mock_streamer){ mock }

@@ -29,6 +29,7 @@ GEM
     git (1.2.5)
     gorillib (0.1.9)
       json
+    growl (1.0.3)
     guard (1.0.1)
       ffi (>= 0.5.0)
       thor (~> 0.14.6)
@@ -36,7 +37,7 @@ GEM
       ffi (~> 1.0.9)
       guard (>= 0.4.2)
       spoon (~> 0.0.1)
-    guard-rspec (0.6.0)
+    guard-rspec (0.7.0)
       guard (>= 0.10.0)
     guard-yard (1.0.2)
       guard (>= 0.2.2)
@@ -48,11 +49,11 @@ GEM
       git (>= 1.2.5)
       rake
       rdoc
-    json (1.6.5)
+    json (1.6.6)
     log4r (1.1.10)
     log_buddy (0.6.0)
     method_source (0.7.1)
-    multi_json (1.1.0)
+    multi_json (1.2.0)
     pry (0.9.8.4)
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
