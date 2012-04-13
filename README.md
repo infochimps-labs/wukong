@@ -20,6 +20,33 @@ In addition, wukong stages may be deployed into **http middlware**: lightweight 
 
 When you're describing a Wukong/Hanuman flow, you're writing pure expressive ruby, not some hokey interpreted language or clumsy XML format. Thanks to JRuby, it can speak directly to Java-based components like Hadoop, Flume, Storm or Spark.
 
+## What's where
+
+* Configliere -- Manage settings
+  - Layer - Project settings through a late-resolved stack of config objects.
+* Gorillib
+  - Type, RecordType
+  - TypeConversion
+  - Model
+  - PathHelpers
+* Wukong
+  - fs - Abstracts file hdfs s3n s3hdfs scp
+  - streamer - Black-box data transform
+  - job - Workflow definition
+  - flow - Dataflow definition
+  - widgets - Common data transforms
+  - RubyHadoop - Hadoop jobs using streamers
+  - RubyFlume - Flume decorators using streamers
+* Hanuman -- Elegant small graph assembly
+* Swineherd -- Common interface on ugly tools
+  - Turn readable hash into safe commandline (param conv, escaping)
+  - Execute command, capture stdin/stderr
+  - Summarize execution with a broham-able hash
+  - Common modules: Input/output, Java, gnu, configliere
+  - Template
+  - Hadoop, pig, flume
+  - ?? Cp, mv, rm, zip, tar, bz2, gz, ssh, scp
+  - ?? Remotely execute command
 
 <a name="design-rules"></a>
 ### Story
