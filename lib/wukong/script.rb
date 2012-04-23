@@ -8,7 +8,7 @@ require 'wukong/script/hadoop_command'
 Settings.define :mode, :type => Symbol, :default => :mapper, :env_var => 'WUKONG_MODE',  :description => "run the script's workflow: Specify 'hadoop' to use hadoop streaming; 'local' to run your_script.rb --map | sort | your_script.rb --reduce; 'emr' to launch on the amazon cloud; 'mapper' or 'reducer' to run that phase.", :wukong => true
 Settings.define :dry_run,  :description => "echo the command that will be run, but don't run it", :wukong => true
 Settings.define :rm,       :description => "Recursively remove the destination directory. Only used in hadoop mode.", :wukong => true
-Settings.define :script_file, :type => :filename, :description => "script file to execute, or give as first arg"
+Settings.define :script_file, :type => :filename, :description => "script file to execute, or give as first arg", :wukong => true
 
 module Wukong
   # adds ability to execute
@@ -61,7 +61,7 @@ module Wukong
     # In local mode, it's given to the system() call
     #
     def mapper_commandline
-      "#{ruby_interpreter_path} #{this_script_filename} --mapper " + non_wukong_params
+      "#{ruby_interpreter_path} #{this_script_filename} --mode=mapper " + non_wukong_params
     end
 
     #
@@ -70,7 +70,7 @@ module Wukong
     # In local mode, it's given to the system() call
     #
     def reducer_commandline
-      "#{ruby_interpreter_path} #{this_script_filename} --reduce " + non_wukong_params
+      "#{ruby_interpreter_path} #{this_script_filename} --mode=reducer " + non_wukong_params
     end
 
     def job_name
@@ -109,7 +109,7 @@ module Wukong
     # To the panic-stricken: look in .Trash/current/path/to/accidentally_deleted_files
     #
     def maybe_overwrite_output_paths! output_path
-      if (settings[:overwrite] || settings[:rm]) && (run_mode == 'hadoop')
+      if (settings.rm && (settings.mode == :hadoop))
         cmd = %Q{#{hadoop_runner} fs -rmr '#{output_path}'}
         Log.info "Removing output file #{output_path}: #{cmd}"
         puts `#{cmd}`
@@ -121,6 +121,7 @@ module Wukong
     def non_wukong_params
       settings.
         reject{|param, val| settings.definition_of(param, :wukong) }.
+        reject{|param, val| param.to_s =~ /catalog_root/ }.
         map{|param,val| "--#{param}=#{val}" }.
         join(" ")
     end

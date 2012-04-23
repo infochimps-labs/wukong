@@ -40,3 +40,4 @@ pkg
 ## PROJECT::SPECIFIC
 
 *.rdb
+*.log
