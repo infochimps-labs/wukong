@@ -26,4 +26,5 @@ class TwitterUser
     self.protected = (val.to_s == 'true' || val.to_s == '1')
   end
   def protected? ; !! self.protected  ; end
+
 end

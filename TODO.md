@@ -1,4 +1,17 @@
-### Syntax
+
+## Misc
+
+
+* configliere needs context-specific config vars, so I only get information about the `bar` action in the `foo` job when I run
+
+    foo bar --help
+
+* configliere: [ZeroMQ Property Language](http://rfc.zeromq.org/spec:4)
+
+
+* learn about [COSS - Consensus Oriented Specification System](http://www.digistan.org/spec:1/COSS)
+
+## Syntax
 
 
 * source and sink should be late-bound, and not have `run` methods. Instead, something like
@@ -28,7 +41,7 @@
 * registration is lame.
   - make it explicit (getting rid of the `inherited()` magic):
 
-        class Foo < Wukong::Streamer::Base
+        class Foo < Wukong::Streamer
           named :foo
         end
 
@@ -131,3 +144,4 @@ a unix_pipes runner might
 ### Rack compatibility
 
 Once this starts to firm up, we should take a look at what it would take to make an adapter layer to turn any flow into a Rack or Goliath middleware.
+

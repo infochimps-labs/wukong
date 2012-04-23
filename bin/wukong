@@ -7,15 +7,11 @@ Settings.use :commandline
 
 Settings.resolve!
 
-Settings.script_file ||= Settings.rest.pop
+Settings.script_file ||= Settings.rest.shift
 
 case File.basename($0)
 when 'wu-map' then Settings.mode = :mapper
 when 'wu-red' then Settings.mode = :reducer
 end
 
-Wukong.module_eval do
-  from_file(script_file)
-end
-
-Wukong::Script.new(Settings).run
+Wukong.run(Settings.script_file)

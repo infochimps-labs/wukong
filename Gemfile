@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem 'gorillib',       "~> 0.1.8"
 gem 'configliere',    "~> 0.4.8"
-gem 'icss',           :git => 'git://github.com/infochimps-labs/icss.git'
+gem 'icss',           :git => '/Users/flip/ics/backend/icss/.git' # 'git://github.com/infochimps-labs/icss.git'
 
 gem 'multi_json',     "~> 1.1"
 gem 'yajl-ruby',      "~> 1.1", :platform => :mri
@@ -31,6 +31,7 @@ group :test do
   gem  'guard',       "~> 1.0"
   gem  'guard-rspec', "~> 0.6"
   gem  'guard-yard'
+  gem  'guard-process'
 
   if RUBY_PLATFORM.include?('darwin')
     gem 'growl',      "~> 1"
