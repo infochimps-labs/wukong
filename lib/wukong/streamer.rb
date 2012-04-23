@@ -1,10 +1,9 @@
 module Wukong
-  module Streamer
+  class Streamer
+    include Wukong::Stage
 
-    class Base < Wukong::Stage
-      def Base.inherited(subklass)
-        Wukong::Stage.send(:register, :streamer, subklass)
-      end
+    def Streamer.inherited(subklass)
+      Wukong.register_streamer(subklass)
     end
 
     #
@@ -13,7 +12,7 @@ module Wukong
     # actual nil). Use a map when you want to emit exactly one record out per
     # record in.
     #
-    class ProcStreamer < Wukong::Streamer::Base
+    class ProcStreamer < Wukong::Streamer
       # @param [Proc] proc to delegate for call
       # @yield if proc is omitted, block must be supplied
       def initialize(prc=nil, &block)
@@ -25,7 +24,7 @@ module Wukong
     #
     # Evaluates the block and emits the result if non-nil
     #
-    class Map < Wukong::Streamer::Base
+    class Map < Wukong::Streamer
       attr_reader :blk
 
       # @param [Proc] proc to delegate for call
@@ -40,13 +39,13 @@ module Wukong
       end
     end
 
-    class Identity < Wukong::Streamer::Base
+    class Identity < Wukong::Streamer
       def call(record)
         emit(record)
       end
     end
 
-    class Counter < Wukong::Streamer::Base
+    class Counter < Wukong::Streamer
       # Count of records this run
       attr_reader :count
 
@@ -71,7 +70,7 @@ module Wukong
       end
     end
 
-    class GroupArrays < Wukong::Streamer::Base
+    class GroupArrays < Wukong::Streamer
       def beg_group
         @records = []
       end
@@ -100,7 +99,7 @@ module Wukong
       end
     end
 
-    class Group < Wukong::Streamer::Base
+    class Group < Wukong::Streamer
       def start(key, *vals)
         @key = key
         next_stage.tell(:beg_group, @key)

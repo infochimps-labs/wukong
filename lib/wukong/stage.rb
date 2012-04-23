@@ -1,20 +1,35 @@
 module Wukong
-  class Stage
+
+  #
+  # * **field**: defined attributes of this stage
+  #
+  module Stage
+    extend ActiveSupport::Concern
 
     # stage to receive emitted messages
     attr_reader :next_stage
+    # graph this stage belongs to
+    attr_accessor :graph
 
     # invoked on each record in turn
     # override this in your subclass
     def call(record)
     end
 
-    def start
-    end
+    #
+    #
+    #
 
     # passes a record on down the line
     def emit(record, status=nil, headers={})
       next_stage.call(record) if next_stage
+    end
+
+    #
+    # Methods
+    #
+
+    def start
     end
 
     # called at the end of a run
@@ -39,7 +54,7 @@ module Wukong
 
     def into(stage=nil, &block)
       stage ||= block
-      stage = Wukong::Stage.make(:streamer, :map, stage) if stage.is_a?(Proc)
+      stage = self.graph.add_stage(:streamer, :map, stage) if stage.is_a?(Proc)
       @next_stage = stage
     end
 
@@ -62,72 +77,66 @@ module Wukong
     def self.select(pred=nil, &block)
       pred ||= block
       case
-      when Wukong::Stage.has(:filter, pred) then pred
+      when Wukong.streamer_exists?(pred) then pred
       when pred.respond_to?(:match)  then Wukong::Filter::RegexpFilter.new(pred)
       when pred.is_a?(Proc)          then Wukong::Filter::ProcFilter.new(pred)
-      else raise "Can't make a filter from #{pred.inspect}"
+      else raise "Can't create a filter from #{pred.inspect}"
       end
     end
 
     def self.reject(pred=nil, &block)
       pred ||= block
       case
-      when Wukong::Stage.has(:filter, pred) then pred
+      when Wukong.streamer_exists?(pred) then pred
       when pred.respond_to?(:match)  then Wukong::Filter::RegexpRejecter.new(pred)
       when pred.is_a?(Proc)          then Wukong::Filter::ProcRejecter.new(pred)
-      else raise "Can't make a filter from #{pred.inspect}"
+      else raise "Can't create a filter from #{pred.inspect}"
       end
     end
 
-    #
-    # Assembly -- find and identify by handle
-    #
-
-    def self.handle
-      self.to_s.demodulize.underscore.to_sym
+    def to_s
+      "<~" + [
+        self.class.handle,
+        self.instance_variables.reject{|iv| iv.to_s =~ /^@(graph|next_stage|prev_stage)$/ }.map{|iv| "#{iv}=#{self.instance_variable_get(iv)}"  },
+        ].flatten.compact.join(" ") + "~>"
     end
 
-    def self.unregister!(type)
-      Wukong::Stage.send(:unregister, type, self)
+    module ClassMethods
+
+      #
+      # Assembly -- find and identify by handle
+      #
+
+      def handle
+        self.to_s.demodulize.underscore.to_sym
+      end
+
+      def class_defaults
+        field :description, String, :description => 'briefly documents this stage and its purpose'
+        alias_field :desc, :description
+        field :summary,     String, :description => 'a long-form description of the stage'
+        field :next_stage,  Stage, :description => 'stage to send output to'
+        field :prev_stage,  Stage, :description => 'stage to receive input from'
+      end
+
+      # TODO: implement me
+      def field(name, type, options={})
+        attr_accessor(name)
+        options[:summary].gsub(/([\r\n])\s+/, "\\1\n") if options[:summary]
+      end
+
+      def alias_field(name, existing_field_name)
+        alias_method name, existing_field_name
+      end
+
+      def description(desc=nil)
+        @description = desc if desc
+        @description
+      end
+
     end
-
-    class << self
-      # gets class for given streamer
-      def klass_for(type, handle)
-        @@registry[type][handle]
-      end
-
-      # returns a new instance of given type
-      def make(type, klass, *args, &block)
-        klass = klass_for(type, klass) unless klass.is_a?(Class)
-        if not klass
-          raise "Can't make '#{type}' '#{klass}': registry #{all.inspect}"
-        end
-        klass.new(*args, &block)
-      end
-
-      def has(type, obj)
-        all[type].has_value?(obj)
-      end
-
-    protected
-
-      # holds registered classes
-      @@registry = Hash.new{|h, k| h[k] = {} } unless defined?(@@registry)
-
-      def all
-        @@registry
-      end
-
-      # adds given streamer to registry
-      def register(type, klass)
-        @@registry[type][klass.handle] = klass
-      end
-
-      def unregister(type, klass)
-        @@registry[type].delete(klass.handle)
-      end
+    included do
+      self.class_defaults
     end
-
   end
 end

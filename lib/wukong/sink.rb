@@ -1,21 +1,38 @@
 module Wukong
+  class Sink
+    include Wukong::Stage
 
-  module Sink
+    def tell(event, *info)
+    end
 
-    class Base < Wukong::Stage
-      def tell(event, *info)
-      end
+    def Sink.inherited(subklass)
+      Wukong.register_sink(subklass)
+    end
+  end
 
-      def Base.inherited(subklass)
-        Wukong::Stage.send(:register, :sink, subklass)
+  class Sink
+    class NullSink < Wukong::Sink
+      def call(record)
+        true # do nothing
       end
     end
 
-    class IO < Wukong::Sink::Base
-      attr_reader :file
-
+    # Write all lines to given file
+    class IO < Wukong::Sink
       def call(record)
         file.puts(record)
+      end
+    end
+
+    class FileSink < Wukong::Sink::IO
+      attr_reader :filename
+
+      def initialize(filename)
+        @filename = filename
+      end
+
+      def file
+        @file ||= File.open(filename, "w")
       end
     end
 
@@ -29,7 +46,7 @@ module Wukong
       def file() $stderr ; end
     end
 
-    class ArraySink < Wukong::Sink::Base
+    class ArraySink < Wukong::Sink
       attr_reader :records
 
       def initialize

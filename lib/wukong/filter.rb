@@ -1,15 +1,13 @@
 module Wukong
+  class Filter
+    include Wukong::Stage
 
-  module Filter
+    def accept?(*args)
+      true
+    end
 
-    class Base < Wukong::Stage
-      def accept?(*args)
-        true
-      end
-
-      def call(*args)
-        emit(*args) if accept?(*args)
-      end
+    def call(*args)
+      emit(*args) if accept?(*args)
     end
 
     module Invert
@@ -18,19 +16,19 @@ module Wukong
       end
     end
 
-    class All < Wukong::Filter::Base
+    class All < Wukong::Filter
       def accept?(*args)
         true
       end
     end
 
-    class None < Wukong::Filter::Base
+    class None < Wukong::Filter
       def accept?(*args)
         false
       end
     end
 
-    class ProcFilter < Wukong::Filter::Base
+    class ProcFilter < Wukong::Filter
       # @param [Proc] proc to delegate for call
       # @yield if proc is omitted, block must be supplied
       def initialize(prc=nil, &block)
@@ -52,7 +50,7 @@ module Wukong
       end
     end
 
-    class RegexpFilter < Wukong::Filter::Base
+    class RegexpFilter < Wukong::Filter
       attr_reader :re
       def initialize(re)
         @re = re
