@@ -41,3 +41,4 @@ pkg
 
 *.rdb
 *.log
+Gemfile.lock
