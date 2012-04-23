@@ -1,4 +1,4 @@
-zips  = LOAD '/user/flip/twitter/zips/part-m-00000' AS
+locations_matched  = LOAD '/user/flip/twitter/locations_matched' AS
         ( user_id:long, screen_name:chararray, utc_offset:long, time_zone:chararray, location:chararray,
           postal_code:chararray, lng:float, lat:float, us_place:chararray);
 
@@ -24,16 +24,16 @@ us_postal_codes = LOAD 'twitter/US.txt' AS (cc:chararray, postal_code:chararray,
 
 us_postal_codes_b = FOREACH us_postal_codes GENERATE postal_code, lat, lng;
 
-zips_matched_a = JOIN zips BY postal_code, us_postal_codes_b BY postal_code;
+locations_matched_a = JOIN locations_matched BY postal_code LEFT, us_postal_codes_b BY postal_code PARALLEL 20;
 
-zips_matched_b = FOREACH zips_matched_a GENERATE
+locations_matched_b = FOREACH locations_matched_a GENERATE
         user_id, screen_name, utc_offset, time_zone, location,
         us_postal_codes_b::postal_code AS postal_code,
-        us_postal_codes_b::lng         AS lng,
-        us_postal_codes_b::lat         AS lat,
+        (us_postal_codes_b::lng IS NULL ? locations_matched::lng : us_postal_codes_b::lng) AS lng,
+        (us_postal_codes_b::lat IS NULL ? locations_matched::lat : us_postal_codes_b::lat) AS lat,
         us_place
         ;
 
 rmf /user/flip/twitter/zips_matched
 
-STORE zips_matched_b  INTO '/user/flip/twitter/zips_matched';
+STORE locations_matched_b  INTO '/user/flip/twitter/zips_matched';
