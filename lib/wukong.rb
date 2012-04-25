@@ -7,6 +7,7 @@ Log.outputters = Log4r::Outputter.stderr
 
 require 'configliere'
 require 'gorillib'
+require 'pathname'
 require 'gorillib/string/inflections'
 require 'gorillib/string/constantize'
 require 'gorillib/mash'
