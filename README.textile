@@ -269,6 +269,8 @@ Thanks to:
 
 h3. Help!
 
-Send monkeyshines questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code
+Send monkeyshines questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code, to info@infochimps.com or call 855-DATA-FUN
+
+Also, you invited to talk with author Philip (flip) Kromer in a "private consultation":http://www.infochimps.com/free-big-data-consultation?utm_source=git&utm_medium=referral&utm_campaign=consult about your big data project.
 
 <notextile></div></notextile>
