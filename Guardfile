@@ -12,11 +12,11 @@ rspec_opts = '--format progress'
 
 guard 'rspec', :version => 2, :cli => rspec_opts do
   watch(%r{^spec/.+_spec\.rb$})
+  watch(%r{^examples/(\w+)\.rb$})      { |m| "spec/examples/#{m[1]}_spec.rb" }
+  watch(%r{^examples/(\w+)/(.+)\.rb$}) { |m| "spec/examples/#{m[1]}_spec.rb" }
   watch(%r{^lib/(.+)\.rb$})            { |m| "spec/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')         { "spec" }
   watch(/spec\/support\/(.+)\.rb/)     { "spec" }
-  watch(%r{^examples/(\w+)\.rb$})      { |m| "spec/examples/#{m[1]}_spec.rb" }
-  watch(%r{^examples/(\w+)/(.+)\.rb$}) { |m| "spec/examples/#{m[1]}_spec.rb" }
 end
 
 # # This is an example with all options that you can specify for guard-process

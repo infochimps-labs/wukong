@@ -1,18 +1,30 @@
 module Wukong
-  class Streamer
-    include Wukong::Stage
+  class Transform < Hanuman::Stage
 
-    def Streamer.inherited(subklass)
-      Wukong.register_streamer(subklass)
+    # override this in your subclass
+    def process(record)
     end
 
     #
-    # Use a ProcStreamer when you want to decide whether to emit
+    #
+    #
+
+    # passes a record on down the line
+    def emit(record, status=nil, headers={})
+      next_stage.call(record) if next_stage
+    end
+
+    # def Transform.inherited(subklass)
+    #   Wukong.register_streamer(subklass)
+    # end
+
+    #
+    # Use a ProcTransform when you want to decide whether to emit
     # (for example, if you'd like to emit more than one record, or to emit an
     # actual nil). Use a map when you want to emit exactly one record out per
     # record in.
     #
-    class ProcStreamer < Wukong::Streamer
+    class ProcTransform < Wukong::Transform
       # @param [Proc] proc to delegate for call
       # @yield if proc is omitted, block must be supplied
       def initialize(prc=nil, &block)
@@ -24,7 +36,7 @@ module Wukong
     #
     # Evaluates the block and emits the result if non-nil
     #
-    class Map < Wukong::Streamer
+    class Map < Wukong::Transform
       attr_reader :blk
 
       # @param [Proc] proc to delegate for call
@@ -39,13 +51,13 @@ module Wukong
       end
     end
 
-    class Identity < Wukong::Streamer
+    class Identity < Wukong::Transform
       def call(record)
         emit(record)
       end
     end
 
-    class Counter < Wukong::Streamer
+    class Counter < Wukong::Transform
       # Count of records this run
       attr_reader :count
 
@@ -70,7 +82,7 @@ module Wukong
       end
     end
 
-    class GroupArrays < Wukong::Streamer
+    class GroupArrays < Wukong::Transform
       def beg_group
         @records = []
       end
@@ -84,7 +96,7 @@ module Wukong
       end
     end
 
-    class Limit < Wukong::Streamer::Counter
+    class Limit < Wukong::Transform::Counter
       # records seen so far
       attr_reader :max_records
 
@@ -99,7 +111,7 @@ module Wukong
       end
     end
 
-    class Group < Wukong::Streamer
+    class Group < Wukong::Transform
       def start(key, *vals)
         @key = key
         next_stage.tell(:beg_group, @key)

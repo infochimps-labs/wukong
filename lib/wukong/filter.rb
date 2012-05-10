@@ -1,6 +1,5 @@
 module Wukong
-  class Filter
-    include Wukong::Stage
+  class Filter < Wukong::Transform
 
     def accept?(*args)
       true

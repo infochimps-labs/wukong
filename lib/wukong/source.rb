@@ -1,5 +1,5 @@
 module Wukong
-  module Source
+  class Source < Hanuman::Stage
 
     def run
       each do |record|
@@ -12,19 +12,12 @@ module Wukong
       end
     end
 
-    module ClassMethods
-    end
-    def self.included(base)
-      base.send(:include, Wukong::Stage)
-      base.extend(ClassMethods)
-      Wukong.register_source(base)
-      def base.inherited(subklass) Wukong.register_source(subklass) ; end
-    end
-  end
+    # def base.inherited(subklass) Wukong.register_source(subklass) ; end
+    # def self.included(base)
+    #   Wukong.register_source(base)
+    # end
 
-  module Source
-    class Iter
-      include Wukong::Source
+    class Iter < Source
       # the enumerable object to delegate
       attr_reader :obj
 
@@ -37,8 +30,7 @@ module Wukong
       end
     end
 
-    class IO
-      include Wukong::Source
+    class IO < Source
       attr_reader :file
 
       def each(&block)
@@ -49,12 +41,11 @@ module Wukong
     end
 
     # emits each line from $stdin
-    class Stdin < Wukong::Source::IO
+    class Stdin < Source::IO
       def file() $stdin ; end
     end
 
-    class Integers
-      include Wukong::Source
+    class Integers < Source
       def each
         @num = 0
         loop{ yield @num ; @num += 1 }

@@ -1,23 +1,8 @@
 require 'log4r'
 Log = Log4r::Logger.new('wukong')
 Log.outputters = Log4r::Outputter.stderr
-
 # require 'logger'
 # Log = Logger.new(STDERR)
-
-require 'configliere'
-require 'gorillib'
-require 'pathname'
-require 'gorillib/string/inflections'
-require 'gorillib/string/constantize'
-require 'gorillib/mash'
-require 'gorillib/metaprogramming/delegation'
-require 'pathname'
-
-require 'active_support/concern'
-
-begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
-require 'multi_json'
 
 require 'log_buddy'; LogBuddy.init :log_to_stdout => false, :logger => Log
 LogBuddy::Utils.module_eval do
@@ -28,25 +13,44 @@ LogBuddy::Utils.module_eval do
   end
 end
 
-require 'wukong/mixin/from_file'
-require 'wukong/settings'
-require 'wukong/registry'
-require 'wukong/path_helpers'
+begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
+require 'multi_json'
 
-require 'wukong/graph'         # coordinates wukong stages
-require 'wukong/flow'          # graph of data flow stages
-require 'wukong/stage'         # base object for building blocks
+require 'configliere'
+require 'gorillib'
+require 'pathname'
+require 'gorillib/string/simple_inflector'
+require 'gorillib/string/inflections'
+require 'gorillib/string/constantize'
+require 'gorillib/hash/mash'
+require 'gorillib/metaprogramming/delegation'
+require 'gorillib/metaprogramming/concern'
+
+
+require 'gorillib/record'
+require 'gorillib/record/field'
+require 'gorillib/record/defaults'
+require 'gorillib/builder'
+
+# require 'wukong/mixin/from_file'
+# require 'wukong/registry'
+# require 'wukong/path_helpers'
+
+require 'wukong/settings'
+
+# require 'wukong/graph'      # coordinates wukong stages
+# require 'wukong/flow'       # graph of data flow stages
+require 'hanuman/stage'       # base object for building blocks
 
 # Dataflow
 
-require 'wukong/streamer'      # processes records in series
-require 'wukong/filter'        # passes through only records that meet `accept?`
-require 'wukong/source'        # generates raw records from outside
-require 'wukong/sink'          # dispatch raw records to outside
-require 'wukong/formatter'     # converts raw blobs into structured records and vice/versa
+require 'wukong/transform'    # processes records in series
+require 'wukong/filter'     # passes through only records that meet `accept?`
+require 'wukong/source'     # generates raw records from outside
+require 'wukong/sink'       # dispatch raw records to outside
+require 'wukong/stringifier'  # converts raw blobs into structured records and vice/versa
+require 'wukong/mapred'     # the standard stream-sort-group-stream map/reduce flow
 
 # Workflow
 
-require 'wukong/job'           # define a workflow
-
-require 'wukong/map_reduce'    # the standard stream-sort-group-stream map/reduce flow
+# require 'wukong/job'        # define a workflow
