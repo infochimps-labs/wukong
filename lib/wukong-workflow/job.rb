@@ -25,7 +25,7 @@ module Wukong
   end
 
   module Task
-    extend ActiveSupport::Concern
+    extend Gorillib::Concern
     include Wukong::Stage
 
     module ClassMethods

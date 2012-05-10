@@ -1,13 +1,12 @@
 module Wukong
-  class Sink
-    include Wukong::Stage
+  class Sink < Hanuman::Stage
 
     def tell(event, *info)
     end
 
-    def Sink.inherited(subklass)
-      Wukong.register_sink(subklass)
-    end
+    # def Sink.inherited(subklass)
+    #   Wukong.register_sink(subklass)
+    # end
   end
 
   class Sink

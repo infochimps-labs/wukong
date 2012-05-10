@@ -1,13 +1,13 @@
-require 'gorillib/test_helpers/capture_output'
+require 'gorillib/utils/capture_output'
 
 shared_context 'wukong', :helpers => true do
-  let(:mock_record){ mock }
-  let(:mock_streamer){ mock }
+  let(:mock_record){   mock }
+  let(:mock_streamer){ m = mock ; m.stub(:name => 'mock streamer', :attributes => { :a => :b }) ; m }
 
   let(:test_array_sink){ Wukong::Sink::ArraySink.new }
 
   # the base streamer, but emits all records unmodified
-  let(:test_streamer_klass){ Class.new(Wukong::Streamer){ def call(record) emit(record) ; end } }
+  let(:test_streamer_klass){ Class.new(Wukong::Transform){ def call(record) emit(record) ; end } }
 
   let(:test_streamer){ test_streamer_klass.new }
 
@@ -17,20 +17,8 @@ end
 
 module WukongTestHelpers
 
-  def dummy_stdio(stdin_text, &block)
-    new_fhs = [StringIO.new(stdin_text), StringIO.new('', "w"), StringIO.new('', "w") ]
-    old_fhs = [$stdin, $stdout, $stderr]
-    begin
-      $stdin, $stdout, $stderr = new_fhs
-      yield
-    ensure
-      $stdin, $stdout, $stderr = old_fhs
-    end
-    [ new_fhs[1].string, new_fhs[2].string ]
-  end
-
   def example_script_filename(name)
-    Wukong.path_to(:examples, name)
+    Gorillib.path_to(:examples, name)
   end
 
   def example_script_contents(name)

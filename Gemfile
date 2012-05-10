@@ -19,22 +19,22 @@ group :development do
 end
 
 group :docs do
-  gem 'yard',         "~> 0.7"
+  gem 'yard',         ">= 0.7"
   gem 'RedCloth',     "~> 4.2"
   gem 'redcarpet',    "~> 2.1"
 end
 
 group :test do
   gem 'rspec',        "~> 2.8"
-  gem 'simplecov',    "~> 0.6", :platform => :ruby_19
+  gem 'simplecov',    ">= 0.6", :platform => :ruby_19
 
-  gem  'guard',       "~> 1.0"
-  gem  'guard-rspec', "~> 0.6"
+  gem  'guard',       ">= 1.0"
+  gem  'guard-rspec', ">= 0.6"
   gem  'guard-yard'
   gem  'guard-process'
 
   if RUBY_PLATFORM.include?('darwin')
-    gem 'growl',      "~> 1"
-    gem 'rb-fsevent', "~> 0.9"
+    gem 'growl',      ">= 1"
+    gem 'rb-fsevent', ">= 0.9"
   end
 end

@@ -1,18 +1,70 @@
 require File.expand_path('../spec_helper', File.dirname(__FILE__))
 require 'wukong'
 
-# describe :streamers, :helpers => true do
-#   describe Wukong::Streamer do
+# describe :transforms, :helpers => true do
+#   describe Wukong::Transform do
 #     context 'registry' do
-#       it 'contains standard streamers' do
+#       it 'contains standard transforms' do
 #         [:identity, :counter, :limit].each do |handle|
-#           klass = "Wukong::Streamer::#{handle.to_s.camelize}".constantize
-#           Wukong.streamer_klass(handle).should == klass
+#           klass = "Wukong::Transform::#{handle.to_s.camelize}".constantize
+#           Wukong.transform_klass(handle).should == klass
 #         end
 #       end
 #     end
+# 
+# 
+#     context '#select' do
+#       it 'creates a RegexpFilter given a regexp' do
+#         subject.select(test_re)
+#         subject.next_stage.should      be_a(Wukong::Filter::RegexpFilter)
+#         subject.next_stage.re.should   be(test_re)
+#         subject.next_stage.should      be_accept("hello")
+#         subject.next_stage.should_not  be_accept("your mom")
+#       end
+#     
+#       it 'creates a ProcFilter given a proc' do
+#         test_proc = ->(rec){ rec.odd? }
+#         subject.select(test_proc)
+#         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
+#         subject.next_stage.should      be_accept(3)
+#         subject.next_stage.should_not  be_accept(2)
+#       end
+#     
+#       it 'creates a ProcFilter given a proc' do
+#         subject.select{|rec| rec.odd? }
+#         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
+#         subject.next_stage.should      be_accept(3)
+#         subject.next_stage.should_not  be_accept(2)
+#       end
+#     end
+#     
+#     context '#reject' do
+#       it 'creates a RegexpFilter given a regexp' do
+#         subject.reject(test_re)
+#         subject.next_stage.should      be_a(Wukong::Filter::RegexpFilter)
+#         subject.next_stage.re.should   be(test_re)
+#         subject.next_stage.should_not  be_accept("hello")
+#         subject.next_stage.should      be_accept("your mom")
+#       end
+#     
+#       it 'creates a ProcFilter given a proc' do
+#         test_proc = ->(rec){ rec.odd? }
+#         subject.reject(test_proc)
+#         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
+#         subject.next_stage.should_not  be_accept(3)
+#         subject.next_stage.should      be_accept(2)
+#       end
+#     
+#       it 'creates a ProcFilter given a proc' do
+#         subject.reject{|rec| rec.odd? }
+#         subject.next_stage.should      be_a(Wukong::Filter::ProcFilter)
+#         subject.next_stage.should_not  be_accept(3)
+#         subject.next_stage.should      be_accept(2)
+#       end
+#     end
+
 #   end
-#   describe Wukong::Streamer do
+#   describe Wukong::Transform do
 #     context "has stub methods so everything can call super" do
 #       it{ should respond_to(:call) }
 #       it{ should respond_to(:emit) }
@@ -20,14 +72,14 @@ require 'wukong'
 #     end
 #   end
 #
-#   describe Wukong::Streamer::Identity do
+#   describe Wukong::Transform::Identity do
 #     it 'outputs every record, unmodified' do
 #       subject.should_receive(:emit).with(mock_record)
 #       subject.call(mock_record)
 #     end
 #   end
 #
-#   describe Wukong::Streamer::Counter do
+#   describe Wukong::Transform::Counter do
 #     context "when first created" do
 #       its(:count){ should eq(0) }
 #     end
@@ -49,7 +101,7 @@ require 'wukong'
 #     end
 #   end
 #
-#   describe Wukong::Streamer::Map do
+#   describe Wukong::Transform::Map do
 #     let(:test_proc){ ->(rec){ rec.reverse } }
 #     subject{ described_class.new( test_proc ) }
 #
@@ -59,7 +111,7 @@ require 'wukong'
 #     end
 #   end
 #
-#   describe Wukong::Streamer::Group do
+#   describe Wukong::Transform::Group do
 #
 #     # it 'works in an example flow flow' do
 #     #   test_sink = test_array_sink()
