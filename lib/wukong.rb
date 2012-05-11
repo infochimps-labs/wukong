@@ -4,14 +4,14 @@ Log.outputters = Log4r::Outputter.stderr
 # require 'logger'
 # Log = Logger.new(STDERR)
 
-require 'log_buddy'; LogBuddy.init :log_to_stdout => false, :logger => Log
-LogBuddy::Utils.module_eval do
-  def arg_and_blk_debug(arg, blk)
-    result = eval(arg, blk.binding)
-    result_str = obj_to_string(result, :quote_strings => true)
-    LogBuddy.debug(%[#{arg} = #{result_str}])
-  end
-end
+# require 'log_buddy'; LogBuddy.init :log_to_stdout => false, :logger => Log
+# LogBuddy::Utils.module_eval do
+#   def arg_and_blk_debug(arg, blk)
+#     result = eval(arg, blk.binding)
+#     result_str = obj_to_string(result, :quote_strings => true)
+#     LogBuddy.debug(%[#{arg} = #{result_str}])
+#   end
+# end
 
 begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require 'json' end
 require 'multi_json'
