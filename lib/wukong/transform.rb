@@ -10,131 +10,94 @@ module Wukong
     #
 
     # passes a record on down the line
-    def emit(record, status=nil, headers={})
-      next_stage.call(record) if next_stage
+    def emit(record)
+      output.process(record)
     end
 
-    # def Transform.inherited(subklass)
-    #   Wukong.register_streamer(subklass)
-    # end
-
-    #
-    # Use a ProcTransform when you want to decide whether to emit
-    # (for example, if you'd like to emit more than one record, or to emit an
-    # actual nil). Use a map when you want to emit exactly one record out per
-    # record in.
-    #
-    class ProcTransform < Wukong::Transform
-      # @param [Proc] proc to delegate for call
-      # @yield if proc is omitted, block must be supplied
-      def initialize(prc=nil, &block)
-        prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
-        define_singleton_method(:call, prc)
-      end
-    end
-
-    #
-    # Evaluates the block and emits the result if non-nil
-    #
-    class Map < Wukong::Transform
-      attr_reader :blk
-
-      # @param [Proc] proc to delegate for call
-      # @yield if proc is omitted, block must be supplied
-      def initialize(blk=nil, &block)
-        @blk = blk || block or raise "Please supply a proc or a block to #{self.class}.new"
-      end
-
-      def call(*args)
-        result = blk.call(*args)
-        emit result unless result.nil?
-      end
-    end
-
-    class Identity < Wukong::Transform
-      def call(record)
-        emit(record)
-      end
-    end
-
-    class Counter < Wukong::Transform
-      # Count of records this run
-      attr_reader :count
-
-      def initialize
-        reset!
-      end
-
-      def reset!
-        @count = 0
-      end
-
-      def beg_group(*args)
-        reset!
-      end
-
-      def end_group(key)
-        emit( [key, count] )
-      end
-
-      def call(record)
-        @count += 1
-      end
-    end
-
-    class GroupArrays < Wukong::Transform
-      def beg_group
-        @records = []
-      end
-
-      def end_group(key)
-        emit(key, @records)
-      end
-
-      def call(record)
-        @records << record
-      end
-    end
-
-    class Limit < Wukong::Transform::Counter
-      # records seen so far
-      attr_reader :max_records
-
-      def initialize(max_records)
-        @max_records = max_records
-        super()
-      end
-
-      def call(record)
-        super(record)
-        emit(record) unless (count > max_records)
-      end
-    end
-
-    class Group < Wukong::Transform
-      def start(key, *vals)
-        @key = key
-        next_stage.tell(:beg_group, @key)
-      end
-
-      def end_group
-        next_stage.tell(:end_group, @key)
-      end
-
-      def call( (key, *vals) )
-        start(key, *vals) unless defined?(@key)
-        if key != @key
-          end_group
-          start(key, *vals)
-        end
-        emit( [key, *vals] )
-      end
-
-      def finally
-        end_group
-        super()
-      end
+    def report
+      self.attributes
     end
 
   end
+end
+
+module Wukong::Transform
+
+  class Identity < Wukong::Transform
+    def process(record)
+      emit(record)
+    end
+  end
+
+  class Null < Wukong::Transform
+    # accepts records, emits none
+    def process(record)
+      # ze goggles... zey do nussing!
+    end
+  end
+
+  #
+  # Project calls a block on every record, and depends on the block to
+  # call emit. You can emit one record, many records, or no records, of any
+  # value. If you will always emit exactly one record out per record in, you may
+  # prefer Wukong::Transform::Map.
+  #
+  # @example regenerate a wordbag with counts matching the original
+  #   project{|rec| rec.count.times{ emit(rec.word) } }
+  #
+  class Project < Wukong::Transform
+    # @param [Proc] proc used for body of process method
+    # @yield ... or supply it as a &block arg.
+    def initialize(prc=nil, &block)
+      prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
+      define_singleton_method(:process, prc)
+    end
+  end
+
+  #
+  # Evaluates the block and emits the result if non-nil
+  #
+  # @example turn a record into a tuple
+  #   map{|rec| rec.attributes.values }
+  #
+  # @example pass along first matching term, drop on the floor otherwise
+  #   map{|str| str[/\b(love|hate|happy|sad)\b/] }
+  #
+  class Map < Wukong::Transform
+    attr_reader :blk
+
+    # @param [Proc] proc to delegate for call
+    # @yield if proc is omitted, block must be supplied
+    def initialize(blk=nil, &block)
+      @blk = blk || block or raise "Please supply a proc or a block to #{self.class}.new"
+    end
+
+    def process(*args)
+      result = blk.call(*args)
+      emit result unless result.nil?
+    end
+  end
+
+  class Limit < Wukong::Transform
+    field :max_records, Integer, :doc => 'maximum records to allow'
+    field :count,       Integer, :doc => 'count of records this run'
+
+    def initialize(max_records)
+      super :max_records => max_records
+    end
+
+    def setup
+      self.count = 0
+    end
+
+    def process(record)
+      super(record)
+      if count > max_records
+        flow.tell(:halt)
+      else
+        emit(record)
+      end
+    end
+  end
+
 end

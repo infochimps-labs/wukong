@@ -1,29 +1,12 @@
 module Wukong
   class Source < Hanuman::Stage
 
-    def run
-      each do |record|
-        begin
-          emit(record)
-        rescue StandardError => e
-          warn "#{e}\t#{e.backtrace.first}\t#{record}"
-          next
-        end
-      end
-    end
-
-    # def base.inherited(subklass) Wukong.register_source(subklass) ; end
-    # def self.included(base)
-    #   Wukong.register_source(base)
-    # end
-
     class Iter < Source
       # the enumerable object to delegate
       attr_reader :obj
 
       def initialize(obj)
         @obj = obj
-        super()
       end
       def each(&block)
         obj.each(&block)
@@ -38,17 +21,42 @@ module Wukong
           yield line.chomp
         end
       end
+
+      def stop
+        file.close if file
+      end
     end
 
     # emits each line from $stdin
-    class Stdin < Source::IO
-      def file() $stdin ; end
+    class Stdin < Wukong::Source::IO
+      def setup
+        @file = $stdin
+      end
     end
 
-    class Integers < Source
+    class FileSource < Wukong::Source::IO
+      attr_reader :filename
+      def initialize(filename)
+        @filename = filename
+      end
+
+      def setup
+        @file = File.open(filename)
+      end
+    end
+
+    class Integers < Wukong::Source
+      attr_reader :num
+      field :min,   Integer, :default => 0
+      field :max,   Integer, :default => nil
+      field :step, Integer, :default => 1
+
       def each
-        @num = 0
-        loop{ yield @num ; @num += 1 }
+        loop do
+          break if max.present? && (num >= max)
+          yield @num
+          @num += @step
+        end
       end
     end
   end

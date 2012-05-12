@@ -13,9 +13,11 @@ module Hanuman
     #
 
     def setup
+      true
     end
 
     def stop
+      true
     end
 
     #
@@ -30,11 +32,13 @@ module Hanuman
       output(stage.name, stage.attributes)
     end
 
-    # def to_s
-    #   "<~" + [
-    #     self.class.handle,
-    #     self.instance_variables.reject{|iv| iv.to_s =~ /^@(graph|next_stage|prev_stage)$/ }.map{|iv| "#{iv}=#{self.instance_variable_get(iv)}"  },
-    #     ].flatten.compact.join(" ") + "~>"
-    # end
+    def notify(msg)
+      true
+    end
+
+    def report
+      {}
+    end
+
   end
 end
