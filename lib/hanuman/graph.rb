@@ -1,8 +1,6 @@
 module Hanuman
 
   class Graph < Stage
-    include Gorillib::FancyBuilder
-
     # a retrievable name for this graph
     field      :name,   Symbol
     # the sequence of stages on this graph
@@ -11,6 +9,22 @@ module Hanuman
     def tree(options={})
       super.merge( :stages => stages.to_a.map{|stage| stage.tree(options) } )
     end
+
+    def graph(name, &block)
+      stage(name, {}, :factory => Hanuman::Graph, &block)
+    end
+
+    def action(name, &block)
+      stage(name, {}, :factory => Hanuman::Action, &block)
+    end
+
+    def resource(name, &block)
+      stage(name, {}, :factory => Hanuman::Resource, &block)
+    end
+
+    # def input(*args)
+    #   super.tap{|st| stage(st.name, st) }
+    # end
 
     # #
     # # @example

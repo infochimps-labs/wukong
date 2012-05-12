@@ -24,14 +24,21 @@ module Hanuman
     #
 
     def <<(stage)
+      owner.stage(stage.name, stage.attributes) if owner
       input(stage.name, stage.attributes)
     end
 
     def >(stage)
+      owner.stage(stage.name, stage.attributes) if owner
       output(stage.name, stage.attributes)
     end
 
-
+    def output(stage)
+      obj = super
+      owner.stages << obj if owner.respond_to?(:stages)
+      p [:output, self, obj, self.try(:stages)]
+      obj
+    end
 
     def notify(msg)
       true
@@ -47,5 +54,11 @@ module Hanuman
       tree(options)
     end
 
+  end
+
+  class Action < Stage
+  end
+
+  class Resource < Stage
   end
 end
