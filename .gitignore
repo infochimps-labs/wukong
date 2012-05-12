@@ -42,3 +42,4 @@ pkg
 *.rdb
 *.log
 Gemfile.lock
+tmp/*
