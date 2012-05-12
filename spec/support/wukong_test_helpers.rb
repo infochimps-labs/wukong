@@ -2,14 +2,14 @@ require 'gorillib/utils/capture_output'
 
 shared_context 'wukong', :helpers => true do
   let(:mock_record){   mock }
-  let(:mock_streamer){ m = mock ; m.stub(:name => 'mock streamer', :attributes => { :a => :b }) ; m }
+  let(:mock_transform){ m = mock ; m.stub(:name => 'mock transform', :attributes => { :a => :b }) ; m }
 
   let(:test_array_sink){ Wukong::Sink::ArraySink.new }
 
-  # the base streamer, but emits all records unmodified
-  let(:test_streamer_klass){ Class.new(Wukong::Transform){ def call(record) emit(record) ; end } }
+  # the base transform, but emits all records unmodified
+  let(:test_transform_klass){ Class.new(Wukong::Widget::Transform){ def call(record) emit(record) ; end } }
 
-  let(:test_streamer){ test_streamer_klass.new }
+  let(:test_transform){ test_transform_klass.new }
 
   let(:test_filter){ Wukong.flow.select{|rec| rec =~ /^h/ } }
 end

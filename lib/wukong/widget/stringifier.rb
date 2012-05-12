@@ -1,31 +1,35 @@
 module Wukong
-  class Stringifier < Wukong::Transform
+  module Widget
 
+    class Stringifier < Transform
+    end
+    
+    
     # def Stringifier.inherited(subklass)
     #   Wukong.register_formatter(subklass)
     # end
 
     require 'multi_json'
-    class ToJson < Wukong::Stringifier
-      def call(record)
+    class ToJson < Stringifier
+      def process(record)
         emit MultiJson.encode(record)
       end
     end
 
-    class FromJson < Wukong::Stringifier
-      def call(record)
+    class FromJson < Stringifier
+      def process(record)
         emit MultiJson.decode(record)
       end
     end
 
-    class ToTsv < Wukong::Stringifier
-      def call(record)
+    class ToTsv < Stringifier
+      def process(record)
         emit record.join("\t")
       end
     end
 
-    class FromTsv < Wukong::Stringifier
-      def call(record)
+    class FromTsv < Stringifier
+      def process(record)
         emit record.chomp.split(/\t/)
       end
     end

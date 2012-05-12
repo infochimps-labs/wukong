@@ -2,11 +2,10 @@ module Hanuman
   class Stage
     include Gorillib::FancyBuilder
 
-    field      :doc,      String, :doc => 'briefly documents this stage and its purpose'
-    field      :summary,  String, :doc => 'a long-form description of the stage'
     collection :inputs,   Hanuman::Stage
     collection :outputs,  Hanuman::Stage
     belongs_to :owner,    Hanuman::Stage
+    field      :doc,      String, :doc => 'briefly documents this stage and its purpose'
 
     #
     # Methods
@@ -32,12 +31,20 @@ module Hanuman
       output(stage.name, stage.attributes)
     end
 
+
+
     def notify(msg)
       true
     end
 
-    def report
-      {}
+    def tree(options={})
+      { :name => name,
+        :inputs => inputs.to_a.map{|input| input.name },
+      }
+    end
+
+    def report(options={})
+      tree(options)
     end
 
   end

@@ -6,7 +6,7 @@ module Hanuman
 
   class Flow
     module ToGraphviz
-      def to_graph(builder, options={})
+      def to_graphviz(builder, options={})
       end
     end
     include ToGraphviz
