@@ -1,24 +1,16 @@
 module Wukong
   class Sink < Hanuman::Stage
 
-    def tell(event, *info)
-    end
 
-    # def Sink.inherited(subklass)
-    #   Wukong.register_sink(subklass)
-    # end
-  end
-
-  class Sink
     class NullSink < Wukong::Sink
-      def call(record)
+      def process(record)
         true # do nothing
       end
     end
 
     # Write all lines to given file
     class IO < Wukong::Sink
-      def call(record)
+      def process(record)
         file.puts(record)
       end
     end
@@ -30,8 +22,12 @@ module Wukong
         @filename = filename
       end
 
-      def file
-        @file ||= File.open(filename, "w")
+      def setup
+        @file = File.open(filename, "w")
+      end
+
+      def stop
+        @file.close if @file
       end
     end
 
@@ -48,18 +44,13 @@ module Wukong
     class ArraySink < Wukong::Sink
       attr_reader :records
 
-      def initialize
+      def setup
         @records = []
-        super()
       end
 
-      def call(record)
+      def process(record)
         self.records << record
       end
-
-      def tell(event, *info)
-      end
-
     end
   end
 end

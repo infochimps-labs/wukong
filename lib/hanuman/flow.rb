@@ -1,4 +1,5 @@
 module Wukong
+
   @@flows = {} unless defined?(@@flows)
 
   def self.flow(handle=:global, &block)
