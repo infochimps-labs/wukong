@@ -44,11 +44,11 @@ require 'hanuman/stage'       # base object for building blocks
 
 # Dataflow
 
-require 'wukong/transform'    # processes records in series
-require 'wukong/filter'     # passes through only records that meet `accept?`
-require 'wukong/source'     # generates raw records from outside
-require 'wukong/sink'       # dispatch raw records to outside
-require 'wukong/stringifier'  # converts raw blobs into structured records and vice/versa
+require 'wukong/widget/transform'    # processes records in series
+require 'wukong/widget/filter'     # passes through only records that meet `accept?`
+require 'wukong/widget/source'     # generates raw records from outside
+require 'wukong/widget/sink'       # dispatch raw records to outside
+require 'wukong/widget/stringifier'  # converts raw blobs into structured records and vice/versa
 require 'wukong/mapred'     # the standard stream-sort-group-stream map/reduce flow
 
 # Workflow

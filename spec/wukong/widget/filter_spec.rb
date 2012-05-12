@@ -1,9 +1,9 @@
-require File.expand_path('../spec_helper', File.dirname(__FILE__))
+require File.expand_path('../../spec_helper', File.dirname(__FILE__))
 require 'wukong'
 
 describe :filters, :helpers => true do
 
-  describe Wukong::Filter::ProcFilter do
+  describe Wukong::Widget::ProcFilter do
     let(:test_proc){ ->(rec){ rec =~ /^h/ } }
     subject{ described_class.new(test_proc) }
 
