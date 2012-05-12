@@ -11,6 +11,8 @@ gem   'log_buddy'
 gem   'addressable'
 gem   'htmlentities'
 
+gem   'graph'
+
 group :development do
   gem 'bundler',     "~> 1"
   gem 'jeweler',     "~> 1.6"

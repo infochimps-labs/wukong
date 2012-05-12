@@ -1,4 +1,3 @@
-
 Wukong.dataflow(:friend_graph) do
   files(:scrapables) do
     directory   'scrapables/ids-%{t:ymd}.tsv'
@@ -14,9 +13,7 @@ Wukong.dataflow(:friend_graph) do
   end
 
   tail(:scrapables) > requester > decorator('tw_parse.rb') > hbase_record_sink
-
 end
-
 
 
 # Wukong.dataflow(:geo_decorator) do

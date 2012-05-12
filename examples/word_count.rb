@@ -4,7 +4,7 @@ require 'wukong'
 
 # cat data/jabberwocky.txt | bin/wu-map examples/word_count.rb | sort  | bin/wu-red examples/word_count.rb  | sort -nk2 | tail
 
-Wukong.mapred do
+Wukong.flow do
 
   chain(:mapper) do
     cleaner  = map{|line|     line.downcase.gsub(/\W+/, ' ').strip }
