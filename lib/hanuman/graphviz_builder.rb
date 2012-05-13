@@ -284,7 +284,7 @@ module Hanuman
     # Shortcut method to set the graph's label. Usually used with subgraphs.
 
     def label name
-      graph_attribs << %Q{label = "#{name.gsub(/\n/, '\n')}"} # ""
+      graph_attribs << %Q{label = "#{name.to_s.gsub(/\n/, '\n')}"} # ""
     end
 
     ##
@@ -412,6 +412,7 @@ module Hanuman
 
       def << thing
         thing.attributes << self
+        thing.attributes.uniq!
         self
       end
 
@@ -463,6 +464,15 @@ module Hanuman
         %Q{"#{str}"}
       end
 
+      def pad_with_attributes(text)
+        width = 40 - (2 * graph.depth)
+        if self.attributes? then
+          "%-#{width}s [ %s ]" % [text, attributes.join(',')]
+        else
+          text
+        end
+      end
+
       def initialize_copy other # :nodoc:
         super
         self.attributes = other.attributes.dup
@@ -473,7 +483,7 @@ module Hanuman
 
       def label name
         attributes.reject! { |s| s =~ /^label =/ }
-        attributes << "label = \"#{name.gsub(/\n/, '\n')}\""
+        attributes << "label = \"#{name.to_s.gsub(/\n/, '\n')}\""
         self
       end
 
@@ -505,12 +515,8 @@ module Hanuman
       # Returns the edge in dot syntax.
 
       def to_s
-        fromto = "%-10s -> %s" % [quote(from.name), quote(to.name)]
-        if self.attributes? then
-          "%-24s [ %-20s ]" % [fromto, attributes.join(',')]
-        else
-          fromto
-        end
+        fromto = "%-18s -> %s" % [quote(from.name), quote(to.name)]
+        pad_with_attributes(fromto)
       end
     end
 
@@ -561,11 +567,7 @@ module Hanuman
       # Returns the node in dot syntax.
 
       def to_s
-        str = "%-24s" % quote(name)
-        if self.attributes? then
-          str << ( " [ %-20s ]" % [attributes.join(',')] )
-        end
-        str
+        pad_with_attributes(quote(name))
       end
     end
   end

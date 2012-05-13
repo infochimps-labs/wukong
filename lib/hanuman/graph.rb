@@ -6,21 +6,36 @@ module Hanuman
     # the sequence of stages on this graph
     collection :stages, Hanuman::Stage
 
+    # def owner(*args)
+    #   super || self
+    # end
+
     def tree(options={})
       super.merge( :stages => stages.to_a.map{|stage| stage.tree(options) } )
     end
 
     def graph(name, &block)
-      stage(name, {}, :factory => Hanuman::Graph, &block)
+      stage(name, :_type => Hanuman::Graph, &block)
     end
 
     def action(name, &block)
-      stage(name, {}, :factory => Hanuman::Action, &block)
+      stage(name, :_type => Hanuman::Action, &block)
     end
 
     def resource(name, &block)
-      stage(name, {}, :factory => Hanuman::Resource, &block)
+      stage(name, :_type => Hanuman::Resource, &block)
     end
+
+
+    # def input(input_name=nil)
+    #   input_name ||= name
+    #   super(input_name, (owner||self).resource(input_name))
+    # end
+
+    # def output(output_name=nil)
+    #   output_name ||= name
+    #   super(output_name, (owner||self).resource(output_name))
+    # end
 
     # def input(*args)
     #   super.tap{|st| stage(st.name, st) }

@@ -13,6 +13,7 @@ describe :graphviz, :helpers => true do
     gv = example_graph.to_graphviz
 
     p example_graph.stages
+    p example_graph.stage(:crust).stages
 
     gv.save(Gorillib.path_to(:tmp, gv.name.to_s), 'png')
     puts File.read(Gorillib.path_to(:tmp, "#{gv.name}.dot"))
@@ -32,6 +33,6 @@ describe :graphviz, :helpers => true do
       gv.green << gv.node("mid") << gv.edge("mid", "btm")
       gv.blue  << gv.node("btm") << gv.edge("top", "btm")
     end
-    example_dot.to_s.should == "digraph \"three_shapes\" {\n  \"top\"                    [ shape = square,color = red ];\n  \"mid\"                    [ shape = triangle,color = green ];\n  \"btm\"                    [ color = blue         ];\n  \"top\"      -> \"mid\"      [ color = red          ];\n  \"top\"      -> \"btm\"      [ color = blue         ];\n  \"btm\"      -> \"top\";\n  \"mid\"      -> \"btm\"      [ color = green        ];\n}"
+    example_dot.to_s.should == "digraph \"three_shapes\" {\n  \"top\"                                    [ shape = square,color = red ];\n  \"mid\"                                    [ shape = triangle,color = green ];\n  \"btm\"                                    [ color = blue ];\n  \"top\"              -> \"mid\"              [ color = red ];\n  \"top\"              -> \"btm\"              [ color = blue ];\n  \"btm\"              -> \"top\";\n  \"mid\"              -> \"btm\"              [ color = green ];\n}"
   end
 end
