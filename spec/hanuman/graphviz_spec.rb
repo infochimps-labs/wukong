@@ -13,7 +13,6 @@ describe :graphviz, :helpers => true do
     gv = example_graph.to_graphviz
 
     p example_graph.stages
-    p example_graph.stage(:crust).stages
 
     gv.save(Gorillib.path_to(:tmp, gv.name.to_s), 'png')
     puts File.read(Gorillib.path_to(:tmp, "#{gv.name}.dot"))

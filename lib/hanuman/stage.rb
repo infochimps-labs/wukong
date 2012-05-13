@@ -4,7 +4,7 @@ module Hanuman
 
     field      :name,     Symbol
     collection :inputs,   Hanuman::Stage
-    member     :output,   Hanuman::Stage
+    member     :output,   Hanuman::Stage, :default => ->(){ Stage.new("out") }
     member     :owner,    Hanuman::Stage
     field      :doc,      String, :doc => 'briefly documents this stage and its purpose'
 
@@ -25,18 +25,22 @@ module Hanuman
     #
 
     def input(stage_name, stage=nil)
-      p [stage_name, owner, stage, owner && owner.stage(stage_name)]
       stage ||= (owner||self).stage(stage_name)
-      super(stage_name, stage)
+      obj = super(stage_name, stage)
+      obj.output(self) if obj
+      obj
     end
 
     def <<(stage)
       input(stage.name, stage)
+      self
     end
 
     def >(stage)
       # owner.stage(stage.name, stage) if owner
-      output(stage.name, stage)
+      st = output(stage)
+      p ['out', self, stage, st]
+      st
     end
 
     def fullname
@@ -48,7 +52,7 @@ module Hanuman
     end
 
     def inspect(detailed=true)
-      str = "#<%-18s %-15s" % [self.class.name, fullname]
+      str = "#<%-18s %-18s" % [self.class.name, fullname]
       attr_names = self.class.field_names - [:name]
       if detailed && attr_names.present?
         str << " " << attr_names.map{|attr| "#{attr}=#{inspect_attr(attr)}" }.join(", ")
@@ -69,6 +73,9 @@ module Hanuman
   end
 
   class Action < Stage
+    def output(*args)
+      super || owner.stage(:"#{self.name}_out")
+    end
   end
 
   class Resource < Stage
