@@ -16,7 +16,7 @@ describe :stages, :helpers => true do
     # end
 
     it "aliases 'output' as '>'" do
-      subject.should_receive(:output).with(mock_transform.name, mock_transform)
+      subject.should_receive(:output).with(mock_transform)
       subject > mock_transform
     end
 

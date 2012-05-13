@@ -1,25 +1,35 @@
+require 'gorillib/string/human'
 module Hanuman
 
   class Stage
     class_attribute :draw_shape
-    self.draw_shape = :circle
+    self.draw_shape = :record
 
     def graphviz_node(gv)
-      gv.shape(draw_shape) << gv.node(fullname, name)
+      str = [
+        '{',
+        '{',
+        "<in>",
+        inputs.to_a.map{|i| i.name[0..0] }.join('|'),
+         '}',
+        '|',
+        name.to_s.gsub(/[_\.]+/, "\n"),  '|',
+        "<out>", '.',
+        '}'
+      ].join
+      nn = gv.node(fullname, str)
+      # nn = gv.node(fullname, name.to_s.gsub(/[_\.]+/, "\n"))
+      # gv.shape(draw_shape) << nn
+      gv.shape(:Mrecord) << nn
+      # nn.attributes << "fixedsize=true" << "width=1.0"
+      nn
     end
 
     def to_graphviz(gv, options={})
       graphviz_node(gv) unless is_a?(Graph)
-
       inputs.to_a.each do |input|
-        input.to_graphviz(gv, options)
         gv.edge(input.fullname, fullname)
       end
-
-      # outputs.to_a.each do |output|
-      #   output.to_graphviz(gv, options)
-      #   gv.edge(fullname, output.fullname)
-      # end
     end
   end
 
@@ -28,16 +38,37 @@ module Hanuman
   end
 
   class Graph < Stage
-    self.draw_shape = :hexagon
+    self.draw_shape = :record
+
+    def graphviz_node(gv)
+      str = [
+        '{',
+        '{',
+        "<in>",
+        inputs.to_a.map{|i| i.name[0..0] }.join('|'),
+        '}',
+        '|',
+        name.to_s.gsub(/[_\.]+/, "\n"),
+        '}'
+      ].join
+      nn = gv.node("#{fullname}.inputs", str)
+      # nn = gv.node(fullname, name.to_s.gsub(/[_\.]+/, "\n"))
+      # gv.shape(draw_shape) << nn
+      gv.shape(:Mrecord) << nn
+      # nn.attributes << "fixedsize=true" << "width=1.0"
+      nn
+    end
+
     def to_graphviz(gv=nil, options={})
       gv ||= Hanuman::GraphvizBuilder.new(fullname) do |gv|
-        gv.orient :TB
+        gv.orient :TD
         gv.engine :dot
       end
 
       gv.configurate do |gv|
-        ( output || stages.to_a.last ).graphviz_node(gv)
+        graphviz_node(gv)
         gv.cluster(fullname) do |gv_cl|
+          gv_cl.label name
           stages.to_a.each do |stage|
             p [self.fullname, stage.fullname, stage, __FILE__]
             stage.to_graphviz(gv_cl, options)

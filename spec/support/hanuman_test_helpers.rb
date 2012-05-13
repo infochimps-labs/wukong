@@ -14,8 +14,12 @@ shared_context 'hanuman', :helpers => true do
         action(:split).input(:dough) # .output(:ball)
 
         resource(:ball1).input(:split)
+        resource(:ball2).input(:split)
 
-        output( resource(:ball1) )
+        action(:flatten) << resource(:ball1) << resource(:rolling_pin) << resource(:cutting_board)
+        resource(:crust_base) << action(:flatten)
+
+        output( resource(:crust_base) )
       end
 
       # action(:assemble).input(:crust)
@@ -31,10 +35,20 @@ shared_context 'hanuman', :helpers => true do
       # #   action(:add).input(:cherries)
       # # end
       # #
-      # # action(:make_pie).input(:crust)
-      # # action(:make_pie).input(:filling)
-      # # action(:bake_pie).input(:make_pie)
+      action(:make_pie) << graph(:crust).output
+      action(:bake_pie).input(:make_pie_out, action(:make_pie).output )
 
     end
+  end
+
+
+  let :example_graph_a do
+    Hanuman::Graph.new(:name => :scraper) do
+      action(:listener) << resource(:scrape_requests) << resource(:more_requests)
+      action(:parser).input(:listener)
+      p action(:parser).output
+      action(:models).input(:parser)
+    end
+
   end
 end
