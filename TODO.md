@@ -1,3 +1,40 @@
+* Driving OR iterated
+
+  
+  
+* Runner? Executor?
+  - hooks up source to flow,
+  - if iterated source, drives it, otherwise sits in the flow
+
+
+* these set the contract for the inbound resources
+
+### slots
+
+Typical case: one input, `:input`, one output `:output`
+
+* there are as many resources as
+  - the total number of action stage outputs
+  - the concrete input resources
+* The number of rsrc->action edges is at most the total number of input slots
+  - (you cannot wire multiple resources to the same input slot)
+
+
+1. action stage B wires up to an action stage A (which really means "the full set of A's outputs")
+2. I wire action A's output as production resource X
+3. 
+
+4. How do I address other stages?
+   - `mapper.cat` a great name for action stage `cat` inside chain `mapper`
+   - `mapper.cat-output`? `mapper.cat_output`?
+
+I think subgraphs own their contents
+
+
+
+
+__________________________________________________________________________
+
 
 
 * [Ruby-Graphviz](https://github.com/glejeune/Ruby-Graphviz.git) Ruby interface to the GraphViz graphing tool
