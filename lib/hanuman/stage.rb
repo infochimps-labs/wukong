@@ -4,7 +4,7 @@ module Hanuman
 
     field      :name,     Symbol
     collection :inputs,   Hanuman::Stage
-    member     :output,   Hanuman::Stage, :default => ->(){ Stage.new("out") }
+    collection :outputs,  Hanuman::Stage
     member     :owner,    Hanuman::Stage
     field      :doc,      String, :doc => 'briefly documents this stage and its purpose'
 

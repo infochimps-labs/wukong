@@ -31,15 +31,17 @@ module Wukong
     end
 
     #
-    # Project calls a block on every record, and depends on the block to
-    # call emit. You can emit one record, many records, or no records, of any
-    # value. If you will always emit exactly one record out per record in, you may
-    # prefer Wukong::Widget::Map.
+    # Foreach calls a block on every record, and depends on the block to call
+    # emit. You can emit one record, many records, or no records, and with any
+    # contents. If you'll always emit exactly one record out per record in,
+    # you may prefer Wukong::Widget::Map.
     #
     # @example regenerate a wordbag with counts matching the original
-    #   project{|rec| rec.count.times{ emit(rec.word) } }
+    #   foreach{|rec| rec.count.times{ emit(rec.word) } }
     #
-    class Project < Transform
+    # @see Project
+    # @see Map
+    class Foreach < Transform
       # @param [Proc] proc used for body of process method
       # @yield ... or supply it as a &block arg.
       def initialize(prc=nil, &block)
@@ -69,6 +71,17 @@ module Wukong
       def process(*args)
         result = blk.call(*args)
         emit result unless result.nil?
+      end
+    end
+
+    #
+    # Flatten emits each item in an enumerable as its own record
+    #
+    # @example turn a document into all its words
+    #   input > map{|line| line.split(/\W+/) } > flatten > output
+    class Flatten < Transform
+      def process(iter)
+        iter.each{|*args| emit(*args) }
       end
     end
 
