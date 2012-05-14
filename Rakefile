@@ -29,50 +29,22 @@ DESC
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+  puts 'Jeweler (or a dependency) not available. Install it with: gem install jeweler'
 end
 
 begin
-  require 'spec/rake/spectask'
-  Spec::Rake::SpecTask.new(:spec) do |spec|
-    spec.libs << 'lib' << 'spec'
-    spec.spec_files = FileList['spec/**/*_spec.rb']
-  end
-  Spec::Rake::SpecTask.new(:rcov) do |spec|
-    spec.libs << 'lib' << 'spec'
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec) do |spec|
     spec.pattern = 'spec/**/*_spec.rb'
-    spec.rcov = true
   end
-  task :spec => :check_dependencies
+  RSpec::Core::RakeTask.new(:rcov) do |spec|
+    spec.pattern = 'spec/**/*_spec.rb'
+    spec.rcov    = true
+  end
   task :default => :spec
 rescue LoadError
   task :spec do
-    abort "rspec is not available. In order to run rspec, you must: sudo gem install rspec"
-  end
-end
-
-begin
-  require 'reek/rake_task'
-  Reek::RakeTask.new do |t|
-    t.fail_on_error = true
-    t.verbose = false
-    t.source_files = ['lib/**/*.rb', 'examples/**/*.rb', 'utils/**/*.rb']
-  end
-rescue LoadError
-  task :reek do
-    abort "Reek is not available. In order to run reek, you must: sudo gem install reek"
-  end
-end
-
-begin
-  require 'roodi'
-  require 'roodi_task'
-  RoodiTask.new do |t|
-    t.verbose = false
-  end
-rescue LoadError
-  task :roodi do
-    abort "Roodi is not available. In order to run roodi, you must: sudo gem install roodi"
+    abort 'rspec is not available. In order to run rspec, you must: sudo gem install rspec'
   end
 end
 
