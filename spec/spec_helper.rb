@@ -1,3 +1,6 @@
+require 'bundler/setup'
+Bundler.require(:default, :test)
+
 require 'gorillib/pathname/template'
 Gorillib.register_path(:wukong_root, File.expand_path('..', File.dirname(__FILE__)))
 Gorillib.register_path(:examples,    [:wukong_root, 'examples'])
