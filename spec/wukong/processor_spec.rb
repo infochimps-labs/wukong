@@ -2,11 +2,11 @@ require File.expand_path('../../spec_helper', File.dirname(__FILE__))
 require 'wukong'
 
 # describe :transforms, :helpers => true do
-#   describe Wukong::Transform do
+#   describe Wukong::Processor do
 #     context 'registry' do
 #       it 'contains standard transforms' do
 #         [:identity, :counter, :limit].each do |handle|
-#           klass = "Wukong::Transform::#{handle.to_s.camelize}".constantize
+#           klass = "Wukong::Processor::#{handle.to_s.camelize}".constantize
 #           Wukong.transform_klass(handle).should == klass
 #         end
 #       end
@@ -64,7 +64,7 @@ require 'wukong'
 #     end
 
 #   end
-#   describe Wukong::Transform do
+#   describe Wukong::Processor do
 #     context "has stub methods so everything can call super" do
 #       it{ should respond_to(:call) }
 #       it{ should respond_to(:emit) }
@@ -72,14 +72,14 @@ require 'wukong'
 #     end
 #   end
 #
-#   describe Wukong::Transform::Identity do
+#   describe Wukong::Processor::Identity do
 #     it 'outputs every record, unmodified' do
 #       subject.should_receive(:emit).with(mock_record)
 #       subject.call(mock_record)
 #     end
 #   end
 #
-#   describe Wukong::Transform::Counter do
+#   describe Wukong::Processor::Counter do
 #     context "when first created" do
 #       its(:count){ should eq(0) }
 #     end
@@ -101,7 +101,7 @@ require 'wukong'
 #     end
 #   end
 #
-#   describe Wukong::Transform::Map do
+#   describe Wukong::Processor::Map do
 #     let(:test_proc){ ->(rec){ rec.reverse } }
 #     subject{ described_class.new( test_proc ) }
 #
@@ -111,7 +111,7 @@ require 'wukong'
 #     end
 #   end
 #
-#   describe Wukong::Transform::Group do
+#   describe Wukong::Processor::Group do
 #
 #     # it 'works in an example flow flow' do
 #     #   test_sink = test_array_sink()

@@ -1,10 +1,10 @@
 module Wukong
   module Widget
 
-    class Stringifier < Transform
+    class Stringifier < Processor
     end
-    
-    
+
+
     # def Stringifier.inherited(subklass)
     #   Wukong.register_formatter(subklass)
     # end

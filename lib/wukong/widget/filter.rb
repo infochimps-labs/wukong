@@ -1,7 +1,7 @@
 module Wukong
   module Widget
 
-    class Filter < Wukong::Widget::Transform
+    class Filter < Wukong::Processor
       def process(*args) emit(*args) if     accept?(*args) ; end
       def reject?(*args) not accept?(*args) ; end
     end

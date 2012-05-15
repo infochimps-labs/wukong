@@ -1,7 +1,7 @@
 module Wukong
   module Widget
 
-    class Transform < Hanuman::Stage
+    class Processor < Hanuman::Stage
       # override this in your subclass
       def process(record)
       end
@@ -16,14 +16,14 @@ module Wukong
       end
     end
 
-    class Identity < Transform
+    class Identity < Processor
       # accepts records, emits as-is
       def process(*args)
         emit(*args)
       end
     end
 
-    class Null < Transform
+    class Null < Processor
       # accepts records, emits none
       def process(*)
         # ze goggles... zey do nussing!
@@ -41,7 +41,7 @@ module Wukong
     #
     # @see Project
     # @see Map
-    class Foreach < Transform
+    class Foreach < Processor
       # @param [Proc] proc used for body of process method
       # @yield ... or supply it as a &block arg.
       def initialize(prc=nil, &block)
@@ -59,7 +59,7 @@ module Wukong
     # @example pass along first matching term, drop on the floor otherwise
     #   map{|str| str[/\b(love|hate|happy|sad)\b/] }
     #
-    class Map < Transform
+    class Map < Processor
       attr_reader :blk
 
       # @param [Proc] proc to delegate for call
@@ -79,7 +79,7 @@ module Wukong
     #
     # @example turn a document into all its words
     #   input > map{|line| line.split(/\W+/) } > flatten > output
-    class Flatten < Transform
+    class Flatten < Processor
       def process(iter)
         iter.each{|*args| emit(*args) }
       end

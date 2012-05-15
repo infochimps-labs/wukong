@@ -7,7 +7,7 @@ shared_context 'wukong', :helpers => true do
   let(:test_array_sink){ Wukong::Sink::ArraySink.new }
 
   # the base transform, but emits all records unmodified
-  let(:test_transform_klass){ Class.new(Wukong::Widget::Transform){ def call(record) emit(record) ; end } }
+  let(:test_transform_klass){ Class.new(Wukong::Processor){ def call(record) emit(record) ; end } }
 
   let(:test_transform){ test_transform_klass.new }
 

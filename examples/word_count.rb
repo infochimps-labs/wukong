@@ -4,30 +4,18 @@ require 'wukong'
 
 # cat data/jabberwocky.txt | bin/wu-map examples/word_count.rb | sort  | bin/wu-red examples/word_count.rb  | sort -nk2 | tail
 
-Wukong.flow do
+Wukong.dataflow(:main) do
+  cleaner  = map{|line| line.downcase.strip }
+  splitter = map{|line| line.split(/\W/)    }
 
-  chain(:mapper) do
-    cleaner  = map{|line|     line.downcase.gsub(/\W+/, ' ').strip }
-    splitter = project{|line| line.split.each{|word| emit(word) } }
-    sizer    = reject{|word|  word.length < 3 }
-    input > cleaner > splitter > sizer > output
-  end
-
-  input > chain(:mapper) > output
+  input >
+    cleaner > splitter > flatten >
+    reject{|word| word.length < 3 } >
+    output
 end
 
-# mapper do |input|
-#   cleaner  = map{|line| line.downcase.gsub(/\W+/, ' ').strip }
-#
-#   splitter = project{|line| line.split.each{|word| emit(word) } }
-#
-#   input | cleaner | splitter | reject{|word| word.length < 3 }
-# end
-#
-# # implicit group
-#
-# reducer do |group|
-#   group | counter  |    # emit count of each group
-#     map(&:reverse) |    # swap to make [count, term]
-#     to_tsv              # output as TSV
-# end
+Wukong::LocalRunner.new do
+  input  Wukong::Widget::Stdin
+  output Wukong::Widget::Stdout
+  graph  Wukong.dataflow(:main)
+end.run
