@@ -1,11 +1,8 @@
 * Driving OR iterated
 
-  
-  
 * Runner? Executor?
   - hooks up source to flow,
   - if iterated source, drives it, otherwise sits in the flow
-
 
 * these set the contract for the inbound resources
 
@@ -26,9 +23,9 @@ Typical case: one input, `:input`, one output `:output`
 
 4. How do I address other stages?
    - `mapper.cat` a great name for action stage `cat` inside chain `mapper`
-   - `mapper.cat-output`? `mapper.cat_output`?
+   - `mapper.cat:output`? `mapper.cat_output`?
 
-I think subgraphs own their contents
+Subgraphs own their contents
 
 
 

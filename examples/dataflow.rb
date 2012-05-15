@@ -1,28 +1,28 @@
-Wukong.dataflow(:friend_graph) do
-  files(:scrapables) do
+require 'wukong/widgets/sinks/hbase_record_sink.rb'
+
+Wukong.chain(:friend_graph) do
+  tail(:scrapables) do
     directory   'scrapables/ids-%{t:ymd}.tsv'
   end
 
-  decorator('tw_requester.rb') do
-    request [:follower_ids, :friend_ids]
+  requester = decorator('tw_requester.rb') do
+    input  :scrape_url,       Url
+    output :raw_json_request, JsonString
+    config do
+      define :request_types, :default => [:follower_ids, :friend_ids], :doc => 'which requests to make: follower_ids, user_timeline, etc'
+    end
   end
 
-  requester = retriable(decorator('requester.rb')) do
+  retriable_requester = retriable do
     with        :timeouts => [1,2,3]
     on_failure  :sleep
+    guest       requester
   end
 
-  tail(:scrapables) > requester > decorator('tw_parse.rb') > hbase_record_sink
+  tail(:scrapables)> retriable_requester > processor('tw_parse.rb') > hbase_record_sink
 end
 
-
-# Wukong.dataflow(:geo_decorator) do
-#
-#   source(:http_listener) do
-#     port     9020
-#     output   'http_listener-%{t:ymd}.json'
-#   end
-#
-#
-#
-# end
+Wukong.processor(:tw_parse) do
+  def process
+  end
+end

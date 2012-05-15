@@ -1,5 +1,5 @@
 module Wukong
-  class Counter < Wukong::Transform
+  class Counter < Wukong::Processor
     field :count,       Integer, :doc => 'count of records this run'
 
     def setup
@@ -23,7 +23,7 @@ module Wukong
     end
   end
 
-  class GroupArrays < Wukong::Transform
+  class GroupArrays < Wukong::Processor
     def beg_group
       @records = []
     end
@@ -37,7 +37,7 @@ module Wukong
     end
   end
 
-  class Group < Wukong::Transform
+  class Group < Wukong::Processor
     def start(key, *vals)
       @key = key
       next_stage.tell(:beg_group, @key)
