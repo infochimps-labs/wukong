@@ -43,6 +43,8 @@ require 'hanuman/graph'               # coordinates wukong stages
 
 # Dataflow
 
+require 'wukong/dataflow'
+
 require 'wukong/processor'           # processes records in series
 require 'wukong/widget/filter'       # passes through only records that meet `accept?`
 require 'wukong/widget/source'       # generates raw records from outside

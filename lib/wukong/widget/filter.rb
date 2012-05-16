@@ -23,22 +23,18 @@ module Wukong
     # Selects only records matching this regexp
     class RegexpFilter < Filter
       field :re, Regexp, :doc => 'strings matching this regular expression will be selected'
-      def initialize(re)
-        @re = re
-      end
       def select?(str)
         re.match(str)
       end
+      register_processor(:re){|val, attrs={}, &block| new(attrs.merge(:re => val)) }
     end
 
     class RegexpRejecter < Rejecter
       field :re, Regexp, :doc => 'strings matching this regular expression will be rejected'
-      def initialize(re)
-        @re = re
-      end
       def reject?(str)
         re.match(str)
       end
+      register_processor(:not_re){|val, attrs={}, &block| new(attrs.merge(:re => val)) }
     end
 
     class ProcFilter < Filter
@@ -63,10 +59,6 @@ module Wukong
       field :max_records, Integer, :doc => 'maximum records to allow', :writer => true
       field :count,       Integer, :doc => 'count of records this run', :default => 0, :writer => :protected
 
-      def initialize(max)
-        self.max_records = max
-      end
-
       def setup
         super
         self.count = 0
@@ -81,6 +73,7 @@ module Wukong
         super(record)
         self.count += 1
       end
+      register_processor{|max, attrs={}, &block| new(attrs.merge(:max_records => max)) }
     end
 
   end

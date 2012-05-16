@@ -1,5 +1,10 @@
 module Wukong
   class Source < Hanuman::Stage
+    def self.register_processor(name=nil, &block)
+      name ||= handle
+      klass = block_given? ? nil : self
+      Wukong::Dataflow.register_processor(name, klass, &block)
+    end
 
     class Iter < Source
       # the enumerable object to delegate
@@ -33,6 +38,7 @@ module Wukong
         super
         @file = $stdin
       end
+      register_processor
     end
 
     class FileSource < Wukong::Source::IO
@@ -45,6 +51,7 @@ module Wukong
         super
         @file = File.open(filename)
       end
+      register_processor :file
     end
 
     class Integers < Wukong::Source
@@ -65,6 +72,7 @@ module Wukong
           @num += step
         end
       end
+      register_processor :integers
     end
   end
 end
