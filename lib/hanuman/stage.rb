@@ -2,11 +2,11 @@ module Hanuman
   class Stage
     include Gorillib::Builder
 
-    field      :name,     Symbol
-    collection :inputs,   Hanuman::Stage
-    collection :outputs,  Hanuman::Stage
-    member     :owner,    Hanuman::Stage
-    field      :doc,      String, :doc => 'briefly documents this stage and its purpose'
+    field      :name,    Symbol
+    member     :input,   Hanuman::Stage, :default => ->{ Hanuman::Stage.new(:name => "#{self.name}:input") }
+    member     :output,  Hanuman::Stage
+    member     :owner,   Hanuman::Stage
+    field      :doc,     String, :doc => 'briefly documents this stage and its purpose'
 
     #
     # Methods
@@ -24,23 +24,14 @@ module Hanuman
     # Graph connections
     #
 
-    def input(stage_name, stage=nil)
-      stage ||= (owner||self).stage(stage_name)
-      obj = super(stage_name, stage)
-      obj.output(self) if obj
-      obj
-    end
-
     def <<(stage)
-      input(stage.name, stage)
+      stage.output(self)
       self
     end
 
     def >(stage)
-      # owner.stage(stage.name, stage) if owner
-      st = output(stage)
-      p ['out', self, stage, st]
-      st
+      output(stage)
+      stage
     end
 
     def fullname
@@ -51,18 +42,18 @@ module Hanuman
       true
     end
 
-    def inspect(detailed=true)
-      str = "#<%-18s %-18s" % [self.class.name, fullname]
-      attr_names = self.class.field_names - [:name]
-      if detailed && attr_names.present?
-        str << " " << attr_names.map{|attr| "#{attr}=#{inspect_attr(attr)}" }.join(", ")
-      end
-      str << ">"
-    end
+    # def inspect(detailed=true)
+    #   str = "#<%-18s %-18s" % [self.class.name, fullname]
+    #   attr_names = self.class.field_names - [:name]
+    #   if detailed && attr_names.present?
+    #     str << " " << attr_names.map{|attr| "#{attr}=#{inspect_attr(attr)}" }.join(", ")
+    #   end
+    #   str << ">"
+    # end
 
     def tree(options={})
       { :name => name,
-        :inputs => inputs.to_a.map{|input| input.name },
+        :input => input.name,
       }
     end
 

@@ -30,6 +30,7 @@ module Wukong
     # emits each line from $stdin
     class Stdin < Wukong::Source::IO
       def setup
+        super
         @file = $stdin
       end
     end
@@ -41,21 +42,27 @@ module Wukong
       end
 
       def setup
+        super
         @file = File.open(filename)
       end
     end
 
     class Integers < Wukong::Source
       attr_reader :num
-      field :min,   Integer, :default => 0
-      field :max,   Integer, :default => nil
+      field :min,  Integer, :default => 0
+      field :max,  Integer, :default => nil
       field :step, Integer, :default => 1
+
+      def setup
+        super
+        @num = 0
+      end
 
       def each
         loop do
           break if max.present? && (num >= max)
-          yield @num
-          @num += @step
+          yield num
+          @num += step
         end
       end
     end

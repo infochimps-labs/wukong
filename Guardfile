@@ -7,10 +7,12 @@
 #   watch(%r{notes/.+\.(md|txt)}) { "notes" }
 # end
 
-rspec_opts = '--format progress'
-# rspec_opts = '--format doc'
+# '--format doc'     for more verbose, --format progress for less
+format  = "progress"
+# '--tag record_spec' to only run tests tagged :record_spec
+tags    = %w[ ]  # builder_spec model_spec example_spec
 
-guard 'rspec', :version => 2, :cli => rspec_opts do
+guard 'rspec', :version => 2, :cli => "--format #{format} #{ tags.map{|tag| "--tag #{tag}"}.join(" ")  }" do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^examples/(\w+)\.rb$})      { |m| "spec/examples/#{m[1]}_spec.rb" }
   watch(%r{^examples/(\w+)/(.+)\.rb$}) { |m| "spec/examples/#{m[1]}_spec.rb" }
@@ -20,23 +22,12 @@ guard 'rspec', :version => 2, :cli => rspec_opts do
   watch(/spec\/support\/(.+)\.rb/)     { "spec" }
 end
 
-# # This is an example with all options that you can specify for guard-process
-# Dir['examples/**/*.rb'].each do |file|
-#   next unless File.file?(file) && File.executable?(file)
-#   guard 'process', :name => file, :command => file do
-#     watch('Gemfile.lock')
+# graph_output_dir = File.expand_path("/tmp/wukong-#{ENV['USER']}/graphs")
+# FileUtils.mkdir_p(graph_output_dir)
+# Dir['examples/**/*.gv'].each do |file|
+#   graph_output_file = File.join(graph_output_dir, File.basename(file, '.gv')+".png")
+#   cmd = "dot -Tpng -o #{graph_output_file} #{file}"
+#   guard 'process', :name => "dot on #{file}", :command => cmd do
 #     watch(file)
-#     watch('examples/examples_helper.rb')
 #   end
 # end
-
-graph_output_dir = File.expand_path("/tmp/wukong-#{ENV['USER']}/graphs")
-FileUtils.mkdir_p(graph_output_dir)
-
-Dir['examples/**/*.gv'].each do |file|
-  graph_output_file = File.join(graph_output_dir, File.basename(file, '.gv')+".png")
-  cmd = "dot -Tpng -o #{graph_output_file} #{file}"
-  guard 'process', :name => "dot on #{file}", :command => cmd do
-    watch(file)
-  end
-end

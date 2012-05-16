@@ -27,9 +27,9 @@ require 'gorillib/metaprogramming/delegation'
 require 'gorillib/metaprogramming/concern'
 
 
-require 'gorillib/record'
-require 'gorillib/record/field'
-require 'gorillib/record/defaults'
+require 'gorillib/model'
+require 'gorillib/model/field'
+require 'gorillib/model/defaults'
 require 'gorillib/builder'
 
 # require 'wukong/mixin/from_file'
@@ -38,19 +38,14 @@ require 'gorillib/builder'
 
 require 'wukong/settings'
 
-# require 'wukong/graph'      # coordinates wukong stages
-# require 'wukong/flow'       # graph of data flow stages
-require 'hanuman/stage'       # base object for building blocks
+require 'hanuman/stage'              # base object for building blocks
+require 'hanuman/graph'               # coordinates wukong stages
 
 # Dataflow
 
-require 'wukong/widget/transform'    # processes records in series
-require 'wukong/widget/filter'     # passes through only records that meet `accept?`
-require 'wukong/widget/source'     # generates raw records from outside
-require 'wukong/widget/sink'       # dispatch raw records to outside
+require 'wukong/processor'           # processes records in series
+require 'wukong/widget/filter'       # passes through only records that meet `accept?`
+require 'wukong/widget/source'       # generates raw records from outside
+require 'wukong/widget/sink'         # dispatch raw records to outside
 require 'wukong/widget/stringifier'  # converts raw blobs into structured records and vice/versa
-require 'wukong/mapred'     # the standard stream-sort-group-stream map/reduce flow
-
-# Workflow
-
-# require 'wukong/job'        # define a workflow
+require 'wukong/mapred'              # the standard stream-sort-group-stream map/reduce flow
