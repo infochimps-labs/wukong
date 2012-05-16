@@ -1,4 +1,4 @@
-require File.expand_path('../spec_helper', File.dirname(__FILE__))
+require 'spec_helper'
 
 require 'gorillib/builder'
 require 'hanuman/stage'
@@ -12,10 +12,10 @@ describe :graphviz, :helpers => true do
   it 'makes a png' do
     gv = example_graph.to_graphviz
 
-    p example_graph.stages
+    # p example_graph.stages
 
-    gv.save(Gorillib.path_to(:tmp, gv.name.to_s), 'png')
-    puts File.read(Gorillib.path_to(:tmp, "#{gv.name}.dot"))
+    gv.save(Pathname.path_to(:tmp, gv.name.to_s), 'png')
+    # puts File.read(Pathname.path_to(:tmp, "#{gv.name}.dot"))
   end
 
   it 'builder works as expected' do

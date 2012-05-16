@@ -1,4 +1,4 @@
-require File.expand_path('../spec_helper', File.dirname(__FILE__))
+require 'spec_helper'
 
 require 'gorillib/builder'
 require 'hanuman/stage'
@@ -13,8 +13,8 @@ describe Hanuman::Graph, :helpers => true do
   #     :stages => [
   #       {:name=>:make_pie, :inputs=>[:crust, :filling]},
   #       {:name=>:bake_pie, :inputs=>[:make_pie]}
-  #     ], 
+  #     ],
   #     }
   # end
-  
+
 end

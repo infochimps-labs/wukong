@@ -3,6 +3,7 @@ module Wukong
     field :count,       Integer, :doc => 'count of records this run'
 
     def setup
+      super
       reset!
     end
 

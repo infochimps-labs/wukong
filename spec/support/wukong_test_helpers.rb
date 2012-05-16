@@ -18,7 +18,7 @@ end
 module WukongTestHelpers
 
   def example_script_filename(name)
-    Gorillib.path_to(:examples, name)
+    Pathname.path_to(:examples, name)
   end
 
   def example_script_contents(name)
@@ -26,7 +26,7 @@ module WukongTestHelpers
   end
 
   def sample_data_filename(name)
-    CODE_ROOT('data', name)
+    Pathname.path_to(:wukong_root, 'data', name)
   end
 
   def sample_data(name)

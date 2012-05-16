@@ -10,7 +10,7 @@ module Hanuman
         '{',
         '{',
         "<in>",
-        inputs.to_a.map{|i| i.name[0..0] }.join('|'),
+        input.name[0..0],
          '}',
         '|',
         name.to_s.gsub(/[_\.]+/, "\n"),  '|',
@@ -27,9 +27,7 @@ module Hanuman
 
     def to_graphviz(gv, options={})
       graphviz_node(gv) unless is_a?(Graph)
-      inputs.to_a.each do |input|
-        gv.edge(input.fullname, fullname)
-      end
+      gv.edge(input.fullname, fullname)
     end
   end
 
@@ -45,13 +43,13 @@ module Hanuman
         '{',
         '{',
         "<in>",
-        inputs.to_a.map{|i| i.name[0..0] }.join('|'),
+        input.name[0..0],
         '}',
         '|',
         name.to_s.gsub(/[_\.]+/, "\n"),
         '}'
       ].join
-      nn = gv.node("#{fullname}.inputs", str)
+      nn = gv.node("#{fullname}.input", str)
       # nn = gv.node(fullname, name.to_s.gsub(/[_\.]+/, "\n"))
       # gv.shape(draw_shape) << nn
       gv.shape(:Mrecord) << nn

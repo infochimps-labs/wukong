@@ -23,6 +23,7 @@ module Wukong
       end
 
       def setup
+        super
         @file = File.open(filename, "w")
       end
 
@@ -45,6 +46,7 @@ module Wukong
       attr_reader :records
 
       def setup
+        super
         @records = []
       end
 
