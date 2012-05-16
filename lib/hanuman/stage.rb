@@ -8,16 +8,25 @@ module Hanuman
     member     :owner,   Hanuman::Stage
     field      :doc,     String, :doc => 'briefly documents this stage and its purpose'
 
+    def fullname
+      [owner.try(:fullname), name].compact.join('.')
+    end
+
+    def self.handle
+      Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
+    end
+
     #
     # Methods
     #
 
+    # Called after the graph is constructed, before the flow is run
     def setup
-      true
     end
 
+    # Called to signal the flow should stop. Close any open connections, flush
+    # buffers, stop supervised projects, etc.
     def stop
-      true
     end
 
     #
@@ -34,22 +43,9 @@ module Hanuman
       stage
     end
 
-    def fullname
-      [owner.try(:fullname), name].compact.join('.')
-    end
-
     def notify(msg)
       true
     end
-
-    # def inspect(detailed=true)
-    #   str = "#<%-18s %-18s" % [self.class.name, fullname]
-    #   attr_names = self.class.field_names - [:name]
-    #   if detailed && attr_names.present?
-    #     str << " " << attr_names.map{|attr| "#{attr}=#{inspect_attr(attr)}" }.join(", ")
-    #   end
-    #   str << ">"
-    # end
 
     def tree(options={})
       { :name => name,
@@ -64,9 +60,6 @@ module Hanuman
   end
 
   class Action < Stage
-    def output(*args)
-      super || owner.stage(:"#{self.name}_out")
-    end
   end
 
   class Resource < Stage

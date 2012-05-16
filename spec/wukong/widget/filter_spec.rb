@@ -17,14 +17,14 @@ describe :filters, :helpers => true do
   end
 
   describe Wukong::Widget::RegexpFilter do
-    subject{ described_class.new(/^m/) }
+    subject{ described_class.new(:re => /^m/) }
     it_behaves_like('a filter processor',
       :good => ['milbarge'],
       :bad  => ['fitzhume'] )
   end
 
   describe Wukong::Widget::RegexpRejecter do
-    subject{ described_class.new(/^m/) }
+    subject{ described_class.new(:re => /^m/) }
     it_behaves_like('a filter processor',
       :good => ['fitzhume'],
       :bad  => ['milbarge'] )
@@ -71,7 +71,7 @@ describe :filters, :helpers => true do
   end
 
   describe Wukong::Widget::Limit do
-    subject{ described_class.new(3) }
+    subject{ described_class.new(:max_records => 3) }
     it_behaves_like 'a processor' do
       before{ mock_next_stage }
 
@@ -81,13 +81,13 @@ describe :filters, :helpers => true do
       end
 
       it 'rejects objects if already at the limit' do
-        subject = described_class.new(0)
+        subject = described_class.new(:max_records => 0)
         next_stage.should_not_receive(:process)
         subject.process(mock_record)
       end
 
       it 'emits objects until at the limit' do
-        subject = described_class.new(2); mock_next_stage(subject)
+        subject = described_class.new(:max_records => 2); mock_next_stage(subject)
         next_stage.should_receive(:process).with(0)
         next_stage.should_receive(:process).with(1)
         4.times{|n| subject.process(n) }

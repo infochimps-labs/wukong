@@ -1,22 +1,23 @@
-module WukongWidgetHelpers
+shared_context 'widgets', :helpers => true do
+  let(:sample_dataflow){ Wukong.dataflow }
+  let(:next_stage){ mock('next stage') }
+
   def mock_next_stage(obj=nil)
     (obj ||= subject).write_attribute(:output, next_stage)
   end
 end
 
 shared_examples_for 'a processor' do
-  include WukongWidgetHelpers
-  let(:next_stage){ mock }
 
   it{ should respond_to(:process) }
+  it{ should respond_to(:setup) }
+  it{ should respond_to(:stop) }
+  it{ should respond_to(:notify) }
   it{ should respond_to(:report) }
-  its(:report){|*args| should be_a(Hash) }
-
+  its(:report){ should be_a(Hash) }
 end
 
 shared_examples_for "a filter processor" do |objects|
-  include WukongWidgetHelpers
-  let(:next_stage){ mock }
   it_behaves_like 'a processor'
 
   it 'accepts good objects' do

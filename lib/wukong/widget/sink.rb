@@ -1,5 +1,5 @@
 module Wukong
-  class Sink < Hanuman::Stage
+  class Sink < Wukong::Processor
 
 
     class NullSink < Wukong::Sink
@@ -35,20 +35,17 @@ module Wukong
     # Writes all lines to $stdout
     class Stdout < Wukong::Sink::IO
       def file() $stdout ; end
+      register_processor
     end
 
     # Writes all lines to $stderr
     class Stderr < Wukong::Sink::IO
       def file() $stderr ; end
+      register_processor
     end
 
     class ArraySink < Wukong::Sink
-      attr_reader :records
-
-      def setup
-        super
-        @records = []
-      end
+      field :records, Array, :default => [], :writer => :protected
 
       def process(record)
         self.records << record

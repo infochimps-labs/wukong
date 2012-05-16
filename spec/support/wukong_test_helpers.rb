@@ -1,17 +1,15 @@
 require 'gorillib/utils/capture_output'
 
 shared_context 'wukong', :helpers => true do
-  let(:mock_record){   mock }
-  let(:mock_transform){ m = mock ; m.stub(:name => 'mock transform', :attributes => { :a => :b }) ; m }
+  let(:mock_val   ){ mock('mock val') }
+  let(:mock_record){ mock('mock record') }
+  let(:mock_processor){ m = mock ; m.stub(:name => 'mock processor', :attributes => { :a => :b }) ; m }
 
-  let(:test_array_sink){ Wukong::Sink::ArraySink.new }
-
-  # the base transform, but emits all records unmodified
-  let(:test_transform_klass){ Class.new(Wukong::Processor){ def call(record) emit(record) ; end } }
-
-  let(:test_transform){ test_transform_klass.new }
-
-  let(:test_filter){ Wukong.flow.select{|rec| rec =~ /^h/ } }
+  let(:test_source){          Wukong::Integers.new(:max => 100) }
+  let(:test_sink){            Wukong::Sink::ArraySink.new }
+  let(:test_processor_class){ Wukong::AsIs }
+  let(:test_processor){       test_processor_class.new }
+  let(:test_filter){          Wukong::Widget::RegexpFilter.new(:re => /^m/) }
 end
 
 

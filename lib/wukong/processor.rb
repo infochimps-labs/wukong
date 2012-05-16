@@ -1,5 +1,7 @@
 module Wukong
   class Processor < Hanuman::Stage
+    field :name, Symbol, :default => ->{ self.class.handle }
+      
     # override this in your subclass
     def process(record)
     end
@@ -12,13 +14,20 @@ module Wukong
     def report
       self.attributes
     end
+
+    def self.register_processor(name=nil, &block)
+      name ||= handle
+      klass = block_given? ? nil : self
+      Wukong::Dataflow.register_processor(name, klass, &block)
+    end
   end
 
-  class Identity < Processor
+  class AsIs < Processor
     # accepts records, emits as-is
     def process(*args)
       emit(*args)
     end
+    register_processor
   end
 
   class Null < Processor
@@ -26,6 +35,7 @@ module Wukong
     def process(*)
       # ze goggles... zey do nussing!
     end
+    register_processor
   end
 
   #
@@ -40,6 +50,8 @@ module Wukong
   # @see Project
   # @see Map
   class Foreach < Processor
+    self.register_processor
+    
     # @param [Proc] proc used for body of process method
     # @yield ... or supply it as a &block arg.
     def initialize(prc=nil, &block)
@@ -58,6 +70,7 @@ module Wukong
   #   map{|str| str[/\b(love|hate|happy|sad)\b/] }
   #
   class Map < Processor
+    self.register_processor
     attr_reader :blk
 
     # @param [Proc] proc to delegate for call
@@ -81,6 +94,7 @@ module Wukong
     def process(iter)
       iter.each{|*args| emit(*args) }
     end
+    register_processor
   end
 
 end

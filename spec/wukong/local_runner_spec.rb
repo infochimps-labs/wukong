@@ -7,15 +7,15 @@ describe Wukong::LocalRunner do
   context 'examples' do
     subject{
       Wukong.dataflow do
-        x = Wukong::Widget::ProcFilter.new{|int| int.odd? }
-        stage(:odds, x)
-        puts stages
-        stage(:odds) > Wukong::Sink::Stdout.new
+        reject{|int| int.odd? } >
+          map{|i| i.to_s } >
+          re(/..+/) >
+          limit(20)
         puts stages
       end
 
       Wukong::LocalRunner.new do
-        source   :default_source, Wukong::Source::Integers.new(:max => 10)
+        source   :default_source, Wukong::Source::Integers.new(:max => 100)
         sink     :default_sink,   Wukong::Sink::Stdout.new
         flow     Wukong.dataflow
       end
@@ -23,7 +23,8 @@ describe Wukong::LocalRunner do
 
     it '' do
       subject.receive! do
-        puts 'workflow', self, sources, sinks, flow
+        puts 'workflow', self, sources, sinks
+        flow.stages.to_a.each{|st| puts st }
       end
       subject.run
     end
