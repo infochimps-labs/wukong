@@ -3,7 +3,17 @@ module Wukong
     @dataflow ||= Dataflow.new(*args, &block)
   end
 
-  class Dataflow < Hanuman::Graph
+  # class Dataflow < Hanuman::Graph
+  class Dataflow
+    # FIXME: dummying out minimal locked-down interface for the moment
+    include Gorillib::Model
+    field :stages, Array
+    def initialize(&block)
+      self.stages = []
+      instance_exec(&block) if block
+    end
+    # /FIXME
+
     def process(rec)
       stages.to_a.first.process(rec)
     end
@@ -12,6 +22,23 @@ module Wukong
       stages << stage
       stage
     end
+
+    # FIXME: only handles one output slot
+    def set_output(sink)
+      stages.to_a.last.output(sink)
+    end
+
+    def setup
+      stages.each{|stage| stage.setup}
+    end
+
+    def stop
+      stages.each{|stage| stage.stop}
+    end
+
+    #
+    # Processor helpers
+    #
 
     def reject(re_or_block=nil, &block)
       raise ArgumentError, "Supply a block or regular expression, not both" if re_or_block && block

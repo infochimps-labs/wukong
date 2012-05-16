@@ -19,13 +19,6 @@ module Wukong
       stop
     end
 
-  protected
-
-    # @return a list with inputs, flow and outputs, in that order
-    def stages
-      sources.to_a.concat([flow]).concat(sinks.to_a)
-    end
-
     def setup
       stages.each{|stage| stage.setup}
     end
@@ -34,8 +27,16 @@ module Wukong
       stages.each{|stage| stage.stop}
     end
 
+  protected
+
+    # @return a list with inputs, flow and outputs, in that order
+    def stages
+      [sources.to_a, flow, sinks.to_a].flatten
+    end
+
     def wire_flow
-      flow.stages.to_a.last.output sink(:default_sink)
+      p [flow.stages, __FILE__, ]
+      flow.set_output sink(:default_sink)
     end
   end
 end
