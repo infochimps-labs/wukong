@@ -2,20 +2,15 @@
 module Wukong
   class Runner
     include Gorillib::FancyBuilder
-  end
 
-  # Run dataflow in pure ruby
-  class LocalRunner < Runner
     collection :sources,  Wukong::Source
     collection :sinks,    Wukong::Sink
     member     :flow,     Wukong::Dataflow
-
+    
     def run
       wire_flow
       setup
-      sources.to_a.first.each do |record|
-        result = flow.process(record)
-      end
+      drive_flow
       stop
     end
 
@@ -34,8 +29,34 @@ module Wukong
       [sources.to_a, flow, sinks.to_a].flatten
     end
 
+    # Connect sources, sinks, flows and so forth. On return, the topology of the graph should be in place.
+    # Override in your subclass
+    #
+    # @abstract
     def wire_flow
-      p [flow.stages, __FILE__, ]
+    end
+
+    # Launch the flow -- sources be each'ing, processors be process'n
+    # Override in your subclass
+    #
+    # @abstract
+    def drive_flow
+      puts flow
+    end
+  end
+
+  # Run dataflow in pure ruby
+  class LocalRunner < Runner
+
+  protected
+
+    def drive_flow
+      sources.to_a.first.each do |record|
+        flow.process(record)
+      end
+    end
+
+    def wire_flow
       flow.set_output sink(:default_sink)
     end
   end

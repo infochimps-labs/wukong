@@ -1,7 +1,7 @@
 module Wukong
-  class Processor < Hanuman::Stage
+  class Processor < Hanuman::Action
     field :name, Symbol, :default => ->{ self.class.handle }
-      
+
     # override this in your subclass
     def process(record)
     end

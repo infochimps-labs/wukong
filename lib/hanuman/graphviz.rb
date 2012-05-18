@@ -35,7 +35,7 @@ module Hanuman
     self.draw_shape = :square
   end
 
-  class Graph < Stage
+  class Graph < Action
     self.draw_shape = :record
 
     def graphviz_node(gv)
