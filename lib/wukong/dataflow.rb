@@ -3,24 +3,20 @@ module Wukong
     @dataflow ||= Dataflow.new(*args, &block)
   end
 
-  # class Dataflow < Hanuman::Graph
-  class Dataflow
-    # FIXME: dummying out minimal locked-down interface for the moment
-    include Gorillib::Model
-    field :stages, Array
-    def initialize(&block)
-      self.stages = []
-      instance_exec(&block) if block
-    end
-    # /FIXME
+  # class Dataflow
+  class Dataflow  < Hanuman::Graph
+    # # FIXME: dummying out minimal locked-down interface for the moment
+    # include Gorillib::Model
+    # field :stages, Array
+    #
+    # def initialize(&block)
+    #   self.stages = []
+    #   instance_exec(&block) if block
+    # end
+    # # /FIXME
 
     def process(rec)
       stages.to_a.first.process(rec)
-    end
-
-    def add_stage(stage)
-      stages << stage
-      stage
     end
 
     # FIXME: only handles one output slot
@@ -29,11 +25,11 @@ module Wukong
     end
 
     def setup
-      stages.each{|stage| stage.setup}
+      stages.each_value{|stage| stage.setup}
     end
 
     def stop
-      stages.each{|stage| stage.stop}
+      stages.each_value{|stage| stage.stop}
     end
 
     #

@@ -2,12 +2,13 @@ module Hanuman
   class Stage
     include Gorillib::Builder
 
-    field      :name,    Symbol
-    member     :input,   Hanuman::Stage, :default => ->{ Hanuman::Stage.new(:name => "#{self.name}:input") }
-    member     :output,  Hanuman::Stage
-    member     :owner,   Hanuman::Stage
-    field      :doc,     String, :doc => 'briefly documents this stage and its purpose'
+    field      :name,    Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph'
+    member     :input,   Hanuman::Stage, :doc => 'stage(s) in graph that feed into this one', :default => ->{ Hanuman::Stage.new(:name => "#{self.name}:input") }
+    member     :output,  Hanuman::Stage, :doc => 'stage(s) in graph this one feeds into'
+    member     :owner,   Hanuman::Stage, :doc => 'the graph this stage sits in'
+    field      :doc,     String,         :doc => 'briefly documents this stage and its purpose'
 
+    # @returns the stage, namespaced by the graph that owns it
     def fullname
       [owner.try(:fullname), name].compact.join('.')
     end
@@ -33,14 +34,36 @@ module Hanuman
     # Graph connections
     #
 
-    def <<(stage)
-      stage.output(self)
+    # wire this stage's output into another stage's input
+    # @param stage [Hanuman::Stage]the other stage
+    # @returns the other stage`
+    def >(stage)
+      into(stage)
+      stage
+    end
+
+    # wire this stage's output into another stage's input
+    # @param stage [Hanuman::Stage]the other stage
+    # @returns the stage itself
+    def into(stage)
+      owner.connect(self, stage)
       self
     end
 
-    def >(stage)
-      output(stage)
-      stage
+    # wire another stage's output into this stage's input
+    # @param stage [Hanuman::Stage]the other stage
+    # @returns the stage itself
+    def <<(stage)
+      from(stage)
+      self
+    end
+
+    # wire another stage's output into this stage's input
+    # @param stage [Hanuman::Stage]the other stage
+    # @returns the stage itself
+    def from(stage)
+      owner.connect(stage, self)
+      self
     end
 
     def notify(msg)
@@ -60,8 +83,11 @@ module Hanuman
   end
 
   class Action < Stage
+    # field :consumes, Hash, :of => Gorillib::Factory, :default => ->{ {:input  => Whatever} }
+    # field :produces, Hash, :of => Gorillib::Factory, :default => ->{ {:output => Whatever} }
   end
 
   class Resource < Stage
+    field :schema, Gorillib::Factory, :default => ->{ Whatever }
   end
 end
