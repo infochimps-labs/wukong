@@ -21,9 +21,17 @@ module Wukong
       klass
     end
 
-    def dataflow(name=nil, attrs={}, &block)
-      attrs[:name] ||= name || Gorillib::Inflector.underscore(self.name)
-      @dataflow ||= Dataflow.new(attrs, &block)
+    def dataflow(name, attrs={}, &block)
+      attrs[:name] = name = name.to_sym
+      dataflow = @dataflows[name] ||= Dataflow.new(:name => name)
+      dataflow.receive!(attrs, &block)
+      dataflow
+    end
+
+    def self.extended(base)
+      base.instance_eval do
+        @dataflows = Hash.new
+      end
     end
   end
 

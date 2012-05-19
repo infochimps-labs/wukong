@@ -12,8 +12,6 @@ describe :graphviz, :helpers => true do
   it 'makes a png' do
     gv = example_graph.to_graphviz
 
-    # p example_graph.stages
-
     gv.save(Pathname.path_to(:tmp, gv.name.to_s), 'png')
     # puts File.read(Pathname.path_to(:tmp, "#{gv.name}.dot"))
   end

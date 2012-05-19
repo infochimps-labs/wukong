@@ -51,7 +51,8 @@ module Wukong
         super
         @file = File.open(filename)
       end
-      register_processor :file
+
+      register_processor
     end
 
     class Integers < Wukong::Source

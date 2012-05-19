@@ -31,10 +31,6 @@ module Wukong
     module ClassMethods
       def define_action(name, options={}, &block)
         self.actions = self.actions.merge(name => options.merge(:block => block))
-
-        define_method(name) do |*args, &block|
-          p ['called action', self, args, block]
-        end
       end
 
       def class_defaults

@@ -17,6 +17,7 @@ module Wukong
 
     class FileSink < Wukong::Sink::IO
       attr_reader :filename
+      attr_reader :file
 
       def initialize(filename)
         @filename = filename
@@ -30,6 +31,8 @@ module Wukong
       def stop
         @file.close if @file
       end
+
+      register_processor
     end
 
     # Writes all lines to $stdout

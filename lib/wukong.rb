@@ -1,8 +1,10 @@
-require 'log4r'
-Log = Log4r::Logger.new('wukong')
-Log.outputters = Log4r::Outputter.stderr
-# require 'logger'
-# Log = Logger.new(STDERR)
+unless defined?(Log)
+  require 'log4r'
+  Log = Log4r::Logger.new('wukong')
+  Log.outputters = Log4r::Outputter.stderr
+  # require 'logger'
+  # Log = Logger.new(STDERR)
+end
 
 # require 'log_buddy'; LogBuddy.init :log_to_stdout => false, :logger => Log
 # LogBuddy::Utils.module_eval do
@@ -43,6 +45,7 @@ require 'hanuman/graph'               # coordinates wukong stages
 
 # Dataflow
 
+require 'wukong/universe'
 require 'wukong/dataflow'
 
 require 'wukong/processor'           # processes records in series

@@ -57,7 +57,7 @@ module Wukong
     end
 
     def wire_flow
-      flow.set_output sink(:default_sink)
+      flow.set_output sink(:test_sink)
     end
   end
 end
