@@ -46,7 +46,6 @@ shared_context 'hanuman', :helpers => true do
     Hanuman::Graph.new(:name => :scraper) do
       action(:listener) << resource(:scrape_requests) << resource(:more_requests)
       action(:parser).input(:listener)
-      p action(:parser).output
       action(:models).input(:parser)
     end
 
