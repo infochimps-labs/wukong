@@ -1,5 +1,5 @@
 shared_context 'widgets', :helpers => true do
-  let(:sample_dataflow){ Wukong.dataflow }
+  let(:sample_dataflow){ Wukong.dataflow(:sample) }
   let(:next_stage){ mock('next stage') }
 
   def mock_next_stage(obj=nil)
