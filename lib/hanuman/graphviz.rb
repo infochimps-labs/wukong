@@ -68,7 +68,6 @@ module Hanuman
         gv.cluster(fullname) do |gv_cl|
           gv_cl.label name
           stages.to_a.each do |stage|
-            p [self.fullname, stage.fullname, stage, __FILE__]
             stage.to_graphviz(gv_cl, options)
           end
 

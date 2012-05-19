@@ -28,6 +28,15 @@ Typical case: one input, `:input`, one output `:output`
 Subgraphs own their contents
 
 
+## Configuration
+
+* options on processor become options on flow -- so, in the telegram example, 
+  :break_length becomes configurable (somehow)
+  
+## Tests
+
+* add an examples helper -- runs script on file from data dir, diffs the output.
+
 
 
 __________________________________________________________________________

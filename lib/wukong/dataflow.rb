@@ -1,7 +1,4 @@
 module Wukong
-  def self.dataflow(*args, &block)
-    @dataflow ||= Dataflow.new(*args, &block)
-  end
 
   # class Dataflow
   class Dataflow  < Hanuman::Graph
@@ -57,6 +54,7 @@ module Wukong
     end
 
     def self.register_processor(name, klass=nil, &meth_body)
+      name = name.to_sym
       raise ArgumentError, 'Supply either a processor class or a block' if (klass && meth_body) || (!klass && !meth_body)
       if block_given?
         define_method(name) do |*args, &blk|

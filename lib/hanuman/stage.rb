@@ -17,6 +17,8 @@ module Hanuman
       Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
     end
 
+    def to_key() name ; end
+
     #
     # Methods
     #

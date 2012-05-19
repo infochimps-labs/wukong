@@ -22,12 +22,12 @@ module Hanuman
     end
 
     def add_edge(st_a, st_b, a_out_slot, b_in_slot)
-      a_slot_name = "#{st_a.fullname}:#{a_out_slot}"
-      b_slot_name = "#{st_b.fullname}:#{b_in_slot}"
+      a_slot_name = "#{st_a.fullname}[#{a_out_slot}]"
+      b_slot_name = "[#{b_in_slot}]#{st_b.fullname}"
       edges[a_slot_name] = b_slot_name
     end
 
-    def connect(st_a, st_b, a_out_slot=:o, b_in_slot=:i)
+    def connect(st_a, st_b, a_out_slot=:_, b_in_slot=:_)
       add_edge(st_a, st_b, a_out_slot, b_in_slot)
       # st_a.set_output_slot(st_b, a_out_slot, b_in_slot)
       # st_b.set_input_slot( st_a, a_out_slot, b_in_slot)
