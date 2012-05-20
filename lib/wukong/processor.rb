@@ -1,7 +1,10 @@
 module Wukong
   class Processor < Hanuman::Action
+    include Hanuman::Stage::SingleInput
+    include Hanuman::Stage::SingleOutput
+    
     field :name, Symbol, :default => ->{ self.class.handle }
-
+    
     # override this in your subclass
     def process(record)
     end

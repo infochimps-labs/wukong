@@ -18,7 +18,7 @@ module Wukong
 
     # FIXME: only handles one output slot
     def set_output(sink)
-      stages.to_a.last.output(sink)
+      stages.to_a.last.set_output :_, sink
     end
 
     def setup

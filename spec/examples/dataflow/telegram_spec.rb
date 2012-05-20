@@ -11,7 +11,6 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
     subject{ Wukong::Widget::Recompose }
     let(:recomposer_30){ subject.new( :break_length => 30 )}
     let(:recomposer_34){ subject.new( :break_length => 34 )}
-    let(:recomposer_60){ subject.new( :break_length => 60 )}
 
     its(:field_names){ should include(:break_length) }
     context '#processor' do
@@ -39,7 +38,7 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
       it 'does not violate the constraints' do
         (2..80).each do |len|
           test_sink = Wukong::Sink::ArraySink.new
-          rc = subject.new(:break_length => len, :output => test_sink)
+          rc = subject.new(:break_length => len, :outslot => { :stage => test_sink })
           words.each{|word| rc.process(word) }
           rc.stop
           test_sink.records[0..-2].zip(test_sink.records[1..-1]).all?{|line, nextl|
@@ -51,27 +50,19 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
         end
       end
 
-      # context 'text' do
-      #   it 'is correct on width 30' do
-      #     recomposer_30.should_receive(:emit).with("If names be not correct,")
-      #     recomposer_30.should_receive(:emit).with("language is not in accordance")
-      #     recomposer_30.should_receive(:emit).with("with the truth of things. If")
-      #     recomposer_30.should_receive(:emit).with("language be not in accordance")
-      #     recomposer_30.should_receive(:emit).with("with the truth of things,")
-      #     recomposer_30.should_receive(:emit).with("affairs cannot be carried on")
-      #     recomposer_30.should_receive(:emit).with("to success.")
-      #     words.each{|word| recomposer_30.process(word) }
-      #     recomposer_30.stop
-      #   end
-      #   it 'is correct on width 60' do
-      #     recomposer_60.should_receive(:emit).with("If names be not correct, language is not in accordance with")
-      #     recomposer_60.should_receive(:emit).with("the truth of things. If language be not in accordance with")
-      #     recomposer_60.should_receive(:emit).with("the truth of things, affairs cannot be carried on to")
-      #     recomposer_60.should_receive(:emit).with("success.")
-      #     words.each{|word| recomposer_60.process(word) }
-      #     recomposer_60.stop
-      #   end
-      # end
+      context 'text' do
+        it 'is correct on width 30' do
+          recomposer_30.should_receive(:emit).with("If names be not correct,")
+          recomposer_30.should_receive(:emit).with("language is not in accordance")
+          recomposer_30.should_receive(:emit).with("with the truth of things. If")
+          recomposer_30.should_receive(:emit).with("language be not in accordance")
+          recomposer_30.should_receive(:emit).with("with the truth of things,")
+          recomposer_30.should_receive(:emit).with("affairs cannot be carried on")
+          recomposer_30.should_receive(:emit).with("to success.")
+          words.each{|word| recomposer_30.process(word) }
+          recomposer_30.stop
+        end
+      end
     end
   end
 
@@ -79,10 +70,14 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
     Wukong::LocalRunner.new do
       output_filename = Pathname.path_to(:tmp, 'output/dataflow/telegram/names.txt')
       output_filename.dirname.mkpath
-
+  
       source   :test_source, Wukong::Source::FileSource.new(Pathname.path_to(:data, 'rectification_of_names.txt'))
-      sink     :test_sink,   Wukong::Sink::FileSink.new(output_filename)
+      sink     :default_sink,   Wukong::Sink::FileSink.new(output_filename)
       flow     Wukong.dataflow(:telegram)
+
+      p [sinks]
+      p [sink(:test_sink)]
     end.run
   end
+
 end
