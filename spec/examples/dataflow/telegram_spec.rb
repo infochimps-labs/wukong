@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'wukong'
 require 'wukong/local_runner'
 
-# Wukong.dataflow{ input file_source( Pathname.path_to(:data, 'rectification_of_names.txt') )}
 load Pathname.path_to(:examples, 'dataflow/telegram.rb')
 
 describe 'Telegram Example', :examples_spec => true, :helpers => true do
@@ -38,7 +37,7 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
       it 'does not violate the constraints' do
         (2..80).each do |len|
           test_sink = Wukong::Sink::ArraySink.new
-          rc = subject.new(:break_length => len, :outslot => { :stage => test_sink })
+          rc = subject.new(:break_length => len, :output => test_sink )
           words.each{|word| rc.process(word) }
           rc.stop
           test_sink.records[0..-2].zip(test_sink.records[1..-1]).all?{|line, nextl|

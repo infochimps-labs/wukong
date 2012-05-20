@@ -9,13 +9,6 @@ require 'hanuman/graphviz'
 
 describe :graphviz, :helpers => true do
 
-  it 'makes a png' do
-    gv = example_graph.to_graphviz
-
-    gv.save(Pathname.path_to(:tmp, gv.name.to_s), 'png')
-    # puts File.read(Pathname.path_to(:tmp, "#{gv.name}.dot"))
-  end
-
   it 'builder works as expected' do
     example_dot = Hanuman::GraphvizBuilder.new(:three_shapes) do  |gv|
       # many ways to access/create edges and nodes

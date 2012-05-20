@@ -28,9 +28,17 @@ module Wukong
       dataflow
     end
 
+    def workflow(name, attrs={}, &block)
+      attrs[:name] = name = name.to_sym
+      workflow = @workflows[name] ||= Workflow.new(:name => name)
+      workflow.receive!(attrs, &block)
+      workflow
+    end
+
     def self.extended(base)
       base.instance_eval do
         @dataflows = Hash.new
+        @workflows = Hash.new
       end
     end
   end

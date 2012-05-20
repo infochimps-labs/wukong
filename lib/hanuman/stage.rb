@@ -70,14 +70,8 @@ module Hanuman
       true
     end
 
-    def tree(options={})
-      { :name => name,
-        :input => input.name,
-      }
-    end
-
-    def report(options={})
-      tree(options)
+    def report
+      self.attributes
     end
 
   end
@@ -89,5 +83,15 @@ module Hanuman
 
   class Resource < Stage
     field :schema, Gorillib::Factory, :default => ->{ Whatever }
+    collection :inputs,  Hanuman::Stage
+    collection :outputs, Hanuman::Stage
+
+    def set_input(name, stage)
+      set_collection_item(:inputs, name, stage)
+    end
+    def set_output(name, stage)
+      set_collection_item(:outputs, name, stage)
+    end
+
   end
 end
