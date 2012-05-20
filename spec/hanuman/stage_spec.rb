@@ -41,7 +41,7 @@ describe :stages, :helpers => true do
 
       context '#into' do
         it 'asks its owner to register an edge into self from given stage' do
-          mock_dataflow.should_receive(:connect).with(subject, mock_processor)
+          mock_dataflow.should_receive(:connect).with(subject, mock_processor, nil, nil)
           subject.into mock_processor
         end
         it 'returns the stage itself, for chaining' do
@@ -51,7 +51,7 @@ describe :stages, :helpers => true do
 
       context '#from' do
         it 'asks its owner to register an edge from self into given stage' do
-          mock_dataflow.should_receive(:connect).with(mock_processor, subject)
+          mock_dataflow.should_receive(:connect).with(mock_processor, subject, nil, nil)
           subject.from mock_processor
         end
         it 'returns the stage itself, for chaining' do

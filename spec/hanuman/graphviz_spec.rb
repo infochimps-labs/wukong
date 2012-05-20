@@ -4,8 +4,26 @@ require 'gorillib/builder'
 require 'hanuman/stage'
 require 'hanuman/graph'
 require 'hanuman/chain'
+
+require 'wukong'
+require 'hanuman/graphvizzer'
+
 require 'hanuman/graphviz_builder'
 require 'hanuman/graphviz'
+
+
+load Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
+describe 'Cherry Pie Example', :examples_spec => true, :helpers => true do
+
+  it 'makes a png' do
+    gv = Wukong.to_graphviz
+
+    basename = Pathname.path_to(:tmp, 'cherry_pie')
+    gv.save(basename, 'png')
+    puts File.read("#{basename}.dot")
+  end
+
+end
 
 describe :graphviz, :helpers => true do
 
