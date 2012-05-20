@@ -88,13 +88,24 @@ module Hanuman
       set_collection_item(:outputs, name, stage)
     end
 
-    def input(name=nil)
-      raise ArgumentError, "Stages have only one input" unless input_name.nil? || input_name.to_s == '_'
-      get_collection_item(:inputs, name)
+    def input(input_name=:_)
+      get_collection_item(:inputs, input_name)
     end
-    def output(name=nil)
-      raise ArgumentError, "Stages have only one output" unless output_name.nil? || output_name.to_s == '_'
-      get_collection_item(:outputs, name)
+    def output(output_name=:_)
+      get_collection_item(:outputs, output_name)
+    end
+
+    def self.register_action(meth_name=nil, &block)
+      meth_name ||= handle ; klass = self
+      Hanuman::Graph.send(:define_method, meth_name) do |*args, &block|
+        begin
+          klass.make(workflow=self, *args, &block)
+        rescue StandardError => err ; err.polish_2("adding #{meth_name} to #{self.name} on #{args}") rescue nil ; raise ; end
+      end
+    end
+
+    def self.make(workflow, *args, &block)
+      workflow.add_stage new(*args, &block)
     end
   end
 

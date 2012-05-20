@@ -4,14 +4,8 @@ module Hanuman
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
 
-    def initialize(*)
-      @stage_count = 0
-      super
-    end
-
     def next_name_for(stage, basename=nil)
-      @stage_count += 1
-      "#{basename || stage.class.handle}_#{@stage_count - 1}"
+      "#{basename || stage.class.handle}_#{stages.size}"
     end
 
     def add_stage(stage)
@@ -52,26 +46,25 @@ module Hanuman
       stage(name, :_type => Hanuman::Resource, &block)
     end
 
-
-    def self.register_action(name, klass=nil, &meth_body)
-      name = name.to_sym
-      raise ArgumentError, 'Supply either a class or a block, not both' if (klass && meth_body) || (!klass && !meth_body)
-      if block_given?
-        define_method(name) do |*args, &blk|
-          add_stage meth_body.call(*args, &blk)
-        end
-      else
-        define_method(name) do |*args, &blk|
-          begin
-            stage = klass.new(*args, &blk)
-            add_stage stage
-          rescue StandardError => err
-            err.polish_2("adding #{name}") rescue nil
-            raise
-          end
-        end
-      end
-    end
+    # def self.register_action(name, klass=nil, &meth_body)
+    #   name = name.to_sym
+    #   raise ArgumentError, 'Supply either a class or a block, not both' if (klass && meth_body) || (!klass && !meth_body)
+    #   if block_given?
+    #     define_method(name) do |*args, &blk|
+    #       add_stage meth_body.call(*args, &blk)
+    #     end
+    #   else
+    #     define_method(name) do |*args, &blk|
+    #       begin
+    #         stage = klass.new(*args, &blk)
+    #         add_stage stage
+    #       rescue StandardError => err
+    #         err.polish_2("adding #{name}") rescue nil
+    #         raise
+    #       end
+    #     end
+    #   end
+    # end
 
   end
 end

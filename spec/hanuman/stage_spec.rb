@@ -16,6 +16,7 @@ describe :stages, :helpers => true do
     context 'edges' do
       before do
         subject.write_attribute(:owner, mock_dataflow)
+        mock_processor.stub(:name).and_return(:mock_processor)
         mock_dataflow.stub(:connect)
       end
 

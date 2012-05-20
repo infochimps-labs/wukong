@@ -1,59 +1,41 @@
 class Wukong::Workflow
-  class Mix < Shell
-    register_action
-  end
-  # def mix(name, *input_stages, &block)
-  #   options = input_stages.extract_options!
-  #   shell(name, *input_stages, options.merge(
-  #       :command_factory => Wukong::Workflow::Mix), &block)
-  # end
-
-  class Split < Command
-    register_action
-  end
-
-  class Flatten < Command
-    register_action
-  end
+  class Container  < Hanuman::Resource ; end
+  class Combine    < Hanuman::Action  ; register_action ; end
+  class AddTo      < Shell   ; register_action ; end
+  class Split      < Hanuman::Action ; register_action ; end
+  class RollingPin < Hanuman::Action ; register_action ; end
+  class Cook       < Command ; register_action ; end
+  class Cool       < Command ; register_action ; end
 end
 
 # TODO: repeated calls don't retrieve object again
 
 Wukong.workflow(:cherry_pie) do
   graph(:crust) do
-    mix(:small_bowl_a, :flour, :salt, :shortening) > :crumbly_mixture
+    add_to(:small_bowl_a, :flour, :salt, :shortening) > :crumbly_mixture
 
-    mix(:small_bowl_b, :crumbly_mixture, :buttermilk) > :dough
+    combine << :crumbly_mixture <<
+      :buttermilk > :dough
 
-    split(:a) << :dough > :ball
+    two_balls = split << :dough
+    two_balls > :ball_for_top
+    two_balls > :ball_for_bottom
+
+    combine <<
+      :pie_tin  <<
+      (rolling_pin << :ball_for_bottom) >
+      :pie_tin_with_crust
   end
 
-  graph(:assemble) do
-    flatten(:rolling_pin, owner.graph(:crust) )
+  graph(:filling) do
+    add_to(:saucepan, :cherries, :corn_starch) > self
   end
 
-    # action(:flatten) << resource(:ball1) << resource(:rolling_pin) << resource(:cutting_board)
-    # resource(:crust_base) << action(:flatten)
-    #
-    # output( resource(:crust_base) )
+  rolling_pin << stage(:crust).stage(:ball_for_top) > :top
 
-  #end
+  combine << stage(:crust).stage(:pie_tin_with_crust) << :filling << :top > :raw_pie
 
-  # action(:assemble).input(:crust)
-  # action(:assemble).input(:filling)
-  #
-  # action(:bake_pie).input(:assemble)
-  #
-  # self.input(:bake_pie)
-  #
-  # # output
-  #
-  # graph(:filling) do
-  #   action(:add).input(:cherries)
-  # end
-  #
-  #action(:make_pie) << graph(:crust).output
-  # action(:bake_pie).input(:make_pie_out, action(:make_pie).output )
+  cook(:oven, :raw_pie) > cool(:wire_rack) > self
 
   p self
 end

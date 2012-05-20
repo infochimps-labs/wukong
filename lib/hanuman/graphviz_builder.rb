@@ -45,12 +45,14 @@ module Hanuman
       :ylorrd   => 9
     }
 
-    SHAPES = %w(Mcircle Mdiamond Msquare box box3d circle component
-              diamond doublecircle doubleoctagon egg ellipse folder
-              hexagon house invhouse invtrapezium invtriangle none
-              note octagon parallelogram pentagon plaintext point
-              polygon rect rectangle septagon square tab trapezium
-              triangle tripleoctagon).map(&:to_sym)
+    SHAPES = %w[
+      Mcircle Mdiamond Msquare box box3d circle component
+      diamond doublecircle doubleoctagon egg ellipse folder
+      hexagon house invhouse invtrapezium invtriangle none
+      note octagon parallelogram pentagon plaintext point
+      polygon rect rectangle septagon square tab trapezium
+      triangle tripleoctagon
+    ].map(&:to_sym)
 
     STYLES = %w(dashed dotted solid invis bold filled diagonals rounded).map(&:to_sym)
 
