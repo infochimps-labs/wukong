@@ -4,17 +4,14 @@ module Hanuman
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
 
-    member     :input,   Hanuman::Stage, :doc => 'stage(s) in graph that feed into this one', :default => ->{ Hanuman::Stage.new(:name => "#{self.name}:input") }
-    member     :output,  Hanuman::Stage, :doc => 'stage(s) in graph this one feeds into'
-
     def initialize(*)
       @stage_count = 0
       super
     end
 
-    def next_name_for(stage)
+    def next_name_for(stage, basename=nil)
       @stage_count += 1
-      "#{stage.class.handle}_#{@stage_count - 1}"
+      "#{basename || stage.class.handle}_#{@stage_count - 1}"
     end
 
     def add_stage(stage)
@@ -32,6 +29,8 @@ module Hanuman
 
     def connect(st_a, st_b, a_out_slot=nil, b_in_slot=nil)
       a_out_slot ||= :_ ; b_in_slot ||= :_
+      st_a = resource(st_a) if st_a.is_a?(Symbol)
+      st_b = resource(st_b) if st_b.is_a?(Symbol)
       add_edge(st_a, st_b, a_out_slot, b_in_slot)
       st_a.set_output a_out_slot, st_b
       st_b.set_input  b_in_slot,  st_a
@@ -63,7 +62,13 @@ module Hanuman
         end
       else
         define_method(name) do |*args, &blk|
-          add_stage klass.new(*args, &blk)
+          begin
+            stage = klass.new(*args, &blk)
+            add_stage stage
+          rescue StandardError => err
+            err.polish_2("adding #{name}") rescue nil
+            raise
+          end
         end
       end
     end

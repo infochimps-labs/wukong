@@ -500,22 +500,26 @@ module Hanuman
 
     class Edge < Thingy
 
-      attr_accessor :from, :to
+      attr_accessor :from, :to, :from_slot, :to_slot
 
       ##
       # Create a new edge in +graph+ from +from+ to +to+.
 
-      def initialize graph, from, to
+      def initialize graph, from, to, from_slot=nil, to_slot=nil
         super graph
-        self.from = from
-        self.to = to
+        self.from      = from
+        self.to        = to
+        self.from_slot = from_slot
+        self.to_slot   = to_slot
       end
 
       ##
       # Returns the edge in dot syntax.
 
       def to_s
-        fromto = "%-18s -> %s" % [quote(from.name), quote(to.name)]
+        from_name = quote(from.name)
+        to_name   = quote(to.name)
+        fromto = "%-18s -> %s" % [from_name, to_name]
         pad_with_attributes(fromto)
       end
     end

@@ -1,5 +1,8 @@
 module Wukong
-  class Workflow  < Hanuman::Graph
+  class WorkflowGraph < Hanuman::Graph
+  end
+
+  class Workflow  < WorkflowGraph
     collection :inputs,  Hanuman::Stage
     collection :outputs, Hanuman::Stage
 
@@ -17,16 +20,6 @@ module Wukong
 
     def stop
       stages.each_value{|stage| stage.stop}
-    end
-
-    def shell(name, *input_stages, &block)
-      options = input_stages.extract_options!
-      shell_stage = Wukong::Workflow::Shell.new(options.merge(:name => name))
-      add_stage shell_stage
-      input_stages.map do |input|
-        other = resource(input)
-        connect(other, shell_stage, other.name, other.name)
-      end
     end
 
   end
