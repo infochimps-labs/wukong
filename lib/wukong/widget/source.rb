@@ -3,7 +3,7 @@ module Wukong
     def self.register_processor(name=nil, &block)
       name ||= handle
       klass = block_given? ? nil : self
-      Wukong::Dataflow.register_processor(name, klass, &block)
+      Wukong::Dataflow.register_action(name, klass, &block)
     end
 
     class Iter < Source

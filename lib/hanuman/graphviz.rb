@@ -10,7 +10,7 @@ module Hanuman
         '{',
         '{',
         "<in>",
-        input.name[0..0],
+        inputs.to_a.map{|slot| slot.name[0..0] }.join('|'),
          '}',
         '|',
         name.to_s.gsub(/[_\.]+/, "\n"),  '|',
@@ -27,7 +27,7 @@ module Hanuman
 
     def to_graphviz(gv, options={})
       graphviz_node(gv) unless is_a?(Graph)
-      gv.edge(input.fullname, fullname)
+      inputs.each_value{|input|       gv.edge(input.fullname, fullname) }
     end
   end
 
@@ -36,23 +36,21 @@ module Hanuman
   end
 
   class Graph < Action
-    self.draw_shape = :record
+    self.draw_shape = :Mrecord
 
     def graphviz_node(gv)
       str = [
         '{',
         '{',
         "<in>",
-        input.name[0..0],
+        inputs.to_a.map{|slot| slot.name[0..0] }.join('|'),
         '}',
         '|',
         name.to_s.gsub(/[_\.]+/, "\n"),
         '}'
       ].join
       nn = gv.node("#{fullname}.input", str)
-      # nn = gv.node(fullname, name.to_s.gsub(/[_\.]+/, "\n"))
-      # gv.shape(draw_shape) << nn
-      gv.shape(:Mrecord) << nn
+      gv.shape(draw_shape) << nn
       # nn.attributes << "fixedsize=true" << "width=1.0"
       nn
     end
@@ -70,8 +68,6 @@ module Hanuman
           stages.to_a.each do |stage|
             stage.to_graphviz(gv_cl, options)
           end
-
-          # gv.edge stages.to_a.last.fullname, fullname if stages.present?
           super(gv_cl)
         end
       end

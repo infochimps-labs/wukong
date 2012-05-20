@@ -1,25 +1,17 @@
 module Wukong
-
-  # class Dataflow
   class Dataflow  < Hanuman::Graph
-    # # FIXME: dummying out minimal locked-down interface for the moment
-    # include Gorillib::Model
-    # field :stages, Array
-    #
-    # def initialize(&block)
-    #   self.stages = []
-    #   instance_exec(&block) if block
-    # end
-    # # /FIXME
 
+    # FIXME: only handles one output slot
     def process(rec)
       stages.to_a.first.process(rec)
     end
-
-    # FIXME: only handles one output slot
     def set_output(sink)
       stages.to_a.last.set_output :_, sink
     end
+
+    #
+    # lifecycle
+    #
 
     def setup
       stages.each_value{|stage| stage.setup}
@@ -53,18 +45,5 @@ module Wukong
       end
     end
 
-    def self.register_processor(name, klass=nil, &meth_body)
-      name = name.to_sym
-      raise ArgumentError, 'Supply either a processor class or a block' if (klass && meth_body) || (!klass && !meth_body)
-      if block_given?
-        define_method(name) do |*args, &blk|
-          add_stage meth_body.call(*args, &blk)
-        end
-      else
-        define_method(name) do |*args, &blk|
-          add_stage klass.new(*args, &blk)
-        end
-      end
-    end
   end
 end

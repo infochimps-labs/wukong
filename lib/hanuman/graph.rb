@@ -19,8 +19,8 @@ module Hanuman
 
     def add_stage(stage)
       stage.write_attribute(:name, next_name_for(stage)) if not stage.name?
-      stages << stage
       stage.write_attribute(:owner, self)
+      stages << stage
       stage
     end
 
@@ -30,12 +30,11 @@ module Hanuman
       edges[a_slot_name] = b_slot_name
     end
 
-    def connect(st_a, st_b, a_out_slot=:_, b_in_slot=:_)
+    def connect(st_a, st_b, a_out_slot=nil, b_in_slot=nil)
+      a_out_slot ||= :_ ; b_in_slot ||= :_
       add_edge(st_a, st_b, a_out_slot, b_in_slot)
-      # st_a.set_output_slot(st_b, a_out_slot, b_in_slot)
-      # st_b.set_input_slot( st_a, a_out_slot, b_in_slot)
-      st_a.outslot.stage = st_b
-      st_b.inslot.stage  = st_a
+      st_a.set_output a_out_slot, st_b
+      st_b.set_input  b_in_slot,  st_a
     end
 
     def tree(options={})
@@ -52,6 +51,21 @@ module Hanuman
 
     def resource(name, &block)
       stage(name, :_type => Hanuman::Resource, &block)
+    end
+
+
+    def self.register_action(name, klass=nil, &meth_body)
+      name = name.to_sym
+      raise ArgumentError, 'Supply either a class or a block, not both' if (klass && meth_body) || (!klass && !meth_body)
+      if block_given?
+        define_method(name) do |*args, &blk|
+          add_stage meth_body.call(*args, &blk)
+        end
+      else
+        define_method(name) do |*args, &blk|
+          add_stage klass.new(*args, &blk)
+        end
+      end
     end
 
   end
