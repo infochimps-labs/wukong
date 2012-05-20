@@ -4,6 +4,9 @@ module Hanuman
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
 
+    member     :input,   Hanuman::Stage, :doc => 'stage(s) in graph that feed into this one', :default => ->{ Hanuman::Stage.new(:name => "#{self.name}:input") }
+    member     :output,  Hanuman::Stage, :doc => 'stage(s) in graph this one feeds into'
+
     def initialize(*)
       @stage_count = 0
       super
@@ -31,8 +34,8 @@ module Hanuman
       add_edge(st_a, st_b, a_out_slot, b_in_slot)
       # st_a.set_output_slot(st_b, a_out_slot, b_in_slot)
       # st_b.set_input_slot( st_a, a_out_slot, b_in_slot)
-      st_a.write_attribute(:output, st_b)
-      st_b.write_attribute(:input,  st_a)
+      st_a.outslot.stage = st_b
+      st_b.inslot.stage  = st_a
     end
 
     def tree(options={})

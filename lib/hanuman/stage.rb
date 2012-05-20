@@ -2,10 +2,8 @@ module Hanuman
   class Stage
     include Gorillib::Builder
 
-    field      :name,    Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph', :tester => true
-    member     :input,   Hanuman::Stage, :doc => 'stage(s) in graph that feed into this one', :default => ->{ Hanuman::Stage.new(:name => "#{self.name}:input") }
-    member     :output,  Hanuman::Stage, :doc => 'stage(s) in graph this one feeds into'
-    member     :owner,   Hanuman::Stage, :doc => 'the graph this stage sits in'
+    field      :name,    Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph', :present => true
+    member     :owner,   Whatever,       :doc => 'the graph this stage sits in'
     field      :doc,     String,         :doc => 'briefly documents this stage and its purpose'
 
     # @returns the stage, namespaced by the graph that owns it

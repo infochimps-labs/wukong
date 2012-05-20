@@ -38,10 +38,6 @@ describe Wukong::LocalRunner, :examples_spec => true, :helpers => true do
     }
 
     it '' do
-      subject.receive! do
-        puts 'workflow', self, sources, sinks
-        flow.stages.to_a.each{|st| puts st }
-      end
       subject.run
     end
 
