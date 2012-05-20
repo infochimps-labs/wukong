@@ -26,7 +26,11 @@ module Wukong
       def select?(str)
         re.match(str)
       end
-      register_processor(:re){|val, attrs={}, &block| new(attrs.merge(:re => val)) }
+
+      def self.make(workflow, re, attrs={}, &block)
+        super workflow, attrs.merge(:re => re), &block
+      end
+      register_processor(:re)
     end
 
     class RegexpRejecter < Rejecter
@@ -34,7 +38,11 @@ module Wukong
       def reject?(str)
         re.match(str)
       end
-      register_processor(:not_re){|val, attrs={}, &block| new(attrs.merge(:re => val)) }
+
+      def self.make(workflow, re, attrs={}, &block)
+        super workflow, attrs.merge(:re => re), &block
+      end
+      register_processor(:not_re)
     end
 
     class ProcFilter < Filter
@@ -73,7 +81,11 @@ module Wukong
         super(record)
         self.count += 1
       end
-      register_processor{|max, attrs={}, &block| new(attrs.merge(:max_records => max)) }
+
+      def self.make(workflow, max, attrs={}, &block)
+        super workflow, attrs.merge(:max_records => max), &block
+      end
+      register_processor
     end
 
   end

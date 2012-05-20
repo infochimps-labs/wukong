@@ -1,38 +1,48 @@
 require 'gorillib/string/human'
 module Hanuman
 
-  class Stage
+  Stage.class_eval do
     class_attribute :draw_shape
     self.draw_shape = :record
 
-    def to_graphviz(gv, options={})
+    def to_graphviz(gv, draw_edges=true)
+      gv.node(self.fullname,
+        :label    => name,
+        :shape    => draw_shape)
+      inputs.each_value do |input|
+        gv.edge(input.fullname, fullname)
+      end
+    end
+  end
+
+  ::Wukong::Workflow::Command.class_eval do
+    self.draw_shape = :record
+
+    def to_graphviz(gv, draw_edges=true)
       gv.node(self.fullname,
         :label    => name,
         :inslots  => inputs.to_a.map{|slot|  slot.name},
         :outslots => outputs.to_a.map{|slot| slot.name},
+        :shape    => draw_shape
         )
       inputs.each_value do |input|
-        output_name = outputs.empty? ? "_" : outputs.to_a.first.name
-        gv.edge(input.fullname, fullname, output_name, input.name)
+        gv.edge(input.fullname, fullname)
       end
     end
   end
 
-  class Action < Stage
-    self.draw_shape = :square
+  Resource.class_eval do
+    self.draw_shape = :Mrecord
   end
 
   class Graph < Action
-    self.draw_shape = :Mrecord
-
+    self.draw_shape = :record
     def to_graphviz(gv)
       gv.graph(fullname, :label => name) do |gv2|
-        gv2.node("#{self.fullname}_i", :label => '(in)', :shape => :parallelogram)
         stages.each_value{|stage| stage.to_graphviz(gv2) }
-        gv2.node("#{self.fullname}", :label => '(out)', :shape => :parallelogram)
       end
+      super(gv, false)
     end
-
   end
 
   module ::Wukong::Universe

@@ -2,9 +2,9 @@ module Wukong
   class Processor < Hanuman::Action
     include Hanuman::Stage::SingleInput
     include Hanuman::Stage::SingleOutput
-    
+
     field :name, Symbol, :default => ->{ self.class.handle }
-    
+
     # override this in your subclass
     def process(record)
     end
@@ -15,9 +15,7 @@ module Wukong
     end
 
     def self.register_processor(name=nil, &block)
-      name ||= handle
-      klass = block_given? ? nil : self
-      Wukong::Dataflow.register_action(name, klass, &block)
+      register_action(name, &block)
     end
   end
 
@@ -30,11 +28,12 @@ module Wukong
   end
 
   class Null < Processor
+    self.register_processor
+    
     # accepts records, emits none
     def process(*)
       # ze goggles... zey do nussing!
     end
-    register_processor
   end
 
   #
@@ -50,7 +49,7 @@ module Wukong
   # @see Map
   class Foreach < Processor
     self.register_processor
-    
+
     # @param [Proc] proc used for body of process method
     # @yield ... or supply it as a &block arg.
     def initialize(prc=nil, &block)
@@ -90,10 +89,11 @@ module Wukong
   # @example turn a document into all its words
   #   input > map{|line| line.split(/\W+/) } > flatten > output
   class Flatten < Processor
+    self.register_processor
+
     def process(iter)
       iter.each{|*args| emit(*args) }
     end
-    register_processor
   end
 
 end

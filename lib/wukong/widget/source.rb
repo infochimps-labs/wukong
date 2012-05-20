@@ -1,9 +1,7 @@
 module Wukong
-  class Source < Hanuman::Stage
-    def self.register_processor(name=nil, &block)
-      name ||= handle
-      klass = block_given? ? nil : self
-      Wukong::Dataflow.register_action(name, klass, &block)
+  class Source < Hanuman::Action
+    def self.register_source(name=nil, &block)
+      register_action(name, &block)
     end
 
     class Iter < Source
@@ -38,7 +36,7 @@ module Wukong
         super
         @file = $stdin
       end
-      register_processor
+      register_source
     end
 
     class FileSource < Wukong::Source::IO
@@ -52,7 +50,7 @@ module Wukong
         @file = File.open(filename)
       end
 
-      register_processor
+      register_source
     end
 
     class Integers < Wukong::Source
@@ -73,7 +71,7 @@ module Wukong
           @num += step
         end
       end
-      register_processor :integers
+      register_source :integers
     end
   end
 end
