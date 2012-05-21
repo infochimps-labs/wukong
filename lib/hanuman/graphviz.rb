@@ -1,17 +1,16 @@
-require 'gorillib/string/human'
 module Hanuman
 
   Stage.class_eval do
     class_attribute :draw_shape
     self.draw_shape = :record
 
-    def to_graphviz(gv, draw_edges=true)
+    def to_graphviz(gv)
       gv.node(self.fullname,
         :label    => name,
         :shape    => draw_shape)
-      inputs.to_a.each do |input|
-        gv.edge(input.fullname, self.fullname)
-      end
+      # inputs.to_a.each do |input|
+      #   gv.edge(input.fullname, self.fullname)
+      # end
     end
   end
 
@@ -23,16 +22,22 @@ module Hanuman
         :outslots => outslots.to_a.map{|slot| slot.name},
         :shape    => draw_shape
         )
-      inslots.to_a.each do |inslot|
-        next unless inslot.input?
-        gv.edge(inslot.input.fullname, inslot.fullname)
-      end
+      # inslots.to_a.each do |inslot|
+      #   next unless inslot.input?
+      #   gv.edge(inslot.input.fullname, inslot.fullname)
+      # end
     end
   end
 
   InputSlot.class_eval do
     def fullname
       %Q{"#{stage.fullname}":#{name}}
+    end
+  end
+
+  OutputSlot.class_eval do
+    def fullname
+      %Q{"#{stage.fullname}":out_#{name}}
     end
   end
 
@@ -45,11 +50,11 @@ module Hanuman
     def to_graphviz(gv)
       gv.graph(fullname, :label => name) do |gv2|
         stages.each_value{|stage| stage.to_graphviz(gv2) }
-        # edges.each_pair do |from, into|
-        #   gv2.edge(from.fullname, into.fullname)
-        # end
+        edges.each_pair do |from, into|
+          gv2.edge(from.fullname, into.fullname)
+        end
       end
-      super(gv, false)
+      super(gv)
     end
   end
 
