@@ -19,19 +19,8 @@ begin require 'yajl' ; require 'yajl/json_gem' ; rescue LoadError => e ; require
 require 'multi_json'
 
 require 'configliere'
-require 'gorillib'
-require 'pathname'
-require 'gorillib/string/simple_inflector'
-require 'gorillib/string/inflections'
-require 'gorillib/string/constantize'
-require 'gorillib/hash/mash'
-require 'gorillib/metaprogramming/delegation'
-require 'gorillib/metaprogramming/concern'
+require 'gorillib/some'
 
-
-require 'gorillib/model'
-require 'gorillib/model/field'
-require 'gorillib/model/defaults'
 require 'gorillib/builder'
 
 # require 'wukong/mixin/from_file'
@@ -40,9 +29,7 @@ require 'gorillib/builder'
 
 require 'wukong/settings'
 
-require 'hanuman/stage'              # base object for building blocks
-require 'hanuman/slot'               # ports for inputs and outputs of stages
-require 'hanuman/graph'              # coordinates wukong stages
+require 'hanuman'
 
 # Dataflow
 
