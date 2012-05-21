@@ -31,7 +31,8 @@ Wukong.processor :recompose do
   end
 end
 
-Wukong.dataflow(:telegram) do
+class TelegramUniverse ; extend Wukong::Universe ; end
+TelegramUniverse.dataflow(:telegram) do
   map{|line| line.blank? ? [""] : line.strip.split(/\s+/m) } >
     flatten >
     recompose(:break_length => 80)
