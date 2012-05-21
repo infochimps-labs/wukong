@@ -3,8 +3,8 @@ module Hanuman
   class Graph < Action
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
-    has_input
-    has_output
+    include Hanuman::IsOwnInputSlot
+    include Hanuman::IsOwnOutputSlot
 
     def next_name_for(stage, basename=nil)
       "#{basename || stage.class.handle}_#{stages.size}"

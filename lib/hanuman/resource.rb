@@ -1,7 +1,7 @@
 module Hanuman
   class Resource < Stage
-    has_input
-    has_output
+    include Hanuman::IsOwnInputSlot
+    include Hanuman::IsOwnOutputSlot
     field :schema, Gorillib::Factory, :default => ->{ Whatever }
   end
 end

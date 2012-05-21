@@ -3,6 +3,12 @@ require 'wukong'
 
 describe :processors, :helpers => true, :widgets => true do
   subject{ described_class.new }
+  let(:mock_dataflow){ md = mock('dataflow') ; md }
+
+  describe Wukong::Processor do
+    it_behaves_like 'it can be linked from'
+    it_behaves_like 'it can be linked into'
+  end
 
   describe Wukong::Map do
     it_behaves_like 'a processor'

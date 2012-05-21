@@ -77,10 +77,8 @@ module Wukong
 
   module RunnerWithInputOutput
     extend Gorillib::Concern
-    included do
-      has_inputs
-      has_outputs
-    end
+    include Hanuman::IsOwnInputSlot
+    include Hanuman::IsOwnOutputSlot
 
     # sugar for a command that takes input to produce output.
     #

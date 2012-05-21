@@ -15,7 +15,6 @@ module Hanuman
       Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
     end
 
-
     #
     # Methods
     #

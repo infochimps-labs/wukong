@@ -3,8 +3,8 @@ module Wukong
   end
 
   class Workflow  < WorkflowGraph
-    has_input
-    has_output
+    include Hanuman::IsOwnInputSlot
+    include Hanuman::IsOwnOutputSlot
 
     #
     # lifecycle
