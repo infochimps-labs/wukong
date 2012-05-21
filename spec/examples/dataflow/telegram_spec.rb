@@ -69,13 +69,10 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
     Wukong::LocalRunner.new do
       output_filename = Pathname.path_to(:tmp, 'output/dataflow/telegram/names.txt')
       output_filename.dirname.mkpath
-  
+
       source   :test_source, Wukong::Source::FileSource.new(Pathname.path_to(:data, 'rectification_of_names.txt'))
       sink     :default_sink,   Wukong::Sink::FileSink.new(output_filename)
       flow     Wukong.dataflow(:telegram)
-
-      p [sinks]
-      p [sink(:test_sink)]
     end.run
   end
 

@@ -37,5 +37,4 @@ Wukong.workflow(:cherry_pie) do
 
   cook(:oven, :raw_pie) > cool(:wire_rack) > self
 
-  p self
 end

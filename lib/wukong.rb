@@ -41,8 +41,8 @@ require 'gorillib/builder'
 require 'wukong/settings'
 
 require 'hanuman/stage'              # base object for building blocks
-require 'hanuman/graph'              # coordinates wukong stages
 require 'hanuman/slot'               # ports for inputs and outputs of stages
+require 'hanuman/graph'              # coordinates wukong stages
 
 # Dataflow
 

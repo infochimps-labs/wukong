@@ -3,12 +3,8 @@ module Wukong
   end
 
   class Workflow  < WorkflowGraph
-    collection :inputs,  Hanuman::Stage
-    collection :outputs, Hanuman::Stage
-
-    def set_output(sink)
-      stages.to_a.last.set_output :_, sink
-    end
+    include Hanuman::Inlinkable
+    include Hanuman::Outlinkable
 
     #
     # lifecycle
