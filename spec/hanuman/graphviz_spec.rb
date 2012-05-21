@@ -1,43 +1,44 @@
 require 'spec_helper'
 
-require 'gorillib/builder'
-require 'hanuman'
-
 require 'wukong'
-
 require 'hanuman/graphvizzer'
 require 'hanuman/graphviz'
 
+describe 'Graphviz View' do
 
-load Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
-describe 'Cherry Pie Example', :examples_spec => true, :helpers => true do
-
-  it 'makes a png' do
-    gv = Wukong.to_graphviz
-
-    basename = Pathname.path_to(:tmp, 'cherry_pie')
-    gv.save(basename, 'png')
-    # puts File.read("#{basename}.dot")
+  can_run_graphviz = false
+  begin
+    result = `dot -V 2>&1`
+    can_run_graphviz = ($?.to_i == 0) && (result =~ /dot - graphviz version/)
+  rescue StandardError
   end
 
-end
 
-# describe :graphviz, :helpers => true do
-#
-#   it 'builder works as expected' do
-#     example_dot = Hanuman::GraphvizBuilder.new(:three_shapes) do  |gv|
-#       # many ways to access/create edges and nodes
-#       gv.edge "top", "mid"
-#       gv["top"]["btm"]
-#       gv.node("btm") >> "top"
-#
-#       gv.square   << gv.node("top")
-#       gv.triangle << gv.node("mid")
-#
-#       gv.red   << gv.node("top") << gv.edge("top", "mid")
-#       gv.green << gv.node("mid") << gv.edge("mid", "btm")
-#       gv.blue  << gv.node("btm") << gv.edge("top", "btm")
-#     end
-#     example_dot.to_s.should == "digraph \"three_shapes\" {\n  \"top\"                                    [ shape = square,color = red ];\n  \"mid\"                                    [ shape = triangle,color = green ];\n  \"btm\"                                    [ color = blue ];\n  \"top\"              -> \"mid\"              [ color = red ];\n  \"top\"              -> \"btm\"              [ color = blue ];\n  \"btm\"              -> \"top\";\n  \"mid\"              -> \"btm\"              [ color = green ];\n}"
-#   end
-# end
+  if can_run_graphviz
+
+    describe 'Cherry Pie Example', :examples_spec => true, :helpers => true do
+      it 'makes a png' do
+        require Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
+        gv = Warrant.to_graphviz
+
+        basename = Pathname.path_to(:tmp, 'cherry_pie')
+        gv.save(basename, 'png')
+        # puts File.read("#{basename}.dot")
+      end
+    end
+
+    describe 'Telegram Dataflow Example', :examples_spec => true, :helpers => true do
+      it 'makes a png' do
+        require Pathname.path_to(:examples, 'dataflow/telegram.rb')
+        gv = TelegramUniverse.to_graphviz
+
+        basename = Pathname.path_to(:tmp, 'telegram')
+        gv.save(basename, 'png')
+        # puts File.read("#{basename}.dot")
+      end
+    end
+
+  else
+    it 'requires graphviz -- brew/apt install graphviz, it is pretty awesome'
+  end
+end

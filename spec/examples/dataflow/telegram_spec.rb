@@ -72,7 +72,7 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
 
       source   :test_source, Wukong::Source::FileSource.new(Pathname.path_to(:data, 'rectification_of_names.txt'))
       sink     :default_sink,   Wukong::Sink::FileSink.new(output_filename)
-      flow     Wukong.dataflow(:telegram)
+      flow     TelegramUniverse.dataflow(:telegram)
     end.run
   end
 

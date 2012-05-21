@@ -60,11 +60,12 @@ module Hanuman
 
   module ::Wukong::Universe
     def to_graphviz
-      gv = Hanuman::Graphvizzer::Universe.new(
-        :name => self.name,
-        :orient => :TD, :engine => :dot)
+      gv = Hanuman::Graphvizzer::Universe.new(:name => self.name)
       @workflows.each do |_, workflow|
         workflow.to_graphviz(gv)
+      end
+      @dataflows.each do |_, dataflow|
+        dataflow.to_graphviz(gv)
       end
       gv
     end

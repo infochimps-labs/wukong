@@ -25,7 +25,8 @@ end
 
 # TODO: make repeated calls not retrieve object again -- it seems lookup is the special case, not creation.
 
-Wukong.workflow(:cherry_pie) do
+class Warrant ; extend Wukong::Universe ; end
+Warrant.workflow(:cherry_pie) do
   graph(:crust) do
     add_to(:small_bowl, :flour, :salt, :shortening) > :crumbly_mixture
 
