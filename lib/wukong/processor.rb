@@ -1,7 +1,7 @@
 module Wukong
   class Processor < Hanuman::Action
-    has_input
-    has_output
+    include Hanuman::IsOwnInputSlot
+    include Hanuman::IsOwnOutputSlot
 
     field :name, Symbol, :default => ->{ self.class.handle }
 
