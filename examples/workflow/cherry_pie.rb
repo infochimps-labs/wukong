@@ -23,30 +23,33 @@ class Wukong::Workflow
   end
 end
 
-# TODO: repeated calls don't retrieve object again
+# TODO: make repeated calls not retrieve object again -- it seems lookup is the special case, not creation.
 
 Wukong.workflow(:cherry_pie) do
   graph(:crust) do
     add_to(:small_bowl, :flour, :salt, :shortening) > :crumbly_mixture
 
+    # equvalently:
+    #   add_to(:crumbly_mixture, :buttermilk) > :dough
     add_to(:crumbly_mixture) << :buttermilk > :dough
-    # add_to(:crumbly_mixture, :buttermilk) > :dough
 
     split(:dough).into(:ball_for_top, :ball_for_bottom)
 
-    # combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_with_crust
+    # equvalently:
+    #  combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_with_crust
     combine(:pie_tin, (rolling_pin << :ball_for_bottom)).into(:pie_tin_with_crust)
+
     self << stage(:ball_for_bottom)
     self << stage(:pie_tin_with_crust)
   end
 
   graph(:filling) do
-    drain(:cherries).into(:cherry_juice, :drained_cherries)
+    drain(:cherries).into(:drained_cherries, :cherry_juice)
     add_to(:saucepan, :corn_starch, :sugar, :salt) >
       whisk << :cherry_juice >
       :raw_goop
     cook(:raw_goop, :trigger => 'goop slightly thickened') > :goop
-    add_to(:goop, :cherries, :butter) > cool > self
+    add_to(:goop, :drained_cherries, :butter) > cool > self
   end
 
   rolling_pin << stage(:crust).stage(:ball_for_top) > :top_crust

@@ -44,10 +44,10 @@ module Hanuman
     def connect(from_slot, into_slot)
       from_slot = lookup(from_slot)
       into_slot = lookup(into_slot)
-      edges[from_slot] = into_slot
+      actual_from_slot = from_slot.set_output(into_slot)
+      actual_into_slot = into_slot.set_input( from_slot)
       #
-      from_slot.set_output into_slot
-      into_slot.set_input  from_slot
+      edges[actual_from_slot] = actual_into_slot
       [from_slot, into_slot]
     end
 

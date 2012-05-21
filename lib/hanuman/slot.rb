@@ -7,6 +7,7 @@ module Hanuman
 
     def set_input(stage)
       write_attribute(:input, stage)
+      self
     end
 
     # wire another slot into this one
@@ -31,6 +32,7 @@ module Hanuman
 
     def set_output(stage)
       write_attribute(:output, stage)
+      self
     end
 
     # wire this slot into another slot
@@ -95,11 +97,13 @@ module Hanuman
   class InputSlot < Slot
     include  Hanuman::Inlinkable
     field    :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
+    def other() input ; end
   end
 
   class OutputSlot < Slot
     include  Hanuman::Outlinkable
     field    :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
+    def other() ouput ; end
   end
 
   module Slottable
@@ -141,14 +145,14 @@ module Hanuman
         fields[field_name].is_a?(InputSlotField)
       end
 
-      def define_input_reader(field)
+      def define_slot_reader(field)
         meth_name  = field.basename
         slot_name  = field.name
         type       = field.type
         define_meta_module_method(meth_name, true) do ||
           begin
             slot = read_attribute(slot_name) or return nil
-            slot.input
+            slot.other
           rescue StandardError => err ; err.polish("#{self.class}.#{meth_name}") rescue nil ; raise ; end
         end
       end
@@ -168,30 +172,58 @@ module Hanuman
           alias_method "#{meth_name}=", "receive_#{meth_name}"
         end
       end
+
+      def define_outslot_receiver(field)
+        meth_name  = field.basename
+        slot_name  = field.name
+        type       = field.type
+        define_meta_module_method("receive_#{meth_name}", true) do |stage|
+          begin
+            slot = read_attribute(slot_name) or return nil
+            slot.into(stage)
+            self
+          rescue StandardError => err ; err.polish("#{self.class} set slot #{meth_name} to #{stage}") rescue nil ; raise ; end
+        end
+        meta_module.module_eval do
+          alias_method "#{meth_name}=", "receive_#{meth_name}"
+        end
+      end
     end
 
     class SlotField < Gorillib::Model::Field
       self.visibilities = visibilities.merge(:reader => true, :writer => true, :tester => true)
       field :basename, Symbol
       field :stage_type, Whatever, :doc => 'type for stages this slot accepts'
+      class_attribute :slot_type
 
       def initialize(basename, type, model, options={})
         name = "#{basename}_slot"
         options[:stage_type] = type
-        type = Hanuman::InputSlot
+        slot_type = self.slot_type
         options[:basename] = basename
-        options[:default]  = ->{ InputSlot.new(:name => basename, :stage => self) }
-        super(name, type, model, options)
+        options[:default]  = ->{ slot_type.new(:name => basename, :stage => self) }
+        super(name, slot_type, model, options)
       end
     end
 
     class InputSlotField < SlotField
+      self.slot_type = Hanuman::InputSlot
       def inscribe_methods(model)
+        model.__send__(:define_slot_reader, self)
         model.__send__(:define_inslot_receiver, self)
-        model.__send__(:define_input_reader, self)
         super
       end
     end
+
+    class OutputSlotField < SlotField
+      self.slot_type = Hanuman::OutputSlot
+      def inscribe_methods(model)
+        model.__send__(:define_slot_reader, self)
+        model.__send__(:define_outslot_receiver, self)
+        super
+      end
+    end
+
   end
 
   module SplatInputs
@@ -203,9 +235,9 @@ module Hanuman
     end
 
     def set_input(stage)
-      p ['connecting splat', self.name, stage.name]
       slot = Hanuman::InputSlot.new(:name => stage.name, :stage => self, :input => stage)
       self.splat_inslots << slot
+      slot
     end
 
     def inslots
@@ -218,6 +250,7 @@ module Hanuman
       slot = Hanuman::OutputSlot.new(
         :name => stage.name, :stage => self, :output => stage)
       self.outslots << slot
+      slot
     end
 
     def outputs
