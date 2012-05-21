@@ -1,7 +1,7 @@
 module Wukong
   class Processor < Hanuman::Action
-    include Hanuman::Inlinkable
-    include Hanuman::Outlinkable
+    has_input
+    has_output
 
     field :name, Symbol, :default => ->{ self.class.handle }
 
@@ -56,6 +56,12 @@ module Wukong
       prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
       define_singleton_method(:process, prc)
     end
+
+    def self.make(workflow, *args, &block)
+      obj = new(*args, &block)
+      workflow.add_stage obj
+      obj
+    end
   end
 
   #
@@ -80,6 +86,12 @@ module Wukong
     def process(*args)
       result = blk.call(*args)
       emit result unless result.nil?
+    end
+
+    def self.make(workflow, *args, &block)
+      obj = new(*args, &block)
+      workflow.add_stage obj
+      obj
     end
   end
 

@@ -3,8 +3,8 @@ module Wukong
   end
 
   class Workflow  < WorkflowGraph
-    include Hanuman::Inlinkable
-    include Hanuman::Outlinkable
+    has_input
+    has_output
 
     #
     # lifecycle

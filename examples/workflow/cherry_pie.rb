@@ -1,40 +1,59 @@
 class Wukong::Workflow
-  class Container  < Hanuman::Resource ; end
-  class Combine    < Hanuman::Action  ; register_action ; end
-  class AddTo      < Shell   ; register_action ; end
-  class Split      < Hanuman::Action ; register_action ; end
-  class RollingPin < Hanuman::Action ; register_action ; end
-  class Cook       < Command ; register_action ; end
-  class Cool       < Command ; register_action ; end
+  class Container  < Hanuman::Resource  ; end
+
+  class Cook       < ActionWithInputs
+    register_action
+    field :trigger, String, :doc => 'stop cooking when this event is reached'
+  end
+  class Cool       < ActionWithInputs          ; register_action ; end
+
+  class Combine    < ActionWithInputs ; register_action ; end
+  class Split      < ActionWithInputs ; register_action ; end
+  class RollingPin < ActionWithInputs ; register_action ; end
+  class Drain      < ActionWithInputs ; register_action ; end
+  class Whisk      < ActionWithInputs ; register_action ; end
+
+  class AddTo < ActionWithInputs
+    register_action
+    consumes :container
+    def self.make(workflow, container, *input_stages, &block)
+      options = input_stages.extract_options!
+      super(workflow, *input_stages, options.merge(:container => container), &block)
+    end
+  end
 end
 
 # TODO: repeated calls don't retrieve object again
 
 Wukong.workflow(:cherry_pie) do
   graph(:crust) do
-    add_to(:small_bowl_a, :flour, :salt, :shortening) > :crumbly_mixture
+    add_to(:small_bowl, :flour, :salt, :shortening) > :crumbly_mixture
 
-    combine << :crumbly_mixture <<
-      :buttermilk > :dough
+    add_to(:crumbly_mixture) << :buttermilk > :dough
+    # add_to(:crumbly_mixture, :buttermilk) > :dough
 
-    two_balls = split << :dough
-    two_balls > :ball_for_top
-    two_balls > :ball_for_bottom
+    split(:dough).into(:ball_for_top, :ball_for_bottom)
 
-    combine <<
-      :pie_tin  <<
-      (rolling_pin << :ball_for_bottom) >
-      :pie_tin_with_crust
+    # combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_with_crust
+    combine(:pie_tin, (rolling_pin << :ball_for_bottom)).into(:pie_tin_with_crust)
+    self << stage(:ball_for_bottom)
+    self << stage(:pie_tin_with_crust)
   end
 
   graph(:filling) do
-    add_to(:saucepan, :cherries, :corn_starch) > self
+    drain(:cherries).into(:cherry_juice, :drained_cherries)
+    add_to(:saucepan, :corn_starch, :sugar, :salt) >
+      whisk << :cherry_juice >
+      :raw_goop
+    cook(:raw_goop, :trigger => 'goop slightly thickened') > :goop
+    add_to(:goop, :cherries, :butter) > cool > self
   end
 
-  rolling_pin << stage(:crust).stage(:ball_for_top) > :top
+  rolling_pin << stage(:crust).stage(:ball_for_top) > :top_crust
 
-  combine << stage(:crust).stage(:pie_tin_with_crust) << :filling << :top > :raw_pie
+  raw_pie = add_to(stage(:crust).stage(:pie_tin_with_crust), :filling)
+  raw_pie << :top_crust
 
-  cook(:oven, :raw_pie) > cool(:wire_rack) > self
+  cook(:oven, raw_pie) > cool(:wire_rack) > self
 
 end

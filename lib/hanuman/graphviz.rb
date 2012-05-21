@@ -9,15 +9,13 @@ module Hanuman
       gv.node(self.fullname,
         :label    => name,
         :shape    => draw_shape)
-      inputs.each_value do |input|
+      inputs.to_a.each do |input|
         gv.edge(input.fullname, self.fullname)
       end
     end
   end
 
-  ::Wukong::Workflow::Command.class_eval do
-    self.draw_shape = :record
-
+  Slottable.module_eval do
     def to_graphviz(gv, draw_edges=true)
       gv.node(self.fullname,
         :label    => name,

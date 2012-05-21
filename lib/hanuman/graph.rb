@@ -1,16 +1,6 @@
 module Hanuman
 
   class Action < Stage
-    include Hanuman::Inlinkable
-    include Hanuman::Outlinkable
-
-    def inputs
-      input?  ? { :_ => input } : {}
-    end
-    def outputs
-      output? ? { :_ => output } : {}
-    end
-
     def self.register_action(meth_name=nil, &block)
       meth_name ||= handle ; klass = self
       Hanuman::Graph.send(:define_method, meth_name) do |*args, &block|
@@ -21,27 +11,24 @@ module Hanuman
     end
 
     def self.make(workflow, *args, &block)
-      workflow.add_stage new(*args, &block)
+      stage = new(*args)
+      workflow.add_stage stage
+      stage.receive!(&block)
+      stage
     end
   end
 
   class Resource < Stage
-    include Hanuman::Inlinkable
-    include Hanuman::Outlinkable
-
+    has_input
+    has_output
     field :schema, Gorillib::Factory, :default => ->{ Whatever }
-
-    def inputs
-      input?  ? { :_ => input } : {}
-    end
-    def outputs
-      output? ? { :_ => output } : {}
-    end
   end
 
   class Graph < Action
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
+    has_input
+    has_output
 
     def next_name_for(stage, basename=nil)
       "#{basename || stage.class.handle}_#{stages.size}"
