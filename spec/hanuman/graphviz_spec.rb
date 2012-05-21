@@ -6,15 +6,15 @@ require 'hanuman/graphviz'
 
 describe 'Graphviz View' do
 
-  can_run_graphviz = false
+  graphviz_no_worky = false
   begin
     result = `dot -V 2>&1`
-    can_run_graphviz = ($?.to_i == 0) && (result =~ /dot - graphviz version/)
+    graphviz_no_worky = ($?.to_i != 0) || (result !~ /dot - graphviz version/)
   rescue StandardError
   end
-
-
-  if can_run_graphviz
+  if graphviz_no_worky
+    it 'requires graphviz -- brew/apt install graphviz, it is pretty awesome'
+  else
 
     describe 'Cherry Pie Example', :examples_spec => true, :helpers => true do
       it 'makes a png' do
@@ -38,7 +38,5 @@ describe 'Graphviz View' do
       end
     end
 
-  else
-    it 'requires graphviz -- brew/apt install graphviz, it is pretty awesome'
   end
 end
