@@ -3,6 +3,7 @@ require 'gorillib/utils/capture_output'
 shared_context 'wukong', :helpers => true do
   let(:mock_val   ){ mock('mock val') }
   let(:mock_record){ mock('mock record') }
+  let(:mock_stage    ){ m = mock('mock stage') ; m }
   let(:mock_processor){ m = mock ; m.stub(:name => 'mock processor', :attributes => { :a => :b }) ; m }
 
   let(:test_source){          Wukong::Integers.new(:name => :integers, :max => 100) }

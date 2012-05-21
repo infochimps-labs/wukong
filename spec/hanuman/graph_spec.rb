@@ -1,9 +1,5 @@
 require 'spec_helper'
-
-require 'gorillib/builder'
-require 'hanuman/stage'
-require 'hanuman/slot'
-require 'hanuman/graph'
+require 'hanuman'
 
 describe Hanuman::Graph, :helpers => true do
 
