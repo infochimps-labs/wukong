@@ -5,7 +5,6 @@ module Hanuman
 
     field      :name,    Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph', :tester => true
     member     :owner,   Whatever,       :doc => 'the graph this stage sits in'
-    field      :doc,     String,         :doc => 'briefly documents this stage and its purpose'
 
     # @returns the stage, namespaced by the graph that owns it
     def fullname
@@ -16,7 +15,6 @@ module Hanuman
       Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
     end
 
-    def to_key() name ; end
 
     #
     # Methods
@@ -31,6 +29,10 @@ module Hanuman
     def stop
     end
 
+    def lookup(stage)
+      owner.lookup(stage)
+    end
+
     #
     # Graph connections
     #
@@ -43,5 +45,7 @@ module Hanuman
       self.attributes
     end
 
+    def to_key()      name   ; end
+    def key_method() :name ; end
   end
 end

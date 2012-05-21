@@ -4,9 +4,6 @@ module Hanuman
   #
   module Inlinkable
     extend Gorillib::Concern
-    included do
-      field   :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
-    end
 
     def set_input(stage)
       write_attribute(:input, stage)
@@ -31,9 +28,6 @@ module Hanuman
 
   module Outlinkable
     extend Gorillib::Concern
-    included do
-      field  :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
-    end
 
     def set_output(stage)
       write_attribute(:output, stage)
@@ -56,144 +50,185 @@ module Hanuman
     end
   end
 
-  class InputSlot
+  module IsOwnInputSlot
+    extend  Gorillib::Concern
+    include Inlinkable
+    included do
+      field   :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
+    end
+    def inputs
+      input?  ? [input] : []
+    end
+  end
+
+  module IsOwnOutputSlot
+    extend  Gorillib::Concern
+    include Outlinkable
+    included do
+      field  :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
+    end
+    def outputs
+      output? ? [output] : []
+    end
+  end
+
+  Stage.class_eval do
+    def self.has_input
+      include Hanuman::IsOwnInputSlot
+    end
+
+    def self.has_output
+      include Hanuman::IsOwnOutputSlot
+    end
+  end
+
+  class Slot
     include  Gorillib::Builder
+    field    :name,  Symbol
+    field    :stage, Hanuman::Stage
+    def owner
+      stage.owner
+    end
+    def to_key() name ; end
+  end
+
+  class InputSlot < Slot
     include  Hanuman::Inlinkable
-    field    :name,  Symbol
-    field    :stage, Hanuman::Stage
-
-    def owner
-      stage.owner
-    end
+    field    :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
   end
 
-  class OutputSlot
-    include  Gorillib::Builder
+  class OutputSlot < Slot
     include  Hanuman::Outlinkable
-    field    :name,  Symbol
-    field    :stage, Hanuman::Stage
+    field    :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
+  end
 
-    def owner
-      stage.owner
+  module Slottable
+    extend Gorillib::Concern
+    include Inlinkable
+    include Outlinkable
+
+    included do
+      collection :outslots, Hanuman::OutputSlot
+    end
+
+    def inputs
+      inslots.to_a.map{|slot| slot.input }.compact
+    end
+
+    def inslots
+      self.class.inslot_fields.map{|_, slot_field| read_attribute(slot_field.name) }
+    end
+
+    def handle_extra_attributes(attrs)
+      self.class.inslot_fields.each do |_, field|
+        field_name = field.basename
+        next unless attrs.has_key?(field_name)
+        self.public_send(:"receive_#{field_name}", attrs.delete(field_name))
+      end
+      super(attrs)
+    end
+
+    module ClassMethods
+      def consumes(name, options={})
+        field name, Hanuman::Stage, {:field_type => InputSlotField}.merge(options)
+      end
+
+      def inslot_fields
+        fields.select{|_, field| field.is_a?(InputSlotField) }
+      end
+
+      def inslot_field?(field_name)
+        fields[field_name].is_a?(InputSlotField)
+      end
+
+      def define_input_reader(field)
+        meth_name  = field.basename
+        slot_name  = field.name
+        type       = field.type
+        define_meta_module_method(meth_name, true) do ||
+          begin
+            slot = read_attribute(slot_name) or return nil
+            slot.input
+          rescue StandardError => err ; err.polish("#{self.class}.#{meth_name}") rescue nil ; raise ; end
+        end
+      end
+
+      def define_inslot_receiver(field)
+        meth_name  = field.basename
+        slot_name  = field.name
+        type       = field.type
+        define_meta_module_method("receive_#{meth_name}", true) do |stage|
+          begin
+            slot = read_attribute(slot_name) or return nil
+            slot.from(stage)
+            self
+          rescue StandardError => err ; err.polish("#{self.class} set slot #{meth_name} to #{stage}") rescue nil ; raise ; end
+        end
+        meta_module.module_eval do
+          alias_method "#{meth_name}=", "receive_#{meth_name}"
+        end
+      end
+    end
+
+    class SlotField < Gorillib::Model::Field
+      self.visibilities = visibilities.merge(:reader => true, :writer => true, :tester => true)
+      field :basename, Symbol
+      field :stage_type, Whatever, :doc => 'type for stages this slot accepts'
+
+      def initialize(basename, type, model, options={})
+        name = "#{basename}_slot"
+        options[:stage_type] = type
+        type = Hanuman::InputSlot
+        options[:basename] = basename
+        options[:default]  = ->{ InputSlot.new(:name => basename, :stage => self) }
+        super(name, type, model, options)
+      end
+    end
+
+    class InputSlotField < SlotField
+      def inscribe_methods(model)
+        model.__send__(:define_inslot_receiver, self)
+        model.__send__(:define_input_reader, self)
+        super
+      end
     end
   end
 
-  class Slottable
+  module SplatInputs
+    extend  Gorillib::Concern
+    include Slottable
 
-    def self.consumes
-
+    included do
+      collection :splat_inslots, Hanuman::InputSlot
     end
 
+    def set_input(stage)
+      p ['connecting splat', self.name, stage.name]
+      slot = Hanuman::InputSlot.new(:name => stage.name, :stage => self, :input => stage)
+      self.splat_inslots << slot
+    end
+
+    def inslots
+      super + splat_inslots.to_a
+    end
   end
 
+  module SplatOutputs
+    def set_output(stage)
+      slot = Hanuman::OutputSlot.new(
+        :name => stage.name, :stage => self, :output => stage)
+      self.outslots << slot
+    end
 
-    # collection :inputs,  Hanuman::Stage
-    # collection :outputs, Hanuman::Stage
-    #
-    # def set_input(name, stage)
-    #   set_collection_item(:inputs, name, stage)
-    # end
-    # def set_output(name, stage)
-    #   set_collection_item(:outputs, name, stage)
-    # end
-    #
-    # def input(input_name=:_)
-    #   get_collection_item(:inputs, input_name)
-    # end
-    # def output(output_name=:_)
-    #   get_collection_item(:outputs, output_name)
-    # end
+    def outputs
+      outslots.to_a.map{|slot| slot.output }
+    end
 
-  # class Inslot
-  #   include Gorillib::Concern
-  #   include Gorillib::Model
-  #   field  :name, Symbol
-  #   member :input, Hanuman::Stage, :writer => true
-  #   member :stage, Hanuman::Stage, :writer => true
-  #
-  #   def owner
-  #     stage.owner
-  #   end
-  # end
-  #
-  # class Stage
-  #
-  #   module Slottable
-  #     extend Gorillib::Concern
-  #
-  #     def into_slot() self ; end
-  #
-  #     def consumes
-  #     end
-  #
-  #
-  #
-  #     def input(input_name=nil)
-  #       raise ArgumentError, "Processors have only one input" unless input_name.nil? || input_name.to_s == '_'
-  #       read_attribute(:input)
-  #     end
-  #     def set_input(input_name, stage)
-  #       raise ArgumentError, "Processors have only one input" unless input_name.to_s == '_'
-  #       self.set_input(stage
-  #     end
-  #     def inputs() [input] end
-  #
-  #     # @return Array[Hanuman::Stage] The input to this stage
-  #     def inslot(input_name=nil)
-  #       raise ArgumentError, "Processors have only one input" unless input_name.nil? || input_name.to_s == '_'
-  #       read_attribute(:inslot)
-  #     end
-  #     def inslots() [inslot] ; end
-  #
-  #     # # @return [Hanuman::Stage] Stage that feeds into the given input slot
-  #     # def input(input_name=nil)
-  #     #   inslot(input_name).stage
-  #     # end
-  #     # def set_input(input_name, stage)
-  #     #   inslot(input_name).stage = stage
-  #     # end
-  #     # # @return Array[Hanuman::Stage] List holding the inputs to this stage
-  #     # def inputs()
-  #     #   inslots.map(&:stage)
-  #     # end
-  #   end
-  #
-  #   module SingleOutput
-  #     extend Gorillib::Concern
-  #     included do
-  #       field :outslot,  Hanuman::Slot,  :default => Slot.new(:_), :doc => 'stage(s) in graph this one feeds into', :reader => false
-  #       field   :output,   Hanuman::Stage,                           :doc => 'stage(s) in graph this one feeds into', :reader => false, :writer => true
-  #     end
-  #
-  #     def output(output_name=nil)
-  #       raise ArgumentError, "Processors have only one output" unless output_name.nil? || output_name.to_s == '_'
-  #       read_attribute(:output)
-  #     end
-  #     def set_output(output_name, stage)
-  #       raise ArgumentError, "Processors have only one output" unless output_name.to_s == '_'
-  #       self.set_output stage
-  #     end
-  #     def outputs() [output] end
-  #
-  #     # @return Array[Hanuman::Stage] The output of this stage
-  #     def outslot(output_name=nil)
-  #       raise ArgumentError, "#{self} does not have an output slot named #{output_name}" unless output_name.nil? || output_name.to_s == '_'
-  #       read_attribute(:outslot)
-  #     end
-  #     # @return Array[Hanuman::Stage] List holding the single output of this stage
-  #     def outslots() [output] ; end
-  #
-  #     # def output(output_name=nil)
-  #     #   outslot(output_name).stage
-  #     # end
-  #     # def set_output(output_name, stage)
-  #     #   outslot(output_name).stage = stage
-  #     # end
-  #     # # @return Array[Hanuman::Stage] List holding the single output to this stage
-  #     # def outputs()
-  #     #   outslots.map(&:stage)
-  #     # end
-  #   end
-  # end
+    def into(*others)
+      others.each{|other| super(other)}
+      self
+    end
+  end
+
 
 end

@@ -82,10 +82,14 @@ module Hanuman
         outslots.map{|slot| "<out_#{slot}>#{slot[0..0]}"}.join("|")
       end
 
+      def label
+        super.to_s.gsub(/_\d+$/, '').gsub(/[_\.]+/, "\\n")
+      end
+
       def structured_label
         str = "{"
         str << "{" << inslots_str << "}|"  unless inslots.empty?
-        str << label.to_s.gsub(/[_\.]+/, "\\n")
+        str << label
         str << "|{" << outslots_str << "}" unless outslots.empty?
         str << "}"
       end
