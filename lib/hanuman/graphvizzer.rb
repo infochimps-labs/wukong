@@ -23,6 +23,7 @@ module Hanuman
       end
 
       def quote(str)
+        return str if str.to_s.include?('"')
         %Q{"#{str}"}
       end
 
@@ -99,16 +100,12 @@ module Hanuman
     class Edge < Item
       field :from, String
       field :into, String
-      field :from_slot, String
-      field :into_slot, String
 
       def to_s
         str = ""
         str << quote(from)
-        str << ":out_#{from_slot}" if from_slot
         str << " -> "
         str << quote(into)
-        str << ":#{into_slot}" if into_slot
         line(str)
       end
     end
@@ -142,7 +139,6 @@ module Hanuman
       end
 
       def to_s
-        # p [self, owner]
         str = []
         str << brace("subgraph #{quote("cluster_#{name}")}")
         str << line(attrib("  label", quote(label)))
@@ -175,7 +171,6 @@ module Hanuman
       def depth() 0; end
 
       def save(path, type=nil)
-        p ['saving', path, type, self.to_s]
         File.open "#{path}.dot", "w" do |f|
           f.puts self.to_s
         end

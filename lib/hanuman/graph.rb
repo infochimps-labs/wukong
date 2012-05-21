@@ -1,5 +1,44 @@
 module Hanuman
 
+  class Action < Stage
+    include Hanuman::Inlinkable
+    include Hanuman::Outlinkable
+
+    def inputs
+      input?  ? { :_ => input } : {}
+    end
+    def outputs
+      output? ? { :_ => output } : {}
+    end
+
+    def self.register_action(meth_name=nil, &block)
+      meth_name ||= handle ; klass = self
+      Hanuman::Graph.send(:define_method, meth_name) do |*args, &block|
+        begin
+          klass.make(workflow=self, *args, &block)
+        rescue StandardError => err ; err.polish("adding #{meth_name} to #{self.name} on #{args}") rescue nil ; raise ; end
+      end
+    end
+
+    def self.make(workflow, *args, &block)
+      workflow.add_stage new(*args, &block)
+    end
+  end
+
+  class Resource < Stage
+    include Hanuman::Inlinkable
+    include Hanuman::Outlinkable
+
+    field :schema, Gorillib::Factory, :default => ->{ Whatever }
+
+    def inputs
+      input?  ? { :_ => input } : {}
+    end
+    def outputs
+      output? ? { :_ => output } : {}
+    end
+  end
+
   class Graph < Action
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
@@ -15,19 +54,18 @@ module Hanuman
       stage
     end
 
-    def add_edge(st_a, st_b, a_out_slot, b_in_slot)
-      a_slot_name = "#{st_a.fullname}[#{a_out_slot}]"
-      b_slot_name = "[#{b_in_slot}]#{st_b.fullname}"
-      edges[a_slot_name] = b_slot_name
+    def connect(from_slot, into_slot)
+      from_slot = lookup(from_slot)
+      into_slot = lookup(into_slot)
+      edges[from_slot] = into_slot
+      #
+      from_slot.set_output into_slot
+      into_slot.set_input  from_slot
+      [from_slot, into_slot]
     end
 
-    def connect(st_a, st_b, a_out_slot=nil, b_in_slot=nil)
-      a_out_slot ||= :_ ; b_in_slot ||= :_
-      st_a = resource(st_a) if st_a.is_a?(Symbol)
-      st_b = resource(st_b) if st_b.is_a?(Symbol)
-      add_edge(st_a, st_b, a_out_slot, b_in_slot)
-      st_a.set_output a_out_slot, st_b
-      st_b.set_input  b_in_slot,  st_a
+    def lookup(ref)
+      ref.is_a?(Symbol) ? resource(ref) : ref
     end
 
     def tree(options={})
@@ -45,26 +83,6 @@ module Hanuman
     def resource(name, &block)
       stage(name, :_type => Hanuman::Resource, &block)
     end
-
-    # def self.register_action(name, klass=nil, &meth_body)
-    #   name = name.to_sym
-    #   raise ArgumentError, 'Supply either a class or a block, not both' if (klass && meth_body) || (!klass && !meth_body)
-    #   if block_given?
-    #     define_method(name) do |*args, &blk|
-    #       add_stage meth_body.call(*args, &blk)
-    #     end
-    #   else
-    #     define_method(name) do |*args, &blk|
-    #       begin
-    #         stage = klass.new(*args, &blk)
-    #         add_stage stage
-    #       rescue StandardError => err
-    #         err.polish_2("adding #{name}") rescue nil
-    #         raise
-    #       end
-    #     end
-    #   end
-    # end
-
   end
+
 end

@@ -1,7 +1,7 @@
 module Wukong
   class Processor < Hanuman::Action
-    include Hanuman::Stage::SingleInput
-    include Hanuman::Stage::SingleOutput
+    include Hanuman::Inlinkable
+    include Hanuman::Outlinkable
 
     field :name, Symbol, :default => ->{ self.class.handle }
 
@@ -29,7 +29,7 @@ module Wukong
 
   class Null < Processor
     self.register_processor
-    
+
     # accepts records, emits none
     def process(*)
       # ze goggles... zey do nussing!

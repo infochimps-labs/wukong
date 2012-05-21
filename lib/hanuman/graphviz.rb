@@ -10,7 +10,7 @@ module Hanuman
         :label    => name,
         :shape    => draw_shape)
       inputs.each_value do |input|
-        gv.edge(input.fullname, fullname)
+        gv.edge(input.fullname, self.fullname)
       end
     end
   end
@@ -21,13 +21,20 @@ module Hanuman
     def to_graphviz(gv, draw_edges=true)
       gv.node(self.fullname,
         :label    => name,
-        :inslots  => inputs.to_a.map{|slot|  slot.name},
-        :outslots => outputs.to_a.map{|slot| slot.name},
+        :inslots  => inslots.to_a.map{|slot|  slot.name},
+        :outslots => outslots.to_a.map{|slot| slot.name},
         :shape    => draw_shape
         )
-      inputs.each_value do |input|
-        gv.edge(input.fullname, fullname)
+      inslots.to_a.each do |inslot|
+        next unless inslot.input?
+        gv.edge(inslot.input.fullname, inslot.fullname)
       end
+    end
+  end
+
+  InputSlot.class_eval do
+    def fullname
+      %Q{"#{stage.fullname}":#{name}}
     end
   end
 
@@ -40,6 +47,9 @@ module Hanuman
     def to_graphviz(gv)
       gv.graph(fullname, :label => name) do |gv2|
         stages.each_value{|stage| stage.to_graphviz(gv2) }
+        # edges.each_pair do |from, into|
+        #   gv2.edge(from.fullname, into.fullname)
+        # end
       end
       super(gv, false)
     end

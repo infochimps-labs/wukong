@@ -6,7 +6,7 @@ module Wukong
       stages.to_a.first.process(rec)
     end
     def set_output(sink)
-      stages.to_a.last.set_output :_, sink
+      stages.to_a.last.set_output sink
     end
 
     #

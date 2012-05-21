@@ -1,6 +1,31 @@
 require 'spec_helper'
 require 'wukong'
 
+shared_examples_for 'it can be linked from' do
+  let(:mock_stage){ mock('mock stage') }
+  before{ mock_dataflow.stub(:connect) }
+
+  context '#>' do
+    it 'asks its owner to register an edge into self from given stage' do
+      mock_dataflow.should_receive(:connect).with(subject, mock_stage)
+      subject.into mock_stage
+    end
+    it 'returns the output stage' do
+      (subject > mock_stage).should == mock_stage
+    end
+  end
+
+  context '#into' do
+    it 'asks its owner to register an edge into self from given stage' do
+      mock_dataflow.should_receive(:connect).with(subject, mock_stage)
+      subject.into mock_stage
+    end
+    it 'returns the stage itself, for chaining' do
+      subject.into(mock_stage).should == subject
+    end
+  end
+end
+
 describe :stages, :helpers => true do
 
   describe Hanuman::Stage do
@@ -16,49 +41,29 @@ describe :stages, :helpers => true do
     context 'edges' do
       before do
         subject.write_attribute(:owner, mock_dataflow)
-        mock_processor.stub(:name).and_return(:mock_processor)
-        mock_dataflow.stub(:connect)
       end
 
-      context '#>' do
-        it 'delegates to into' do
-          subject.should_receive(:into).with(mock_processor)
-          subject > mock_processor
-        end
-        it 'returns the output stage' do
-          (subject > mock_processor).should == mock_processor
-        end
-      end
+      it_behaves_like 'it can be linked from'
 
-      context '#<<' do
-        it 'delegates to from' do
-          subject.should_receive(:from).with(mock_processor)
-          subject << mock_processor
-        end
-        it 'returns the stage itself, for chaining' do
-          (subject << mock_processor).should == subject
-        end
-      end
-
-      context '#into' do
-        it 'asks its owner to register an edge into self from given stage' do
-          mock_dataflow.should_receive(:connect).with(subject, mock_processor, nil, nil)
-          subject.into mock_processor
-        end
-        it 'returns the stage itself, for chaining' do
-          subject.into(mock_processor).should == subject
-        end
-      end
-
-      context '#from' do
-        it 'asks its owner to register an edge from self into given stage' do
-          mock_dataflow.should_receive(:connect).with(mock_processor, subject, nil, nil)
-          subject.from mock_processor
-        end
-        it 'returns the stage itself, for chaining' do
-          subject.from(mock_processor).should == subject
-        end
-      end
+      # context '#<<' do
+      #   it 'delegates to from' do
+      #     subject.should_receive(:from).with(mock_stage)
+      #     subject << mock_stage
+      #   end
+      #   it 'returns the stage itself, for chaining' do
+      #     (subject << mock_stage).should == subject
+      #   end
+      # end
+      #
+      # context '#from' do
+      #   it 'asks its owner to register an edge from self into given stage' do
+      #     mock_dataflow.should_receive(:connect).with(mock_stage, subject, nil, nil)
+      #     subject.from mock_stage
+      #   end
+      #   it 'returns the stage itself, for chaining' do
+      #     subject.from(mock_stage).should == subject
+      #   end
+      # end
 
       # it "sets the given stage as the output; returns the new stage" do
       #   subject.should_receive(:output).with(mock_processor).and_return(mock_val)
