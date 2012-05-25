@@ -1,7 +1,7 @@
-require 'bundler/setup'
-Bundler.require(:default, :test)
-
+require 'bundler/setup' ; Bundler.require(:default, :test)
 require 'gorillib/pathname'
+SimpleCov.start
+
 Pathname.register_path(:wukong_root, File.expand_path('..', File.dirname(__FILE__)))
 Pathname.register_path(:examples,    :wukong_root, 'examples')
 Pathname.register_path(:tmp,         :wukong_root, 'tmp')
