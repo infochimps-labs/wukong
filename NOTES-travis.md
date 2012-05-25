@@ -17,7 +17,7 @@
 
 # Specs
 
-* The graphviz spec could be made into an argument in spec helper, whether to run the file or not.
+* DONE ~The graphviz spec could be made into an argument in spec helper, whether to run the file or not.~
 
 * There should be a cleanup phase after specs have run to delete artifacts. 
 
