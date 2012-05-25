@@ -11,12 +11,14 @@
 
 * In `Wukong::Runner` why do I have to specify sinks/sources wih a name? are these ever referenced/used in any context later? Seems that the runner might not need names...
 
-* So many 80's references.
+* Is there a reason wukong has a config directory with a very outdated yaml file?
+
+* So many rad 80's references.
 
 # Specs
 
 * The graphviz spec could be made into an argument in spec helper, whether to run the file or not.
 
-* There should be a cleanup phase after spec have run to delete artifacts. 
+* There should be a cleanup phase after specs have run to delete artifacts. 
 
 
