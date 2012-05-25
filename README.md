@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/infochimps-labs/wukong.png)](http://travis-ci.org/infochimps-labs/wukong)
+# Wukong [![Build Status](https://secure.travis-ci.org/infochimps-labs/wukong.png)](http://travis-ci.org/infochimps-labs/wukong)
 
 Wukong is a toolkit for rapid, agile development of dataflows at any scale.
 
