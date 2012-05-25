@@ -1,3 +1,4 @@
+[![Build Status](https://secure.travis-ci.org/kornypoet/wukong.png)](http://travis-ci.org/kornypoet/wukong)
 
 Wukong is a toolkit for rapid, agile development of dataflows at any scale.
 
