@@ -13,6 +13,10 @@ $LOAD_PATH.unshift(Pathname.path_to('spec', 'support'))
 
 Dir[ Pathname.path_to('spec', 'support', '*.rb') ].each{|f| require f }
 
+result   = `dot -V 2>&1` rescue nil
+GRAPHVIZ = ($?.exitstatus == 0) && (result =~ /dot - graphviz version/)
+puts 'Some specs require graphviz to run -- brew/apt install graphviz, it is pretty awesome' unless GRAPHVIZ
+
 RSpec.configure do |config|
   include WukongTestHelpers
 end

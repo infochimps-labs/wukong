@@ -5,38 +5,25 @@ require 'hanuman/graphvizzer'
 require 'hanuman/graphviz'
 
 describe 'Graphviz View' do
+  describe 'Cherry Pie Example', :if => GRAPHVIZ, :examples_spec => true, :helpers => true do
+    it 'makes a png' do
+      require Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
+      gv = Warrant.to_graphviz
 
-  graphviz_no_worky = false
-  begin
-    result = `dot -V 2>&1`
-    graphviz_no_worky = ($?.to_i != 0) || (result !~ /dot - graphviz version/)
-  rescue StandardError
+      basename = Pathname.path_to(:tmp, 'cherry_pie')
+      gv.save(basename, 'png')
+      # puts File.read("#{basename}.dot")
+    end
   end
-  if graphviz_no_worky
-    it 'requires graphviz -- brew/apt install graphviz, it is pretty awesome'
-  else
 
-    describe 'Cherry Pie Example', :examples_spec => true, :helpers => true do
-      it 'makes a png' do
-        require Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
-        gv = Warrant.to_graphviz
+  describe 'Telegram Dataflow Example', :if => GRAPHVIZ, :examples_spec => true, :helpers => true do
+    it 'makes a png' do
+      require Pathname.path_to(:examples, 'dataflow/telegram.rb')
+      gv = TelegramUniverse.to_graphviz
 
-        basename = Pathname.path_to(:tmp, 'cherry_pie')
-        gv.save(basename, 'png')
-        # puts File.read("#{basename}.dot")
-      end
+      basename = Pathname.path_to(:tmp, 'telegram')
+      gv.save(basename, 'png')
+      # puts File.read("#{basename}.dot")
     end
-
-    describe 'Telegram Dataflow Example', :examples_spec => true, :helpers => true do
-      it 'makes a png' do
-        require Pathname.path_to(:examples, 'dataflow/telegram.rb')
-        gv = TelegramUniverse.to_graphviz
-
-        basename = Pathname.path_to(:tmp, 'telegram')
-        gv.save(basename, 'png')
-        # puts File.read("#{basename}.dot")
-      end
-    end
-
   end
 end
