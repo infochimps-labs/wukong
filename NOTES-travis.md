@@ -1,3 +1,5 @@
+# General
+
 * There is this awkward and unstated need that a dataflow set its output using `set_output(sink)`.
 ** `Wukong::LocalRunner` has this hard-coded to `sink(:test_sink)` - broke.
 
@@ -12,6 +14,8 @@
 * In `Wukong::Runner` why do I have to specify sinks/sources wih a name? are these ever referenced/used in any context later? Seems that the runner might not need names...
 
 * Is there a reason wukong has a config directory with a very outdated yaml file?
+
+* The Guardfile has a lot of debuggy cruft. Fixit.
 
 * So many rad 80's references.
 
