@@ -28,7 +28,7 @@ group :test do
   gem 'guard',        ">= 1.0"
   gem 'guard-rspec',  ">= 0.6"
   gem 'guard-yard'
-  gem 'guard-process'
+  # gem 'guard-process'
   gem 'simplecov',    ">= 0.5", :platform => :ruby_19
 
   if RUBY_PLATFORM.include?('darwin')
