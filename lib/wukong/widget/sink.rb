@@ -1,7 +1,6 @@
 module Wukong
   class Sink < Wukong::Processor
 
-
     class NullSink < Wukong::Sink
       def process(record)
         true # do nothing
