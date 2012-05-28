@@ -4,7 +4,6 @@ module Wukong
     class Stringifier < Processor
     end
 
-
     # def Stringifier.inherited(subklass)
     #   Wukong.register_formatter(subklass)
     # end
@@ -12,14 +11,14 @@ module Wukong
     require 'multi_json'
     class ToJson < Stringifier
       def process(record)
-        emit MultiJson.encode(record)
+        emit MultiJson.dump(record)
       end
       register_processor
     end
 
     class FromJson < Stringifier
       def process(record)
-        emit MultiJson.decode(record)
+        emit MultiJson.load(record)
       end
       register_processor
     end
