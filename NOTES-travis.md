@@ -15,13 +15,15 @@
 
 * Is there a reason wukong has a config directory with a very outdated yaml file?
 
-* The Guardfile has a lot of debuggy cruft. Fixit.
+* DONE ~~The Guardfile has a lot of debuggy cruft. Fixit.~~
+
+* DONE ~~Let's use Bundler to manage the gem instead of Jeweler.~~
 
 * So many rad 80's references.
 
 # Specs
 
-* DONE ~The graphviz spec could be made into an argument in spec helper, whether to run the file or not.~
+* DONE ~~The graphviz spec could be made into an argument in spec helper, whether to run the file or not.~~
 
 * There should be a cleanup phase after specs have run to delete artifacts. 
 
