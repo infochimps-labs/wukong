@@ -27,4 +27,5 @@
 
 * There should be a cleanup phase after specs have run to delete artifacts. 
 
+* A lot of examples. Most don't work. Fixit.
 
