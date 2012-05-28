@@ -15,7 +15,7 @@ describe 'wukong', :helpers => true do
     let(:json_string){ '{"abc":"def"}'  }
 
     describe Wukong::Widget::FromJson do
-      it 'encodes' do
+      it 'decodes' do
         subject.should_receive(:emit).with(json_data)
         subject.process(json_string)
       end
@@ -34,7 +34,7 @@ describe 'wukong', :helpers => true do
     let(:tsv_string){ "abc\tdef"     }
 
     describe Wukong::Widget::FromTsv do
-      it 'encodes' do
+      it 'decodes' do
         subject.should_receive(:emit).with(tsv_data)
         subject.process(tsv_string)
       end
