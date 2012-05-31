@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
 require 'rubygems' unless defined?(Gem)
 $LOAD_PATH.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
-require 'wukong/script'
+require 'wukong'
 
-Settings.use :commandline
-
-Settings.resolve!
-
-Settings.script_file ||= Settings.rest.shift
+load ARGV[0]
 
 case File.basename($0)
-when 'wu-map' then Settings.mode = :mapper
-when 'wu-red' then Settings.mode = :reducer
+when 'wu-map' then run_mode = :mapper
+when 'wu-red' then run_mode = :reducer
 end
 
-Wukong.run(Settings.script_file)
+Wukong::LocalRunner.new do
+  source :stdin,  Wukong::Source::Stdin.new
+  sink   :stdout, Wukong::Sink::Stdout.new
+  flow   Wukong.dataflow(run_mode)
+end.run

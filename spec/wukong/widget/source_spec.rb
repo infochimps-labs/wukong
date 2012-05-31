@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'wukong'
 
 describe :sources, :helpers => true do
 
