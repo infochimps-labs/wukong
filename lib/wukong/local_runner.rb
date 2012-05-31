@@ -1,4 +1,3 @@
-
 module Wukong
   class Runner
     include Gorillib::FancyBuilder
@@ -23,7 +22,7 @@ module Wukong
     end
 
   protected
-
+    
     # @return a list with inputs, flow and outputs, in that order
     def stages
       [sources.to_a, flow, sinks.to_a].flatten
@@ -57,7 +56,8 @@ module Wukong
     end
 
     def wire_flow
-      flow.set_output sink(:test_sink)
+      # flow.set_output sink(:test_sink)
+      flow.set_output sinks.to_a.last
     end
   end
 end

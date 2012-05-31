@@ -1,10 +1,11 @@
 module Wukong
-  class Dataflow  < Hanuman::Graph
+  class Dataflow < Hanuman::Graph
 
     # FIXME: only handles one output slot
     def process(rec)
       stages.to_a.first.process(rec)
     end
+
     def set_output(sink)
       stages.to_a.last.set_output sink
     end

@@ -2,7 +2,7 @@ module Wukong
   class WorkflowGraph < Hanuman::Graph
   end
 
-  class Workflow  < WorkflowGraph
+  class Workflow < WorkflowGraph
     include Hanuman::IsOwnInputSlot
     include Hanuman::IsOwnOutputSlot
 

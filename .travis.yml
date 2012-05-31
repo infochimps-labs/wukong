@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 1.9.3
+
+before_install: "git clone -b version_1 git://github.com/infochimps-labs/gorillib.git ~/builds/infochimps-labs/gorillib"
+
+branches:
+  only:
+    - wukong_ng
+
+notifications:
+  email: false
