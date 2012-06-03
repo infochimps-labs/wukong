@@ -4,7 +4,7 @@ module Wukong::Widget
   #
   # @see http://en.wikipedia.org/wiki/Union-find
   #
-  class UnionFind
+  class DisjointForest
     # Tree each node belongs to
     attr_reader :parents
     # Depth of node in that tree
@@ -19,23 +19,38 @@ module Wukong::Widget
       parents[val] = val
       ranks[val]   = 0
     end
-    def <<(val) ; add(val) ; end
+    alias_method :<<, :add
 
     def find(val)
+      add(val)   if !include?(val)
       return val if root?(val)
-      find parents[val]
+      parents[val] = find parents[val]
     end
-    def [](val) ; find(val) ; end
+    alias_method :[], :find
 
     def root?(val)
       parents[val] == val
     end
 
+    def include?(val)
+      parents.include?(val)
+    end
+
     def union(val_a, val_b)
       root_a = find(val_a)
       root_b = find(val_b)
-      parents[root_a] = root_b
-      root_b
+      return if root_a == root_b
+      # a and b are in different sets; merge the smaller to the larger
+      if    ranks[root_a] < ranks[root_b]
+        parents[root_a] = root_b
+      elsif ranks[root_a] > ranks[root_b]
+        parents[root_b] = root_a
+      else
+        parents[root_b] = root_a
+        ranks[root_a] += 1
+      end
     end
+    alias_method :merge, :union
+
   end
 end
