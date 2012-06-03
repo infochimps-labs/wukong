@@ -6,8 +6,8 @@ load Pathname.path_to(:examples, 'graph/minimum_spanning_tree.rb')
 
 describe 'Minimum Spanning Tree', :examples_spec => true, :helpers => true do
 
-  context Wukong::Widget::UnionFind do
-    subject{ Wukong::Widget::UnionFind.new }
+  context Wukong::Widget::DisjointForest do
+    subject{ Wukong::Widget::DisjointForest.new }
     it '' do
     end
   end

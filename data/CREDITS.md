@@ -1,6 +1,9 @@
 
+### graph/airfares.tsv
 
-### gitf_of_the_magi.rb
+Approximate city-city airfares, scraped from the [Bing Flight Search](http://www.bing.com/travel/flights) site on 2012 June 3. Used URLs of the form http://www.bing.com/travel/flight/flexibleTravel?form=TRHPFG&o=BWI and extracted fields directly from page text.
+
+### text/gift_of_the_magi.txt
 
 
 The [Project Gutenberg EBook of The Gift of the Magi, by O. Henry](http://www.gutenberg.org/cache/epub/7256/pg7256.txt) 
