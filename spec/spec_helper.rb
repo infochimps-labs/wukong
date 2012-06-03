@@ -1,10 +1,10 @@
 require 'bundler' ; Bundler.require(:development)
 
-SimpleCov.start do
-  add_filter '/gorillib/'
-  add_filter '/away/'
-  add_group  'Hanuman', '/hanuman/'
-end
+# SimpleCov.start do
+#   add_filter '/gorillib/'
+#   add_filter '/away/'
+#   add_group  'Hanuman', '/hanuman/'
+# end
 
 require 'wukong'
 require 'gorillib/pathname'
