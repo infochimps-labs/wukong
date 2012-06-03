@@ -14,7 +14,7 @@ Wukong.processor(:accumulator) do
   attr_accessor :current, :count
 
   def setup()  reset! ; end
-  
+
   def stop()   report_then_reset! ; end
 
   def reset!() @current = nil ; @count = 0 ; end
@@ -23,7 +23,7 @@ Wukong.processor(:accumulator) do
     emit [current, count] unless current.nil?
     reset!
   end
-  
+
   def accumulate(word, seen)
     @current = word if @current.nil?
     @count  += seen
@@ -31,7 +31,7 @@ Wukong.processor(:accumulator) do
 
   def process(pair)
     word, seen = pair
-    report_then_reset! unless word == current 
+    report_then_reset! unless word == current
     accumulate(word, seen.to_i)
   end
 

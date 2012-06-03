@@ -1,26 +1,31 @@
-CONSONANTS = /bcdfghjklmnpqrstvwxz/
-UPPERCASE  = /[A-Z]/
+Wukong.processor :pig_latinize do
 
-# Regular expression to identify the parts of a pig-latin-izable word
-PIG_LATIN_WORD_RE = %r{
-  \b                  # word boundary
-  ([#{CONSONANTS}]*)  # all initial consonants
-  ([\w\']+)           # remaining word characters
-  }xi                 # allow comments, case-insensitive
+  CONSONANTS = "bcdfghjklmnpqrstvwxz"
+  UPPERCASE  = /^[A-Z]/
 
+  # Regular expression to identify the parts of a pig-latin-izable word
+  PIG_LATIN_WORD_RE = %r{
+    \b                  # word boundary
+    ([#{CONSONANTS}]*)  # all initial consonants
+    ([\w\']+)           # remaining word characters
+  }xi
 
-def Wukong.latinize(line)
-  latinized = line.gsub(PIG_LATIN_WORD_RE) do
-    init, rest = [$1, $2]
-    init = 'w'       if init.blank?
-    rest.capitalize! if init =~ UPPERCASE
-    "#{rest}-#{init.downcase}ay"
+  def latinize(line)
+    line.gsub(PIG_LATIN_WORD_RE) do
+      init, rest = [$1, $2]
+      init = 'w'       if init.blank?
+      rest.capitalize! if init =~ UPPERCASE
+      "#{rest}#{init.downcase}ay"
+    end
   end
-  return latinized
+
+  def process(line)
+    emit latinize(line)
+  end
+
 end
 
-if self.to_s == 'Wukong'
-  mapper do |input|
-    input | map{|line| Wukong.latinize(line) }
-  end
+class PigLatinUniverse ; extend Wukong::Universe ; end
+PigLatinUniverse.dataflow(:pig_latin) do
+  pig_latinize
 end
