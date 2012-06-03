@@ -21,278 +21,6 @@ AUS	RDU	 388	Austin       	Raleigh
 AUS	SEA	 292	Austin       	Seattle         
 AUS	SFO	 271	Austin       	San Francisco   
 AUS	SJC	 296	Austin       	San Jose        
-DFW	ABQ	 314	Dallas       	Albuquerque     
-DFW	AMS	1417	Dallas       	Amsterdam       
-DFW	ATL	 188	Dallas       	Atlanta         
-DFW	AUS	 120	Dallas       	Austin          
-DFW	BDL	 323	Dallas       	Hartford        
-DFW	BHM	 368	Dallas       	Birmingham      
-DFW	BNA	 396	Dallas       	Nashville       
-DFW	BOS	 193	Dallas       	Boston          
-DFW	BUF	 241	Dallas       	Buffalo         
-DFW	BUR	 291	Dallas       	Burbank         
-DFW	BWI	 274	Dallas       	Baltimore       
-DFW	CDG	1236	Dallas       	Paris           
-DFW	CLE	 322	Dallas       	Cleveland       
-DFW	CLT	 330	Dallas       	Charlotte       
-DFW	CMH	 332	Dallas       	Columbus        
-DFW	COS	 319	Dallas       	Colorado Springs
-DFW	CUN	 426	Dallas       	Cancun          
-DFW	CVG	 380	Dallas       	Cincinnati      
-DFW	DAY	 380	Dallas       	Dayton          
-DFW	DCA	 369	Dallas       	Washington      
-DFW	DEN	 128	Dallas       	Denver          
-DFW	DTW	 286	Dallas       	Detroit         
-DFW	ELP	 248	Dallas       	El Paso         
-DFW	EWR	 353	Dallas       	Newark          
-DFW	FCO	1340	Dallas       	Rome            
-DFW	FLL	 228	Dallas       	Ft. Lauderdale  
-DFW	HNL	 774	Dallas       	Honolulu        
-DFW	HOU	 118	Dallas       	Houston         
-DFW	IAD	 372	Dallas       	Washington      
-DFW	IAH	 118	Dallas       	Houston         
-DFW	IND	 378	Dallas       	Indianapolis    
-DFW	JAX	 318	Dallas       	Jacksonville    
-DFW	JFK	 349	Dallas       	New York        
-DFW	LAS	 188	Dallas       	Las Vegas       
-DFW	LAX	 291	Dallas       	Los Angeles     
-DFW	LGA	 317	Dallas       	New York        
-DFW	LGW	1237	Dallas       	London          
-DFW	MBJ	 430	Dallas       	Montego Bay     
-DFW	MCI	 220	Dallas       	Kansas City     
-DFW	MCO	 244	Dallas       	Orlando         
-DFW	MDW	 286	Dallas       	Chicago         
-DFW	MEM	 367	Dallas       	Memphis         
-DFW	MEX	 478	Dallas       	Mexico City     
-DFW	MIA	 327	Dallas       	Miami           
-DFW	MKE	 332	Dallas       	Milwaukee       
-DFW	MSP	 338	Dallas       	Minneapolis     
-DFW	MSY	 200	Dallas       	New Orleans     
-DFW	NAS	 348	Dallas       	Nassau          
-DFW	OAK	 301	Dallas       	Oakland         
-DFW	ONT	 323	Dallas       	Ontario         
-DFW	ORD	 222	Dallas       	Chicago         
-DFW	ORF	 322	Dallas       	Norfolk         
-DFW	PDX	 228	Dallas       	Portland        
-DFW	PHL	 503	Dallas       	Philadelphia    
-DFW	PHX	 302	Dallas       	Phoenix         
-DFW	PIT	 241	Dallas       	Pittsburgh      
-DFW	PVR	 563	Dallas       	Puerto Vallarta 
-DFW	RDU	 320	Dallas       	Raleigh         
-DFW	RIC	 300	Dallas       	Richmond        
-DFW	RNO	 316	Dallas       	Reno            
-DFW	SAN	 248	Dallas       	San Diego       
-DFW	SAT	 188	Dallas       	San Antonio     
-DFW	SDF	 372	Dallas       	Louisville      
-DFW	SEA	 317	Dallas       	Seattle         
-DFW	SFO	 318	Dallas       	San Francisco   
-DFW	SJC	 487	Dallas       	San Jose        
-DFW	SLC	 351	Dallas       	Salt Lake City  
-DFW	SMF	 322	Dallas       	Sacramento      
-DFW	SNA	 320	Dallas       	Santa Ana       
-DFW	STL	 338	Dallas       	St. Louis       
-DFW	TPA	 248	Dallas       	Tampa           
-DFW	TUS	 290	Dallas       	Tucson          
-DFW	YVR	 610	Dallas       	Vancouver       
-DFW	YYZ	 591	Dallas       	Toronto         
-LGA	ABQ	 471	New York     	Albuquerque     
-LGA	ATL	 250	New York     	Atlanta         
-LGA	AUA	 375	New York     	Oranjestad      
-LGA	AUS	 303	New York     	Austin          
-LGA	BDA	 310	New York     	St. George      
-LGA	BHM	 276	New York     	Birmingham      
-LGA	BNA	 240	New York     	Nashville       
-LGA	BOS	 443	New York     	Boston          
-LGA	BUF	 160	New York     	Buffalo         
-LGA	CAE	 270	New York     	Columbia        
-LGA	CAK	 174	New York     	Akron           
-LGA	CHS	 278	New York     	Charleston      
-LGA	CLE	 254	New York     	Cleveland       
-LGA	CLT	 178	New York     	Charlotte       
-LGA	CMH	 280	New York     	Columbus        
-LGA	CUN	 482	New York     	Cancun          
-LGA	CVG	 447	New York     	Cincinnati      
-LGA	DAY	 230	New York     	Dayton          
-LGA	DCA	 377	New York     	Washington      
-LGA	DEN	 260	New York     	Denver          
-LGA	DFW	 291	New York     	Dallas          
-LGA	DTW	 208	New York     	Detroit         
-LGA	FLL	 208	New York     	Ft. Lauderdale  
-LGA	GSO	 245	New York     	Greensboro      
-LGA	HOU	 270	New York     	Houston         
-LGA	IAD	 120	New York     	Washington      
-LGA	IAH	 283	New York     	Houston         
-LGA	IND	 300	New York     	Indianapolis    
-LGA	JAX	 241	New York     	Jacksonville    
-LGA	LAS	 338	New York     	Las Vegas       
-LGA	LAX	 359	New York     	Los Angeles     
-LGA	MBJ	 365	New York     	Montego Bay     
-LGA	MCI	 241	New York     	Kansas City     
-LGA	MCO	 228	New York     	Orlando         
-LGA	MDW	 298	New York     	Chicago         
-LGA	MEM	 317	New York     	Memphis         
-LGA	MEX	 473	New York     	Mexico City     
-LGA	MIA	 184	New York     	Miami           
-LGA	MKE	 304	New York     	Milwaukee       
-LGA	MSP	 241	New York     	Minneapolis     
-LGA	MSY	 235	New York     	New Orleans     
-LGA	MYR	 208	New York     	Myrtle Beach    
-LGA	NAS	 283	New York     	Nassau          
-LGA	ORD	 158	New York     	Chicago         
-LGA	PBI	 200	New York     	West Palm Beach 
-LGA	PDX	 381	New York     	Portland        
-LGA	PHF	 337	New York     	Hampton         
-LGA	PHX	 340	New York     	Phoenix         
-LGA	PIT	 142	New York     	Pittsburgh      
-LGA	PUJ	 473	New York     	Jaguey          
-LGA	RDU	 180	New York     	Raleigh         
-LGA	RIC	 338	New York     	Richmond        
-LGA	SAN	 321	New York     	San Diego       
-LGA	SAV	 306	New York     	Savannah        
-LGA	SDF	 230	New York     	Louisville      
-LGA	SDQ	 425	New York     	Santo Domingo   
-LGA	SEA	 294	New York     	Seattle         
-LGA	SFO	 320	New York     	San Francisco   
-LGA	SJU	 207	New York     	San Juan        
-LGA	STL	 326	New York     	St. Louis       
-LGA	TPA	 200	New York     	Tampa           
-LGA	YUL	 316	New York     	Montreal        
-LGA	YYZ	 285	New York     	Toronto         
-ORD	ABQ	 411	Chicago      	Albuquerque     
-ORD	ALB	 349	Chicago      	Albany          
-ORD	AMS	1345	Chicago      	Amsterdam       
-ORD	ATL	 180	Chicago      	Atlanta         
-ORD	AUA	 373	Chicago      	Oranjestad      
-ORD	AUS	 418	Chicago      	Austin          
-ORD	BDL	 375	Chicago      	Hartford        
-ORD	BNA	 206	Chicago      	Nashville       
-ORD	BOS	 183	Chicago      	Boston          
-ORD	BUF	 220	Chicago      	Buffalo         
-ORD	BWI	 303	Chicago      	Baltimore       
-ORD	CDG	1132	Chicago      	Paris           
-ORD	CLE	 200	Chicago      	Cleveland       
-ORD	CLT	 312	Chicago      	Charlotte       
-ORD	CMH	 204	Chicago      	Columbus        
-ORD	CUN	 436	Chicago      	Cancun          
-ORD	CVG	 310	Chicago      	Cincinnati      
-ORD	DCA	 253	Chicago      	Washington      
-ORD	DEN	 148	Chicago      	Denver          
-ORD	DFW	 222	Chicago      	Dallas          
-ORD	DTW	  68	Chicago      	Detroit         
-ORD	EWR	 296	Chicago      	Newark          
-ORD	FCO	1387	Chicago      	Rome            
-ORD	FLL	 186	Chicago      	Ft. Lauderdale  
-ORD	FRA	1169	Chicago      	Frankfurt       
-ORD	GSP	 270	Chicago      	Greenville      
-ORD	HNL	 877	Chicago      	Honolulu        
-ORD	IAD	 310	Chicago      	Washington      
-ORD	IAH	 371	Chicago      	Houston         
-ORD	JAX	 208	Chicago      	Jacksonville    
-ORD	JFK	 222	Chicago      	New York        
-ORD	LAS	 244	Chicago      	Las Vegas       
-ORD	LAX	 253	Chicago      	Los Angeles     
-ORD	LGA	 158	Chicago      	New York        
-ORD	LHR	1149	Chicago      	London          
-ORD	MBJ	 377	Chicago      	Montego Bay     
-ORD	MCI	 170	Chicago      	Kansas City     
-ORD	MCO	 148	Chicago      	Orlando         
-ORD	MEM	 480	Chicago      	Memphis         
-ORD	MEX	 474	Chicago      	Mexico City     
-ORD	MIA	 264	Chicago      	Miami           
-ORD	MSP	  88	Chicago      	Minneapolis     
-ORD	MSY	 318	Chicago      	New Orleans     
-ORD	NAS	 348	Chicago      	Nassau          
-ORD	OAK	 321	Chicago      	Oakland         
-ORD	OMA	 189	Chicago      	Omaha           
-ORD	ONT	 310	Chicago      	Ontario         
-ORD	ORF	 326	Chicago      	Norfolk         
-ORD	PBI	 238	Chicago      	West Palm Beach 
-ORD	PDX	 357	Chicago      	Portland        
-ORD	PHL	 378	Chicago      	Philadelphia    
-ORD	PHX	 438	Chicago      	Phoenix         
-ORD	PIT	 174	Chicago      	Pittsburgh      
-ORD	PVD	 196	Chicago      	Providence      
-ORD	PVR	 425	Chicago      	Puerto Vallarta 
-ORD	RDU	 308	Chicago      	Raleigh         
-ORD	RIC	 323	Chicago      	Richmond        
-ORD	RNO	 451	Chicago      	Reno            
-ORD	RSW	 198	Chicago      	Ft. Myers       
-ORD	SAN	 316	Chicago      	San Diego       
-ORD	SAT	 382	Chicago      	San Antonio     
-ORD	SAV	 436	Chicago      	Savannah        
-ORD	SEA	 356	Chicago      	Seattle         
-ORD	SFO	 300	Chicago      	San Francisco   
-ORD	SJC	 271	Chicago      	San Jose        
-ORD	SJD	 680	Chicago      	San Jose Cabo   
-ORD	SJU	 313	Chicago      	San Juan        
-ORD	SLC	 427	Chicago      	Salt Lake City  
-ORD	SMF	 451	Chicago      	Sacramento      
-ORD	SNA	 271	Chicago      	Santa Ana       
-ORD	STL	 204	Chicago      	St. Louis       
-ORD	TPA	 296	Chicago      	Tampa           
-ORD	TUS	 291	Chicago      	Tucson          
-ORD	YUL	 351	Chicago      	Montreal        
-ORD	YVR	 387	Chicago      	Vancouver       
-ORD	YYZ	 366	Chicago      	Toronto         
-SFO	AMS	1443	San Francisco	Amsterdam       
-SFO	ATL	 360	San Francisco	Atlanta         
-SFO	AUS	 260	San Francisco	Austin          
-SFO	BDL	 415	San Francisco	Hartford        
-SFO	BOS	 351	San Francisco	Boston          
-SFO	BUR	 238	San Francisco	Burbank         
-SFO	BWI	 489	San Francisco	Baltimore       
-SFO	CDG	1304	San Francisco	Paris           
-SFO	CLE	 462	San Francisco	Cleveland       
-SFO	CLT	 392	San Francisco	Charlotte       
-SFO	CMH	 383	San Francisco	Columbus        
-SFO	CUN	 473	San Francisco	Cancun          
-SFO	CVG	 470	San Francisco	Cincinnati      
-SFO	DCA	 347	San Francisco	Washington      
-SFO	DEN	 257	San Francisco	Denver          
-SFO	DFW	 320	San Francisco	Dallas          
-SFO	DTW	 433	San Francisco	Detroit         
-SFO	EWR	 339	San Francisco	Newark          
-SFO	FCO	1462	San Francisco	Rome            
-SFO	FLL	 320	San Francisco	Ft. Lauderdale  
-SFO	FRA	1212	San Francisco	Frankfurt       
-SFO	HNL	 652	San Francisco	Honolulu        
-SFO	IAD	 453	San Francisco	Washington      
-SFO	IAH	 403	San Francisco	Houston         
-SFO	IND	 363	San Francisco	Indianapolis    
-SFO	JFK	 409	San Francisco	New York        
-SFO	KOA	 728	San Francisco	Kailua-Kona     
-SFO	LAS	 178	San Francisco	Las Vegas       
-SFO	LAX	 170	San Francisco	Los Angeles     
-SFO	LGA	 412	San Francisco	New York        
-SFO	LHR	1198	San Francisco	London          
-SFO	LIH	 728	San Francisco	Kauai           
-SFO	MCI	 341	San Francisco	Kansas City     
-SFO	MCO	 416	San Francisco	Orlando         
-SFO	MDW	 321	San Francisco	Chicago         
-SFO	MEX	 403	San Francisco	Mexico City     
-SFO	MIA	 380	San Francisco	Miami           
-SFO	MKE	 297	San Francisco	Milwaukee       
-SFO	MSP	 290	San Francisco	Minneapolis     
-SFO	OGG	 728	San Francisco	Maui            
-SFO	ORD	 318	San Francisco	Chicago         
-SFO	PDX	 218	San Francisco	Portland        
-SFO	PHL	 398	San Francisco	Philadelphia    
-SFO	PHX	 252	San Francisco	Phoenix         
-SFO	PIT	 417	San Francisco	Pittsburgh      
-SFO	PSP	 214	San Francisco	Palm Springs    
-SFO	PVR	 343	San Francisco	Puerto Vallarta 
-SFO	RDU	 387	San Francisco	Raleigh         
-SFO	SAN	 178	San Francisco	San Diego       
-SFO	SEA	 218	San Francisco	Seattle         
-SFO	SJD	 383	San Francisco	San Jose Cabo   
-SFO	SLC	 336	San Francisco	Salt Lake City  
-SFO	SNA	 138	San Francisco	Santa Ana       
-SFO	STL	 279	San Francisco	St. Louis       
-SFO	TPA	 373	San Francisco	Tampa           
-SFO	YUL	 351	San Francisco	Montreal        
-SFO	YVR	 317	San Francisco	Vancouver       
-SFO	YYC	 305	San Francisco	Calgary         
-SFO	YYZ	 622	San Francisco	Toronto         
 BOS	AMS	1180	Boston       	Amsterdam       
 BOS	ATL	 308	Boston       	Atlanta         
 BOS	AUA	 405	Boston       	Oranjestad      
@@ -518,6 +246,80 @@ DEN	TPA	 350	Denver       	Tampa
 DEN	TUS	 232	Denver       	Tucson          
 DEN	YVR	 510	Denver       	Vancouver       
 DEN	YYZ	 541	Denver       	Toronto         
+DFW	ABQ	 314	Dallas       	Albuquerque     
+DFW	AMS	1417	Dallas       	Amsterdam       
+DFW	ATL	 188	Dallas       	Atlanta         
+DFW	AUS	 120	Dallas       	Austin          
+DFW	BDL	 323	Dallas       	Hartford        
+DFW	BHM	 368	Dallas       	Birmingham      
+DFW	BNA	 396	Dallas       	Nashville       
+DFW	BOS	 193	Dallas       	Boston          
+DFW	BUF	 241	Dallas       	Buffalo         
+DFW	BUR	 291	Dallas       	Burbank         
+DFW	BWI	 274	Dallas       	Baltimore       
+DFW	CDG	1236	Dallas       	Paris           
+DFW	CLE	 322	Dallas       	Cleveland       
+DFW	CLT	 330	Dallas       	Charlotte       
+DFW	CMH	 332	Dallas       	Columbus        
+DFW	COS	 319	Dallas       	Colorado Springs
+DFW	CUN	 426	Dallas       	Cancun          
+DFW	CVG	 380	Dallas       	Cincinnati      
+DFW	DAY	 380	Dallas       	Dayton          
+DFW	DCA	 369	Dallas       	Washington      
+DFW	DEN	 128	Dallas       	Denver          
+DFW	DTW	 286	Dallas       	Detroit         
+DFW	ELP	 248	Dallas       	El Paso         
+DFW	EWR	 353	Dallas       	Newark          
+DFW	FCO	1340	Dallas       	Rome            
+DFW	FLL	 228	Dallas       	Ft. Lauderdale  
+DFW	HNL	 774	Dallas       	Honolulu        
+DFW	HOU	 118	Dallas       	Houston         
+DFW	IAD	 372	Dallas       	Washington      
+DFW	IAH	 118	Dallas       	Houston         
+DFW	IND	 378	Dallas       	Indianapolis    
+DFW	JAX	 318	Dallas       	Jacksonville    
+DFW	JFK	 349	Dallas       	New York        
+DFW	LAS	 188	Dallas       	Las Vegas       
+DFW	LAX	 291	Dallas       	Los Angeles     
+DFW	LGA	 317	Dallas       	New York        
+DFW	LGW	1237	Dallas       	London          
+DFW	MBJ	 430	Dallas       	Montego Bay     
+DFW	MCI	 220	Dallas       	Kansas City     
+DFW	MCO	 244	Dallas       	Orlando         
+DFW	MDW	 286	Dallas       	Chicago         
+DFW	MEM	 367	Dallas       	Memphis         
+DFW	MEX	 478	Dallas       	Mexico City     
+DFW	MIA	 327	Dallas       	Miami           
+DFW	MKE	 332	Dallas       	Milwaukee       
+DFW	MSP	 338	Dallas       	Minneapolis     
+DFW	MSY	 200	Dallas       	New Orleans     
+DFW	NAS	 348	Dallas       	Nassau          
+DFW	OAK	 301	Dallas       	Oakland         
+DFW	ONT	 323	Dallas       	Ontario         
+DFW	ORD	 222	Dallas       	Chicago         
+DFW	ORF	 322	Dallas       	Norfolk         
+DFW	PDX	 228	Dallas       	Portland        
+DFW	PHL	 503	Dallas       	Philadelphia    
+DFW	PHX	 302	Dallas       	Phoenix         
+DFW	PIT	 241	Dallas       	Pittsburgh      
+DFW	PVR	 563	Dallas       	Puerto Vallarta 
+DFW	RDU	 320	Dallas       	Raleigh         
+DFW	RIC	 300	Dallas       	Richmond        
+DFW	RNO	 316	Dallas       	Reno            
+DFW	SAN	 248	Dallas       	San Diego       
+DFW	SAT	 188	Dallas       	San Antonio     
+DFW	SDF	 372	Dallas       	Louisville      
+DFW	SEA	 317	Dallas       	Seattle         
+DFW	SFO	 318	Dallas       	San Francisco   
+DFW	SJC	 487	Dallas       	San Jose        
+DFW	SLC	 351	Dallas       	Salt Lake City  
+DFW	SMF	 322	Dallas       	Sacramento      
+DFW	SNA	 320	Dallas       	Santa Ana       
+DFW	STL	 338	Dallas       	St. Louis       
+DFW	TPA	 248	Dallas       	Tampa           
+DFW	TUS	 290	Dallas       	Tucson          
+DFW	YVR	 610	Dallas       	Vancouver       
+DFW	YYZ	 591	Dallas       	Toronto         
 DTW	AMS	1457	Detroit      	Amsterdam       
 DTW	ATL	 249	Detroit      	Atlanta         
 DTW	AUA	 367	Detroit      	Oranjestad      
@@ -756,6 +558,69 @@ LAX	YUL	 520	Los Angeles  	Montreal
 LAX	YVR	 280	Los Angeles  	Vancouver       
 LAX	YYC	 312	Los Angeles  	Calgary         
 LAX	YYZ	 516	Los Angeles  	Toronto         
+LGA	ABQ	 471	New York     	Albuquerque     
+LGA	ATL	 250	New York     	Atlanta         
+LGA	AUA	 375	New York     	Oranjestad      
+LGA	AUS	 303	New York     	Austin          
+LGA	BDA	 310	New York     	St. George      
+LGA	BHM	 276	New York     	Birmingham      
+LGA	BNA	 240	New York     	Nashville       
+LGA	BOS	 443	New York     	Boston          
+LGA	BUF	 160	New York     	Buffalo         
+LGA	CAE	 270	New York     	Columbia        
+LGA	CAK	 174	New York     	Akron           
+LGA	CHS	 278	New York     	Charleston      
+LGA	CLE	 254	New York     	Cleveland       
+LGA	CLT	 178	New York     	Charlotte       
+LGA	CMH	 280	New York     	Columbus        
+LGA	CUN	 482	New York     	Cancun          
+LGA	CVG	 447	New York     	Cincinnati      
+LGA	DAY	 230	New York     	Dayton          
+LGA	DCA	 377	New York     	Washington      
+LGA	DEN	 260	New York     	Denver          
+LGA	DFW	 291	New York     	Dallas          
+LGA	DTW	 208	New York     	Detroit         
+LGA	FLL	 208	New York     	Ft. Lauderdale  
+LGA	GSO	 245	New York     	Greensboro      
+LGA	HOU	 270	New York     	Houston         
+LGA	IAD	 120	New York     	Washington      
+LGA	IAH	 283	New York     	Houston         
+LGA	IND	 300	New York     	Indianapolis    
+LGA	JAX	 241	New York     	Jacksonville    
+LGA	LAS	 338	New York     	Las Vegas       
+LGA	LAX	 359	New York     	Los Angeles     
+LGA	MBJ	 365	New York     	Montego Bay     
+LGA	MCI	 241	New York     	Kansas City     
+LGA	MCO	 228	New York     	Orlando         
+LGA	MDW	 298	New York     	Chicago         
+LGA	MEM	 317	New York     	Memphis         
+LGA	MEX	 473	New York     	Mexico City     
+LGA	MIA	 184	New York     	Miami           
+LGA	MKE	 304	New York     	Milwaukee       
+LGA	MSP	 241	New York     	Minneapolis     
+LGA	MSY	 235	New York     	New Orleans     
+LGA	MYR	 208	New York     	Myrtle Beach    
+LGA	NAS	 283	New York     	Nassau          
+LGA	ORD	 158	New York     	Chicago         
+LGA	PBI	 200	New York     	West Palm Beach 
+LGA	PDX	 381	New York     	Portland        
+LGA	PHF	 337	New York     	Hampton         
+LGA	PHX	 340	New York     	Phoenix         
+LGA	PIT	 142	New York     	Pittsburgh      
+LGA	PUJ	 473	New York     	Jaguey          
+LGA	RDU	 180	New York     	Raleigh         
+LGA	RIC	 338	New York     	Richmond        
+LGA	SAN	 321	New York     	San Diego       
+LGA	SAV	 306	New York     	Savannah        
+LGA	SDF	 230	New York     	Louisville      
+LGA	SDQ	 425	New York     	Santo Domingo   
+LGA	SEA	 294	New York     	Seattle         
+LGA	SFO	 320	New York     	San Francisco   
+LGA	SJU	 207	New York     	San Juan        
+LGA	STL	 326	New York     	St. Louis       
+LGA	TPA	 200	New York     	Tampa           
+LGA	YUL	 316	New York     	Montreal        
+LGA	YYZ	 285	New York     	Toronto         
 MCO	ATL	 160	Orlando      	Atlanta         
 MCO	AUA	 315	Orlando      	Oranjestad      
 MCO	BDL	 224	Orlando      	Hartford        
@@ -801,6 +666,82 @@ MCO	SLC	 400	Orlando      	Salt Lake City
 MCO	STL	 228	Orlando      	St. Louis       
 MCO	SYR	 230	Orlando      	Syracuse        
 MCO	YUL	 273	Orlando      	Montreal        
+ORD	ABQ	 411	Chicago      	Albuquerque     
+ORD	ALB	 349	Chicago      	Albany          
+ORD	AMS	1345	Chicago      	Amsterdam       
+ORD	ATL	 180	Chicago      	Atlanta         
+ORD	AUA	 373	Chicago      	Oranjestad      
+ORD	AUS	 418	Chicago      	Austin          
+ORD	BDL	 375	Chicago      	Hartford        
+ORD	BNA	 206	Chicago      	Nashville       
+ORD	BOS	 183	Chicago      	Boston          
+ORD	BUF	 220	Chicago      	Buffalo         
+ORD	BWI	 303	Chicago      	Baltimore       
+ORD	CDG	1132	Chicago      	Paris           
+ORD	CLE	 200	Chicago      	Cleveland       
+ORD	CLT	 312	Chicago      	Charlotte       
+ORD	CMH	 204	Chicago      	Columbus        
+ORD	CUN	 436	Chicago      	Cancun          
+ORD	CVG	 310	Chicago      	Cincinnati      
+ORD	DCA	 253	Chicago      	Washington      
+ORD	DEN	 148	Chicago      	Denver          
+ORD	DFW	 222	Chicago      	Dallas          
+ORD	DTW	  68	Chicago      	Detroit         
+ORD	EWR	 296	Chicago      	Newark          
+ORD	FCO	1387	Chicago      	Rome            
+ORD	FLL	 186	Chicago      	Ft. Lauderdale  
+ORD	FRA	1169	Chicago      	Frankfurt       
+ORD	GSP	 270	Chicago      	Greenville      
+ORD	HNL	 877	Chicago      	Honolulu        
+ORD	IAD	 310	Chicago      	Washington      
+ORD	IAH	 371	Chicago      	Houston         
+ORD	JAX	 208	Chicago      	Jacksonville    
+ORD	JFK	 222	Chicago      	New York        
+ORD	LAS	 244	Chicago      	Las Vegas       
+ORD	LAX	 253	Chicago      	Los Angeles     
+ORD	LGA	 158	Chicago      	New York        
+ORD	LHR	1149	Chicago      	London          
+ORD	MBJ	 377	Chicago      	Montego Bay     
+ORD	MCI	 170	Chicago      	Kansas City     
+ORD	MCO	 148	Chicago      	Orlando         
+ORD	MEM	 480	Chicago      	Memphis         
+ORD	MEX	 474	Chicago      	Mexico City     
+ORD	MIA	 264	Chicago      	Miami           
+ORD	MSP	  88	Chicago      	Minneapolis     
+ORD	MSY	 318	Chicago      	New Orleans     
+ORD	NAS	 348	Chicago      	Nassau          
+ORD	OAK	 321	Chicago      	Oakland         
+ORD	OMA	 189	Chicago      	Omaha           
+ORD	ONT	 310	Chicago      	Ontario         
+ORD	ORF	 326	Chicago      	Norfolk         
+ORD	PBI	 238	Chicago      	West Palm Beach 
+ORD	PDX	 357	Chicago      	Portland        
+ORD	PHL	 378	Chicago      	Philadelphia    
+ORD	PHX	 438	Chicago      	Phoenix         
+ORD	PIT	 174	Chicago      	Pittsburgh      
+ORD	PVD	 196	Chicago      	Providence      
+ORD	PVR	 425	Chicago      	Puerto Vallarta 
+ORD	RDU	 308	Chicago      	Raleigh         
+ORD	RIC	 323	Chicago      	Richmond        
+ORD	RNO	 451	Chicago      	Reno            
+ORD	RSW	 198	Chicago      	Ft. Myers       
+ORD	SAN	 316	Chicago      	San Diego       
+ORD	SAT	 382	Chicago      	San Antonio     
+ORD	SAV	 436	Chicago      	Savannah        
+ORD	SEA	 356	Chicago      	Seattle         
+ORD	SFO	 300	Chicago      	San Francisco   
+ORD	SJC	 271	Chicago      	San Jose        
+ORD	SJD	 680	Chicago      	San Jose Cabo   
+ORD	SJU	 313	Chicago      	San Juan        
+ORD	SLC	 427	Chicago      	Salt Lake City  
+ORD	SMF	 451	Chicago      	Sacramento      
+ORD	SNA	 271	Chicago      	Santa Ana       
+ORD	STL	 204	Chicago      	St. Louis       
+ORD	TPA	 296	Chicago      	Tampa           
+ORD	TUS	 291	Chicago      	Tucson          
+ORD	YUL	 351	Chicago      	Montreal        
+ORD	YVR	 387	Chicago      	Vancouver       
+ORD	YYZ	 366	Chicago      	Toronto         
 PDX	ATL	 464	Portland     	Atlanta         
 PDX	AUS	 241	Portland     	Austin          
 PDX	BOI	 200	Portland     	Boise           
@@ -1050,6 +991,65 @@ SEA	YUL	 643	Seattle      	Montreal
 SEA	YVR	 323	Seattle      	Vancouver       
 SEA	YYC	 278	Seattle      	Calgary         
 SEA	YYZ	 626	Seattle      	Toronto         
+SFO	AMS	1443	San Francisco	Amsterdam       
+SFO	ATL	 360	San Francisco	Atlanta         
+SFO	AUS	 260	San Francisco	Austin          
+SFO	BDL	 415	San Francisco	Hartford        
+SFO	BOS	 351	San Francisco	Boston          
+SFO	BUR	 238	San Francisco	Burbank         
+SFO	BWI	 489	San Francisco	Baltimore       
+SFO	CDG	1304	San Francisco	Paris           
+SFO	CLE	 462	San Francisco	Cleveland       
+SFO	CLT	 392	San Francisco	Charlotte       
+SFO	CMH	 383	San Francisco	Columbus        
+SFO	CUN	 473	San Francisco	Cancun          
+SFO	CVG	 470	San Francisco	Cincinnati      
+SFO	DCA	 347	San Francisco	Washington      
+SFO	DEN	 257	San Francisco	Denver          
+SFO	DFW	 320	San Francisco	Dallas          
+SFO	DTW	 433	San Francisco	Detroit         
+SFO	EWR	 339	San Francisco	Newark          
+SFO	FCO	1462	San Francisco	Rome            
+SFO	FLL	 320	San Francisco	Ft. Lauderdale  
+SFO	FRA	1212	San Francisco	Frankfurt       
+SFO	HNL	 652	San Francisco	Honolulu        
+SFO	IAD	 453	San Francisco	Washington      
+SFO	IAH	 403	San Francisco	Houston         
+SFO	IND	 363	San Francisco	Indianapolis    
+SFO	JFK	 409	San Francisco	New York        
+SFO	KOA	 728	San Francisco	Kailua-Kona     
+SFO	LAS	 178	San Francisco	Las Vegas       
+SFO	LAX	 170	San Francisco	Los Angeles     
+SFO	LGA	 412	San Francisco	New York        
+SFO	LHR	1198	San Francisco	London          
+SFO	LIH	 728	San Francisco	Kauai           
+SFO	MCI	 341	San Francisco	Kansas City     
+SFO	MCO	 416	San Francisco	Orlando         
+SFO	MDW	 321	San Francisco	Chicago         
+SFO	MEX	 403	San Francisco	Mexico City     
+SFO	MIA	 380	San Francisco	Miami           
+SFO	MKE	 297	San Francisco	Milwaukee       
+SFO	MSP	 290	San Francisco	Minneapolis     
+SFO	OGG	 728	San Francisco	Maui            
+SFO	ORD	 318	San Francisco	Chicago         
+SFO	PDX	 218	San Francisco	Portland        
+SFO	PHL	 398	San Francisco	Philadelphia    
+SFO	PHX	 252	San Francisco	Phoenix         
+SFO	PIT	 417	San Francisco	Pittsburgh      
+SFO	PSP	 214	San Francisco	Palm Springs    
+SFO	PVR	 343	San Francisco	Puerto Vallarta 
+SFO	RDU	 387	San Francisco	Raleigh         
+SFO	SAN	 178	San Francisco	San Diego       
+SFO	SEA	 218	San Francisco	Seattle         
+SFO	SJD	 383	San Francisco	San Jose Cabo   
+SFO	SLC	 336	San Francisco	Salt Lake City  
+SFO	SNA	 138	San Francisco	Santa Ana       
+SFO	STL	 279	San Francisco	St. Louis       
+SFO	TPA	 373	San Francisco	Tampa           
+SFO	YUL	 351	San Francisco	Montreal        
+SFO	YVR	 317	San Francisco	Vancouver       
+SFO	YYC	 305	San Francisco	Calgary         
+SFO	YYZ	 622	San Francisco	Toronto         
 SJC	ATL	 387	San Jose     	Atlanta         
 SJC	AUS	 298	San Jose     	Austin          
 SJC	BOS	 373	San Jose     	Boston          
