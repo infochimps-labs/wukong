@@ -1,5 +1,6 @@
 module Wukong
   class Source < Hanuman::Action
+    include Hanuman::IsOwnOutputSlot
     def self.register_source(name=nil, &block)
       register_action(name, &block)
     end
