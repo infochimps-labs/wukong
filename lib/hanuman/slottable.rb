@@ -189,6 +189,13 @@ module Hanuman
   end
 
   module SplatOutputs
+    extend  Gorillib::Concern
+    include Slottable
+
+    included do
+      collection :splat_outslots, Hanuman::OutputSlot
+    end
+
     def set_output(stage)
       slot = Hanuman::OutputSlot.new(
         :name => stage.name, :stage => self, :output => stage)
