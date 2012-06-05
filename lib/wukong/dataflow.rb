@@ -69,6 +69,11 @@ module Wukong
     def process_stages() stages.to_a.select{|st| (not st.is_a?(Wukong::Source)) && (not st.is_a?(Wukong::Sink)) }  end
     def sink_stages()    stages.to_a.select{|st| st.is_a?(Wukong::Sink) }       end
 
+    def drive(slot_name)
+      raise StandardError, "No source wired up input slot '#{slot_name}' of #{self}" unless has_input?(slot_name)
+      input(slot_name).drive
+    end
+
     #
     # Processor helpers
     #
