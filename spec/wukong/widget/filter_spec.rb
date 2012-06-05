@@ -17,14 +17,14 @@ describe :filters, :helpers => true do
   end
 
   describe Wukong::Widget::RegexpFilter do
-    subject{ described_class.new(:re => /^m/) }
+    subject{ described_class.new(:pattern => /^m/) }
     it_behaves_like('a filter processor',
       :good => ['milbarge'],
       :bad  => ['fitzhume'] )
   end
 
   describe Wukong::Widget::RegexpRejecter do
-    subject{ described_class.new(:re => /^m/) }
+    subject{ described_class.new(:pattern => /^m/) }
     it_behaves_like('a filter processor',
       :good => ['fitzhume'],
       :bad  => ['milbarge'] )

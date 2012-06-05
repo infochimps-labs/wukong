@@ -1,4 +1,9 @@
 module Wukong
+
+  #
+  # Describe a dataflow of sources, processors and sinks.
+  #
+  #
   class Dataflow < Hanuman::Graph
 
     # FIXME: only handles one output slot
@@ -29,7 +34,7 @@ module Wukong
     def reject(re_or_block=nil, &block)
       raise ArgumentError, "Supply a block or regular expression, not both" if re_or_block && block
       if re_or_block.is_a?(Regexp)
-        add_stage(Widget::RegexpRejecter.new(:re => re_or_block))
+        add_stage(Widget::RegexpRejecter.new(:pattern => re_or_block))
       else
         block ||= re_or_block
         add_stage(Widget::ProcRejecter.new(block))
@@ -39,7 +44,7 @@ module Wukong
     def select(re_or_block=nil, &block)
       raise ArgumentError, "Supply a block or regular expression, not both" if re_or_block && block
       if re_or_block.is_a?(Regexp)
-        add_stage(Widget::RegexpFilter.new(:re => re_or_block))
+        add_stage(Widget::RegexpFilter.new(:pattern => re_or_block))
       else
         block ||= re_or_block
         add_stage(Widget::ProcFilter.new(block))
