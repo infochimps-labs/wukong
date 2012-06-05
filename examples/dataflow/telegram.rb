@@ -33,8 +33,12 @@ end
 
 class TelegramUniverse ; extend Wukong::Universe ; end
 TelegramUniverse.dataflow(:telegram) do
-  map{|line| line.blank? ? [""] : line.strip.split(/\s+/m) } >
+  input   :default, file_source(Pathname.path_to(:data, 'text/rectification_of_names.txt'))
+  output  :dump,    file_sink(  Pathname.path_to(:tmp,  'output/dataflow/telegram/names.txt'))
+
+  input(:default) >
+    map{|line| line.blank? ? [""] : line.strip.split(/\s+/m) } >
     flatten >
-    recompose(:break_length => 80)
-    # > file_sink(output_filename)
+    recompose(:break_length => 80) >
+    output(:dump)
 end

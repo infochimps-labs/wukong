@@ -38,7 +38,7 @@ module Wukong::Widget
       root_b = find(val_b)
       return if root_a == root_b
       # a and b are in different sets; merge the smaller to the larger
-      Log.debug("Merging #{val_a} (root #{root_a} depth #{rank[root_a]} and #{val_b} (root #{root_b} depth #{rank[root_b]})")
+      # Log.debug("Merging #{val_a} (root #{root_a} depth #{rank[root_a]} and #{val_b} (root #{root_b} depth #{rank[root_b]})")
       if    rank[root_a] < rank[root_b]
         parent[root_a] = root_b
       elsif rank[root_a] > rank[root_b]

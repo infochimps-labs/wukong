@@ -13,20 +13,28 @@ module Wukong
     # * returns the named input slot
     def input(slot_name, default_stage = nil)
       if not splat_inslots.include?(slot_name)
-        slot = Hanuman::InputSlot.new(:name => slot_name, :stage => self, :input => default_stage)
+        slot = Hanuman::InputSlot.new(:name => slot_name, :stage => self)
         self.splat_inslots << slot
       else
         slot = splat_inslots[slot_name]
+      end
+      if default_stage.present?
+        self.add_stage(default_stage) if not self.stages.include?(default_stage)
+        slot.input(default_stage)
       end
       slot.input
     end
 
     def output(slot_name, default_stage = nil)
       if not splat_outslots.include?(slot_name)
-        slot = Hanuman::OutputSlot.new(:name => slot_name, :stage => self, :output => default_stage)
+        slot = Hanuman::OutputSlot.new(:name => slot_name, :stage => self)
         self.splat_outslots << slot
       else
         slot = splat_outslots[slot_name]
+      end
+      if default_stage.present?
+        self.add_stage(default_stage) if not self.stages.include?(default_stage)
+        slot.output(default_stage)
       end
       slot.output
     end
@@ -48,9 +56,18 @@ module Wukong
       stages.each_value{|stage| stage.setup}
     end
 
+    # FIXME -- this is ugly, and evidence to  consider in the "Where does an input live" conundrum
+    #   ... or it means that we're thinking about message propogation wrong.
+
     def stop
-      stages.each_value{|stage| stage.stop}
+      source_stages.each{|stage| stage.stop}
+      process_stages.each{|stage| stage.stop}
+      sink_stages.each{|stage| stage.stop}
     end
+
+    def source_stages()  stages.to_a.select{|st| st.is_a?(Wukong::Source) }     end
+    def process_stages() stages.to_a.select{|st| (not st.is_a?(Wukong::Source)) && (not st.is_a?(Wukong::Sink)) }  end
+    def sink_stages()    stages.to_a.select{|st| st.is_a?(Wukong::Sink) }       end
 
     #
     # Processor helpers

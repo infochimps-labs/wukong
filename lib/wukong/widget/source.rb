@@ -5,6 +5,12 @@ module Wukong
       register_action(name, &block)
     end
 
+    def drive
+      each do |record|
+        output.process(record)
+      end
+    end
+
     class Iter < Source
       # the enumerable object to delegate
       attr_reader :obj
@@ -41,9 +47,10 @@ module Wukong
     end
 
     class FileSource < Wukong::Source::IO
-      attr_reader :filename
-      def initialize(filename)
-        @filename = filename
+      field :filename, Pathname, :doc => "Filename to read from"
+
+      def self.make(workflow, filename, stage_name=nil, attrs={})
+        super(workflow, attrs.merge(:filename => filename, :name => stage_name))
       end
 
       def setup

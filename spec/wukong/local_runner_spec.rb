@@ -23,22 +23,24 @@ describe Wukong::LocalRunner, :examples_spec => true, :helpers => true do
     # }
 
     subject{
+      test_sink = test_sink()
       Wukong.dataflow(:integers) do
-        map{|i| i.to_s } >
-          re(/..+/) >
-          map(&:reverse) >
-          limit(20)
+        input   :default, Wukong::Source::Integers.new(:max => 100)
+        output  :default, test_sink
+
+        input(:default)    >
+          map{|i| i.to_s } >
+          re(/..+/)        >
+          map(&:reverse)   >
+          limit(20)        >
+          output(:default)
       end
-      runner = Wukong::LocalRunner.receive(:sinks => [test_sink] )
-      runner.receive! do
-        source   :test_source, Wukong::Source::Integers.new(:max => 100)
-        # sinks[:test_sink] = test_sink
-        flow     Wukong.dataflow(:integers)
-      end
+      Wukong::LocalRunner.receive(:flow => Wukong.dataflow(:integers))
     }
 
-    it '' do
-      subject.run
+    it 'runs' do
+      subject.run(:default)
+      subject.flow.output(:default).records.should == ["01", "11", "21", "31", "41", "51", "61", "71", "81", "91", "02", "12", "22", "32", "42", "52", "62", "72", "82", "92"]
     end
 
   end

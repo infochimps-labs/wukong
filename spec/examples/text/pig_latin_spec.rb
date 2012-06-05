@@ -15,14 +15,9 @@ describe 'Pig Latin', :examples_spec => true, :helpers => true do
   end
 
   it 'runs' do
-    Wukong::LocalRunner.new do
-      output_filename = Pathname.path_to(:tmp, 'output/text/pig_latin/gift_of_the_magi.txt')
-      output_filename.dirname.mkpath
-
-      source   :test_source, Wukong::Source::FileSource.new(Pathname.path_to(:data, 'text/gift_of_the_magi.txt'))
-      sink     :default_sink,   Wukong::Sink::FileSink.new(output_filename)
-      flow     PigLatinUniverse.dataflow(:pig_latin)
-    end.run
+    Wukong::LocalRunner.receive(
+      :flow => PigLatinUniverse.dataflow(:pig_latin)
+    ).run(:default)
   end
 
 end

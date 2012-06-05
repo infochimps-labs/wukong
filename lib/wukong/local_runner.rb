@@ -1,32 +1,16 @@
 module Wukong
   class Runner
     include Gorillib::FancyBuilder
-
-    collection :sources,  Wukong::Source
-    collection :sinks,    Wukong::Sink
     member     :flow,     Wukong::Dataflow
-    
-    def run
+
+    def run(slot_name)
       wire_flow
-      setup
-      drive_flow
-      stop
-    end
-
-    def setup
-      stages.each{|stage| stage.setup}
-    end
-
-    def stop
-      stages.each{|stage| stage.stop}
+      flow.setup
+      drive_flow(slot_name)
+      flow.stop
     end
 
   protected
-    
-    # @return a list with inputs, flow and outputs, in that order
-    def stages
-      [sources.to_a, flow, sinks.to_a].flatten
-    end
 
     # Connect sources, sinks, flows and so forth. On return, the topology of the graph should be in place.
     # Override in your subclass
@@ -49,15 +33,13 @@ module Wukong
 
   protected
 
-    def drive_flow
-      sources.to_a.first.each do |record|
-        flow.process(record)
-      end
+    def drive_flow(slot_name)
+      flow.input(slot_name).drive
     end
 
     def wire_flow
       # flow.set_output sink(:test_sink)
-      flow.set_output sinks.to_a.last
+      # flow.set_output sinks.to_a.last
     end
   end
 end

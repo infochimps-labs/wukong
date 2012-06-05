@@ -12,7 +12,6 @@ describe 'Minimum Spanning Tree', :examples_spec => true, :helpers => true do
     context 'operations' do
       before do
         %w[ AUS DFW ATL JFK SFO LGA LAX ].each{|el| subject.add el }
-        p subject
         subject.union('DFW', 'AUS')
         subject.union('ATL', 'JFK')
         subject.union('ATL', 'DFW')

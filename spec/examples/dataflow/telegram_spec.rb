@@ -41,14 +41,9 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
   end
 
   it 'runs' do
-    Wukong::LocalRunner.new do
-      output_filename = Pathname.path_to(:tmp, 'output/dataflow/telegram/names.txt')
-      output_filename.dirname.mkpath
-
-      source   :test_source, Wukong::Source::FileSource.new(Pathname.path_to(:data, 'text/rectification_of_names.txt'))
-      sink     :default_sink,   Wukong::Sink::FileSink.new(output_filename)
-      flow     TelegramUniverse.dataflow(:telegram)
-    end.run
+    Wukong::LocalRunner.receive(
+      :flow => TelegramUniverse.dataflow(:telegram)
+      ).run(:default)
   end
 
 end

@@ -11,7 +11,7 @@ module Hanuman
     end
 
     def self.make(workflow, *args, &block)
-      stage = new(*args)
+      stage = receive(*args)
       workflow.add_stage stage
       stage.receive!(&block)
       stage
