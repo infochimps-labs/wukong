@@ -6,51 +6,57 @@ module Wukong::Widget
   #
   class DisjointForest
     # Tree each node belongs to
-    attr_reader :parents
+    attr_reader :parent
     # Depth of node in that tree
-    attr_reader :ranks
+    attr_reader :rank
 
     def initialize
-      @parents = {}
-      @ranks   = {}
+      @parent = {}
+      @rank   = {}
     end
 
     def add(val)
-      parents[val] = val
-      ranks[val]   = 0
+      parent[val] = val
+      rank[val]   = 0
     end
     alias_method :<<, :add
 
+    #
+    # Returns the root (the identifying member) of the set that the given value
+    # belongs to.
+    #
     def find(val)
-      add(val)   if !include?(val)
       return val if root?(val)
-      parents[val] = find parents[val]
+      parent[val] = find parent[val]
     end
     alias_method :[], :find
 
-    def root?(val)
-      parents[val] == val
-    end
-
-    def include?(val)
-      parents.include?(val)
-    end
-
     def union(val_a, val_b)
+      add(val_a) if !include?(val_a)
+      add(val_b) if !include?(val_b)
       root_a = find(val_a)
       root_b = find(val_b)
       return if root_a == root_b
       # a and b are in different sets; merge the smaller to the larger
-      if    ranks[root_a] < ranks[root_b]
-        parents[root_a] = root_b
-      elsif ranks[root_a] > ranks[root_b]
-        parents[root_b] = root_a
+      Log.debug("Merging #{val_a} (root #{root_a} depth #{rank[root_a]} and #{val_b} (root #{root_b} depth #{rank[root_b]})")
+      if    rank[root_a] < rank[root_b]
+        parent[root_a] = root_b
+      elsif rank[root_a] > rank[root_b]
+        parent[root_b] = root_a
       else
-        parents[root_b] = root_a
-        ranks[root_a] += 1
+        parent[root_a] = root_b
+        rank[root_b] += 1
       end
     end
     alias_method :merge, :union
+
+    def root?(val)
+      parent[val] == val
+    end
+
+    def include?(val)
+      parent.include?(val)
+    end
 
   end
 end
