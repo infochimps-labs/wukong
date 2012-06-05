@@ -41,7 +41,8 @@ module Wukong
 
     # FIXME: only handles one output slot
     def process(rec)
-      stages.to_a.first.process(rec)
+      input(:default).output.process(rec)
+      # stages.to_a.first.process(rec)
     end
 
     def set_output(sink)
