@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'wukong'
-require 'wukong/local_runner'
 
-load Pathname.path_to(:examples, 'dataflow/telegram.rb')
-
-describe 'Telegram Example', :examples_spec => true, :helpers => true do
+describe_example_script(:telegram, 'dataflow/telegram.rb') do
+  it 'runs' do
+    Wukong::LocalRunner.run(subject, :default)
+  end
 
   context 'Recompose processor' do
     subject{ Wukong::Widget::Recompose }
@@ -38,10 +38,6 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
       end
 
     end
-  end
-
-  it 'runs' do
-    Wukong::LocalRunner.run(ExampleUniverse.dataflow(:telegram), :default)
   end
 
 end

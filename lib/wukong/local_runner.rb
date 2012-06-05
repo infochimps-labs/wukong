@@ -15,6 +15,10 @@ module Wukong
       runner.run(slot_name)
     end
 
+    def validate!
+      raise StandardError, "flow is missing for #{self}" unless flow.present?
+    end
+
   protected
 
     # Connect sources, sinks, flows and so forth. On return, the topology of the graph should be in place.
@@ -39,7 +43,8 @@ module Wukong
   protected
 
     def drive_flow(slot_name)
-      flow.input(slot_name).drive
+      validate!
+      flow.drive(slot_name)
     end
 
     def wire_flow

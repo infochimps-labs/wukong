@@ -183,6 +183,10 @@ module Hanuman
       slot
     end
 
+    def has_input?(slot_name)
+      self.splat_inslots.keys.include?(slot_name)
+    end
+
     def inslots
       super + splat_inslots.to_a
     end
