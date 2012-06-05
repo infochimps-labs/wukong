@@ -71,7 +71,7 @@ module Wukong
     def sink_stages()    stages.to_a.select{|st| st.is_a?(Wukong::Sink) }       end
 
     def drive(slot_name)
-      raise StandardError, "No source wired up input slot '#{slot_name}' of #{self}" unless has_input?(slot_name)
+      raise StandardError, "No source wired up input slot '#{slot_name.inspect}' of #{self.inspect} #{self.attributes}" unless has_input?(slot_name)
       input(slot_name).drive
     end
 

@@ -3,12 +3,9 @@ require 'multi_json'
 
 require 'configliere'
 require 'gorillib/logger/log'
-require 'gorillib/some' 
+require 'gorillib/some'
 require 'gorillib/builder'
-
-# require 'wukong/mixin/from_file'
-# require 'wukong/registry'
-# require 'wukong/path_helpers'
+require 'gorillib/model/serialization'
 
 require 'wukong/settings'
 
