@@ -1,3 +1,5 @@
+require File.expand_path('../examples_helper', File.dirname(__FILE__))
+
 Wukong.processor :pig_latinize do
 
   CONSONANTS = "bcdfghjklmnpqrstvwxz"
@@ -25,9 +27,7 @@ Wukong.processor :pig_latinize do
 
 end
 
-
-class PigLatinUniverse ; extend Wukong::Universe ; end
-PigLatinUniverse.dataflow(:pig_latin) do
+ExampleUniverse.dataflow(:pig_latin) do
   input  :default, file_source(Pathname.path_to(:data, 'text/gift_of_the_magi.txt'))
   output :default, file_sink(  Pathname.path_to(:tmp, 'text/pig_latin/gift_of_the_magi.txt'))
 

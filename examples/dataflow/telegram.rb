@@ -1,3 +1,5 @@
+require File.expand_path('../examples_helper', File.dirname(__FILE__))
+
 # "Telegram Problem"
 #
 # The "Telegram Problem", originally described by Peter Naur:
@@ -31,8 +33,7 @@ Wukong.processor :recompose do
   end
 end
 
-class TelegramUniverse ; extend Wukong::Universe ; end
-TelegramUniverse.dataflow(:telegram) do
+ExampleUniverse.dataflow(:telegram) do
   input   :default, file_source(Pathname.path_to(:data, 'text/rectification_of_names.txt'))
   output  :dump,    file_sink(  Pathname.path_to(:tmp,  'output/dataflow/telegram/names.txt'))
 

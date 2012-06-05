@@ -1,4 +1,6 @@
-Wukong.dataflow(:simple) do
+require File.expand_path('../examples_helper', File.dirname(__FILE__))
+
+ExampleUniverse.dataflow(:simple) do
   doc <<-DOC
     A stupidly simple dataflow: reverses each input string
   DOC

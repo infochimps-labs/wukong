@@ -10,6 +10,11 @@ module Wukong
       flow.stop
     end
 
+    def self.run(flow, slot_name)
+      runner = self.receive(:flow => flow)
+      runner.run(slot_name)
+    end
+
   protected
 
     # Connect sources, sinks, flows and so forth. On return, the topology of the graph should be in place.
