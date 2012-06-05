@@ -1,45 +1,46 @@
-## OS
-.DS_Store
-Icon?
-nohup.out
-.bak
 
-## EDITORS
-\#*
-.\#*
-*~
-*.swp
-REVISION
-TAGS*
-tmtags
-*_flymake.*
-*_flymake
-*.tmproj
-.project
-.settings
+
+
+
+
 
 ## COMPILED
-a.out
+## EDITORS
+## OS
+## OTHER SCM
+## PROJECT::GENERAL
+## PROJECT::SPECIFIC
+*.log
 *.o
 *.pyc
+*.rdb
 *.so
-
-## OTHER SCM
+*.swp
+*.tmproj
+*_flymake
+*_flymake.*
+*private*
+*~
+.DS_Store
+.\#*
+.bak
 .bzr
 .hg
+.project
+.settings
 .svn
-
-## PROJECT::GENERAL
-coverage
-rdoc
-doc
-pkg
 .yardoc
-*private*
-
-## PROJECT::SPECIFIC
-
-*.rdb
-*.log
+/.rbenv-version
 Gemfile.lock
+Icon?
+REVISION
+TAGS*
+\#*
+a.out
+coverage
+doc
+nohup.out
+pkg
+rdoc
 tmp/*
+tmtags

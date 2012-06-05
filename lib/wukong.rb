@@ -1,4 +1,4 @@
-require 'oj'
+# require 'oj'
 require 'multi_json'
 
 require 'configliere'
