@@ -9,7 +9,7 @@ describe Wukong::Dataflow, :helpers => true do
     it 'given a regexp, evaluates it on each record, selecting if it matches' do
       result = subject.select(test_re)
       result.should      be_a(Wukong::Widget::RegexpFilter)
-      result.re.should   be(test_re)
+      result.pattern.should   be(test_re)
       result.should      be_select("fitzhume")
       result.should_not  be_select("milbarge")
     end
@@ -38,7 +38,7 @@ describe Wukong::Dataflow, :helpers => true do
     it 'given a regexp, rejects items matching that regexp' do
       result = subject.reject(test_re)
       result.should      be_a(Wukong::Widget::RegexpRejecter)
-      result.re.should   be(test_re)
+      result.pattern.should be(test_re)
       result.should_not  be_select("fitzhume")
       result.should      be_select("milbarge")
     end

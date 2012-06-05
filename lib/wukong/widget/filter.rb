@@ -22,25 +22,25 @@ module Wukong
 
     # Selects only records matching this regexp
     class RegexpFilter < Filter
-      field :re, Regexp, :doc => 'strings matching this regular expression will be selected'
+      field :pattern, Regexp, :doc => 'strings matching this regular expression will be selected'
       def select?(str)
-        re.match(str)
+        pattern.match(str)
       end
 
-      def self.make(workflow, re, attrs={}, &block)
-        super workflow, attrs.merge(:re => re), &block
+      def self.make(workflow, pattern, attrs={}, &block)
+        super workflow, attrs.merge(:pattern => pattern), &block
       end
       register_processor(:re)
     end
 
     class RegexpRejecter < Rejecter
-      field :re, Regexp, :doc => 'strings matching this regular expression will be rejected'
+      field :pattern, Regexp, :doc => 'strings matching this regular expression will be rejected'
       def reject?(str)
-        re.match(str)
+        pattern.match(str)
       end
 
-      def self.make(workflow, re, attrs={}, &block)
-        super workflow, attrs.merge(:re => re), &block
+      def self.make(workflow, pattern, attrs={}, &block)
+        super workflow, attrs.merge(:pattern => pattern), &block
       end
       register_processor(:not_re)
     end
