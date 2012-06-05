@@ -33,8 +33,6 @@ airfares.each do |airfare|
   edges[edge] = airfare.price unless edges.include?(edge) && edges[edge] <= airfare.price
 end
 
-p edges.sort_by(&:last)
-
 mst = Hash.new{|h,k| h[k] = {} }
 forest = Wukong::Widget::DisjointForest.new
 
@@ -58,8 +56,6 @@ def dfs(city, seen)
   children.map{|child| [ child, dfs(child, seen) ] }
 end
 sorted_cities = ['LAS', dfs('LAS', [])]
-p sorted_cities
-p sorted_cities.flatten
 
 gv_filename = Pathname.path_to(:tmp, 'airfares_mst')
 File.open("#{gv_filename}.dot", 'w') do |gv_file|

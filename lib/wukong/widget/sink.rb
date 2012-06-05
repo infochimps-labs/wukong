@@ -15,15 +15,16 @@ module Wukong
     end
 
     class FileSink < Wukong::Sink::IO
-      attr_reader :filename
+      field :filename, Pathname, :doc => "Filename to write"
       attr_reader :file
 
-      def initialize(filename)
-        @filename = filename
+      def self.make(workflow, filename, stage_name=nil, attrs={})
+        super(workflow, attrs.merge(:filename => filename, :name => stage_name))
       end
 
       def setup
         super
+        filename.dirname.mkpath
         @file = File.open(filename, "w")
       end
 

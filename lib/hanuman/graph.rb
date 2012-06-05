@@ -11,7 +11,7 @@ module Hanuman
     end
 
     def add_stage(stage)
-      stage.write_attribute(:name, next_name_for(stage)) if not stage.name?
+      stage.write_attribute(:name, next_name_for(stage)) if stage.name.nil?
       stage.write_attribute(:owner, self)
       stages << stage
       stage
