@@ -41,9 +41,7 @@ describe 'Telegram Example', :examples_spec => true, :helpers => true do
   end
 
   it 'runs' do
-    Wukong::LocalRunner.receive(
-      :flow => TelegramUniverse.dataflow(:telegram)
-      ).run(:default)
+    Wukong::LocalRunner.run(ExampleUniverse.dataflow(:telegram), :default)
   end
 
 end

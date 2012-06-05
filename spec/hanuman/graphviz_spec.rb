@@ -19,7 +19,7 @@ describe 'Graphviz View' do
   describe 'Telegram Dataflow Example', :if => GRAPHVIZ, :examples_spec => true, :helpers => true do
     it 'makes a png' do
       require Pathname.path_to(:examples, 'dataflow/telegram.rb')
-      gv = TelegramUniverse.to_graphviz
+      gv = ExampleUniverse.to_graphviz
 
       basename = Pathname.path_to(:tmp, 'telegram')
       gv.save(basename, 'png')

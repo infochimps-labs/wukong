@@ -15,9 +15,7 @@ describe 'Pig Latin', :examples_spec => true, :helpers => true do
   end
 
   it 'runs' do
-    Wukong::LocalRunner.receive(
-      :flow => PigLatinUniverse.dataflow(:pig_latin)
-    ).run(:default)
+    Wukong::LocalRunner.run(ExampleUniverse.dataflow(:pig_latin), :default)
   end
 
 end
