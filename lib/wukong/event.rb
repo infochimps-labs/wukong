@@ -13,7 +13,29 @@ module Wukong
     end
 
   end
+
+  module Event
+    include Gorillib::Concern
+
+    # FIXME this auto-include Gorillib::Model but something is fucked
+    # up.
+
+    def _metadata
+      @_metadata ||= {}
+    end
+    
+    def _metadata= m
+      @_metadata = m
+    end
+    
+    def to_wire options={}
+      super(options).merge(:_metadata => self._metadata)
+    end
+  end
+  
 end
+
+
 
 #
 # Example Usage

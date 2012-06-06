@@ -16,6 +16,7 @@ require 'hanuman'
 #
 require 'wukong/universe'
 require 'wukong/dataflow'
+require 'wukong/event'
 
 require 'wukong/processor'           # processes records in series
 require 'wukong/widget/filter'       # passes through only records that meet `accept?`
@@ -30,3 +31,4 @@ require 'wukong/bad_record'
 # Workflow Specific
 #
 require 'wukong/workflow/command'
+
