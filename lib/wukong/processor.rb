@@ -2,7 +2,7 @@ module Wukong
   class Processor < Hanuman::Action
     include Hanuman::IsOwnInputSlot
     include Hanuman::IsOwnOutputSlot
-    
+
     field :name, Symbol, :default => ->{ self.class.handle }
 
     # override this in your subclass
@@ -12,6 +12,10 @@ module Wukong
     # passes a record on down the line
     def emit(record)
       output.process(record)
+    end
+
+    def bad_record(*args)
+      BadRecord.make(*args)
     end
 
     def self.register_processor(name=nil, &block)

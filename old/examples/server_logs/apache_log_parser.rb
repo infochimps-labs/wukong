@@ -13,7 +13,3 @@ class ApacheLogParser < Wukong::Streamer::LineStreamer
 end
 
 Wukong.run( ApacheLogParser, nil, :sort_fields => 7 ) if $0 == __FILE__
-
-
-
-

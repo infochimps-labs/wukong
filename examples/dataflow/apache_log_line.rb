@@ -6,8 +6,8 @@ class ApacheLogLine
   field  :junk_2,        String
   field  :log_timestamp, Time
   field  :http_method,   String
-  field  :protocol,      String
   field  :path,          String
+  field  :protocol,      String
   field  :response_code, Integer
   field  :size,          Integer
   field  :referer,       String
@@ -46,6 +46,7 @@ class ApacheLogLine
   # Converts a time like `10/Apr/2007:10:58:27 +0300` to something parseable
   def receive_log_timestamp(raw_ts)
     match = %r{(\d+)/(\w+)/(\d+):(\d+):(\d+):(\d+)\s([\+\-\w]+)}.match(raw_ts)
+    warn "Can't parse date #{raw_ts}" unless match
     day, month_name, year, hour, min, sec, tz = match.captures
     month = MONTHS[month_name]
     super "#{year}-#{month}-#{day} #{hour}:#{min}:#{sec} #{tz}"
@@ -54,7 +55,7 @@ class ApacheLogLine
   # Use the regex to break line into fields
   # Emit each record as flat line
   def self.make(line)
-    m = LOG_RE.match(line.chomp)
+    m = LOG_RE.match(line.chomp) or return 
     from_tuple *m.captures
   end
 end
