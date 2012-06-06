@@ -11,6 +11,14 @@ module Wukong
       end
     end
 
+    def new_string_event string
+      metadata_hash = Hash.new
+      string.define_singleton_method(:_metadata) do
+        metadata_hash
+      end
+      string
+    end
+
     class Iter < Source
       # the enumerable object to delegate
       attr_reader :obj
