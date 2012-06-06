@@ -1,5 +1,5 @@
 module Wukong
-  class Workflow
+  class Workflow < Hanuman::Graph
 
     class ActionWithInputs < Hanuman::Action
       include Hanuman::Slottable

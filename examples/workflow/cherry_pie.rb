@@ -1,4 +1,4 @@
-class Wukong::Workflow
+class Wukong::Workflow < Hanuman::Graph
   class Container  < Hanuman::Resource  ; end
 
   class Cook       < ActionWithInputs
