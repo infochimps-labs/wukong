@@ -1,4 +1,3 @@
-# require 'oj'
 require 'multi_json'
 
 require 'configliere'
@@ -31,4 +30,3 @@ require 'wukong/bad_record'
 # Workflow Specific
 #
 require 'wukong/workflow/command'
-

@@ -18,15 +18,13 @@ Gem::Specification.new do |gem|
 DESC
 
   gem.files         = `git ls-files`.split("\n")
-  gem.executables   = gem.files.grep(/^bin/).map{ |f| File.basename(f) }
+  gem.executables   = [] # gem.files.grep(/^bin/).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  gem.add_dependency('bundler',     '~> 1.1') 
+  gem.add_dependency('bundler',     '~> 1.1')
   gem.add_dependency('configliere', '~> 0.4.8')
   gem.add_dependency('multi_json',  '>= 1.3.6')
-  gem.add_dependency('oj',          '~> 1.2')
-  gem.add_dependency('graph')
 
   gem.add_development_dependency('rake',        '>= 0.9')
   gem.add_development_dependency('rspec',       '>= 2.8')
