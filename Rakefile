@@ -1,3 +1,4 @@
+require 'bundler'
 Bundler::GemHelper.install_tasks
 require 'rspec/core/rake_task'
 require 'yard'
@@ -9,5 +10,3 @@ end
 YARD::Rake::YardocTask.new
 
 task :default => :rspec
-
-
