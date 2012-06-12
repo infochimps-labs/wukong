@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
+$LOAD_PATH.unshift(File.expand_path("../lib", File.realdirpath(File.dirname(__FILE__))))
 require 'wukong'
 
 dataflow_file = ARGV[0]
