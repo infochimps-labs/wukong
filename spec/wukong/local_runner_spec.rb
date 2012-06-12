@@ -6,26 +6,10 @@ describe Wukong::LocalRunner, :examples_spec => true, :helpers => true do
 
   context 'examples' do
 
-    # subject{
-    #   Wukong.dataflow do
-    #     reject{|int| int.odd? } >
-    #       map{|i| i.to_s } >
-    #       re(/..+/) >
-    #       limit(20)
-    #     puts stages
-    #   end
-    #
-    #   Wukong::LocalRunner.new do
-    #     source   :test_source, Wukong::Source::Integers.new(:max => 100)
-    #     sink     :test_sink,   Wukong::Sink::Stdout.new
-    #     flow     Wukong.dataflow
-    #   end
-    # }
-
     subject{
       test_sink = test_sink()
       Wukong.dataflow(:integers) do
-        input   :default, Wukong::Source::Integers.new(:max => 100)
+        input   :default, Wukong::Source::Integers.new(:size => 100)
         output  :default, test_sink
 
         input(:default)    >
