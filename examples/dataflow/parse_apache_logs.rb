@@ -10,7 +10,7 @@ ExampleUniverse.dataflow(:parse_apache_logs) do
   output :dump,    stdout 
 
   input(:default) >
-    map{|line| ApacheLogLine.make(line) or BadRecord.make(line) } >
+    map{|line| ApacheLogLine.make(line) or bad_record(line) } >
     to_json >
     output(:dump)
   
