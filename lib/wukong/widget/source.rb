@@ -69,25 +69,47 @@ module Wukong
       register_source
     end
 
-    class Integers < Wukong::Source
-      attr_reader :num
-      field :min,  Integer, :default => 0
-      field :max,  Integer, :default => nil
-      field :step, Integer, :default => 1
+    module CappedGenerator
+      extend Gorillib::Concern
+      included do
+        attr_reader :num
+        field :size, Integer, :default => 2**63, :doc => "Number of items to generate", :writer => true
+      end
 
       def setup
         super
         @num = 0
       end
 
+      def max
+        size
+      end
+
+      def next_item
+      end
+
       def each
         loop do
-          break if max.present? && (num >= max)
-          yield num
-          @num += step
+          break if @num > max
+          yield next_item
+          @num += 1
         end
       end
-      register_source :integers
     end
+
+    class Integers < Wukong::Source
+      register_source :integers
+      include CappedGenerator
+      field :init, Integer, :default => 0, :doc => "Initial offset", :writer => true
+
+      def max
+        init + size - 1
+      end
+
+      def next_item
+        @num
+      end
+    end
+
   end
 end

@@ -64,22 +64,11 @@ module Wukong
     end
 
     class Limit < Rejecter
+      include CountingProcessor
       field :max_records, Integer, :doc => 'maximum records to allow', :writer => true
-      field :count,       Integer, :doc => 'count of records this run', :default => 0, :writer => :protected
-
-      def setup
-        super
-        self.count = 0
-      end
 
       def reject?(*)
         count >= max_records
-      end
-
-      # Does not process any records if over limit
-      def process(record)
-        super(record)
-        self.count += 1
       end
 
       def self.make(workflow, max, attrs={}, &block)
