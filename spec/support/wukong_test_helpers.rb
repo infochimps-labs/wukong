@@ -22,6 +22,7 @@ shared_context 'wukong', :helpers => true do
   let(:test_processor_class){ Wukong::AsIs }
   let(:test_processor){       test_processor_class.new }
   let(:test_filter){          Wukong::Widget::RegexpFilter.new(:re => /^m/) }
+  let(:test_dataflow){        Wukong.dataflow(:test_dataflow) }
 end
 
 
