@@ -17,6 +17,15 @@ describe :sources, :helpers => true do
       subject.size = 1
       subject.to_enum.to_a.should == [0]
     end
+
+    context 'dataflow method' do
+      it 'is defined' do
+      end
+      it 'takes simplified args' do
+        described_class.should_receive(:receive).with({:size => 99}).and_return(described_class.new)
+        test_dataflow.integers(99)
+      end
+    end
   end
 
   describe Wukong::Widget::Gibberish do

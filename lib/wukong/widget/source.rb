@@ -109,6 +109,11 @@ module Wukong
       def next_item
         @num
       end
+
+      def self.make(dataflow, size=nil, attrs={})
+        attrs[:size] = size if not size.nil?
+        super(dataflow, attrs)
+      end
     end
 
   end
