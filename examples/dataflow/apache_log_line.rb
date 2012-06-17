@@ -1,12 +1,19 @@
+#
+# Parses logs in either the [Apache Common Log Format](http://en.wikipedia.org/wiki/Common_Log_Format)
+# or [Apache Combined Log Format](http://httpd.apache.org/docs/2.2/logs.html#combined)
+#
+# Common:   `%h %l %u %t "%r" %>s %b`
+# Combined: `%h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i"`
+#
 class ApacheLogLine
   include Gorillib::Model
 
-  field  :hostname,      Hostname
-  field  :junk_1,        String
-  field  :junk_2,        String
+  field  :client,        Hostname
+  field  :rfc_1413,      String
+  field  :userid,        String
   field  :log_timestamp, Time
   field  :http_method,   String
-  field  :path,          String
+  field  :rsrc,          String
   field  :protocol,      String
   field  :response_code, Integer
   field  :size,          Integer
@@ -15,9 +22,9 @@ class ApacheLogLine
 
   def page_type
     case
-    when path =~ /\.(css|js)$/                  then :asset
-    when path =~ /\.(png|gif|ico)$/             then :image
-    when path =~ /\.(pl|s?html?|asp|jsp|cgi)$/  then :page
+    when rsrc =~ /\.(css|js)$/                  then :asset
+    when rsrc =~ /\.(png|gif|ico)$/             then :image
+    when rsrc =~ /\.(pl|s?html?|asp|jsp|cgi)$/  then :page
     else                                             :other
     end
   end
@@ -29,13 +36,13 @@ class ApacheLogLine
   # 83.240.154.3 - - [07/Jun/2008:20:37:11 +0000] "GET /faq HTTP/1.1" 200 569 "http://infochimps.org/search?query=CAC" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
   #
   LOG_RE = Regexp.compile(%r{\A
-           (\S+)                        # ip                  83.240.154.3
-         \s(\S+)                        # j1                  -
-         \s(\S+)                        # j2                  -
+           (\S+)                        # client              83.240.154.3
+         \s(\S+)                        # rfc_1413            -
+         \s(\S+)                        # userid              -
       \s\[([\w\:\+\-\ \/]+)\]           # date part           [07/Jun/2008:20:37:11 +0000]
     \s\"(?:(\S+)                        # http_method         "GET
-         \s(\S+)                        # path                /faq
-         \s(\S+)|-)"                    # protocol            HTTP/1.1"
+         \s(\S+)                        # rsrc                /faq
+         \s(\S+)|-)\"                   # protocol            HTTP/1.1"
          \s(\d+)                        # response_code       200
          \s(\d+)                        # size                569
     (?:\s\"([^\"]*)\")?                 # referer             "http://infochimps.org/search?query=CAC"
@@ -55,6 +62,12 @@ class ApacheLogLine
     day, month_name, year, hour, min, sec, tz = match.captures
     month = MONTHS[month_name]
     super "#{year}-#{month}-#{day} #{hour}:#{min}:#{sec} #{tz}"
+  end
+
+  # @returns the log_timestamp in the common log format
+  def unparsed_log_timestamp
+    return if log_timestamp.blank?
+    log_timestamp.strftime("%d/%b/%Y:%H:%M:%S %z")
   end
 
   # Use the regex to break line into fields
