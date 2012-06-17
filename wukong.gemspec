@@ -24,6 +24,7 @@ DESC
 
   gem.add_dependency('bundler',     '~> 1.1')
   gem.add_dependency('configliere', '~> 0.4.8')
+  gem.add_dependency('oj',          '~> 1.2.9')
   gem.add_dependency('multi_json',  '>= 1.3.6')
 
   gem.add_development_dependency('rake',        '>= 0.9')
@@ -37,4 +38,6 @@ DESC
 
   gem.add_development_dependency('forgery')
   gem.add_development_dependency('uuidtools')
+  gem.add_development_dependency('addressable')
+
 end

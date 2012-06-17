@@ -1,4 +1,7 @@
 require 'multi_json'
+require 'oj'
+
+begin require 'home_run' ; rescue LoadError ; end
 
 require 'configliere'
 require 'gorillib/logger/log'
