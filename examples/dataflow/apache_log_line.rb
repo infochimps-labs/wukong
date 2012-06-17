@@ -1,7 +1,7 @@
 class ApacheLogLine
   include Gorillib::Model
 
-  field  :ip_address,    IpAddress
+  field  :hostname,      Hostname
   field  :junk_1,        String
   field  :junk_2,        String
   field  :log_timestamp, Time
@@ -25,28 +25,33 @@ class ApacheLogLine
   #
   # Regular expression to parse an apache log line.
   #
+  # local - - [24/Oct/1994:13:43:13 -0600] "GET index.html HTTP/1.0" 200 3185
   # 83.240.154.3 - - [07/Jun/2008:20:37:11 +0000] "GET /faq HTTP/1.1" 200 569 "http://infochimps.org/search?query=CAC" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
   #
   LOG_RE = Regexp.compile(%r{\A
            (\S+)                        # ip                  83.240.154.3
          \s(\S+)                        # j1                  -
          \s(\S+)                        # j2                  -
-       \s\[([\w\:\+\ \/]+)\]            # date part           [07/Jun/2008:20:37:11 +0000]
+      \s\[([\w\:\+\-\ \/]+)\]           # date part           [07/Jun/2008:20:37:11 +0000]
     \s\"(?:(\S+)                        # http_method         "GET
          \s(\S+)                        # path                /faq
          \s(\S+)|-)"                    # protocol            HTTP/1.1"
          \s(\d+)                        # response_code       200
          \s(\d+)                        # size                569
-       \s\"([^\"]*)\"                   # referer             "http://infochimps.org/search?query=CAC"
-       \s\"([^\"]*)\"                   # ua                  "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
-      \z}x)
+    (?:\s\"([^\"]*)\")?                 # referer             "http://infochimps.org/search?query=CAC"
+    (?:\s\"([^\"]*)\")?                 # ua                  "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
+      \z
+      }x)
+
+  # LOG_RE = Regexp.compile(%r{\A(\S+)\s})
 
   MONTHS = { 'Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04', 'May' => '05', 'Jun' => '06', 'Jul' => '07', 'Aug' => '08', 'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12', }
 
   # Converts a time like `10/Apr/2007:10:58:27 +0300` to something parseable
   def receive_log_timestamp(raw_ts)
+    return super(nil) if raw_ts.nil?
     match = %r{(\d+)/(\w+)/(\d+):(\d+):(\d+):(\d+)\s([\+\-\w]+)}.match(raw_ts)
-    warn "Can't parse date #{raw_ts}" unless match
+    unless match then warn "Can't parse date #{raw_ts}" ; return super(nil) ; end
     day, month_name, year, hour, min, sec, tz = match.captures
     month = MONTHS[month_name]
     super "#{year}-#{month}-#{day} #{hour}:#{min}:#{sec} #{tz}"
@@ -55,7 +60,7 @@ class ApacheLogLine
   # Use the regex to break line into fields
   # Emit each record as flat line
   def self.make(line)
-    m = LOG_RE.match(line.chomp) or return 
+    m = LOG_RE.match(line.chomp) or return
     from_tuple *m.captures
   end
 end
