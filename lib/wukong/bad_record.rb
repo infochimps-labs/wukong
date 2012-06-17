@@ -7,7 +7,7 @@ class BadRecord
     super contents.to_s[0..1000]
   end
 
-  def make(contents, error=nil)
+  def self.make(contents, error=nil)
     hsh = { :contents => contents }
     hsh[:error] = error if error
     receive(hsh)

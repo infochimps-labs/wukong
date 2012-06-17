@@ -7,7 +7,6 @@ module Wukong
     class ToJson < Stringifier
       def process(record)
         emit record.to_json
-        # emit MultiJson.dump(record)
       end
       register_processor
     end
@@ -33,14 +32,14 @@ module Wukong
 
     class ToTsv < Stringifier
       def process(record)
-        emit record.join("\t")
+        emit record.to_tsv
       end
       register_processor
     end
 
     class FromTsv < Stringifier
       def process(record)
-        emit record.chomp.split(/\t/)
+        emit record.split(/\t/)
       end
       register_processor
     end

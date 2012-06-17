@@ -7,9 +7,22 @@ module Wukong
 
     def drive
       each do |record|
-        output.process(record)
+        @output.process(record)
       end
     end
+
+
+    # def setup
+    #   # GC::Profiler.enable
+    # end
+    # def periodically(count)
+    #   # GC.enable ; GC.start ; GC.disable
+    #   # $stderr.puts GC::Profiler.result
+    # end
+    # def stop
+    #   # GC::Profiler.disable
+    # end
+
 
     def new_string_event string
       metadata_hash = Hash.new
@@ -36,7 +49,8 @@ module Wukong
 
       def each(&block)
         file.each do |line|
-          yield line.chomp
+          line.chomp!
+          yield line
         end
       end
 

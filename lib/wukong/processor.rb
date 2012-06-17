@@ -11,7 +11,7 @@ module Wukong
 
     # passes a record on down the line
     def emit(record)
-      output.process(record)
+      (@output||=self.output).process(record)
     end
 
     def bad_record(*args)
@@ -83,12 +83,13 @@ module Wukong
 
     # @param [Proc] proc to delegate for call
     # @yield if proc is omitted, block must be supplied
-    def initialize(blk=nil, &block)
-      @blk = blk || block or raise "Please supply a proc or a block to #{self.class}.new"
+    def initialize(prc=nil, &block)
+      @blk = prc || block or raise "Please supply a proc or a block to #{self.class}.new"
+      define_singleton_method(:call, @blk)
     end
 
     def process(*args)
-      result = blk.call(*args)
+      result = call(*args)
       emit result unless result.nil?
     end
 
