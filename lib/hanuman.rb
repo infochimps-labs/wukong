@@ -1,4 +1,3 @@
-
 require 'gorillib/builder'
 
 require 'hanuman/stage'              # base object for building blocks

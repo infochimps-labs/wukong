@@ -1,5 +1,4 @@
 module Hanuman
-
   #
   # Provides the methods required in order to accept inbound links.
   # Including class must provide the input attribute and the owner method.

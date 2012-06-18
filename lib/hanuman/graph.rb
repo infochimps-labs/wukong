@@ -1,5 +1,4 @@
 module Hanuman
-
   class Graph < Action
     collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}

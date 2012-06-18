@@ -88,12 +88,13 @@ create a resource with no action? action with anonymous resource, wired up later
     
     act_b :i  <- act_a
     
-    
-    
-* references:
-  - 
+## Vanilla Branch
 
+* Can a stage be owned by more than one graph? # leaning towards no...
+* How does a graph 'own' another graph?
+* Stages don't(?) have their own names. They need owners to tell them what their name is.
+* Every stage has the following:
+** has .name, returns owner
 
-
-
+Graph#set_stage(name, stage)
 

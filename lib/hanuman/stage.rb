@@ -1,51 +1,44 @@
 module Hanuman
   class Stage
     include Gorillib::Builder
-    alias_method :configure, :receive!
 
-    field      :name,    Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph', :tester => true
+    # field      :name,    Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph', :tester => true
     member     :owner,   Whatever,       :doc => 'the graph this stage sits in'
     field      :doc,     String,         :doc => 'freeform description of this stage type'
 
     # @returns the stage, namespaced by the graph that owns it
     def fullname
-      [owner.try(:fullname), name].compact.join('.')
+      [owner.fullname, name].compact.join('.')
     end
 
     def self.handle
-      Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
+      @handle ||= Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
     end
-
+    
+    def name
+      owner.stages.invert[self]
+    end
+    
     #
     # Methods
     #
+    # def lookup(stage)
+    #   owner.lookup(stage)
+    # end
 
-    # Called after the graph is constructed, before the flow is run
-    def setup
-    end
+    # #
+    # # Graph connections
+    # #
 
-    # Called to signal the flow should stop. Close any open connections, flush
-    # buffers, stop supervised projects, etc.
-    def stop
-    end
+    # def notify(msg)
+    #   true
+    # end
 
-    def lookup(stage)
-      owner.lookup(stage)
-    end
+    # def report
+    #   self.attributes
+    # end
 
-    #
-    # Graph connections
-    #
-
-    def notify(msg)
-      true
-    end
-
-    def report
-      self.attributes
-    end
-
-    def to_key()      name   ; end
-    def key_method() :name ; end
+    # def to_key()      name   ; end
+    # def key_method() :name ; end
   end
 end

@@ -1,5 +1,4 @@
 module Hanuman
-
   #
   # For stages that can be linked to directly
   # Including this means your stage has exactly one input (itself).
