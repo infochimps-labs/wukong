@@ -27,7 +27,7 @@ describe :processors, :helpers => true, :widgets => true do
     end
 
     it 'swallows a nil result' do
-      sample_proc.should_receive(:call).with(mock_val).and_return(nil)
+      subject.should_receive(:call).with(mock_val).and_return(nil)
       subject.should_not_receive(:emit)
       subject.process(mock_val)
     end

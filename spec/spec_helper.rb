@@ -1,4 +1,4 @@
-require 'bundler' ; Bundler.require(:development)
+require 'bundler' ; Bundler.require(:default, :development, :test)
 
 SimpleCov.start do
   add_filter '/gorillib/'
