@@ -9,7 +9,7 @@ describe 'Wukong::Faker', :helpers => true do
 
     it 'using type if no faker given' do
       subject.field :last_name, String
-      Gorillib::Factory::StringFactory.should_receive(:fake_value)
+      Gorillib::Factory(String).should_receive(:fake_value)
       subject.fake_value
     end
 
@@ -27,8 +27,8 @@ describe 'Wukong::Faker', :helpers => true do
     end
 
     it 'with explicit faker factory' do
-      subject.field :longitude, String, :faker => Gorillib::Factory::IntegerFactory
-      Gorillib::Factory::IntegerFactory.should_receive(:fake_value)
+      subject.field :longitude, String, :faker => Gorillib::Factory(Integer)
+      Gorillib::Factory(Integer).should_receive(:fake_value)
       subject.fake_value
     end
 
@@ -54,40 +54,39 @@ describe 'Wukong::Faker', :helpers => true do
   be_ish_matcher :ip_address,  /^(\d+\.){3}\d+$/
 
   context 'extensions to Gorillib::Factory' do
-    context Gorillib::Factory::StringFactory do
-      the(:fake_value){ should =~ /^\w+$/ }
+    context Gorillib::Factory(String) do
+      its(:fake_value){ should =~ /^\w+$/ }
     end
-    context(Gorillib::Factory::GuidFactory) do
-      the(:fake_value){ should be_guid_ish }
+    context(Gorillib::Factory(Guid)) do
+      its(:fake_value){ should be_guid_ish }
     end
-    context(Gorillib::Factory::IpAddressFactory) do
-      the(:fake_value){ should be_ip_address_ish }
+    context(Gorillib::Factory(IpAddress)) do
+      its(:fake_value){ should be_ip_address_ish }
     end
-    context(Gorillib::Factory::HostnameFactory) do
-      the(:fake_value){ should be_hostname_ish }
-    end
-
-    context(Gorillib::Factory::SymbolFactory) do
-      the(:fake_value){ should be_a Symbol }
-      the(:fake_value){ should be_identifier_ish }
+    context(Gorillib::Factory(Hostname)) do
+      its(:fake_value){ should be_hostname_ish }
     end
 
-    context(Gorillib::Factory::IntegerFactory) do
-      the(:fake_value){ should be_a Integer }
-      the(:fake_value){ should be < 100 }
+    context(Gorillib::Factory(Symbol)) do
+      its(:fake_value){ should be_a Symbol }
+      its(:fake_value){ should be_identifier_ish }
     end
 
-    context(Gorillib::Factory::TimeFactory) do
-      the(:fake_value){ should be_a Time }
-      the(:fake_value){ should be_within(5).of(Time.now) }
+    context(Gorillib::Factory(Integer)) do
+      its(:fake_value){ should be_a Integer }
+      its(:fake_value){ should be < 100 }
     end
 
-    context(Gorillib::Factory::NilFactory    ){ the(:fake_value){ should equal(nil) } }
-    context(Gorillib::Factory::TrueFactory   ){ the(:fake_value){ should equal(true) } }
-    context(Gorillib::Factory::FalseFactory  ){ the(:fake_value){ should equal(false) } }
-    context(Gorillib::Factory::BooleanFactory){ the(:fake_value){ should be_in([true, false]) } }
+    context(Gorillib::Factory(Time)) do
+      its(:fake_value){ should be_a Time }
+      its(:fake_value){ should be_within(5).of(Time.now) }
+    end
+
+    context(Gorillib::Factory(NilClass)    ){ its(:fake_value){ should equal(nil) } }
+    context(Gorillib::Factory(TrueClass)   ){ its(:fake_value){ should equal(true) } }
+    context(Gorillib::Factory(FalseClass)  ){ its(:fake_value){ should equal(false) } }
+    context(Gorillib::Factory(:boolean)    ){ its(:fake_value){ should be_in([true, false]) } }
   end
-
 
   context Wukong::Faker::Helpers do
     subject{ Wukong::Faker::Helpers }
@@ -129,6 +128,6 @@ describe 'Wukong::Faker', :helpers => true do
     its(:fake_ip_addresss){    should be_ip_address_ish }
     its(:fake_version_number){ should be_a(String) }
     its(:fake_version_number){ should =~ /^\d+\.\d+$/ }
-
   end
+
 end

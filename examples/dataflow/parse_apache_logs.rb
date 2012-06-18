@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift(File.expand_path("../lib", File.realdirpath(File.dirname(__FILE__))))
-
 require 'wukong'
 
 Settings.use(:commandline)
@@ -15,15 +14,34 @@ Wukong.dataflow(:parse_apache_logs) do
     Parses an apache log line into a structured model, emits it as JSON
   DOC
 
-  input  :default, stdin # file_source(Pathname.path_to(:data, 'log/sample_apache_log.log'))
+  source = ($0 == __FILE__) ? stdin : file_source(Pathname.path_to(:data, 'log/sample_apache_log.log'))
+  input  :default, source
   output :dump,    stdout
 
   input(:default) >
     map{|line| ApacheLogLine.make(line) or bad_record(line) } >
-    # to_json >
     to_tsv >
     output(:dump)
-
 end
 
-Wukong::LocalRunner.run(Wukong.dataflow(:parse_apache_logs), :default)
+if ($0 == __FILE__)
+  flow_name = :parse_apache_logs
+  if Settings.profiler
+    require 'perftools'
+    Pathname(Settings.profiler).dirname.mkpath
+    PerfTools::CpuProfiler.start(Settings.profiler) do
+      Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+    end
+  else
+    Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+  end
+
+  # require 'jruby/profiler'
+  # profile_data = JRuby::Profiler.profile do
+  #   Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+  # end
+  # profile_printer = JRuby::Profiler::GraphProfilePrinter.new(profile_data)
+  # profile_printer.printProfile($stderr)
+
+  # Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+end

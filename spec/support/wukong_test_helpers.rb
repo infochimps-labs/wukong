@@ -17,6 +17,9 @@ shared_context 'wukong', :helpers => true do
   let(:mock_stage    ){ m = mock('mock stage') ; m }
   let(:mock_processor){ m = mock ; m.stub(:name => 'mock processor', :attributes => { :a => :b }) ; m }
 
+  let(:test_model_class){     Class.new{ include Gorillib::Model ; field :smurfiness, Integer } }
+  let(:test_model){           test_model_class.receive(:smurfiness => 99) }
+
   let(:test_source){          Wukong::Integers.new(:name => :integers, :size => 100) }
   let(:test_sink){            Wukong::Sink::ArraySink.new(:name => :test_sink) }
   let(:test_processor_class){ Wukong::AsIs }
