@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'configliere', :path => '../configliere'
+
 gem 'gorillib',    :path => '../gorillib'
 
 gem 'home_run',    :platform => :mri, :require=>'date'
