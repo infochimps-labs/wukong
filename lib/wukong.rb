@@ -1,5 +1,13 @@
 require 'multi_json'
-require 'oj'
+
+begin
+  require 'oj'
+  MultiJson.use(:oj)
+  ::Oj.default_options = { :mode => :compat }
+rescue LoadError => err
+  warn "Could not load OJ library; falling back to #{MultiJson.engine}"
+end
+
 
 begin require 'home_run' ; rescue LoadError ; end
 
@@ -10,8 +18,8 @@ require 'gorillib/builder'
 require 'gorillib/model/serialization'
 
 require 'wukong/settings'
-
 require 'hanuman'
+
 
 #
 # Dataflow specific

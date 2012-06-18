@@ -6,7 +6,7 @@ module Wukong
 
     class ToJson < Stringifier
       def process(record)
-        emit record.to_json
+        emit ::MultiJson.dump(record)
       end
       register_processor
     end

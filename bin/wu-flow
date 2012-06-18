@@ -2,32 +2,12 @@
 $LOAD_PATH.unshift(File.expand_path("../lib", File.realdirpath(File.dirname(__FILE__))))
 
 require 'wukong'
-
 Settings.use(:commandline)
-Settings.define :profiler, :default => nil
 Settings.resolve!
 
 dataflow_file = Settings.rest.first
 flow_name = File.basename(dataflow_file, '.rb').to_sym
 
 load(dataflow_file)
-
-# if Settings.profiler
-#   require 'perftools'
-#   Pathname(Settings.profiler).dirname.mkpath
-#   PerfTools::CpuProfiler.start(Settings.profiler) do
-#     Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-#   end
-# else
-#   Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-# end
-
-# require 'jruby/profiler'
-# profile_data = JRuby::Profiler.profile do
-#   Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-# end
-# profile_printer = JRuby::Profiler::GraphProfilePrinter.new(profile_data)
-# profile_printer.printProfile($stderr)
-
 
 Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
