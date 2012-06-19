@@ -1,30 +1,37 @@
 module Hanuman
   class Graph < Action
-    collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
-    field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
+    # collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
+    # field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
     include Hanuman::IsOwnInputSlot
     include Hanuman::IsOwnOutputSlot
 
-    def next_name_for(stage, basename=nil)
-      "#{basename || stage.class.handle}_#{stages.size}"
+    def initialize() @stages = {} ; end
+    def stages()     @stages.dup  ; end
+    
+    def determine_fullname(stage)
+      [self.fullname, @stages.invert[stage]].map(&:to_s).join('.')
     end
 
-    def add_stage(stage)
-      stage.write_attribute(:name, next_name_for(stage)) if stage.name.nil?
+    def set_stage(name, stage)
+      stage.write_attribute(:name, name)
       stage.write_attribute(:owner, self)
-      stages << stage
+      @stages[name.to_sym] = stage
       stage
     end
 
-    def connect(from_slot, into_slot)
-      from_slot = lookup(from_slot)
-      into_slot = lookup(into_slot)
-      actual_from_slot = from_slot.set_output(into_slot)
-      actual_into_slot = into_slot.set_input( from_slot)
-      #
-      edges[actual_from_slot] = actual_into_slot
-      [from_slot, into_slot]
-    end
+    # def next_name_for(stage, basename=nil)
+    #   "#{basename || stage.class.handle}_#{stages.size}"
+    # end
+
+    # def connect(from_slot, into_slot)
+    #   from_slot = lookup(from_slot)
+    #   into_slot = lookup(into_slot)
+    #   actual_from_slot = from_slot.set_output(into_slot)
+    #   actual_into_slot = into_slot.set_input( from_slot)
+    #   #
+    #   edges[actual_from_slot] = actual_into_slot
+    #   [from_slot, into_slot]
+    # end
 
     def lookup(ref)
       ref.is_a?(Symbol) ? resource(ref) : ref
