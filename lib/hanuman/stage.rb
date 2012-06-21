@@ -2,12 +2,24 @@ module Hanuman
   class Stage
     include Gorillib::Builder
 
-    field :name,  Symbol,         :doc => 'name for this stage; should be unique among other stages on its containing graph', :tester => true
-    field :owner, Whatever,       :doc => 'the graph this stage sits in'
-    # field      :doc,     String,         :doc => 'freeform description of this stage type'
+    field :name,  Symbol,   :doc => 'name for this stage; should be unique among other stages on its containing graph'
+    field :label, Symbol,   :doc => 'the reference handle for this stage' 
+    field :owner, Whatever, :doc => 'the graph this stage sits in'
+    
+    def self.make(*args, &blk)
+      attrs = args.extract_options!
+      stage = receive attrs.merge(Hash[ self.field_names.zip(args) ]).compact
+      stage.receive!(&blk)
+      owner.set_stage(stage.label, stage) if owner
+      stage
+    end
+    
+    def outputs() @outputs ||= {} ; end
 
-    def initialize() @connections = [] ; end
-    def outputs()    @connections.dup  ; end
+    def into(stage, slot_name)
+      outputs[slot_name.to_sym] = stage
+      stage
+    end    
 
     # @returns the stage, namespaced by the graph that owns it
     def fullname
@@ -16,20 +28,8 @@ module Hanuman
       # [owner.try(:fullname), name].compact.join('.')
     end
 
-    def into(stage)
-      @connections << stage
-      stage
-    end
-
     def self.handle
       @handle ||= Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
-    end
-    
-    def self.make(owner, name, *args, &block)
-      stage = receive(*args)
-      owner.set_stage(name, stage)
-      stage.receive!(&block)
-      stage
     end
 
     #
