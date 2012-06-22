@@ -1,3 +1,5 @@
+require 'gorillib'
+require 'gorillib/metaprogramming/class_attribute'
 require 'gorillib/builder'
 
 require 'hanuman/stage'              # base object for building blocks

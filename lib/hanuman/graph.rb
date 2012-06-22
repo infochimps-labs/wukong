@@ -2,22 +2,30 @@ module Hanuman
   class Graph < Action
     # collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     # field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
-    include Hanuman::IsOwnInputSlot
-    include Hanuman::IsOwnOutputSlot
+    # include Hanuman::IsOwnInputSlot
+    # include Hanuman::IsOwnOutputSlot
 
-    def initialize() @stages = {} ; end
+    def initialize() @stages = {} ; @edges = [] ; end
     def stages()     @stages.dup  ; end
+    def edges()      @edges.dup   ; end
     
     def determine_fullname(stage)
       [self.fullname, @stages.invert[stage]].map(&:to_s).join('.')
     end
 
-    def set_stage(name, stage)
-      stage.write_attribute(:name, name)
+    def connect(from, into)
+      @edges << [ from.label, into.label ]
+    end
+    
+    def set_stage(label, stage)
+      stage.write_attribute(:label, label)
       stage.write_attribute(:owner, self)
       @stages[name.to_sym] = stage
       stage
     end
+
+    def self.register_graph
+    
 
     # def next_name_for(stage, basename=nil)
     #   "#{basename || stage.class.handle}_#{stages.size}"

@@ -35,9 +35,35 @@ describe :stages, :slot_specs => true, :helpers => true do
   end
 end
 
-
-class Jones < Hanuman::Action
-  register_action('nugs')
+Hanuman.stage(:jones) do
+  def wacky() true ; end
+end 
+# ===
+class Jones < Hanuman::Stage
+  def wacky() true ; end
+  register_stage
 end
 
-Hanu
+Hanuman::Stage.defined_stages #=> { :jones => Jones }
+
+Hanuman.graph(:test) do
+  register_graph         # All graphs have #test method that returns this graph now
+  mapper  = map(:label => :mapper) { |n| add_count(n) }
+  reducer = map(:label => :reducer){ |n| stack(n)     }
+  nugs > mapper > reducer > stdout
+end
+
+Hanuman.graph(:test).edges #=> [[test.nugs, test.mapper], [test.mapper, test.reducer], [test.reducer, test.stdout]]
+
+Hanuman.graph(:other) do
+  stdin > test
+end
+
+Hanuman.graph(:other).edges #=> [[other.stdin, test.nugs], [test.nugs, test.mapper], [test.mapper, test.reducer], [test.reducer, test.stdout]]
+
+def self.graph(graph_name, &blk)
+  g = Graph.defined_graphs(graph_name.to_sym) || Graph.make(:name => graph_name.to_sym)
+  g.extend self.universe
+  g.instance_eval(&blk)
+  g
+end
