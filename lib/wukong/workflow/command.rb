@@ -35,7 +35,7 @@ module Wukong
 
     class Shell < Command
       field :script, String
-      register_action
+      register_stage
     end
 
   end

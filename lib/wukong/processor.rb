@@ -5,6 +5,10 @@ module Wukong
 
     field :name, Symbol, :default => ->{ self.class.handle }
 
+    def wired?
+      not (links(:output).empty? or links(:input).empty?)
+    end
+
     # override this in your subclass
     def process(record)
     end
@@ -18,8 +22,8 @@ module Wukong
       BadRecord.make(*args)
     end
 
-    def self.register_processor(name=nil, &block)
-      register_action(name, &block)
+    def self.register_processor(name = nil)
+      register_stage(name)
     end
   end
 

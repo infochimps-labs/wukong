@@ -5,7 +5,10 @@ module Hanuman
     field :name,  Symbol
     field :owner, Whatever
 
-    class_attribute :defined_stages ; self.defined_stages = {}
+    def label
+      label = @label || self.name
+      [owner.try(:label), label].compact.join('.')
+    end
 
     def self.make(*args, &blk)
       opts  = args.extract_options!
@@ -13,29 +16,36 @@ module Hanuman
       new(attrs, &blk)      
     end
 
-    def self.register_stage(arg = nil)
-      stage_name = arg || Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(self.name))
-      defined_stages[stage_name.to_sym] = self
+    def register_stage(stage_name = nil)
+      self.class.register_stage(stage_name)
+    end
+
+    def self.register_stage(stage_name = nil)
+      klass = self.is_a?(Class) ? self : self.class
+      stage_name ||= Gorillib::Inflector.underscore(Gorillib::Inflector.demodulize(klass.name)).to_sym
+      Hanuman::Universe.defined_stages[stage_name] = klass
+      Hanuman::Universe.send(:define_method, stage_name) do |*args, &block|
+        stage = Hanuman::Universe.defined_stages[stage_name].make(*args, :owner => self, :name => stage_name)
+        set_stage(stage, stage.label) if self.is_a? Hanuman::Graph
+        stage
+      end
     end
     
-    def outputs() @outputs ||= {} ; end
+    def links() @links ||= {} ; end
 
-    def output(slot_name) outputs[slot_name.to_sym] ; end
+    def link(link_name) links[link_name] ; end
 
-    def into(stage, slot_name)
-      outputs[slot_name.to_sym] = stage
-      owner.connect(self, stage) 
-      stage
-    end    
-
-  end
-
-  def self.stage(stage_name, &blk)
-    stage = Stage.defined_stages.fetch(stage_name) do
-      klass_name = Gorillib::Inflector.camelize(stage_name.to_s).to_sym
-      const_defined?(klass_name) ? const_get(klass_name) : const_set(klass_name, Class.new(Hanuman::Stage))
+    def >(stage)
+      owner.connect(self, stage)
     end
-    stage.class_eval(&blk) if blk
-    Stage.defined_stages[stage_name.to_sym] = stage
-  end  
+
+    def outlink(stage, link_name)
+      links[link_name] = stage
+    end
+    
+    def inlink(stage, link_name)
+      stage.outlink(self, link_name)
+    end
+    
+  end
 end
