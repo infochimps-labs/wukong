@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'hanuman'
 
-class Foo < Hanuman::Graph ; register_stage ; end
-class Bar < Hanuman::Graph ; register_stage ; end
-class Baz < Hanuman::Graph ; register_stage ; end
+class Foo < Hanuman::Stage ; register_stage ; end
+class Bar < Hanuman::Stage ; register_stage ; end
+class Baz < Hanuman::Stage ; register_stage ; end
 
 describe Hanuman::Graph, :helpers => true do
   subject{ Hanuman::Universe.graph(self.class.description) }
@@ -11,6 +11,7 @@ describe Hanuman::Graph, :helpers => true do
   context 'simple' do
     it 'constructs a simple graph' do
       subject.receive!{ foo > bar }
+      puts Hanuman::Universe.graph(:simple).object_id
       subject.stages.keys.should == ['simple.foo', 'simple.bar']
       subject.edges.should       == [['simple.foo', 'simple.bar']]
     end
@@ -18,6 +19,7 @@ describe Hanuman::Graph, :helpers => true do
 
   context 'linked' do
     it 'constructs a linked graph' do
+      puts Hanuman::Universe.graph(:simple).object_id
       subject.receive!{ baz > simple }
       subject.stages.keys.should == ['linked.baz', 'linked.simple']
       subject.edges.should       == [['linked.baz', 'linked.simple']]

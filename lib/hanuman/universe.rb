@@ -23,7 +23,7 @@ module Hanuman
       graph.extend self
       graph.instance_eval(&blk) if block_given?
       defined_actions[graph_name.to_sym] = graph    
-    end
-
+    end    
   end
+
 end

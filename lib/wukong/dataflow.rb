@@ -17,10 +17,10 @@ module Wukong
       stage.outlink(stages[:input], :input)
     end
     
-    def wire
-      links[:input]  ||= Hanuman::StubSource
-      links[:output] ||= Hanuman::StubSink
-    end
+    # def wire
+    #   links[:input]  ||= Hanuman::StubSource
+    #   links[:output] ||= Hanuman::StubSink
+    # end
     
     # * defines the named input slot, if it doesn't exist
     # * wires the given stage to that input slot

@@ -2,9 +2,9 @@ module Wukong
   class Workflow < Hanuman::Graph
 
     class ActionWithInputs < Hanuman::Action
-      include Hanuman::Slottable
-      include Hanuman::SplatInputs
-      include Hanuman::SplatOutputs
+      # include Hanuman::Slottable
+      # include Hanuman::SplatInputs
+      # include Hanuman::SplatOutputs
 
       def self.make(workflow, *input_stages, &block)
         options  = input_stages.extract_options!
