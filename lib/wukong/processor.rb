@@ -1,9 +1,7 @@
 module Wukong
   class Processor < Hanuman::Action
-    # include Hanuman::IsOwnInputSlot
-    # include Hanuman::IsOwnOutputSlot
 
-    field :name, Symbol, :default => ->{ self.class.handle }
+    magic :name, Symbol, :default => ->{ self.class.handle }
 
     def wired?
       not (links(:output).empty? or links(:input).empty?)
