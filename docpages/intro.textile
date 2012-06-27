@@ -1,8 +1,0 @@
----
-layout: default
-title:  mrflip.github.com/wukong
-collapse: false
----
-h1(gemheader). Intro %(small):: 3 simple examples%
-
-{% include intro.textile %}
