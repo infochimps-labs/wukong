@@ -14,13 +14,13 @@ module Hanuman
     end
     
     def inlink(stage, link_name)
-      set_stage(stage, :input)
+      stage.set_stage(stage, :input)
       stage.outlink(stages[:input], :input)
     end
 
     def connect(from, other)
       from.outlink(other, :output)
-      from.inlink(other, :input)
+      from.inlink(other,  :input)
       edges << [ from.label, other.label ]
       other
     end

@@ -30,7 +30,7 @@ Warrant.workflow(:cherry_pie) do
   graph(:crust) do
     add_to(:small_bowl, :flour, :salt, :shortening) > :crumbly_mixture
 
-    # equvalently:
+    # equivalently:
     #   add_to(:crumbly_mixture, :buttermilk) > :dough
     add_to(:crumbly_mixture) << :buttermilk > :dough
 
