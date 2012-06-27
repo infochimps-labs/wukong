@@ -3,7 +3,7 @@ shared_context 'widgets', :helpers => true do
   let(:next_stage){ mock('next stage') }
 
   def mock_next_stage(obj=nil)
-    (obj ||= subject).set_output next_stage
+    (obj ||= subject).set_output :default, next_stage
   end
 end
 

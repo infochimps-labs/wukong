@@ -14,32 +14,32 @@ module Hanuman
     end
   end
 
-  Slottable.module_eval do
-    def to_graphviz(gv, draw_edges=true)
-      gv.node(self.fullname,
-        :label    => name,
-        :inslots  => inslots.to_a.map{|slot|  slot.name},
-        :outslots => outslots.to_a.map{|slot| slot.name},
-        :shape    => draw_shape
-        )
-      # inslots.to_a.each do |inslot|
-      #   next unless inslot.input?
-      #   gv.edge(inslot.input.fullname, inslot.fullname)
-      # end
-    end
-  end
-
-  InputSlot.class_eval do
-    def fullname
-      %Q{"#{stage.fullname}":#{name}}
-    end
-  end
-
-  OutputSlot.class_eval do
-    def fullname
-      %Q{"#{stage.fullname}":out_#{name}}
-    end
-  end
+  # Slottable.module_eval do
+  #   def to_graphviz(gv, draw_edges=true)
+  #     gv.node(self.fullname,
+  #       :label    => name,
+  #       :inslots  => inslots.to_a.map{|slot|  slot.name},
+  #       :outslots => outslots.to_a.map{|slot| slot.name},
+  #       :shape    => draw_shape
+  #       )
+  #     # inslots.to_a.each do |inslot|
+  #     #   next unless inslot.input?
+  #     #   gv.edge(inslot.input.fullname, inslot.fullname)
+  #     # end
+  #   end
+  # end
+  #
+  # InputSlot.class_eval do
+  #   def fullname
+  #     %Q{"#{stage.fullname}":#{name}}
+  #   end
+  # end
+  #
+  # OutputSlot.class_eval do
+  #   def fullname
+  #     %Q{"#{stage.fullname}":out_#{name}}
+  #   end
+  # end
 
   Resource.class_eval do
     self.draw_shape = :Mrecord

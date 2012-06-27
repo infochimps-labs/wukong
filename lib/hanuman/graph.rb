@@ -5,24 +5,46 @@ module Hanuman
     field      :stages, Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
     field      :edges,  Hash,                 :doc => 'connections among all stages on the graph', :default => {}
 
+    # * defines the named input slot, if it doesn't exist
+    # * wires the given stage to that input slot
+    # * returns the named input slot
+    def input(slot_name)  ; inputs[slot_name] ; end
+
+    def output(slot_name) ; outputs[slot_name] ; end
+
+    def set_input(slot_name, stage)
+      inputs[slot_name] = stage
+    end
+    def set_output(slot_name, stage)
+      outputs[slot_name] = stage
+    end
+
     def next_label_for(stage)
       "#{stage.stage_type}_#{stages.size}"
     end
 
-    def stage(label, stg=nil)
-      if stg
-        stg = Hanuman::Stage.receive(stg)
-        set_stage(stg, label)
+    def stage(label, attrs=nil, &block)
+      if attrs.is_a?(Hanuman::Stage)
+        # actual object: assign it into collection
+        val = attrs
+        set_stage(val, label)
+      elsif stages.include?(label)
+        # existing item: retrieve it, updating as directed
+        val = stages.fetch(label)
+        val.receive!(attrs, &block)
       else
-        stages.fetch(label)
+        # missing item: autovivify item and add to collection
+        # { key_method => item_key, :owner => self }
+        val = Hanuman::Stage.receive(attrs, &block)
+        set_stage(val, label)
       end
+      val
     end
 
     def set_stage(stg, label=nil)
       label ||= (stg.read_attribute(:name) || next_label_for(stg))
       # stg.write_attribute(:owner, self)
       stages[label] = stg
-      p [stages, label, stg]
       stg
     end
 

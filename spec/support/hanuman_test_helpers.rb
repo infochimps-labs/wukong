@@ -16,7 +16,7 @@ end
 shared_examples_for 'it can be linked into' do
   let(:mock_slot){ mock('mock slot') }
   before do
-    mock_dataflow.stub(:connect).with(mock_slot, subject).and_return([mock_slot, subject])
+    mock_dataflow.stub(:connect).with(mock_slot, :default, subject, :default).and_return([mock_slot, subject])
     subject.write_attribute(:owner, mock_dataflow)
   end
 
@@ -32,7 +32,7 @@ shared_examples_for 'it can be linked into' do
 
   context '#from' do
     it 'asks its owner to register an edge from self into given stage' do
-      mock_dataflow.should_receive(:connect).with(mock_slot, subject)
+      mock_dataflow.should_receive(:connect).with(mock_slot, :default, subject, :default)
       subject.from mock_slot
     end
     it 'returns the stage itself, for chaining' do
@@ -41,12 +41,12 @@ shared_examples_for 'it can be linked into' do
   end
 
   context 'set_output' do
-    it 'returns the actual receivoutg slot' do
-      subject.set_output(mock_stage).should equal(subject)
+    it 'returns the actual receiving slot' do
+      subject.set_output(:default, mock_stage).should equal(subject)
     end
     it 'sets the output attribute' do
       subject.should_receive(:write_attribute).with(:output, mock_stage)
-      subject.set_output(mock_stage)
+      subject.set_output(:default, mock_stage)
     end
   end
 end
@@ -54,13 +54,13 @@ end
 shared_examples_for 'it can be linked from' do
   let(:mock_slot){ mock('mock slot') }
   before do
-    mock_dataflow.stub(:connect).with(subject, mock_slot).and_return([subject, mock_slot])
+    mock_dataflow.stub(:connect).with(subject, :default, mock_slot, :default).and_return([subject, mock_slot])
     subject.write_attribute(:owner, mock_dataflow)
   end
 
   context '#>' do
     it 'asks its owner to register an edge into self from given stage' do
-      mock_dataflow.should_receive(:connect).with(subject, mock_slot)
+      mock_dataflow.should_receive(:connect).with(subject, :default, mock_slot, :default)
       subject.into mock_slot
     end
     it 'returns the output stage' do
@@ -70,7 +70,7 @@ shared_examples_for 'it can be linked from' do
 
   context '#into' do
     it 'asks its owner to register an edge into self from given stage' do
-      mock_dataflow.should_receive(:connect).with(subject, mock_slot)
+      mock_dataflow.should_receive(:connetc).with(subject, :default, mock_slot, :default)
       subject.into mock_slot
     end
     it 'returns the stage itself, for chaining' do
@@ -80,11 +80,11 @@ shared_examples_for 'it can be linked from' do
 
   context 'set_input' do
     it 'returns the actual receiving slot' do
-      subject.set_input(mock_stage).should equal(subject)
+      subject.set_input(:default, mock_stage).should equal(subject)
     end
     it 'sets the input attribute' do
       subject.should_receive(:write_attribute).with(:input, mock_stage)
-      subject.set_input(mock_stage)
+      subject.set_input(:default, mock_stage)
     end
   end
 end

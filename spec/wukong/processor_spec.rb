@@ -70,7 +70,7 @@ describe :processors, :helpers => true, :widgets => true do
   describe Wukong::Flatten do
     it_behaves_like 'a processor'
     it 'emits each item in each input' do
-      subject.set_output test_sink
+      subject.output(test_sink)
       [ [:this, :that], [], 1..5, { :a => :b} ].each{|rec| subject.process(rec) }
       test_sink.records.should == [:this, :that, 1, 2, 3, 4, 5, [:a, :b]]
     end

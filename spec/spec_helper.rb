@@ -1,10 +1,10 @@
 require 'bundler' ; Bundler.require(:default, :development, :test)
 
-SimpleCov.start do
-  add_filter '/gorillib/'
-  add_filter '/away/'
-  add_group  'Hanuman', '/hanuman/'
-end
+# SimpleCov.start do
+#   add_filter '/gorillib/'
+#   add_filter '/away/'
+#   add_group  'Hanuman', '/hanuman/'
+# end
 
 require 'wukong'
 require 'gorillib/pathname'
@@ -23,4 +23,5 @@ puts 'Some specs require graphviz to run -- brew/apt install graphviz, it is pre
 
 RSpec.configure do |config|
   include WukongTestHelpers
+  config.treat_symbols_as_metadata_keys_with_true_values = true
 end

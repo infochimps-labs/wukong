@@ -18,14 +18,8 @@ Wukong.dataflow(:parse_apache_logs) do
   set_input  :default, source
   set_output :dump,    stdout
 
-  parser = map{|line| ApacheLogLine.make(line) or bad_record(line) }
-  p input(:default)
-  p parser
-  p to_tsv
-  p output(:dump)
-
   input(:default) >
-    parser >
+    map{|line| ApacheLogLine.make(line) or bad_record(line) } >
     to_tsv >
     output(:default)
 end

@@ -15,7 +15,8 @@ class Wukong::Workflow < Hanuman::Graph
 
   class AddTo < ActionWithInputs
     register_action
-    consumes :container
+    magic :container, Hanuman::Stage
+
     def self.make(workflow, container, *input_stages, &block)
       options = input_stages.extract_options!
       super(workflow, *input_stages, options.merge(:container => container), &block)
@@ -25,8 +26,10 @@ end
 
 # TODO: make repeated calls not retrieve object again -- it seems lookup is the special case, not creation.
 
-class Warrant ; extend Wukong::Universe ; end
-Warrant.workflow(:cherry_pie) do
+#
+# Make Warrant happy
+#
+Wukong.workflow(:cherry_pie) do
   graph(:crust) do
     add_to(:small_bowl, :flour, :salt, :shortening) > :crumbly_mixture
 
@@ -34,6 +37,8 @@ Warrant.workflow(:cherry_pie) do
     #   add_to(:crumbly_mixture, :buttermilk) > :dough
     add_to(:crumbly_mixture) << :buttermilk > :dough
 
+    resource(:ball_for_top)
+    resource(:ball_for_bottom)
     split(:dough).into(:ball_for_top, :ball_for_bottom)
 
     # equvalently:
@@ -44,6 +49,8 @@ Warrant.workflow(:cherry_pie) do
     self << stage(:pie_tin_with_crust)
   end
 
+  p graph(:crust)
+
   graph(:filling) do
     drain(:cherries).into(:drained_cherries, :cherry_juice)
     add_to(:saucepan, :corn_starch, :sugar, :salt) >
@@ -53,6 +60,8 @@ Warrant.workflow(:cherry_pie) do
     add_to(:goop, :drained_cherries, :butter) > cool > self
   end
 
+  p stage(:crust)
+  p stage(:crust).stages
   rolling_pin << stage(:crust).stage(:ball_for_top) > :top_crust
 
   raw_pie = add_to(stage(:crust).stage(:pie_tin_with_crust), :filling)

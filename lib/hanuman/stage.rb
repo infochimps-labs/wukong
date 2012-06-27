@@ -9,25 +9,10 @@ module Hanuman
     field      :inputs,  Gorillib::Collection, :doc => 'inputs to this stage',      :default => ->{ Gorillib::Collection.new }
     field      :outputs, Gorillib::Collection, :doc => 'inputs to this stage',      :default => ->{ Gorillib::Collection.new }
 
-    # * defines the named input slot, if it doesn't exist
-    # * wires the given stage to that input slot
-    # * returns the named input slot
-    def input(slot_name)  ; inputs[slot_name] ; end
-
-    def output(slot_name) ; outputs[slot_name] ; end
-
-    def set_input(slot_name, stage)
-      inputs[slot_name] = stage
-    end
-    def set_output(slot_name, stage)
-      outputs[slot_name] = stage
-    end
-
     # wire this slot into another slot
     # @param other [Hanuman::Slot] the other stage
     # @returns the other slot
     def >(other)
-      Log.dump( self, other, )
       _, other = owner.connect(self, :default, other, :default)
       other
     end
