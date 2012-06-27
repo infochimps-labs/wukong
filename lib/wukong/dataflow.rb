@@ -1,8 +1,6 @@
 module Wukong
   class Dataflow < Hanuman::Graph
-    # include Hanuman::SplatInputs
-    # include Hanuman::SplatOutputs
-    
+
     def ready?
       stages.values.all?(&:ready?)
     end
@@ -11,17 +9,17 @@ module Wukong
       set_stage(stage, :output)
       links[:output] = stage
     end
-    
+
     def inlink(stage, link_name)
       set_stage(stage, :input)
       stage.outlink(stages[:input], :input)
     end
-    
+
     # def wire
     #   links[:input]  ||= Hanuman::StubSource
     #   links[:output] ||= Hanuman::StubSink
     # end
-    
+
     # * defines the named input slot, if it doesn't exist
     # * wires the given stage to that input slot
     # * returns the named input slot

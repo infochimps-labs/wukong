@@ -3,16 +3,16 @@ module Hanuman
 
     def stages() @stages ||= {}  ; end
     def edges()  @edges  ||= []  ; end
-    
+
     def ready?
       stages.values.all?(&:ready?)
     end
-    
+
     def outlink(stage, link_name)
       set_stage(stage, :output)
       links[:output] = stage
     end
-    
+
     def inlink(stage, link_name)
       set_stage(stage, :input)
       stage.outlink(stages[:input], :input)

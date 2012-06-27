@@ -2,8 +2,8 @@ module Hanuman
   class Stage
     include Gorillib::Builder
 
-    field :name,  Symbol
-    field :owner, Whatever
+    magic :name,  Symbol
+    magic :owner, Whatever
 
     def label
       label = @label || self.name
@@ -13,7 +13,7 @@ module Hanuman
     def self.make(*args, &blk)
       opts  = args.extract_options!
       attrs = opts.merge(Hash[ self.field_names.rotate(2).zip(args) ].compact)
-      new(attrs, &blk)      
+      new(attrs, &blk)
     end
 
     def register_stage(stage_name = nil)
@@ -30,7 +30,7 @@ module Hanuman
         stage
       end
     end
-    
+
     def links() @links ||= {} ; end
 
     def link(link_name) links[link_name] ; end
@@ -42,10 +42,10 @@ module Hanuman
     def outlink(stage, link_name)
       links[link_name] = stage
     end
-    
+
     def inlink(stage, link_name)
       stage.outlink(self, link_name)
     end
-    
+
   end
 end

@@ -25,7 +25,7 @@ describe :stages, :slot_specs => true, :helpers => true do
       end
 
       context 'with owner' do
-        let(:owner) { Hanuman::Graph.receive(:name => 'tony') } 
+        let(:owner) { Hanuman::Graph.receive(:name => 'tony') }
         subject     { described_class.make(owner, 'danza')    }
 
         it 'returns a fullname determined by its owner' do
@@ -36,35 +36,35 @@ describe :stages, :slot_specs => true, :helpers => true do
   end
 end
 
-Hanuman.stage(:jones) do
-  def wacky() true ; end
-end
-# ===
-class Jones < Hanuman::Stage
-  def wacky() true ; end
-  register_stage
-end
-
-Hanuman::Stage.defined_stages #=> { :jones => Jones }
-
-Hanuman.graph(:test) do
-  mapper  = map(:as => :mapper) { |n| add_count(n) }
-  reducer = map(:as => :reducer){ |n| stack(n)     }
-  nugs > mapper > reducer > stdout
-  register_graph         # All graphs have #test method that returns this graph now
-end
-
-Hanuman.graph(:test).edges #=> [[test.nugs, test.mapper], [test.mapper, test.reducer], [test.reducer, test.stdout]]
-
-Hanuman.graph(:other) do
-  stdin > test
-end
-
-Hanuman.graph(:other).edges #=> [[other.stdin, test.nugs], [test.nugs, test.mapper], [test.mapper, test.reducer], [test.reducer, test.stdout]]
-
-def self.graph(graph_name, &blk)
-  g = Graph.defined_graphs(graph_name) || Graph.make(:name => graph_name.to_sym)
-  g.extend self.universe
-  g.instance_eval(&blk)
-  g
-end
+# Hanuman.stage(:jones) do
+#   def wacky() true ; end
+# end
+# # ===
+# class Jones < Hanuman::Stage
+#   def wacky() true ; end
+#   register_stage
+# end
+#
+# Hanuman::Stage.defined_stages #=> { :jones => Jones }
+#
+# Hanuman.graph(:test) do
+#   mapper  = map(:as => :mapper) { |n| add_count(n) }
+#   reducer = map(:as => :reducer){ |n| stack(n)     }
+#   nugs > mapper > reducer > stdout
+#   register_graph         # All graphs have #test method that returns this graph now
+# end
+#
+# Hanuman.graph(:test).edges #=> [[test.nugs, test.mapper], [test.mapper, test.reducer], [test.reducer, test.stdout]]
+#
+# Hanuman.graph(:other) do
+#   stdin > test
+# end
+#
+# Hanuman.graph(:other).edges #=> [[other.stdin, test.nugs], [test.nugs, test.mapper], [test.mapper, test.reducer], [test.reducer, test.stdout]]
+#
+# def self.graph(graph_name, &blk)
+#   g = Graph.defined_graphs(graph_name) || Graph.make(:name => graph_name.to_sym)
+#   g.extend self.universe
+#   g.instance_eval(&blk)
+#   g
+# end
