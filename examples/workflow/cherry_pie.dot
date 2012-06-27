@@ -1,0 +1,97 @@
+digraph Warrant {
+  rankdir = TB;
+  subgraph "cluster_cherry_pie" {
+    label = "cherry_pie";
+    subgraph "cluster_cherry_pie.crust" {
+      label = "crust";
+      "cherry_pie.crust.add_to_0"       [ shape = record,label = "{{<container>c|<flour>f|<salt>s|<shortening>s}|add\nto|{<out_crumbly_mixture>c}}" ];
+      "cherry_pie.crust.flour"          [ shape = Mrecord,label = "{flour}" ];
+      "cherry_pie.crust.salt"           [ shape = Mrecord,label = "{salt}" ];
+      "cherry_pie.crust.shortening"     [ shape = Mrecord,label = "{shortening}" ];
+      "cherry_pie.crust.small_bowl"     [ shape = Mrecord,label = "{small\nbowl}" ];
+      "cherry_pie.crust.crumbly_mixture"[ shape = Mrecord,label = "{crumbly\nmixture}" ];
+      "cherry_pie.crust.add_to_6"       [ shape = record,label = "{{<container>c|<buttermilk>b}|add\nto|{<out_dough>d}}" ];
+      "cherry_pie.crust.buttermilk"     [ shape = Mrecord,label = "{buttermilk}" ];
+      "cherry_pie.crust.dough"          [ shape = Mrecord,label = "{dough}" ];
+      "cherry_pie.crust.split_9"        [ shape = record,label = "{{<dough>d}|split|{<out_ball_for_top>b|<out_ball_for_bottom>b}}" ];
+      "cherry_pie.crust.ball_for_top"   [ shape = Mrecord,label = "{ball\nfor\ntop}" ];
+      "cherry_pie.crust.ball_for_bottom"[ shape = Mrecord,label = "{ball\nfor\nbottom}" ];
+      "cherry_pie.crust.rolling_pin_12" [ shape = record,label = "{{<ball_for_bottom>b}|rolling\npin|{<out_combine_13>c}}" ];
+      "cherry_pie.crust.combine_13"     [ shape = record,label = "{{<pie_tin>p|<rolling_pin_12>r}|combine|{<out_pie_tin_with_crust>p}}" ];
+      "cherry_pie.crust.pie_tin"        [ shape = Mrecord,label = "{pie\ntin}" ];
+      "cherry_pie.crust.pie_tin_with_crust"[ shape = Mrecord,label = "{pie\ntin\nwith\ncrust}" ];
+      "cherry_pie.crust.flour" -> "cherry_pie.crust.add_to_0":flour;
+      "cherry_pie.crust.salt" -> "cherry_pie.crust.add_to_0":salt;
+      "cherry_pie.crust.shortening" -> "cherry_pie.crust.add_to_0":shortening;
+      "cherry_pie.crust.small_bowl" -> "cherry_pie.crust.add_to_0":container;
+      "cherry_pie.crust.add_to_0":out_crumbly_mixture -> "cherry_pie.crust.crumbly_mixture";
+      "cherry_pie.crust.crumbly_mixture" -> "cherry_pie.crust.add_to_6":container;
+      "cherry_pie.crust.buttermilk" -> "cherry_pie.crust.add_to_6":buttermilk;
+      "cherry_pie.crust.add_to_6":out_dough -> "cherry_pie.crust.dough";
+      "cherry_pie.crust.dough" -> "cherry_pie.crust.split_9":dough;
+      "cherry_pie.crust.split_9":out_ball_for_top -> "cherry_pie.crust.ball_for_top";
+      "cherry_pie.crust.split_9":out_ball_for_bottom -> "cherry_pie.crust.ball_for_bottom";
+      "cherry_pie.crust.ball_for_bottom" -> "cherry_pie.crust.rolling_pin_12":ball_for_bottom;
+      "cherry_pie.crust.pie_tin" -> "cherry_pie.crust.combine_13":pie_tin;
+      "cherry_pie.crust.rolling_pin_12":out_combine_13 -> "cherry_pie.crust.combine_13":rolling_pin_12;
+      "cherry_pie.crust.combine_13":out_pie_tin_with_crust -> "cherry_pie.crust.pie_tin_with_crust";
+    }
+    "cherry_pie.crust"                  [ shape = record,label = "{crust}" ];
+    subgraph "cluster_cherry_pie.filling" {
+      label = "filling";
+      "cherry_pie.filling.drain_0"      [ shape = record,label = "{{<cherries>c}|drain|{<out_drained_cherries>d|<out_cherry_juice>c}}" ];
+      "cherry_pie.filling.cherries"     [ shape = Mrecord,label = "{cherries}" ];
+      "cherry_pie.filling.drained_cherries"[ shape = Mrecord,label = "{drained\ncherries}" ];
+      "cherry_pie.filling.cherry_juice" [ shape = Mrecord,label = "{cherry\njuice}" ];
+      "cherry_pie.filling.add_to_4"     [ shape = record,label = "{{<container>c|<corn_starch>c|<sugar>s|<salt>s}|add\nto|{<out_whisk_9>w}}" ];
+      "cherry_pie.filling.corn_starch"  [ shape = Mrecord,label = "{corn\nstarch}" ];
+      "cherry_pie.filling.sugar"        [ shape = Mrecord,label = "{sugar}" ];
+      "cherry_pie.filling.salt"         [ shape = Mrecord,label = "{salt}" ];
+      "cherry_pie.filling.saucepan"     [ shape = Mrecord,label = "{saucepan}" ];
+      "cherry_pie.filling.whisk_9"      [ shape = record,label = "{{<cherry_juice>c|<add_to_4>a}|whisk|{<out_raw_goop>r}}" ];
+      "cherry_pie.filling.raw_goop"     [ shape = Mrecord,label = "{raw\ngoop}" ];
+      "cherry_pie.filling.cook_11"      [ shape = record,label = "{{<raw_goop>r}|cook|{<out_goop>g}}" ];
+      "cherry_pie.filling.goop"         [ shape = Mrecord,label = "{goop}" ];
+      "cherry_pie.filling.add_to_13"    [ shape = record,label = "{{<container>c|<drained_cherries>d|<butter>b}|add\nto|{<out_cool_15>c}}" ];
+      "cherry_pie.filling.butter"       [ shape = Mrecord,label = "{butter}" ];
+      "cherry_pie.filling.cool_15"      [ shape = record,label = "{{<add_to_13>a}|cool|{<out_filling>f}}" ];
+      "cherry_pie.filling.cherries" -> "cherry_pie.filling.drain_0":cherries;
+      "cherry_pie.filling.drain_0":out_drained_cherries -> "cherry_pie.filling.drained_cherries";
+      "cherry_pie.filling.drain_0":out_cherry_juice -> "cherry_pie.filling.cherry_juice";
+      "cherry_pie.filling.corn_starch" -> "cherry_pie.filling.add_to_4":corn_starch;
+      "cherry_pie.filling.sugar" -> "cherry_pie.filling.add_to_4":sugar;
+      "cherry_pie.filling.salt" -> "cherry_pie.filling.add_to_4":salt;
+      "cherry_pie.filling.saucepan" -> "cherry_pie.filling.add_to_4":container;
+      "cherry_pie.filling.cherry_juice" -> "cherry_pie.filling.whisk_9":cherry_juice;
+      "cherry_pie.filling.add_to_4":out_whisk_9 -> "cherry_pie.filling.whisk_9":add_to_4;
+      "cherry_pie.filling.whisk_9":out_raw_goop -> "cherry_pie.filling.raw_goop";
+      "cherry_pie.filling.raw_goop" -> "cherry_pie.filling.cook_11":raw_goop;
+      "cherry_pie.filling.cook_11":out_goop -> "cherry_pie.filling.goop";
+      "cherry_pie.filling.drained_cherries" -> "cherry_pie.filling.add_to_13":drained_cherries;
+      "cherry_pie.filling.butter" -> "cherry_pie.filling.add_to_13":butter;
+      "cherry_pie.filling.goop" -> "cherry_pie.filling.add_to_13":container;
+      "cherry_pie.filling.add_to_13":out_cool_15 -> "cherry_pie.filling.cool_15":add_to_13;
+      "cherry_pie.filling.cool_15":out_filling -> "cherry_pie.filling";
+    }
+    "cherry_pie.filling"                [ shape = record,label = "{filling}" ];
+    "cherry_pie.rolling_pin_2"          [ shape = record,label = "{{<ball_for_top>b}|rolling\npin|{<out_top_crust>t}}" ];
+    "cherry_pie.top_crust"              [ shape = Mrecord,label = "{top\ncrust}" ];
+    "cherry_pie.add_to_4"               [ shape = record,label = "{{<container>c|<filling>f|<top_crust>t}|add\nto|{<out_cook_5>c}}" ];
+    "cherry_pie.cook_5"                 [ shape = record,label = "{{<oven>o|<add_to_4>a}|cook|{<out_cool_7>c}}" ];
+    "cherry_pie.oven"                   [ shape = Mrecord,label = "{oven}" ];
+    "cherry_pie.cool_7"                 [ shape = record,label = "{{<wire_rack>w|<cook_5>c}|cool|{<out_cherry_pie>c}}" ];
+    "cherry_pie.wire_rack"              [ shape = Mrecord,label = "{wire\nrack}" ];
+    "cherry_pie.crust.ball_for_bottom" -> "cherry_pie.crust";
+    "cherry_pie.crust.pie_tin_with_crust" -> "cherry_pie.add_to_4":container;
+    "cherry_pie.crust.ball_for_top" -> "cherry_pie.rolling_pin_2":ball_for_top;
+    "cherry_pie.rolling_pin_2":out_top_crust -> "cherry_pie.top_crust";
+    "cherry_pie.filling" -> "cherry_pie.add_to_4":filling;
+    "cherry_pie.top_crust" -> "cherry_pie.add_to_4":top_crust;
+    "cherry_pie.oven" -> "cherry_pie.cook_5":oven;
+    "cherry_pie.add_to_4":out_cook_5 -> "cherry_pie.cook_5":add_to_4;
+    "cherry_pie.wire_rack" -> "cherry_pie.cool_7":wire_rack;
+    "cherry_pie.cook_5":out_cool_7 -> "cherry_pie.cool_7":cook_5;
+    "cherry_pie.cool_7":out_cherry_pie -> "cherry_pie";
+  }
+  "cherry_pie"                          [ shape = record,label = "{cherry\npie}" ];
+}
