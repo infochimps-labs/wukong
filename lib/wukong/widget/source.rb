@@ -69,7 +69,7 @@ module Wukong
     end
 
     class FileSource < Wukong::Source::IO
-      field :filename, Pathname, :doc => "Filename to read from"
+      magic :filename, Pathname, :doc => "Filename to read from"
 
       def self.make(workflow, filename, stage_name=nil, attrs={})
         super(workflow, attrs.merge(:filename => filename, :name => stage_name))
@@ -87,7 +87,7 @@ module Wukong
       extend Gorillib::Concern
       included do
         attr_reader :num
-        field :size, Integer, :default => 2**63, :doc => "Number of items to generate", :writer => true
+        magic :size, Integer, :default => 2**63, :doc => "Number of items to generate", :writer => true
       end
 
       def setup
@@ -114,7 +114,7 @@ module Wukong
     class Integers < Wukong::Source
       register_source :integers
       include CappedGenerator
-      field :init, Integer, :default => 0, :doc => "Initial offset", :writer => true
+      magic :init, Integer, :default => 0, :doc => "Initial offset", :writer => true
 
       def max
         init + size - 1

@@ -8,7 +8,7 @@ module Hanuman
     extend  Gorillib::Concern
     include Inlinkable
     included do
-      field   :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
+      magic   :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
     end
     def inputs
       input?  ? [input] : []
@@ -23,7 +23,7 @@ module Hanuman
     extend  Gorillib::Concern
     include Outlinkable
     included do
-      field  :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
+      magic  :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
     end
     def outputs
       output? ? [output] : []
@@ -74,10 +74,10 @@ module Hanuman
 
     module ClassMethods
       def consumes(name, options={})
-        field name, Hanuman::Stage, {:field_type => InputSlotField}.merge(options)
+        magic name, Hanuman::Stage, {:field_type => InputSlotField}.merge(options)
       end
       def produces(name, options={})
-        field name, Hanuman::Stage, {:field_type => OutputSlotField}.merge(options)
+        magic name, Hanuman::Stage, {:field_type => OutputSlotField}.merge(options)
       end
 
       def define_slot_reader(field)

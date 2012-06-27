@@ -64,8 +64,8 @@ module Hanuman
 
   class Slot
     include  Gorillib::Builder
-    field    :name,  Symbol
-    field    :stage, Hanuman::Stage
+    magic    :name,  Symbol
+    magic    :stage, Hanuman::Stage
     def owner
       stage.owner
     end
@@ -74,13 +74,13 @@ module Hanuman
 
   class InputSlot < Slot
     include  Hanuman::Inlinkable
-    field    :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
+    magic    :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
     def other() input ; end
   end
 
   class OutputSlot < Slot
     include  Hanuman::Outlinkable
-    field    :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
+    magic    :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
     def other() ouput ; end
   end
 

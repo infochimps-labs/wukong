@@ -3,7 +3,7 @@ module Wukong
     include Hanuman::IsOwnInputSlot
     include Hanuman::IsOwnOutputSlot
 
-    field :name, Symbol, :default => ->{ self.class.handle }
+    magic :name, Symbol, :default => ->{ self.class.handle }
 
     # override this in your subclass
     def process(record)
@@ -117,7 +117,7 @@ module Wukong
   module CountingProcessor
     extend Gorillib::Concern
     included do
-      field :count,     Integer, :doc => 'count of records this run', :default => 0, :writer => :protected
+      magic :count,     Integer, :doc => 'count of records this run', :default => 0, :writer => :protected
     end
 
     def setup

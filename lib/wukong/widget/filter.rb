@@ -22,7 +22,7 @@ module Wukong
 
     # Selects only records matching this regexp
     class RegexpFilter < Filter
-      field :pattern, Regexp, :doc => 'strings matching this regular expression will be selected'
+      magic :pattern, Regexp, :doc => 'strings matching this regular expression will be selected'
       def select?(str)
         pattern.match(str)
       end
@@ -34,7 +34,7 @@ module Wukong
     end
 
     class RegexpRejecter < Rejecter
-      field :pattern, Regexp, :doc => 'strings matching this regular expression will be rejected'
+      magic :pattern, Regexp, :doc => 'strings matching this regular expression will be rejected'
       def reject?(str)
         pattern.match(str)
       end
@@ -65,7 +65,7 @@ module Wukong
 
     class Limit < Rejecter
       include CountingProcessor
-      field :max_records, Integer, :doc => 'maximum records to allow', :writer => true
+      magic :max_records, Integer, :doc => 'maximum records to allow', :writer => true
 
       def reject?(*)
         count >= max_records

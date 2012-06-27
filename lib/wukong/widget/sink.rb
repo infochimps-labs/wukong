@@ -15,7 +15,7 @@ module Wukong
     end
 
     class FileSink < Wukong::Sink::IO
-      field :filename, Pathname, :doc => "Filename to write"
+      magic :filename, Pathname, :doc => "Filename to write"
       attr_reader :file
 
       def self.make(workflow, filename, stage_name=nil, attrs={})
@@ -48,7 +48,7 @@ module Wukong
     end
 
     class ArraySink < Wukong::Sink
-      field :records, Array, :default => [], :writer => :protected
+      magic :records, Array, :default => [], :writer => :protected
 
       def process(record)
         self.records << record

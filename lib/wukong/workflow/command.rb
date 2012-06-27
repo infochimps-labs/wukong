@@ -34,7 +34,7 @@ module Wukong
     end
 
     class Shell < Command
-      field :script, String
+      magic :script, String
       register_action
     end
 
