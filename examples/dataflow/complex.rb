@@ -1,11 +1,33 @@
+Wukong.processor(:stratify) do
+  def emit(record, output_label)
+    output(output_label).process(record)
+  end
 
-# TODO: a flow with splits and stuff
+  def process(user)
+    case user.followers_count
+    when nil          then emit(user, :blank)
+    when    0..200    then emit(user, :low)
+    when  200..20_000 then emit(user, :med)
+    else                   emit(user, :hi)
+    end
+  end
+end
 
-# parsed = map{|line| ApacheLogLine.make(line) }
-#
-# input(:default) > parsed
-#
-# parsed > split.into(
-#   to_json > output(:dump, stdout),
-#   to_tsv  > output(:tsv, file_sink(Pathname.path_to(:tmp, 'foo.tsv')))
-#   )
+Wukong.dataflow(:something) do
+
+  input > stage(:splitty, stratify) do
+    output(:low) > file('users_med')
+  end
+  stage(:splitty).output(:med) > file('users_med')
+  stage(:splitty).output(:hi)  > file('users_hi')
+
+  # or
+
+  splitty = stratify
+  input > splitty do
+    output(:low) > file('users_med')
+  end
+  splitty.output(:med) > file('users_med')
+  splitty.output(:hi)  > file('users_hi')
+
+end
