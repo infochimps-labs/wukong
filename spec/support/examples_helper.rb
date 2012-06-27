@@ -6,5 +6,9 @@ RSpec::Core::DSL.module_eval do
       subject{ ExampleUniverse.dataflow(example_name) }
       instance_eval(&block)
     end
+  rescue StandardError => err
+    warn "Broken example #{example_name} with script #{source_file} (#{attrs})"
+    warn err
+    warn err.backtrace
   end
 end

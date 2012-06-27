@@ -29,7 +29,7 @@ describe Wukong::Dataflow, :helpers => true do
     end
 
     it 'adds a stage to the dataflow' do
-      subject.should_receive(:add_stage).and_return(mock_val)
+      subject.should_receive(:set_stage).and_return(mock_val)
       subject.select(/^h/).should equal(mock_val)
     end
   end
@@ -58,7 +58,7 @@ describe Wukong::Dataflow, :helpers => true do
     end
 
     it 'adds a stage to the dataflow' do
-      subject.should_receive(:add_stage).and_return(mock_val)
+      subject.should_receive(:set_stage).and_return(mock_val)
       subject.select(/^h/).should equal(mock_val)
     end
   end

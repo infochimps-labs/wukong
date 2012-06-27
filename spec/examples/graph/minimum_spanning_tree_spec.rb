@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'wukong'
-require 'wukong/local_runner'
 
 load Pathname.path_to(:examples, 'graph/minimum_spanning_tree.rb')
 
@@ -16,7 +15,7 @@ describe 'Minimum Spanning Tree', :examples_spec => true, :helpers => true do
         subject.union('ATL', 'JFK')
         subject.union('ATL', 'DFW')
       end
-      
+
       context '#find' do
         it 'collapses elements into a shallow tree during a find' do
           subject.parent['ATL'].should == 'JFK'
@@ -30,6 +29,6 @@ describe 'Minimum Spanning Tree', :examples_spec => true, :helpers => true do
         end
       end
     end
-    
+
   end
 end

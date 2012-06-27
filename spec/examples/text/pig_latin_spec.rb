@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'wukong'
-require 'wukong/local_runner'
 
 load Pathname.path_to(:examples, 'text/pig_latin.rb')
 

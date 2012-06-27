@@ -1,6 +1,5 @@
 module Wukong
   class Source < Hanuman::Action
-    include Hanuman::IsOwnOutputSlot
     def self.register_source(name=nil, &block)
       register_action(name, &block)
     end
@@ -10,7 +9,6 @@ module Wukong
         @output.process(record)
       end
     end
-
 
     # def setup
     #   # GC::Profiler.enable
@@ -22,15 +20,6 @@ module Wukong
     # def stop
     #   # GC::Profiler.disable
     # end
-
-
-    def new_string_event string
-      metadata_hash = Hash.new
-      string.define_singleton_method(:_metadata) do
-        metadata_hash
-      end
-      string
-    end
 
     class Iter < Source
       # the enumerable object to delegate

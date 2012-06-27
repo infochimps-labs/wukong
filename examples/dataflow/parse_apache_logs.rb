@@ -15,33 +15,39 @@ Wukong.dataflow(:parse_apache_logs) do
   DOC
 
   source = ($0 == __FILE__) ? stdin : file_source(Pathname.path_to(:data, 'log/sample_apache_log.log'))
-  input  :default, source
-  output :dump,    stdout
+  set_input  :default, source
+  set_output :dump,    stdout
+
+  parser = map{|line| ApacheLogLine.make(line) or bad_record(line) }
+  p input(:default)
+  p parser
+  p to_tsv
+  p output(:dump)
 
   input(:default) >
-    map{|line| ApacheLogLine.make(line) or bad_record(line) } >
+    parser >
     to_tsv >
-    output(:dump)
+    output(:default)
 end
 
-if ($0 == __FILE__)
-  flow_name = :parse_apache_logs
-  if Settings.profiler
-    require 'perftools'
-    Pathname(Settings.profiler).dirname.mkpath
-    PerfTools::CpuProfiler.start(Settings.profiler) do
-      Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-    end
-  else
-    Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-  end
-
-  # require 'jruby/profiler'
-  # profile_data = JRuby::Profiler.profile do
-  #   Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-  # end
-  # profile_printer = JRuby::Profiler::GraphProfilePrinter.new(profile_data)
-  # profile_printer.printProfile($stderr)
-
-  # Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
-end
+# if ($0 == __FILE__)
+#   flow_name = :parse_apache_logs
+#   if Settings.profiler
+#     require 'perftools'
+#     Pathname(Settings.profiler).dirname.mkpath
+#     PerfTools::CpuProfiler.start(Settings.profiler) do
+#       Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+#     end
+#   else
+#     Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+#   end
+#
+#   # require 'jruby/profiler'
+#   # profile_data = JRuby::Profiler.profile do
+#   #   Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+#   # end
+#   # profile_printer = JRuby::Profiler::GraphProfilePrinter.new(profile_data)
+#   # profile_printer.printProfile($stderr)
+#
+#   # Wukong::LocalRunner.run(Wukong.dataflow(flow_name), :default)
+# end

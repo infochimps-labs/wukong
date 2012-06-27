@@ -1,10 +1,5 @@
 module Wukong
   class Processor < Hanuman::Action
-    include Hanuman::IsOwnInputSlot
-    include Hanuman::IsOwnOutputSlot
-
-    magic :name, Symbol, :default => ->{ self.class.handle }
-
     # override this in your subclass
     def process(record)
     end
@@ -57,13 +52,17 @@ module Wukong
     # @param [Proc] proc used for body of process method
     # @yield ... or supply it as a &block arg.
     def initialize(prc=nil, &block)
-      prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
-      define_singleton_method(:process, prc)
+      @blk = prc || block or raise "Please supply a proc or a block to #{self.class}.new"
+      define_singleton_method(:process, @blk)
+    end
+
+    def inspect
+      super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{@blk.source_location.join(':')}}>"
     end
 
     def self.make(workflow, *args, &block)
       obj = new(*args, &block)
-      workflow.add_stage obj
+      workflow.set_stage obj
       obj
     end
   end
@@ -88,6 +87,10 @@ module Wukong
       define_singleton_method(:call, @blk)
     end
 
+    def inspect
+      super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{@blk.source_location.join(':')}}>"
+    end
+
     def process(*args)
       result = call(*args)
       emit result unless result.nil?
@@ -95,7 +98,7 @@ module Wukong
 
     def self.make(workflow, *args, &block)
       obj = new(*args, &block)
-      workflow.add_stage obj
+      workflow.set_stage obj
       obj
     end
   end

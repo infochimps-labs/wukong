@@ -12,7 +12,6 @@ shared_examples_for 'a processor' do
   it{ should respond_to(:process) }
   it{ should respond_to(:setup) }
   it{ should respond_to(:stop) }
-  it{ should respond_to(:notify) }
   it{ should respond_to(:report) }
   its(:report){ should be_a(Hash) }
 end
