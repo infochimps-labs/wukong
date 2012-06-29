@@ -6,18 +6,14 @@ module Wukong
       def reject?(*args) not select?(*args) ; end
     end
 
-    class Rejecter < Filter
-      def process(*args) emit(*args) if not reject?(*args) ; end
-      def select?(*args) not reject?(*args) ; end
-      def reject?(*args) true ; end
-    end
-
-    class All < Filter
+    class IncludeAll < Filter
       def select?(*args) ; true ; end
+      register_processor
     end
 
-    class None < Rejecter
-      def reject?(*args) ; true ; end
+    class ExcludeAll < Filter
+      def select?(*args) ; false ; end
+      register_processor
     end
 
     # Selects only records matching this regexp
@@ -30,45 +26,58 @@ module Wukong
       def self.make(workflow, pattern, attrs={}, &block)
         super workflow, attrs.merge(:pattern => pattern), &block
       end
-      register_processor(:re)
+      register_processor(:regexp)
     end
 
-    class RegexpRejecter < Rejecter
+    class NotRegexpFilter < Filter
       magic :pattern, Regexp, :doc => 'strings matching this regular expression will be rejected'
-      def reject?(str)
-        pattern.match(str)
+      def select?(str)
+        not pattern.match(str)
       end
 
       def self.make(workflow, pattern, attrs={}, &block)
         super workflow, attrs.merge(:pattern => pattern), &block
       end
-      register_processor(:not_re)
+      register_processor(:not_regexp)
     end
 
-    class ProcFilter < Filter
+    class Select < Filter
+      # @param [Proc] proc becomes body of `select?` method
+      # @yield ...or supply a block directly
+      def initialize(attrs={}, &block)
+        @blk = attrs[:block] || block or raise "Please supply a proc or a block to #{self.class}.new"
+        define_singleton_method(:select?, @blk)
+      end
+
+      def self.make(workflow, blk=nil, attrs={}, &block)
+        blk ||= block
+        super workflow, attrs.merge(:block => blk)
+      end
+      register_processor
+    end
+
+    class Reject < Filter
       # @param [Proc] proc use for body of `reject?` method
       # @yield ...or supply a block directly
-      def initialize(prc=nil, &block)
-        prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
-        define_singleton_method(:select?, prc)
+      def initialize(attrs={}, &block)
+        @blk = attrs[:block] || block or raise "Please supply a proc or a block to #{self.class}.new"
+        define_singleton_method(:reject?, @blk)
       end
+      def select?(*args) not reject?(*args) ; end
+
+      def self.make(workflow, blk=nil, attrs={}, &block)
+        blk ||= block
+        super workflow, attrs.merge(:block => blk)
+      end
+      register_processor
     end
 
-    class ProcRejecter < Rejecter
-      # @param [Proc] proc use for body of `reject?` method
-      # @yield ...or supply a block directly
-      def initialize(prc=nil, &block)
-        prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
-        define_singleton_method(:reject?, prc)
-      end
-    end
-
-    class Limit < Rejecter
+    class Limit < Filter
       include CountingProcessor
       magic :max_records, Integer, :doc => 'maximum records to allow', :writer => true
 
-      def reject?(*)
-        count >= max_records
+      def select?(*)
+        count < max_records
       end
 
       def self.make(workflow, max, attrs={}, &block)

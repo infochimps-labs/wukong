@@ -23,38 +23,9 @@ module Wukong
       sink_stages.each{|stage| stage.stop}
     end
 
-    def source_stages()  stages.to_a.select{|st| st.is_a?(Wukong::Source) }     end
-    def process_stages() stages.to_a.select{|st| (not st.is_a?(Wukong::Source)) && (not st.is_a?(Wukong::Sink)) }  end
-    def sink_stages()    stages.to_a.select{|st| st.is_a?(Wukong::Sink) }       end
-
-    def drive(slot_name)
-      raise StandardError, "No source wired up input slot '#{slot_name.inspect}' of #{self.inspect} #{self.attributes}" unless has_input?(slot_name)
-      input(slot_name).drive
-    end
-
-    #
-    # Processor helpers
-    #
-
-    def reject(re_or_block=nil, &block)
-      raise ArgumentError, "Supply a block or regular expression, not both" if re_or_block && block
-      if re_or_block.is_a?(Regexp)
-        set_stage(Widget::RegexpRejecter.new(:pattern => re_or_block))
-      else
-        block ||= re_or_block
-        set_stage(Widget::ProcRejecter.new(block))
-      end
-    end
-
-    def select(re_or_block=nil, &block)
-      raise ArgumentError, "Supply a block or regular expression, not both" if re_or_block && block
-      if re_or_block.is_a?(Regexp)
-        set_stage(Widget::RegexpFilter.new(:pattern => re_or_block))
-      else
-        block ||= re_or_block
-        set_stage(Widget::ProcFilter.new(block))
-      end
-    end
+    def source_stages()  stages.to_a.select{|st| st.source? }  end
+    def process_stages() stages.to_a.select{|st| (not st.source?) && (not st.sink?) }  end
+    def sink_stages()    stages.to_a.select{|st| st.sink?   }  end
 
   end
 end

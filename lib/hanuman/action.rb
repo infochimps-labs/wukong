@@ -16,6 +16,9 @@ module Hanuman
       write_attribute(:output, stage)
     end
 
+    def source?() false ; end
+    def sink?()   false ; end
+
     def self.register_action(meth_name=nil, &block)
       meth_name ||= stage_type ; klass = self
       Hanuman::Graph.send(:define_method, meth_name) do |*args, &block|
@@ -26,9 +29,9 @@ module Hanuman
     end
 
     def self.make(graph, *args, &block)
-      stage = receive(*args)
-      graph.set_stage(stage)
-      stage.receive!(&block)
+      stage = receive(*args, &block)
+      label = stage.read_attribute(:name) || graph.next_label_for(stage)
+      graph.set_stage(label, stage)
       stage
     end
 

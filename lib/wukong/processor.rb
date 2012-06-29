@@ -19,11 +19,12 @@ module Wukong
   end
 
   class AsIs < Processor
+    self.register_processor
+
     # accepts records, emits as-is
     def process(*args)
       emit(*args)
     end
-    register_processor
   end
 
   class Null < Processor
@@ -62,7 +63,7 @@ module Wukong
 
     def self.make(workflow, *args, &block)
       obj = new(*args, &block)
-      workflow.set_stage obj
+      workflow.set_stage workflow.next_label_for(obj), obj
       obj
     end
   end
@@ -98,7 +99,7 @@ module Wukong
 
     def self.make(workflow, *args, &block)
       obj = new(*args, &block)
-      workflow.set_stage obj
+      workflow.set_stage workflow.next_label_for(obj), obj
       obj
     end
   end
@@ -128,7 +129,6 @@ module Wukong
       self.count = 0
     end
 
-    # Does not process any records if over limit
     def process(record)
       super(record)
       self.count += 1

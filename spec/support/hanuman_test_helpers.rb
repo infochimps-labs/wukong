@@ -70,7 +70,7 @@ shared_examples_for 'it can be linked from' do
 
   context '#into' do
     it 'asks its owner to register an edge into self from given stage' do
-      mock_dataflow.should_receive(:connetc).with(subject, :default, mock_slot, :default)
+      mock_dataflow.should_receive(:connect).with(subject, :default, mock_slot, :default)
       subject.into mock_slot
     end
     it 'returns the stage itself, for chaining' do

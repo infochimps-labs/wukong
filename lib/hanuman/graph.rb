@@ -1,7 +1,6 @@
 module Hanuman
 
   class Graph < Action
-    # collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
     field      :stages, Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
     field      :edges,  Hash,                 :doc => 'connections among all stages on the graph', :default => {}
 
@@ -20,14 +19,18 @@ module Hanuman
     end
 
     def next_label_for(stage)
-      "#{stage.stage_type}_#{stages.size}"
+      :"#{stage.stage_type}_#{stages.size}"
+    end
+
+    def set_stage(label, stage)
+      stages[label] = stage
     end
 
     def stage(label, attrs=nil, &block)
       if attrs.is_a?(Hanuman::Stage)
         # actual object: assign it into collection
         val = attrs
-        set_stage(val, label)
+        set_stage(label, val)
       elsif stages.include?(label)
         # existing item: retrieve it, updating as directed
         val = stages.fetch(label)
@@ -36,16 +39,9 @@ module Hanuman
         # missing item: autovivify item and add to collection
         # { key_method => item_key, :owner => self }
         val = Hanuman::Stage.receive(attrs, &block)
-        set_stage(val, label)
+        set_stage(label, val)
       end
       val
-    end
-
-    def set_stage(stg, label=nil)
-      label ||= (stg.read_attribute(:name) || next_label_for(stg))
-      # stg.write_attribute(:owner, self)
-      stages[label] = stg
-      stg
     end
 
     def connect(from_stage, from_slot, into_stage, into_slot)

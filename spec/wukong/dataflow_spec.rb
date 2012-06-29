@@ -10,8 +10,8 @@ describe Wukong::Dataflow, :helpers => true do
     subject{
       test_sink = test_sink()
       Wukong.dataflow(:integers) do
-        input   :default, Wukong::Source::Integers.new(:size => 100)
-        output  :default, test_sink
+        set_input   :default, Wukong::Source::Integers.new(:size => 100)
+        set_output  :default, test_sink
 
         input(:default)    >
           map{|i| i.to_s } >
@@ -31,60 +31,44 @@ describe Wukong::Dataflow, :helpers => true do
   end
 
   context '#select' do
-    it 'given a regexp, evaluates it on each record, selecting if it matches' do
-      result = subject.select(test_re)
-      result.should      be_a(Wukong::Widget::RegexpFilter)
-      result.pattern.should   be(test_re)
-      result.should      be_select("fitzhume")
-      result.should_not  be_select("milbarge")
-    end
-
-    it 'given a proc, evaluates it on each record, selecting if true' do
+    it 'evaluates block arg on each record, selecting if true' do
       result = subject.select{|rec| rec.odd? }
-      result.should      be_a(Wukong::Widget::ProcFilter)
+      result.should      be_a(Wukong::Widget::Select)
       result.should      be_select(3)
       result.should_not  be_select(2)
     end
 
-    it 'given a block arg, evaluates the block on each record, selecting if true' do
+    it 'given proc as plain arg, evaluates it on each record, selecting if true' do
       result = subject.select( ->(rec){ rec.odd? } )
-      result.should      be_a(Wukong::Widget::ProcFilter)
+      result.should      be_a(Wukong::Widget::Select)
       result.should      be_select(3)
       result.should_not  be_select(2)
     end
 
     it 'adds a stage to the dataflow' do
-      subject.should_receive(:set_stage).and_return(mock_val)
-      subject.select(/^h/).should equal(mock_val)
+      subject.should_receive(:set_stage).with(:select_0, kind_of(Wukong::Widget::Select))
+      subject.select{|rec| rec =~ /^h/ }.should be_a(Wukong::Widget::Select)
     end
   end
 
   context '#reject' do
-    it 'given a regexp, rejects items matching that regexp' do
-      result = subject.reject(test_re)
-      result.should      be_a(Wukong::Widget::RegexpRejecter)
-      result.pattern.should be(test_re)
-      result.should_not  be_select("fitzhume")
-      result.should      be_select("milbarge")
-    end
-
-    it 'given a proc, evaluates the proc on each record, rejecting if true' do
+    it 'evaluates block arg on each record, rejecting if true' do
       result = subject.reject{|rec| rec.odd? }
-      result.should      be_a(Wukong::Widget::ProcRejecter)
+      result.should      be_a(Wukong::Widget::Reject)
       result.should_not  be_select(3)
       result.should      be_select(2)
     end
 
-    it 'given a block arg, evaluates the block on each record, rejecting if true' do
+    it 'given proc as plain arg, evaluates it on each record, rejecting if true' do
       result = subject.reject( ->(rec){ rec.odd? } )
-      result.should      be_a(Wukong::Widget::ProcRejecter)
+      result.should      be_a(Wukong::Widget::Reject)
       result.should_not  be_select(3)
       result.should      be_select(2)
     end
 
     it 'adds a stage to the dataflow' do
-      subject.should_receive(:set_stage).and_return(mock_val)
-      subject.select(/^h/).should equal(mock_val)
+      subject.should_receive(:set_stage).with(:reject_0, kind_of(Wukong::Widget::Reject))
+      subject.reject{|rec| rec =~ /^h/ }.should be_a(Wukong::Widget::Reject)
     end
   end
 end

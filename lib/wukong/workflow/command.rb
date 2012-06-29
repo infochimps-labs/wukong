@@ -5,9 +5,9 @@ module Wukong
       def self.make(workflow, *input_stages, &block)
         options  = input_stages.extract_options!
         stage    = new
-        workflow.set_stage stage
+        workflow.set_stage workflow.next_label_for(stage), stage
         input_stages.map do |input|
-          workflow.connect(input, stage)
+          workflow.connect(input, :default, stage, :default)
         end
         stage.receive!(options, &block)
         stage

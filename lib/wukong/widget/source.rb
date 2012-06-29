@@ -1,5 +1,8 @@
 module Wukong
   class Source < Hanuman::Action
+
+    def source?() true ; end
+
     def self.register_source(name=nil, &block)
       register_action(name, &block)
     end
@@ -9,17 +12,6 @@ module Wukong
         @output.process(record)
       end
     end
-
-    # def setup
-    #   # GC::Profiler.enable
-    # end
-    # def periodically(count)
-    #   # GC.enable ; GC.start ; GC.disable
-    #   # $stderr.puts GC::Profiler.result
-    # end
-    # def stop
-    #   # GC::Profiler.disable
-    # end
 
     class Iter < Source
       # the enumerable object to delegate

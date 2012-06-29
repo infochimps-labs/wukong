@@ -7,17 +7,25 @@ shared_context 'widgets', :helpers => true do
   end
 end
 
-shared_examples_for 'a processor' do
+shared_examples_for 'a processor' do |options={}|
 
   it{ should respond_to(:process) }
   it{ should respond_to(:setup) }
   it{ should respond_to(:stop) }
   it{ should respond_to(:report) }
   its(:report){ should be_a(Hash) }
+
+  if options[:named]
+    it 'creates a magic method' do
+      Wukong::Dataflow.should be_method_defined(options[:named])
+    end
+  else
+    warn "please supply name for dataflow magic method on #{subject}"
+  end
 end
 
 shared_examples_for "a filter processor" do |objects|
-  it_behaves_like 'a processor'
+    it_behaves_like 'a processor', :named => objects[:named]
 
   it 'accepts good objects' do
     objects[:good].each do |obj|
