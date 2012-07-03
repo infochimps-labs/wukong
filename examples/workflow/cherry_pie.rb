@@ -16,11 +16,6 @@ class Wukong::Workflow < Hanuman::Graph
   class AddTo < ActionWithInputs
     register_action
     magic :container, Hanuman::Stage
-
-    def self.make(workflow, container, *input_stages, &block)
-      options = input_stages.extract_options!
-      super(workflow, *input_stages, options.merge(:container => container), &block)
-    end
   end
 end
 

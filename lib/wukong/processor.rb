@@ -1,21 +1,20 @@
 module Wukong
   class Processor < Hanuman::Action
+
     # override this in your subclass
     def process(record)
     end
 
     # passes a record on down the line
     def emit(record)
-      (@output||=self.output).process(record)
+      (@sink||=self.sink).process(record)
     end
 
     def bad_record(*args)
       BadRecord.make(*args)
     end
 
-    def self.register_processor(name=nil, &block)
-      register_action(name, &block)
-    end
+    class << self ; alias_method :register_processor, :register_action ; end
   end
 
   class AsIs < Processor
@@ -60,12 +59,6 @@ module Wukong
     def inspect
       super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{@blk.source_location.join(':')}}>"
     end
-
-    def self.make(workflow, *args, &block)
-      obj = new(*args, &block)
-      workflow.set_stage workflow.next_label_for(obj), obj
-      obj
-    end
   end
 
   #
@@ -83,12 +76,14 @@ module Wukong
 
     # @param [Proc] proc to delegate for call
     # @yield if proc is omitted, block must be supplied
-    def initialize(prc=nil, &block)
-      @blk = prc || block or raise "Please supply a proc or a block to #{self.class}.new"
+    def initialize(*args, &block)
+      attrs = args.extract_options!
+      @blk = block || args.shift or raise "Please supply a proc or a block to #{self.class}.new"
       define_singleton_method(:call, @blk)
+      super(*args, attrs){}
     end
 
-    def inspect
+    def inspect(*)
       super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{@blk.source_location.join(':')}}>"
     end
 
@@ -96,19 +91,13 @@ module Wukong
       result = call(*args)
       emit result unless result.nil?
     end
-
-    def self.make(workflow, *args, &block)
-      obj = new(*args, &block)
-      workflow.set_stage workflow.next_label_for(obj), obj
-      obj
-    end
   end
 
   #
   # Flatten emits each item in an enumerable as its own record
   #
   # @example turn a document into all its words
-  #   input > map{|line| line.split(/\W+/) } > flatten > output
+  #   source > map{|line| line.split(/\W+/) } > flatten > sink
   class Flatten < Processor
     self.register_processor
 

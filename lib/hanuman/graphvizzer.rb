@@ -1,6 +1,5 @@
 module Hanuman
   module Graphvizzer
-    include Gorillib::Builder
 
     class Item
       include Gorillib::Builder

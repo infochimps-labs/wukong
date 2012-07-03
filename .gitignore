@@ -1,47 +1,55 @@
-
-
-
-
-
-
-## COMPILED
-## EDITORS
 ## OS
-## OTHER SCM
-## PROJECT::GENERAL
-## PROJECT::SPECIFIC
-*.log
-*.o
-*.pyc
-*.rdb
-*.so
-*.swp
-*.tmproj
-*_flymake
-*_flymake.*
-*private*
-*~
 .DS_Store
-.\#*
+Icon
+nohup.out
 .bak
-.bzr
-.hg
-.project
-.settings
-.svn
-.yardoc
-/.rbenv-version
-Gemfile.lock
-Icon?
+
+*.pem
+
+## EDITORS
+\#*
+.\#*
+\#*\#
+*~
+*.swp
 REVISION
 TAGS*
-\#*
-a.out
-coverage
-doc
-nohup.out
-pkg
-rdoc
-tmp/*
 tmtags
-/away
+*_flymake.*
+*_flymake
+*.tmproj
+.project
+.settings
+
+## COMPILED
+a.out
+*.o
+*.pyc
+*.so
+
+## OTHER SCM
+.bzr
+.hg
+.svn
+
+## PROJECT::GENERAL
+
+log/*
+tmp/*
+pkg/*
+
+coverage
+rdoc
+doc
+pkg
+.rake_test_cache
+.bundle
+.yardoc
+
+.vendor
+
+## PROJECT::SPECIFIC
+
+old/*
+docpages
+away

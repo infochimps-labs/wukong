@@ -20,10 +20,6 @@ module Wukong
       magic :filename, Pathname, :doc => "Filename to write"
       attr_reader :file
 
-      def self.make(workflow, filename, stage_name=nil, attrs={})
-        super(workflow, attrs.merge(:filename => filename, :name => stage_name))
-      end
-
       def setup
         super
         filename.dirname.mkpath

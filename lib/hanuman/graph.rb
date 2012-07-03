@@ -4,26 +4,26 @@ module Hanuman
     field      :stages, Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
     field      :edges,  Hash,                 :doc => 'connections among all stages on the graph', :default => {}
 
-    # * defines the named input slot, if it doesn't exist
-    # * wires the given stage to that input slot
-    # * returns the named input slot
-    def input(slot_name)  ; inputs[slot_name] ; end
-
-    def output(slot_name) ; outputs[slot_name] ; end
-
-    def set_input(slot_name, stage)
-      inputs[slot_name] = stage
-    end
-    def set_output(slot_name, stage)
-      outputs[slot_name] = stage
-    end
-
     def next_label_for(stage)
       :"#{stage.stage_type}_#{stages.size}"
     end
 
     def set_stage(label, stage)
+      stage.write_attribute(:owner, self)
       stages[label] = stage
+    end
+
+    def connect(from_stage, into_stage)
+      # from_stage = lookup(from_stage)
+      # into_stage = lookup(into_stage)
+
+      from_stage.set_sink(  into_stage)
+      into_stage.set_source(from_stage)
+
+      # actual_from_slot = from_slot.set_output(into_slot)
+      # actual_into_slot = into_slot.set_input( from_slot)
+      # edges[actual_from_slot] = actual_into_slot
+      [from_stage, into_stage]
     end
 
     def stage(label, attrs=nil, &block)
@@ -44,19 +44,6 @@ module Hanuman
       val
     end
 
-    def connect(from_stage, from_slot, into_stage, into_slot)
-      from_stage = lookup(from_stage)
-      into_stage = lookup(into_stage)
-
-      from_stage.set_output(from_slot, into_stage)
-      into_stage.set_input( into_slot, from_stage)
-
-      # actual_from_slot = from_slot.set_output(into_slot)
-      # actual_into_slot = into_slot.set_input( from_slot)
-      # edges[actual_from_slot] = actual_into_slot
-      [from_stage, into_stage]
-    end
-
     def lookup(ref)
       ref.is_a?(Symbol) ? action(ref) : ref
     end
@@ -72,6 +59,24 @@ module Hanuman
     def resource(label, &block)
       stage(label, :_type => Hanuman::Resource, &block)
     end
-  end
 
+    #
+    # Control flow
+    #
+
+    def setup
+      stages.each_value{|stage| stage.setup}
+    end
+
+    def stop
+      source_stages .each{|stage| stage.stop}
+      process_stages.each{|stage| stage.stop}
+      sinke_stages  .each{|stage| stage.stop}
+    end
+
+    def source_stages()  []     ; end
+    def process_stages() stages ; end
+    def sink_stages()    []     ; end
+
+  end
 end

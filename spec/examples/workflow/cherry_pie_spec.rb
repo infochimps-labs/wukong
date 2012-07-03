@@ -5,7 +5,7 @@ require 'hanuman/graphvizzer'
 require 'hanuman/graphviz'
 
 
-describe 'cherry_pie', :only do
+describe 'cherry_pie' do
 
   it 'fiddles' do
 

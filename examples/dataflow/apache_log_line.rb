@@ -71,10 +71,6 @@ class ApacheLogLine
 
   # Converts a time like `10/Apr/2007:10:58:27 +0300` to something parseable
   def receive_log_timestamp(raw_ts)
-
-    return super(nil) # FIXME -- here for debugging
-
-
     return super(nil) if raw_ts.nil?
     match = %r{(\d+)/(\w+)/(\d+):(\d+):(\d+):(\d+)\s([\+\-\w]+)}.match(raw_ts)
     unless match then warn "Can't parse date #{raw_ts}" ; return super(nil) ; end
@@ -100,6 +96,5 @@ class ApacheLogLine
     from_tuple *m.captures
   rescue ArgumentError => err
     raise unless err.message =~ /invalid byte sequence in UTF-8/
-    # Log.debug BadRecord.make(line, err).inspect
   end
 end

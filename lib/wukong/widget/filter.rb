@@ -22,10 +22,6 @@ module Wukong
       def select?(str)
         pattern.match(str)
       end
-
-      def self.make(workflow, pattern, attrs={}, &block)
-        super workflow, attrs.merge(:pattern => pattern), &block
-      end
       register_processor(:regexp)
     end
 
@@ -33,10 +29,6 @@ module Wukong
       magic :pattern, Regexp, :doc => 'strings matching this regular expression will be rejected'
       def select?(str)
         not pattern.match(str)
-      end
-
-      def self.make(workflow, pattern, attrs={}, &block)
-        super workflow, attrs.merge(:pattern => pattern), &block
       end
       register_processor(:not_regexp)
     end
@@ -47,11 +39,6 @@ module Wukong
       def initialize(attrs={}, &block)
         @blk = attrs[:block] || block or raise "Please supply a proc or a block to #{self.class}.new"
         define_singleton_method(:select?, @blk)
-      end
-
-      def self.make(workflow, blk=nil, attrs={}, &block)
-        blk ||= block
-        super workflow, attrs.merge(:block => blk)
       end
       register_processor
     end
@@ -64,11 +51,6 @@ module Wukong
         define_singleton_method(:reject?, @blk)
       end
       def select?(*args) not reject?(*args) ; end
-
-      def self.make(workflow, blk=nil, attrs={}, &block)
-        blk ||= block
-        super workflow, attrs.merge(:block => blk)
-      end
       register_processor
     end
 
@@ -78,10 +60,6 @@ module Wukong
 
       def select?(*)
         count < max_records
-      end
-
-      def self.make(workflow, max, attrs={}, &block)
-        super workflow, attrs.merge(:max_records => max), &block
       end
       register_processor
     end
