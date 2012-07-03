@@ -10,7 +10,7 @@ describe Wukong::Dataflow, :helpers => true do
     subject{
       test_sink = test_sink()
       Wukong.dataflow(:integers) do
-        set_input   :default, Wukong::Source::Integers.new(:size => 100)
+        set_input   :default, Wukong::Source::Integers.new(:qty => 100)
         set_output  :default, test_sink
 
         input(:default)    >

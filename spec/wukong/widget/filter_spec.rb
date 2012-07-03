@@ -32,7 +32,7 @@ describe :filters, :helpers => true do
 
   describe Wukong::Widget::Select do
     let(:raw_proc){ ->(rec){ rec =~ /^m/ } }
-    subject{ described_class.new(:block => raw_proc) }
+    subject{ described_class.new(blk: raw_proc) }
     it_behaves_like('a filter processor', :named => :select,
       :good => ['milbarge'],
       :bad  => ['fitzhume'] )
@@ -43,7 +43,7 @@ describe :filters, :helpers => true do
         subject.should be_reject('fitzhume')
       end
       it 'with an explicit proc' do
-        subject = described_class.new( :block => ->(rec){ rec =~ /^m/ } )
+        subject = described_class.new( blk: ->(rec){ rec =~ /^m/ } )
         subject.should be_select('milbarge')
         subject.should be_reject('fitzhume')
       end
@@ -52,7 +52,7 @@ describe :filters, :helpers => true do
 
   describe Wukong::Widget::Reject do
     let(:raw_proc){ ->(rec){ rec =~ /^m/ } }
-    subject{ described_class.new(:block => raw_proc) }
+    subject{ described_class.new(blk: raw_proc) }
     it_behaves_like('a filter processor', :named => :reject,
       :good => ['fitzhume'],
       :bad  => ['milbarge'] )
@@ -63,7 +63,7 @@ describe :filters, :helpers => true do
         subject.should be_reject('milbarge')
       end
       it 'with an explicit proc' do
-        subject = described_class.new( :block => ->(rec){ rec =~ /^m/ } )
+        subject = described_class.new( blk: ->(rec){ rec =~ /^m/ } )
         subject.should be_select('fitzhume')
         subject.should be_reject('milbarge')
       end

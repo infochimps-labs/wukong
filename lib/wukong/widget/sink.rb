@@ -17,7 +17,7 @@ module Wukong
     end
 
     class FileSink < Wukong::Sink::IO
-      magic :filename, Pathname, :doc => "Filename to write"
+      magic :filename, Pathname, :position => 0, :doc => "Filename to write"
       attr_reader :file
 
       def setup
@@ -46,7 +46,7 @@ module Wukong
     end
 
     class ArraySink < Wukong::Sink
-      magic :records, Array, :default => [], :writer => :protected
+      magic :records, Array, :position => 0, :default => [], :writer => :protected
 
       def process(record)
         self.records << record

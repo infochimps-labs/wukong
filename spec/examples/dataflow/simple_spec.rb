@@ -13,12 +13,12 @@ describe 'example', :only do
 
     Wukong.dataflow(:bob) do
       ff = file_source(Pathname.path_to(:data, 'text/jabberwocky.txt')){ p self }
-      rr = map{|s| s.reverse! }
+      p ff
 
-      ff > rr > stdout
-
-      setup
-      ff.drive
+      # rr = map{|s| s.reverse! }
+      # ff > rr > stdout
+      # setup
+      # ff.drive
     end
 
   end

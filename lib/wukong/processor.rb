@@ -51,8 +51,10 @@ module Wukong
 
     # @param [Proc] proc used for body of process method
     # @yield ... or supply it as a &block arg.
-    def initialize(prc=nil, &block)
-      @blk = prc || block or raise "Please supply a proc or a block to #{self.class}.new"
+    def initialize(*args, &block)
+      attrs = args.extract_options!
+      @blk = block || args.shift || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
+      super(*args, attrs){}
       define_singleton_method(:process, @blk)
     end
 
@@ -78,9 +80,9 @@ module Wukong
     # @yield if proc is omitted, block must be supplied
     def initialize(*args, &block)
       attrs = args.extract_options!
-      @blk = block || args.shift or raise "Please supply a proc or a block to #{self.class}.new"
-      define_singleton_method(:call, @blk)
+      @blk = block || args.shift || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
       super(*args, attrs){}
+      define_singleton_method(:call, @blk)
     end
 
     def inspect(*)
@@ -110,7 +112,7 @@ module Wukong
   module CountingProcessor
     extend Gorillib::Concern
     included do
-      magic :count,     Integer, :doc => 'count of records this run', :default => 0, :writer => :protected
+      magic :count,     Integer, :position => 0, :doc => 'count of records this run', :default => 0, :writer => :protected
     end
 
     def setup

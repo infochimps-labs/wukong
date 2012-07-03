@@ -36,8 +36,10 @@ module Wukong
     class Select < Filter
       # @param [Proc] proc becomes body of `select?` method
       # @yield ...or supply a block directly
-      def initialize(attrs={}, &block)
-        @blk = attrs[:block] || block or raise "Please supply a proc or a block to #{self.class}.new"
+      def initialize(*args, &block)
+        attrs = args.extract_options!
+        @blk = block || args.shift || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
+        super(*args, attrs){}
         define_singleton_method(:select?, @blk)
       end
       register_processor
@@ -46,8 +48,10 @@ module Wukong
     class Reject < Filter
       # @param [Proc] proc use for body of `reject?` method
       # @yield ...or supply a block directly
-      def initialize(attrs={}, &block)
-        @blk = attrs[:block] || block or raise "Please supply a proc or a block to #{self.class}.new"
+      def initialize(*args, &block)
+        attrs = args.extract_options!
+        @blk = block || args.shift || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
+        super(*args, attrs){}
         define_singleton_method(:reject?, @blk)
       end
       def select?(*args) not reject?(*args) ; end

@@ -40,13 +40,13 @@ shared_examples_for 'it can be linked into' do
     end
   end
 
-  context 'set_output' do
+  context 'set_sink' do
     it 'returns the actual receiving slot' do
-      subject.set_output(:default, mock_stage).should equal(subject)
+      subject.set_sink(:default, mock_stage).should equal(subject)
     end
     it 'sets the output attribute' do
       subject.should_receive(:write_attribute).with(:output, mock_stage)
-      subject.set_output(:default, mock_stage)
+      subject.set_sink(:default, mock_stage)
     end
   end
 end

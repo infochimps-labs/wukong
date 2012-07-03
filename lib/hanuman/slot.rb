@@ -1,14 +1,25 @@
 module Hanuman
 
+  class Source < Stage  ; end
+  class Sink   < Stage  ; end
+
+  # A stand-in source; throws an error if you try to use it
+  StubSource = Stage.new(name: :stub_source)
+
+  # A stand-in sink; throws an error if you try to use it
+  StubSink   = Stage.new(name: :stub_sink)
+
   #
   # Wiring point for a stage connection
   #
-  module InputSlot
+  module InputSlotted
     extend Gorillib::Concern
 
     included do |base|
-      base.field :source,   Hanuman::Stage, :default => Hanuman::StubSource.new, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
-      base.field :consumes, Whatever, :default => Whatever, :writer => false, :doc => 'expected type for consumed data'
+      base.field(:source,   Hanuman::Stage, :default => ->{ Hanuman::StubSource }, :writer => false, :tester => true,
+        :doc => 'stage/slot in graph that feeds into this one')
+      base.field(:consumes, Whatever,       :default => Whatever, :writer => false,
+        :doc => 'expected type for consumed data')
     end
 
     # connect an external stage to this input slot
@@ -36,12 +47,14 @@ module Hanuman
   #
   # For stages with exactly one output
   #
-  module OutputSlot
+  module OutputSlotted
     extend Gorillib::Concern
 
     included do |base|
-      base.field :sink,     Hanuman::Stage, :default => Hanuman::StubSink.new, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
-      base.magic :produces, Whatever, :default => Whatever, :writer => false, :doc => 'expected type for consumed data'
+      base.field(:sink,     Hanuman::Stage, :default =>  ->{ Hanuman::StubSink }, :writer => false, :tester => true,
+        :doc => 'stage/slot in graph this one feeds into')
+      base.magic(:produces, Whatever, :default => Whatever, :writer => false,
+        :doc => 'expected type for consumed data')
     end
 
     def set_sink(stage)
@@ -64,6 +77,95 @@ module Hanuman
       self
     end
   end
+
+  Source.class_eval{ include OutputSlotted }
+  Sink.class_eval{   include InputSlotted  }
+
+  class Action
+    include Hanuman::InputSlotted
+    include Hanuman::OutputSlotted
+  end
+
+
+  class Slot
+    include Gorillib::Builder
+    field :name, Symbol, position: 0, doc: 'name (unique on its stage) for this slot'
+  end
+
+  class InputSlot < Slot
+    include InputSlotted
+  end
+
+  class OututSlot < Slot
+    include OutputSlotted
+  end
+
+
+
+
+
+
+
+
+
+
+
+  # magic :input,  Hanuman::Stage
+  # magic :output, Hanuman::Stage
+  #
+  # def inputs()  [input]  ; end
+  # def outputs() [output] ; end
+  #
+  # def set_input(slot_name, stage)
+  #   raise ArgumentError, "there's only one input (':default') on #{self}" unless slot_name == :default
+  #   write_attribute(:input, stage)
+  # end
+  # def set_output(slot_name, stage)
+  #   raise ArgumentError, "there's only one output (':default') on #{self}" unless slot_name == :default
+  #   write_attribute(:output, stage)
+  # end
+
+  # field      :inputs,  Gorillib::Collection, :of => Hanuman::Stage, :doc => 'inputs to this stage',  :default => ->{ Gorillib::Collection.new }
+  # field      :outputs, Gorillib::Collection, :of => Hanuman::Stage, :doc => 'outputs of this stage', :default => ->{ Gorillib::Collection.new }
+  #
+  #
+  # def source(label) inputs[label].stage  ; end
+  # def sink(  label) outputs[label].stage ; end
+  #
+  # def input( label) inputs[label] ; end
+  # def output(label) inputs[label] ; end
+  #
+  # # wire this slot into another slot
+  # # @param other [Hanuman::Slot] the other stage
+  # # @returns the other slot
+  # def >(other)
+  #   _, other = owner.connect(self, other)
+  #   other
+  # end
+  #
+  # # wire this stage's output into another stage's input
+  # # @param other [Hanuman::Stage]the other stage
+  # # @returns this stage, for chaining
+  # def into(other)
+  #   owner.connect(self, other)
+  #   self
+  # end
+  #
+  # # wire another slot into this one
+  # # @param other [Hanuman::Outlinkable] the other stage of slot
+  # # @returns this object, for chaining
+  # def <<(other)
+  #   from(other)
+  #   self
+  # end
+  #
+  # # wire another slot into this one
+  # # @param other [Hanuman::Outlinkable] the other stage or slot
+  # # @returns this object, for chaining
+  # def from(other)
+  #   owner.connect(other, self)
+  #   self
+  # end
 
   # module PluralInput
   #   extend Gorillib::Concern
