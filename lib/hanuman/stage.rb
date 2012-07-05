@@ -19,18 +19,38 @@ module Hanuman
     member     :owner,   Whatever,       :doc => 'the graph this stage sits in'
     magic      :doc,     String,         :doc => 'freeform description of this stage type'
 
+    def self.doc(doc=nil)
+      if doc ; @doc = doc ; end
+      @doc
+    end
+
     # ------------------------------------------------------------------------
     # ------------------------------------------------------------------------
 
     # @returns the stage, namespaced by the graph that owns it
     def graph_id
-      [(owner ? '(orphan)' : owner.graph_id), name].compact.join('.')
+      [(owner ? owner.graph_id : '(orphan)'), name].compact.join('.')
     end
 
     def self.stage_type()  typename.gsub(/.*\W/, '') ; end
     def stage_type()       self.class.stage_type     ; end
 
     alias_method :wire, :receive!
+
+    def self.register_stage(meth_name=nil, &block)
+      meth_name ||= stage_type ; klass = self
+      #
+      Hanuman::Graph.send(:define_method, meth_name) do |*args, &block|
+        begin
+          # create stage
+          attrs = args.extract_options!
+          stage = klass.new(*args, attrs.merge(:owner => self), &block)
+          # label and add to grpeh
+          label = stage.read_attribute(:name) || next_label_for(stage)
+          set_stage(label, stage)
+        rescue StandardError => err ; err.polish("#{self.name}: #{meth_name}(#{args.map(&:inspect).join(',')})") rescue nil ; raise ; end
+      end
+    end
 
     #
     # Methods

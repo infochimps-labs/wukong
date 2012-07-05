@@ -8,8 +8,8 @@ module Hanuman
       gv.node(self.graph_id,
         :label    => name,
         :shape    => draw_shape,
-        :inslots  => consumes.to_a.map{|slot| slot.name },
-        :outslots => produces.to_a.map{|slot| slot.name },
+        # :inslots  => consumes.to_a.map{|slot| slot.name },
+        # :outslots => produces.to_a.map{|slot| slot.name },
         )
     end
   end
@@ -18,17 +18,18 @@ module Hanuman
     self.draw_shape = :Mrecord
   end
 
-  class Graph < Action
+  Graph.class_eval do
     self.draw_shape = :record
 
     def to_graphviz(gv)
       gv.graph(graph_id, :label => name) do |gv2|
         stages.each_value{|stage| stage.to_graphviz(gv2) }
+        #
         edges.each_pair do |from, into|
           gv2.edge(from.graph_id, into.graph_id)
         end
       end
-      super(gv)
+      # super(gv)
     end
   end
 

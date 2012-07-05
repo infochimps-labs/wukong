@@ -1,32 +1,47 @@
 module Hanuman
 
-  class Graph < Action
-    field      :stages, Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
-    field      :edges,  Hash,                 :doc => 'connections among all stages on the graph', :default => {}
+  class Graph < Stage
+    magic      :name,    String,            :position => 0, :doc => 'name of this stage'
+    field      :stages,  Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
+    field      :edges,   Hash,                 :doc => 'connections among all stages on the graph', :default => {}
 
-    def next_label_for(stage)
-      :"#{stage.stage_type}_#{stages.size}"
+    def initialize(*args, &block)
+      p ['beg init', args, block]
+      super
+      p ['done init', self, self.owner]
     end
 
     def set_stage(label, stage)
       stage.write_attribute(:owner, self)
+      stage.write_attribute(:name, label || next_label_for(stage)) unless stage.attribute_set?(:name)
       stages[label] = stage
     end
 
+    #
+    # * look up the targets (resolving labels to stages, etc)
+    #
     def connect(from_stage, into_stage)
-      # from_stage = lookup(from_stage)
-      # into_stage = lookup(into_stage)
+      from_stage = lookup(from_stage)
+      into_stage = lookup(into_stage)
 
-      from_stage.set_sink(  into_stage)
+      # from_slot = from_stage.output_slot
+      # into_slot = into_stage.input_slot
+      #
+      # from_slot.set_sink(  into_slot)
+      # into_slot.set_source(from_slot)
+
+      from_stage.set_sink(into_stage)
       into_stage.set_source(from_stage)
 
       # actual_from_slot = from_slot.set_output(into_slot)
       # actual_into_slot = into_slot.set_input( from_slot)
-      # edges[actual_from_slot] = actual_into_slot
+      # [actual_from_stage, actual_into_stage]
+
+      edges[from_stage] = into_stage
       [from_stage, into_stage]
     end
 
-    def stage(label, attrs=nil, &block)
+    def stage(label, attrs={}, &block)
       if attrs.is_a?(Hanuman::Stage)
         # actual object: assign it into collection
         val = attrs
@@ -37,19 +52,22 @@ module Hanuman
         val.receive!(attrs, &block)
       else
         # missing item: autovivify item and add to collection
-        # { key_method => item_key, :owner => self }
-        val = Hanuman::Stage.receive(attrs, &block)
+        val = Hanuman::Stage.receive(attrs.merge(owner: self), &block)
         set_stage(label, val)
       end
       val
     end
 
     def lookup(ref)
-      ref.is_a?(Symbol) ? action(ref) : ref
+      ref.is_a?(Symbol) ? stages.fetch(ref) : ref
     end
 
-    def graph(label, &block)
+    def subgraph(label, &block)
       stage(label, :_type => Hanuman::Graph, &block)
+    end
+
+    def chain(label, &block)
+      stage(label, :_type => Hanuman::Chain, &block)
     end
 
     def action(label, &block)
@@ -58,6 +76,10 @@ module Hanuman
 
     def resource(label, &block)
       stage(label, :_type => Hanuman::Resource, &block)
+    end
+
+    def next_label_for(stage)
+      :"#{stage.stage_type}_#{stages.size}"
     end
 
     #
@@ -79,4 +101,5 @@ module Hanuman
     def sink_stages()    []     ; end
 
   end
+
 end

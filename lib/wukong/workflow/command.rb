@@ -2,11 +2,12 @@ module Wukong
   class Workflow < Hanuman::Graph
 
     class ActionWithInputs < Hanuman::Action
+
       def initialize(*input_stages, &block)
         attrs = input_stages.extract_options!
         super(attrs)
         input_stages.map do |input|
-          workflow.connect(input, :default, stage, :default)
+          self.from(input)
         end
       end
     end

@@ -4,6 +4,9 @@ module Wukong
   # Holds graphs, supplies `processor` and similar stage template methods
   #
   module Universe
+
+    def graph_id() nil ; end
+
     def find_or_create_class(superklass, klass_name, namespace, &block)
       klass_name = Gorillib::Inflector.camelize(klass_name.to_s).to_sym
       if namespace.const_defined?(klass_name)
@@ -23,14 +26,14 @@ module Wukong
 
     def dataflow(name, attrs={}, &block)
       attrs[:name] = name = name.to_sym
-      dataflow = @dataflows[name] ||= Dataflow.new(:name => name)
+      dataflow = @dataflows[name] ||= Dataflow.new(:name => name, :owner => self)
       dataflow.receive!(attrs, &block)
       dataflow
     end
 
     def workflow(name, attrs={}, &block)
       attrs[:name] = name = name.to_sym
-      workflow = @workflows[name] ||= Workflow.new(:name => name)
+      workflow = @workflows[name] ||= Workflow.new(:name => name, :owner => self)
       workflow.receive!(attrs, &block)
       workflow
     end

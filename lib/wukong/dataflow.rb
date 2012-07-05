@@ -6,9 +6,6 @@ module Wukong
   #
   class Dataflow < Hanuman::Graph
 
-    #
-    # lifecycle
-    #
-
   end
+
 end

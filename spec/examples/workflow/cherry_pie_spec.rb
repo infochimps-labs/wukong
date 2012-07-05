@@ -4,21 +4,34 @@ require 'wukong'
 require 'hanuman/graphvizzer'
 require 'hanuman/graphviz'
 
+describe 'cherry_pie', :only do
 
-describe 'cherry_pie' do
+  # it 'fiddles' do
+  #   load(Pathname.path_to(:examples, 'workflow/cherry_pie.rb'))
+  #   Wukong.workflow(:cherry_pie) do
+  #     Log.dump self
+  #
+  #     graph(:crust) do
+  #       Log.dump self
+  #       action(:bob)
+  #     end
+  #
+  #     Log.dump graph(:crust)
+  #
+  #   end
+  # end
 
-  it 'fiddles' do
 
-    Wukong.workflow(:cherry_pie) do
-      Log.dump self
+  describe 'Graphviz View', :only, :if => GRAPHVIZ do
+    it 'makes a png' do
+      require Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
 
-      graph(:crust) do
-        Log.dump self
-        action(:bob)
-      end
+      gv = Wukong.to_graphviz
 
-      Log.dump graph(:crust)
-
+      basename = Pathname.path_to(:tmp, 'cherry_pie')
+      gv.save(basename, 'png')
+      puts File.read("#{basename}.dot")
     end
   end
+
 end

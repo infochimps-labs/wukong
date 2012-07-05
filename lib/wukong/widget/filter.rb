@@ -7,33 +7,49 @@ module Wukong
     end
 
     class IncludeAll < Filter
-      def select?(*args) ; true ; end
       register_processor
+      #
+      def select?(*args) ; true ; end
     end
 
     class ExcludeAll < Filter
-      def select?(*args) ; false ; end
       register_processor
+      #
+      def select?(*args) ; false ; end
     end
 
     # Selects only records matching this regexp
     class RegexpFilter < Filter
+      register_processor(:regexp)
+      #
       magic :pattern, Regexp, :doc => 'strings matching this regular expression will be selected'
       def select?(str)
         pattern.match(str)
       end
-      register_processor(:regexp)
     end
 
     class NotRegexpFilter < Filter
+      register_processor(:not_regexp)
+      #
       magic :pattern, Regexp, :doc => 'strings matching this regular expression will be rejected'
       def select?(str)
         not pattern.match(str)
       end
-      register_processor(:not_regexp)
+    end
+
+    class Limit < Filter
+      register_processor
+      #
+      include CountingProcessor
+      magic :max_records, Integer, :doc => 'maximum records to allow', :writer => true
+      def select?(*)
+        count < max_records
+      end
     end
 
     class Select < Filter
+      register_processor
+
       # @param [Proc] proc becomes body of `select?` method
       # @yield ...or supply a block directly
       def initialize(*args, &block)
@@ -42,10 +58,11 @@ module Wukong
         super(*args, attrs){}
         define_singleton_method(:select?, @blk)
       end
-      register_processor
     end
 
     class Reject < Filter
+      register_processor
+
       # @param [Proc] proc use for body of `reject?` method
       # @yield ...or supply a block directly
       def initialize(*args, &block)
@@ -55,17 +72,6 @@ module Wukong
         define_singleton_method(:reject?, @blk)
       end
       def select?(*args) not reject?(*args) ; end
-      register_processor
-    end
-
-    class Limit < Filter
-      include CountingProcessor
-      magic :max_records, Integer, :doc => 'maximum records to allow', :writer => true
-
-      def select?(*)
-        count < max_records
-      end
-      register_processor
     end
 
   end
