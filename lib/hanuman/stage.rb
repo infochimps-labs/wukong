@@ -15,7 +15,7 @@ module Hanuman
     include Gorillib::Builder
     alias_method :configure, :receive!
 
-    magic      :name,    String,         :doc => 'name of this stage'
+    magic      :name,    Symbol,         :doc => 'name of this stage'
     member     :owner,   Whatever,       :doc => 'the graph this stage sits in'
     magic      :doc,     String,         :doc => 'freeform description of this stage type'
 

@@ -1,14 +1,12 @@
 module Hanuman
 
   class Graph < Stage
-    magic      :name,    String,            :position => 0, :doc => 'name of this stage'
+    magic      :name,    Symbol,               :position => 0, :doc => 'name of this stage'
     field      :stages,  Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
     field      :edges,   Hash,                 :doc => 'connections among all stages on the graph', :default => {}
 
     def initialize(*args, &block)
-      p ['beg init', args, block]
       super
-      p ['done init', self, self.owner]
     end
 
     def set_stage(label, stage)

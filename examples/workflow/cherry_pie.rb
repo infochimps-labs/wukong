@@ -8,6 +8,7 @@ class Wukong::Workflow < Hanuman::Graph
     register_stage
     field :amount, String, :position => 1
   end
+  class Utensil    < Hanuman::Resource ; register_stage ; end
 
   class Cook       < ActionWithInputs
     register_action
@@ -21,6 +22,7 @@ class Wukong::Workflow < Hanuman::Graph
   class Drain      < ActionWithInputs ; register_action ; end
   class Whisk      < ActionWithInputs ; register_action ; end
 
+
   class AddTo < ActionWithInputs
     register_action
     magic :container, Hanuman::Stage
@@ -28,7 +30,7 @@ class Wukong::Workflow < Hanuman::Graph
 
 end
 
-Hanuman::Graph.class_eval{  alias_method :producing, :resource }
+Hanuman::Graph.class_eval{  alias_method :product, :resource }
 
 # TODO: make repeated calls not retrieve object again -- it seems lookup is the special case, not creation.
 
@@ -44,39 +46,56 @@ Wukong.workflow(:cherry_pie) do
       qty(:flour,      '3 cups'),
       qty(:salt,       '1.5 tsp'),
       qty(:shortening, '6 tbsp')
-      ) > producing(:crumbly_mixture)
+      ) > product(:crumbly_mixture)
 
     # equvalently:
-    #   add_to(:crumbly_mixture, :buttermilk) > :dough
-    add_to(:crumbly_mixture) << qty(:buttermilk) > producing(:dough)
+    #   add_to(:crumbly_mixture, qty(:buttermilk)) > product(:dough)
+    add_to(:crumbly_mixture)  << qty(:buttermilk)  > product(:dough)
 
-    resource(:ball_for_top)
-    resource(:ball_for_bottom)
+    split(:dough) do
+      into owner.product(:ball_for_top)
+      into owner.product(:ball_for_bottom)
+    end
 
-    split(:dough).into(:ball_for_top, :ball_for_bottom)
+    # equvalently:
+    #  combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_with_crust
+    combine(container(:pie_tin),
+      (rolling_pin << :ball_for_bottom)
+      ).into(product(:pie_tin_with_crust))
 
-    # # # equvalently:
-    # # #  combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_with_crust
-    # # combine(:pie_tin, (rolling_pin << :ball_for_bottom)).into(:pie_tin_with_crust)
-    # #
-    # # self << stage(:ball_for_bottom)
-    # # self << stage(:pie_tin_with_crust)
+    # self << stage(:ball_for_bottom)
+    # self << stage(:pie_tin_with_crust)
   end
 
-  # subgraph(:filling) do
-  #   # drain(:cherries).into(:drained_cherries, :cherry_juice)
-  #   add_to(:saucepan, :corn_starch, :sugar, :salt) >
-  #     whisk << :cherry_juice >
-  #     :raw_goop
-  #   cook(:raw_goop, :trigger => 'goop slightly thickened') > :goop
-  #   add_to(:goop, :drained_cherries, :butter) > cool > self
-  # end
-  #
-  # rolling_pin << stage(:crust).stage(:ball_for_top) > :top_crust
-  #
-  # raw_pie = add_to(stage(:crust).stage(:pie_tin_with_crust), :filling)
-  # raw_pie << :top_crust
-  #
-  # cook(:oven, raw_pie) > cool(:wire_rack) > self
+  subgraph(:filling) do
+
+    qty(:cherries, '4 cups')
+
+    drain(:cherries).into(
+      product(:drained_cherries),
+                                      ).into( # FIXME - should be a multiple-output
+      product(:cherry_juice)
+      )
+    qty(:butter, '2 tbsp, cut up')
+    add_to(container(:saucepan),
+      qty(:corn_starch, '1/3 cup'),
+      qty(:sugar, '1.5 cups'),
+      qty(:salt, '1 dash')) >
+      whisk << :cherry_juice >
+      product(:raw_goop)
+    cook(:raw_goop, :trigger => 'goop slightly thickened') > product(:goop)
+    add_to(:goop, :drained_cherries, :butter) > cool > product(:output)
+  end
+
+  rolling_pin << stage(:crust).stage(:ball_for_top) > product(:top_crust)
+
+  raw_pie = add_to(
+    stage(:crust).stage(:pie_tin_with_crust),
+    stage(:filling).product(:output))
+  raw_pie << :top_crust
+
+  x = utensil(:oven)
+
+  cook(utensil(:oven), raw_pie) > cool(utensil(:wire_rack))
 
 end
