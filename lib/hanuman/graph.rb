@@ -74,7 +74,7 @@ module Hanuman
       from_stage.set_sink(into_stage)
       into_stage.set_source(from_stage)
 
-      edges[from_stage] = into_stage
+      edges[ [from_stage.graph_id, into_stage.graph_id] ] = { from: from_stage, into: into_stage }
 
       [from_stage, into_stage]
     end

@@ -193,6 +193,10 @@ module Hanuman
       super(*args, &block)
     end
 
+    def graph_id
+      # "#{stage.graph_id}:#{name}"
+      stage.graph_id
+    end
   end
 
   class InputSlot < Slot

@@ -75,7 +75,7 @@ class Wukong::Zipper < Wukong::Processor
 
   def process_input(topic, rec)
     queues[topic] << rec
-    p [topic, rec, ready?, queues.map{|k,q| q.length } ]
+    # p [topic, rec, ready?, queues.map{|k,q| q.length } ]
     emit(queues.map{|_, queue| queue.shift }) if ready?
   end
 
@@ -90,11 +90,11 @@ Wukong.dataflow(:series) do
 
   ones = yes(10, 1)
   m2m  = many_to_many
-  zzz  = zipper
+  zzz  = zipper(name: 'zipper join')
 
   ones > zzz.tictoc
 
-  zzz > map{|arr| arr[1..-1].compact.sum } > m2m
+  zzz > map(name: 'summer'){|arr| arr[1..-1].compact.sum } > m2m
 
   m2m                   > zzz.input_a
   m2m > delay_buffer(1) > zzz.input_b
@@ -108,4 +108,11 @@ Wukong.dataflow(:series) do
   zzz.input_b.process(1)
   zzz.input_b.process(1)
 
+
+
 end
+
+require 'hanuman/graphvizzer/gv_presenter'
+basename = Pathname.path_to(:tmp, 'complex_dataflow')
+Wukong.to_graphviz.save(basename, 'png')
+puts File.read("#{basename}.dot")

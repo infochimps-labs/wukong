@@ -40,8 +40,8 @@ module Hanuman
       gv.graph(graph_id, :label => name) do |gv2|
         stages.each_value{|stage| stage.to_graphviz(gv2) }
         #
-        edges.each_pair do |from, into|
-          gv2.edge(from.graph_id, into.graph_id)
+        edges.each_key do |from_id, into_id|
+          gv2.edge(from_id, into_id)
         end
       end
       # super(gv)
