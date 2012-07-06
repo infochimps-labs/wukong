@@ -95,7 +95,7 @@ module Hanuman
     extend Gorillib::Concern
 
     included do |base|
-      base.collection(:sources, Hanuman::Stage, :doc => 'stages in graph that feed into this one')
+      base.collection(:sources, Whatever, :doc => 'stages in graph that feed into this one')
       base.field(:consumes, Whatever, :default => Whatever, :writer => false,
         :doc => 'expected type for consumed data')
     end
@@ -129,7 +129,7 @@ module Hanuman
     extend Gorillib::Concern
 
     included do |base|
-      base.collection(:sinks, Hanuman::Stage, :doc => 'stages in graph that this feeds into')
+      base.collection(:sinks, Whatever, :doc => 'stages in graph that this feeds into')
       base.magic(:produces, Whatever, :default => Whatever, :writer => false,
         :doc => 'expected type for produced data')
     end
@@ -183,17 +183,24 @@ module Hanuman
     include InputSlotted
   end
 
-  # class Slot
-  #   include Gorillib::Builder
-  #   field :name, Symbol, position: 0, doc: 'name (unique on its stage) for this slot'
-  #
-  #   def process(*args) ; sink.process(*args) ; end
-  # end
-  #
-  # class InputSlot < Slot
-  #   include InputSlotted
-  # end
-  #
+  class Slot
+    include Gorillib::Builder
+    field :name, Symbol, position: 0, doc: 'name (unique on its stage) for this slot'
+    attr_accessor :stage
+    #
+    def initialize(stage, *args, &block)
+      @stage = stage
+      super(*args, &block)
+    end
+
+  end
+
+  class InputSlot < Slot
+    include InputSlotted
+
+    def process(*args) ; stage.process_input(self.name, *args) ; end
+  end
+
   # class OututSlot < Slot
   #   include OutputSlotted
   # end

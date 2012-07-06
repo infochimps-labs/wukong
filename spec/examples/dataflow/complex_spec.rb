@@ -7,9 +7,9 @@ describe 'complex dataflow', :only, :examples_spec do
     load Pathname.path_to(:examples, 'dataflow/complex.rb')
 
     Wukong.dataflow(:series) do
-      setup
+
       stages.to_a.first.drive
-      stop
+      # stop
     end
 
   end

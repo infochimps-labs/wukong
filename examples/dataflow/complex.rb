@@ -1,4 +1,5 @@
 require 'wukong/widget/many_to_many'
+require 'gorillib/enumerable/sum'
 
 Wukong.processor(:delay_buffer) do
   register_action
@@ -54,17 +55,27 @@ end
 
 class Wukong::Zipper < Wukong::Processor
   register_action
+  include Hanuman::OutputSlotted
+
   attr_accessor :queues
   field :delay, Integer, position: 0, doc: "number of records to hold in buffer"
+
+  field :tictoc,  Hanuman::InputSlot, default: ->{ Hanuman::InputSlot.new(self, 'tictoc') }, doc: "input to drive flow"
+  field :input_a, Hanuman::InputSlot, default: ->{ Hanuman::InputSlot.new(self, 'input_a') }
+  field :input_b, Hanuman::InputSlot, default: ->{ Hanuman::InputSlot.new(self, 'input_b') }
 
   # resets to an empty state, calls super
   def setup(*)
     super
     @queues = Hash.new{|h,k| h[k] = Array.new } # autovivifying
+    @queues[:tictoc]
+    @queues[:input_a]
+    @queues[:input_b]
   end
 
   def process_input(topic, rec)
     queues[topic] << rec
+    p [topic, rec, ready?, queues.map{|k,q| q.length } ]
     emit(queues.map{|_, queue| queue.shift }) if ready?
   end
 
@@ -72,35 +83,29 @@ class Wukong::Zipper < Wukong::Processor
   def ready?
     queues.all?{|_,queue| queue.length > 0 }
   end
+
 end
 
 Wukong.dataflow(:series) do
 
   ones = yes(10, 1)
   m2m  = many_to_many
+  zzz  = zipper
 
-  ones > m2m
+  ones > zzz.tictoc
 
-  m2m > map{|x| x + 100 } > stdout
-  m2m > sum > delay_buffer(3) > stdout
+  zzz > map{|arr| arr[1..-1].compact.sum } > m2m
 
+  m2m                   > zzz.input_a
+  m2m > delay_buffer(1) > zzz.input_b
 
+  m2m > map{|x| x.inspect } > stdout
 
+  setup
 
-
-  # input > stage(:splitty, stratify) do
-  #   output(:low) > file('users_med')
-  # end
-  # stage(:splitty).output(:med) > file('users_med')
-  # stage(:splitty).output(:hi)  > file('users_hi')
-  #
-  # # or
-  #
-  # splitty = stratify
-  # input > splitty do
-  #   output(:low) > file('users_med')
-  # end
-  # splitty.output(:med) > file('users_med')
-  # splitty.output(:hi)  > file('users_hi')
+  # FIXME: cheating
+  zzz.input_a.process(1)
+  zzz.input_b.process(1)
+  zzz.input_b.process(1)
 
 end
