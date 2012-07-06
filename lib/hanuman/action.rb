@@ -3,13 +3,11 @@ module Hanuman
   #
   # `Action` stages represent transforms of data.
   #
-  #
+  # The can have singular or multiple inputs
   #
   class Action < Stage
 
-    def source?() false ; end
-    def sink?()   false ; end
-
+    # alias register_action from register_stage
     class << self ; alias_method :register_action, :register_stage ; end
   end
 

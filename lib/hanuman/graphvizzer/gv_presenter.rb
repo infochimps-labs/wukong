@@ -1,3 +1,5 @@
+require 'hanuman/graphvizzer/gv_models'
+
 module Hanuman
 
   Stage.class_eval do
@@ -18,6 +20,19 @@ module Hanuman
     self.draw_shape = :Mrecord
   end
 
+  module ::Wukong::Universe
+    def to_graphviz
+      gv = Hanuman::Graphvizzer::Universe.new(:name => self.name)
+      @workflows.each do |_, workflow|
+        workflow.to_graphviz(gv)
+      end
+      @dataflows.each do |_, dataflow|
+        dataflow.to_graphviz(gv)
+      end
+      gv
+    end
+  end
+
   Graph.class_eval do
     self.draw_shape = :record
 
@@ -30,19 +45,6 @@ module Hanuman
         end
       end
       # super(gv)
-    end
-  end
-
-  module ::Wukong::Universe
-    def to_graphviz
-      gv = Hanuman::Graphvizzer::Universe.new(:name => self.name)
-      @workflows.each do |_, workflow|
-        workflow.to_graphviz(gv)
-      end
-      @dataflows.each do |_, dataflow|
-        dataflow.to_graphviz(gv)
-      end
-      gv
     end
   end
 

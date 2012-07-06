@@ -5,39 +5,9 @@ module Hanuman
     field      :stages,  Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
     field      :edges,   Hash,                 :doc => 'connections among all stages on the graph', :default => {}
 
-    def initialize(*args, &block)
-      super
-    end
-
-    def set_stage(label, stage)
-      stage.write_attribute(:owner, self)
-      stage.write_attribute(:name, label || next_label_for(stage)) unless stage.attribute_set?(:name)
-      stages[label] = stage
-    end
-
     #
-    # * look up the targets (resolving labels to stages, etc)
+    # Construct stages
     #
-    def connect(from_stage, into_stage)
-      from_stage = lookup(from_stage)
-      into_stage = lookup(into_stage)
-
-      # from_slot = from_stage.output_slot
-      # into_slot = into_stage.input_slot
-      #
-      # from_slot.set_sink(  into_slot)
-      # into_slot.set_source(from_slot)
-
-      from_stage.set_sink(into_stage)
-      into_stage.set_source(from_stage)
-
-      # actual_from_slot = from_slot.set_output(into_slot)
-      # actual_into_slot = into_slot.set_input( from_slot)
-      # [actual_from_stage, actual_into_stage]
-
-      edges[from_stage] = into_stage
-      [from_stage, into_stage]
-    end
 
     def stage(label, attrs={}, &block)
       if attrs.is_a?(Hanuman::Stage)
@@ -55,6 +25,20 @@ module Hanuman
       end
       val
     end
+
+    def set_stage(label, stage)
+      stage.write_attribute(:owner, self)
+      stage.write_attribute(:name, label || next_label_for(stage)) unless stage.attribute_set?(:name)
+      stages[label] = stage
+    end
+
+    def next_label_for(stage)
+      :"#{stage.stage_type}_#{stages.size}"
+    end
+
+    #
+    # Labelled stages
+    #
 
     def lookup(ref)
       ref.is_a?(Symbol) ? stages.fetch(ref) : ref
@@ -76,8 +60,23 @@ module Hanuman
       stage(label, :_type => Hanuman::Resource, &block)
     end
 
-    def next_label_for(stage)
-      :"#{stage.stage_type}_#{stages.size}"
+    #
+    # Connections among stages
+    #
+
+    #
+    # * look up the targets (resolving labels to stages, etc)
+    #
+    def connect(from_stage, into_stage)
+      from_stage = lookup(from_stage)
+      into_stage = lookup(into_stage)
+
+      from_stage.set_sink(into_stage)
+      into_stage.set_source(from_stage)
+
+      edges[from_stage] = into_stage
+
+      [from_stage, into_stage]
     end
 
     #
@@ -91,7 +90,7 @@ module Hanuman
     def stop
       source_stages .each{|stage| stage.stop}
       process_stages.each{|stage| stage.stop}
-      sinke_stages  .each{|stage| stage.stop}
+      sink_stages   .each{|stage| stage.stop}
     end
 
     def source_stages()  []     ; end
@@ -100,4 +99,11 @@ module Hanuman
 
   end
 
+end
+
+module Hanuman
+  class Chain < Graph
+    include Hanuman::InputSlotted
+    include Hanuman::OutputSlotted
+  end
 end
