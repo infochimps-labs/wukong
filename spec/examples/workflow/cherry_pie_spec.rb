@@ -1,10 +1,9 @@
 require 'spec_helper'
 require 'wukong'
 
-require 'hanuman/graphvizzer'
-require 'hanuman/graphviz'
+require 'hanuman/graphvizzer/gv_presenter'
 
-describe 'cherry_pie', :only do
+describe 'cherry_pie' do
 
   # it 'fiddles' do
   #   load(Pathname.path_to(:examples, 'workflow/cherry_pie.rb'))
@@ -22,7 +21,7 @@ describe 'cherry_pie', :only do
   # end
 
 
-  describe 'Graphviz View', :only, :if => GRAPHVIZ do
+  describe 'Graphviz View', :if => GRAPHVIZ do
     it 'makes a png' do
       require Pathname.path_to(:examples, 'workflow/cherry_pie.rb')
 

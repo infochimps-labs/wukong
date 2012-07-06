@@ -16,9 +16,9 @@ module Wukong
       end
     end
 
-    def processor(processor_name, &block)
+    def processor(processor_name, *args, &block)
       klass = find_or_create_class(Wukong::Processor, processor_name, Wukong::Widget) do
-        register_processor(processor_name)
+        register_processor(processor_name, *args)
       end
       klass.class_eval(&block) if block_given?
       klass

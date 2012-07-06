@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 require 'wukong'
-require 'hanuman/graphvizzer'
-require 'hanuman/graphviz'
+require 'hanuman/graphvizzer/gv_presenter'
 
 describe 'Graphviz View' do
 

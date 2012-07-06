@@ -14,6 +14,7 @@ module Wukong
       BadRecord.make(*args)
     end
 
+    # alias register_processor from register_stage
     class << self ; alias_method :register_processor, :register_action ; end
   end
 

@@ -58,13 +58,11 @@ Wukong.workflow(:cherry_pie) do
     end
 
     # equvalently:
-    #  combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_with_crust
+    #  combine << :pie_tin << (rolling_pin << :ball_for_bottom) > :pie_tin_w_crust
     combine(container(:pie_tin),
       (rolling_pin << :ball_for_bottom)
-      ).into(product(:pie_tin_with_crust))
+      ).into(product(:pie_tin_w_crust))
 
-    # self << stage(:ball_for_bottom)
-    # self << stage(:pie_tin_with_crust)
   end
 
   subgraph(:filling) do
@@ -90,7 +88,7 @@ Wukong.workflow(:cherry_pie) do
   rolling_pin << stage(:crust).stage(:ball_for_top) > product(:top_crust)
 
   raw_pie = add_to(
-    stage(:crust).stage(:pie_tin_with_crust),
+    stage(:crust).stage(:pie_tin_w_crust),
     stage(:filling).product(:output))
   raw_pie << :top_crust
 
