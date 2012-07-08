@@ -6,9 +6,12 @@ describe 'complex dataflow', :only, :examples_spec do
   it 'runs' do
     load Pathname.path_to(:examples, 'dataflow/complex.rb')
 
-    Wukong.dataflow(:series) do
+    Wukong.dataflow(:fibbonaci_series) do
+      out > stdout
 
-      stages.to_a.first.drive
+      setup
+
+      self[:ticker].drive
       # stop
     end
 

@@ -1,14 +1,14 @@
 class Wukong::Workflow < Hanuman::Graph
-  class Container  < Hanuman::Resource
+  class Container  < Hanuman::Product
     register_stage
   end
 
-  class Qty < Hanuman::Resource
+  class Qty < Hanuman::Product
     doc 'a quantity of an ingredient'
     register_stage
     field :amount, String, :position => 1
   end
-  class Utensil    < Hanuman::Resource ; register_stage ; end
+  class Utensil    < Hanuman::Product ; register_stage ; end
 
   class Cook       < ActionWithInputs
     register_action
@@ -30,7 +30,7 @@ class Wukong::Workflow < Hanuman::Graph
 
 end
 
-Hanuman::Graph.class_eval{  alias_method :product, :resource }
+Hanuman::Graph.class_eval{  alias_method :product, :product }
 
 # TODO: make repeated calls not retrieve object again -- it seems lookup is the special case, not creation.
 

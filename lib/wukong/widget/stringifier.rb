@@ -5,13 +5,14 @@ module Wukong
     end
 
     class ToJson < Stringifier
+      register_processor
       def process(record)
         emit ::MultiJson.dump(record)
       end
-      register_processor
     end
 
     class FromJson < Stringifier
+      register_processor
       # FIXME some of this belongs in gorillib factories...
       def process(record)
         obj = MultiJson.load(record)
@@ -27,21 +28,28 @@ module Wukong
         end
         emit obj
       end
-      register_processor
     end
 
     class ToTsv < Stringifier
+      register_processor
       def process(record)
         emit record.to_tsv
       end
-      register_processor
     end
 
     class FromTsv < Stringifier
+      register_processor
       def process(record)
         emit record.split(/\t/)
       end
+    end
+
+
+    class ToInspectStr < Stringifier
       register_processor
+      def process(*args)
+        emit(args.inspect)
+      end
     end
 
   end

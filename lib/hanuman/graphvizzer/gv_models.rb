@@ -2,7 +2,7 @@ module Hanuman
   module Graphvizzer
 
     COL_1_WIDTH = 47
-    
+
     class Item
       include Gorillib::Builder
 
@@ -117,12 +117,16 @@ module Hanuman
           )                                       ## ];
       end
 
+      def abbreviate(word)
+        word.to_s.split(/[\W_]+/).reject(&:empty?).map{|str| str[0] }.join
+      end
+
       def inslots_str
-        inslots.map{|slot| "<#{slot}>#{slot[0..0]}"}.join("|")
+        inslots.map{|slot|  "<#{slot}>#{abbreviate(slot)}"}.join("|")
       end
 
       def outslots_str
-        outslots.map{|slot| "<out_#{slot}>#{slot[0..0]}"}.join("|")
+        outslots.map{|slot| "<_#{slot}>#{abbreviate(slot)}"}.join("|")
       end
 
       def label
@@ -132,21 +136,21 @@ module Hanuman
       def structured_label
         return label unless shape =~ /record/
         str = "{"
-        str << "{" << inslots_str << "}|"  unless inslots.empty?
+        str << "{"  << (inslots.empty?  ? "<i>"  : inslots_str) << "}|"
         str << label
-        str << "|{" << outslots_str << "}" unless outslots.empty?
+        str << "|{" << (outslots.empty? ? "<_o>" : outslots_str) << "}"
         str << "}"
         str
       end
     end
 
     class Edge < Item
-      field :from, String
-      field :into, String
+      field :from, Whatever
+      field :into, Whatever
 
       def to_s
         width = COL_1_WIDTH - indent.length
-        "#{indent}%-#{width}s\t-> %-s;" % [ quote(from), quote(into) ] ## "cherry_pie.crust.small_bowl" -> "cherry_pie.crust.add_to_4";
+        "#{indent}%-#{width}s\t-> %-s;" % [ from, into ] ## "cherry_pie.crust.small_bowl" -> "cherry_pie.crust.add_to_4";
       end
     end
 

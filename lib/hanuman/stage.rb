@@ -2,7 +2,7 @@ module Hanuman
 
   #
   # `Stage` is the fundamental Hanuman building block; stages represent nodes on a
-  # hanuman graph. `Action`s, `Resource`s and `Graph`s (among others) all inherit from
+  # hanuman graph. `Action`s, `Product`s and `Graph`s (among others) all inherit from
   # and fit the contract of `Stage`.
   #
   # `Stage` has the following minimal contract:
@@ -13,11 +13,10 @@ module Hanuman
   #
   class Stage
     include Gorillib::Builder
-    alias_method :wire, :receive!
 
-    magic      :name,    Symbol,         doc: 'name of this stage'
+    magic      :name,    Symbol,         doc: 'name of this stage', tester: true
     member     :owner,   Whatever,       doc: 'the graph this stage sits in'
-    magic      :doc,     String,         doc: 'freeform description of this stage', default: ->{ self.class.doc }
+    magic      :doc,     String,         doc: 'freeform description of this stage'
 
     #
     # Informational
@@ -29,7 +28,7 @@ module Hanuman
     # @return [String] the curent doc string
     def self.doc(doc=nil)
       if doc then @doc = doc ; end
-      @doc || "the #{self.name} stage"
+      @doc || stage_type
     end
 
     def self.stage_type()  typename.gsub(/.*\W/, '') ; end
@@ -37,7 +36,7 @@ module Hanuman
 
     # @returns the stage, namespaced by the graph that owns it
     def graph_id
-      [(owner ? owner.graph_id : '(orphan)'), name].compact.join('.')
+      [ (owner ? owner.graph_id : '(orphan)'), name ].compact.join('.')
     end
 
     #
@@ -55,18 +54,17 @@ module Hanuman
     # TODO: at some point, these will be inscribed on a module that you can
     # selectively include rather than directly on the Graph class.
     #
-    def self.register_stage(meth_name=nil, klass=nil, &block)
+    def self.register_stage(meth_name=nil, klass=nil)
       meth_name ||= stage_type
       klass     ||= self
       #
       Hanuman::Graph.send(:define_method, meth_name) do |*args, &block|
         begin
-          # create stage
-          attrs = args.extract_options!
-          stage = klass.new(*args, attrs.merge(owner: self), &block)
-          # label it and add it to graph
-          label = stage.read_attribute(:name) || next_label_for(stage)
-          set_stage(label, stage)
+          attrs = klass.attrs_hash_from_args(args).reverse_merge(:_type => klass)
+          label = attrs[:label] || attrs[:name]
+          stage = stages.receive_item(label, attrs, &block)
+          as(label, stage) if label
+          stage
         rescue StandardError => err ; err.polish("#{self.name}: #{meth_name}(#{args.map(&:inspect).join(',')})") rescue nil ; raise ; end
       end
     end

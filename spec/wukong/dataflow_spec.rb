@@ -46,7 +46,7 @@ describe Wukong::Dataflow, :helpers => true do
     end
 
     it 'adds a stage to the dataflow' do
-      subject.should_receive(:set_stage).with(:select_0, kind_of(Wukong::Widget::Select))
+      subject.stages.should_receive(:receive_item).with(:select_0, kind_of(Wukong::Widget::Select))
       subject.select{|rec| rec =~ /^h/ }.should be_a(Wukong::Widget::Select)
     end
   end
@@ -67,7 +67,7 @@ describe Wukong::Dataflow, :helpers => true do
     end
 
     it 'adds a stage to the dataflow' do
-      subject.should_receive(:set_stage).with(:reject_0, kind_of(Wukong::Widget::Reject))
+      subject.should_receive(:receive_item).with(:reject_0, kind_of(Wukong::Widget::Reject))
       subject.reject{|rec| rec =~ /^h/ }.should be_a(Wukong::Widget::Reject)
     end
   end

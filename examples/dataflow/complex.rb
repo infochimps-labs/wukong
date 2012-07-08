@@ -8,7 +8,11 @@ Wukong.processor(:delay_buffer) do
 
   def process(rec)
     queue << rec
-    emit(queue.shift) if ready?
+    emit(next_item) if ready?
+  end
+
+  def next_item
+    queue.shift
   end
 
   # true if there are records at the end of the delay stage
@@ -30,7 +34,7 @@ Wukong.processor(:delay_buffer) do
   end
 end
 
-class Wukong::Yes < Wukong::Source
+class Wukong::Spew < Wukong::Source
   register_action
   include Wukong::Source::CappedGenerator
   field :item, Whatever, position: 1, doc: "An item to emit over and over and over"
@@ -53,64 +57,86 @@ Wukong.processor(:sum) do
   end
 end
 
-class Wukong::Zipper < Wukong::Processor
+class Wukong::Batcher < Wukong::Processor
   register_action
+  include Hanuman::MultiInputs
   include Hanuman::OutputSlotted
 
   attr_accessor :queues
   field :delay, Integer, position: 0, doc: "number of records to hold in buffer"
 
-  field :tictoc,  Hanuman::InputSlot, default: ->{ Hanuman::InputSlot.new(self, 'tictoc') }, doc: "input to drive flow"
-  field :input_a, Hanuman::InputSlot, default: ->{ Hanuman::InputSlot.new(self, 'input_a') }
-  field :input_b, Hanuman::InputSlot, default: ->{ Hanuman::InputSlot.new(self, 'input_b') }
+  consume :n_1, Integer, doc: "n-1'th value: the one just emitted"
+  consume :n_2, Integer, doc: "n-2'nd value: the one before the one just emitted"
+  consume :tictoc,  Integer, doc: "input to drive flow"
 
   # resets to an empty state, calls super
-  def setup(*)
+  def initialize(*)
     super
     @queues = Hash.new{|h,k| h[k] = Array.new } # autovivifying
-    @queues[:tictoc]
-    @queues[:input_a]
-    @queues[:input_b]
   end
 
   def process_input(topic, rec)
     queues[topic] << rec
-    # p [topic, rec, ready?, queues.map{|k,q| q.length } ]
-    emit(queues.map{|_, queue| queue.shift }) if ready?
+    emit(next_item) if ready?
+  end
+
+  def next_item
+    queues.map{|_, queue| queue.shift }
   end
 
   # true if there is at least one record in each queue
   def ready?
-    queues.all?{|_,queue| queue.length > 0 }
+    input_names.all?{|qname| queues[qname].length > 0 }
+  end
+
+  def input_names
+    [:n_1, :tictoc, :n_2]
+  end
+
+
+  def to_graphviz(gv)
+    gv.node(self.graph_id,
+      :label    => name,
+      :shape    => draw_shape,
+      :inslots  => input_names,
+      )
   end
 
 end
 
-Wukong.dataflow(:series) do
-
-  ones = yes(10, 1)
-  m2m  = many_to_many
-  zzz  = zipper(name: 'zipper join')
-
-  ones > zzz.tictoc
-
-  zzz > map(name: 'summer'){|arr| arr[1..-1].compact.sum } > m2m
-
-  m2m                   > zzz.input_a
-  m2m > delay_buffer(1) > zzz.input_b
-
-  m2m > map{|x| x.inspect } > stdout
-
-  setup
-
-  # FIXME: cheating
-  zzz.input_a.process(1)
-  zzz.input_b.process(1)
-  zzz.input_b.process(1)
-
-
+Hanuman::Graph.class_eval do
+  include Hanuman::MultiInputs
 
 end
+
+Wukong.dataflow(:fibbonaci_series) do
+  delay_buffer(1, name: :delay)
+
+  batcher(name: :feedback)  >
+    map(name: :summer, &:sum) >
+    many_to_many(name: :fibonacci_n)
+
+  spew(4, item: 0, name: :ticker) > feedback.tictoc
+
+  fibonacci_n > :delay > feedback.n_2
+  fibonacci_n          > feedback.n_1
+
+  produce(:out, Integer)
+
+  # outslot = Hanuman::OutputSlot.new(stage: self, name: :out)
+  # define_singleton_method(:out){ outslot }
+  fibonacci_n         > out
+
+  # preload the feedback buffer
+  feedback.n_1.process(0)
+  feedback.n_2.process(0)
+  feedback.n_2.process(1)
+end
+
+Wukong.dataflow(:dump) do
+  stdout << Wukong.dataflow(:fibbonaci_series).out
+end
+
 
 require 'hanuman/graphvizzer/gv_presenter'
 basename = Pathname.path_to(:tmp, 'complex_dataflow')

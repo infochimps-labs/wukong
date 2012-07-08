@@ -5,7 +5,7 @@ shared_context 'hanuman', :helpers => true do
 
   let :example_graph do
     Hanuman::Graph.new(:name => :scraper) do
-      action(:listener) << resource(:scrape_requests) << resource(:more_requests)
+      action(:listener) << product(:scrape_requests) << product(:more_requests)
       action(:parser).input(:listener)
       action(:models).input(:parser)
     end

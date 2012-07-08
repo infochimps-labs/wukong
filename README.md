@@ -100,14 +100,14 @@ __________________________________________________________________________
 
 Wukong workflows work somewhat differently than you may be familiar with Rake and such.
 
-In wukong, a stage corresponds to a resource; you can then act on that resource.
+In wukong, a stage corresponds to a product; you can then act on that product.
 
 Consider first compiling a c program:
 
     to build the executable, run `cc -o cake eggs.o milk.o flour.o sugar.o -I./include -L./lib`
     to build files like '{file}.o', run `cc -c -o {file}.o {file}.c -I./include`
 
-In this case, you define the *steps*, implying the resources.
+In this case, you define the *steps*, implying the products.
 
 
 Something rake can't do (but we should be able to): make it so I can define a dependency that runs **last** 
@@ -134,14 +134,14 @@ Something rake can't do (but we should be able to): make it so I can define a de
       end
     end
     
-* stages construct resources
+* stages construct products
   - these have default actions
 * hanuman tracks defined order
 
 * do steps run in order, or is dependency explicit?
 * what about idempotency?
 
-* `task` vs `action` vs `resource`; `job`, `task`, `group`, `namespace`.
+* `task` vs `action` vs `product`; `job`, `task`, `group`, `namespace`.
 
 ### documenting
 

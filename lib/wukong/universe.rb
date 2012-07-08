@@ -7,7 +7,7 @@ module Wukong
 
     def graph_id() nil ; end
 
-    def find_or_create_class(superklass, klass_name, namespace, &block)
+    def find_or_create_class(klass_name, superklass, namespace, &block)
       klass_name = Gorillib::Inflector.camelize(klass_name.to_s).to_sym
       if namespace.const_defined?(klass_name)
         namespace.const_get(klass_name)
@@ -16,9 +16,9 @@ module Wukong
       end
     end
 
-    def processor(processor_name, *args, &block)
-      klass = find_or_create_class(Wukong::Processor, processor_name, Wukong::Widget) do
-        register_processor(processor_name, *args)
+    def processor(processor_name, superklass=Wukong::Processor, &block)
+      klass = find_or_create_class(processor_name, superklass, Wukong::Widget) do
+        register_processor(processor_name)
       end
       klass.class_eval(&block) if block_given?
       klass
@@ -26,14 +26,14 @@ module Wukong
 
     def dataflow(name, attrs={}, &block)
       attrs[:name] = name = name.to_sym
-      dataflow = @dataflows[name] ||= Dataflow.new(:name => name, :owner => self)
+      dataflow = @dataflows[name] ||= Dataflow.new(name: name, owner: self)
       dataflow.receive!(attrs, &block)
       dataflow
     end
 
     def workflow(name, attrs={}, &block)
       attrs[:name] = name = name.to_sym
-      workflow = @workflows[name] ||= Workflow.new(:name => name, :owner => self)
+      workflow = @workflows[name] ||= Workflow.new(name: name, owner: self)
       workflow.receive!(attrs, &block)
       workflow
     end

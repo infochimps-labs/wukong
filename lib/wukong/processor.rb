@@ -8,6 +8,7 @@ module Wukong
     # passes a record on down the line
     def emit(record)
       (@sink||=self.sink).process(record)
+    rescue StandardError => err ; err.polish("#{self.graph_id}: #{record.inspect} to #{@sink.inspect(false)}") rescue nil ; raise
     end
 
     def bad_record(*args)
@@ -74,6 +75,7 @@ module Wukong
   #   map{|str| str[/\b(love|hate|happy|sad)\b/] }
   #
   class Map < Processor
+    field :name, Symbol, :position => 0
     self.register_processor
     attr_reader :blk
 
@@ -81,13 +83,13 @@ module Wukong
     # @yield if proc is omitted, block must be supplied
     def initialize(*args, &block)
       attrs = args.extract_options!
-      @blk = block || args.shift || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
+      @blk = block || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
       super(*args, attrs){}
       define_singleton_method(:call, @blk)
     end
 
     def inspect(*)
-      super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{@blk.source_location.join(':')}}>"
+      super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{(@blk.source_location||[]).join(':')}}>"
     end
 
     def process(*args)

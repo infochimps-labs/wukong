@@ -1,63 +1,81 @@
 module Hanuman
 
+  class StageCollection < Gorillib::ModelCollection
+    include Gorillib::Collection::CommonAttrs
+    self.item_type = Hanuman::Stage
+
+    # the graph that owns this collection
+    attr_reader :owner
+
+    def initialize(owner, options={})
+      super(options)
+      @owner = owner
+      @common_attrs = common_attrs.merge(owner: owner)
+    end
+
+    def label_for(stage)
+      ll = clxn.key(stage) || "#{stage.stage_type}_#{size+1}".to_sym
+      stage.write_attribute(:name, ll) unless stage.name?
+      ll
+    end
+
+  end
+
   class Graph < Stage
-    magic      :name,    Symbol,               :position => 0, :doc => 'name of this stage'
-    field      :stages,  Gorillib::Collection, :doc => 'the sequence of stages on this graph',      :default => ->{ Gorillib::Collection.new }
-    field      :edges,   Hash,                 :doc => 'connections among all stages on the graph', :default => {}
+    magic      :name,    Symbol,               position: 0, doc: 'name of this stage'
+    field      :stages,  Gorillib::Collection, doc: 'the sequence of stages on this graph',
+      default: ->{ StageCollection.new(self) }
+    field      :edges,   Gorillib::Collection, doc: 'connections among all stages on the graph', default: ->{ Gorillib::Collection.new } # Hash.new
+
+    alias_method :wire, :receive!
 
     #
     # Construct stages
     #
 
+    # create a stage with params and attrs (+ possible block)
+    # get the object representing a stage (+ possible block)
+    # replace a stage with a new stage at the given label
+
     def stage(label, attrs={}, &block)
-      if attrs.is_a?(Hanuman::Stage)
-        # actual object: assign it into collection
-        val = attrs
-        set_stage(label, val)
-      elsif stages.include?(label)
-        # existing item: retrieve it, updating as directed
-        val = stages.fetch(label)
-        val.receive!(attrs, &block)
-      else
-        # missing item: autovivify item and add to collection
-        val = Hanuman::Stage.receive(attrs.merge(owner: self), &block)
-        set_stage(label, val)
+      needs_label = (not stages.include?(label))
+      stage = stages.update_or_add(label, attrs, &block)
+      if needs_label
+        as(label, stage)
       end
-      val
+      stage
     end
 
-    def set_stage(label, stage)
-      stage.write_attribute(:owner, self)
-      stage.write_attribute(:name, label || next_label_for(stage)) unless stage.attribute_set?(:name)
-      stages[label] = stage
+    def as(label, stage)
+      define_singleton_method(label){ stage }
+      stage
     end
 
-    def next_label_for(stage)
-      :"#{stage.stage_type}_#{stages.size}"
+    # alias for get_stage
+    def [](label) stages.fetch(label.to_sym) ; end
+
+    def lookup(ref)
+      ref.is_a?(Symbol) ? self[ref] : ref
     end
 
     #
     # Labelled stages
     #
 
-    def lookup(ref)
-      ref.is_a?(Symbol) ? stages.fetch(ref) : ref
-    end
-
-    def subgraph(label, &block)
-      stage(label, :_type => Hanuman::Graph, &block)
+    def subgraph(name, &block)
+      stage(name, name: name, _type: Hanuman::Graph, &block)
     end
 
     def chain(label, &block)
-      stage(label, :_type => Hanuman::Chain, &block)
+      stage(name, name: name, _type: Hanuman::Chain, &block)
     end
 
     def action(label, &block)
-      stage(label, :_type => Hanuman::Action, &block)
+      stage(name, name: name, _type: Hanuman::Action, &block)
     end
 
-    def resource(label, &block)
-      stage(label, :_type => Hanuman::Resource, &block)
+    def product(label, &block)
+      stage(name, name: name, _type: Hanuman::Product, &block)
     end
 
     #
@@ -84,7 +102,9 @@ module Hanuman
     #
 
     def setup
-      stages.each_value{|stage| stage.setup}
+      source_stages .each{|stage| stage.setup}
+      process_stages.each{|stage| stage.setup}
+      sink_stages   .each{|stage| stage.setup}
     end
 
     def stop
@@ -97,8 +117,11 @@ module Hanuman
     def process_stages() stages ; end
     def sink_stages()    []     ; end
 
+    def inspect_helper(detailed, attrs)
+      attrs[:edges] = [attrs[:edges].length] if attrs[:edges]
+      super
+    end
   end
-
 end
 
 module Hanuman

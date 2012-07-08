@@ -6,9 +6,11 @@ module Wukong
     class << self ; alias_method :register_source, :register_action ; end
 
     def drive
+      sink = self.sink
       each do |record|
         sink.process(record)
       end
+    rescue StandardError => err ; err.polish("#{self.name}: emitting to #{sink.inspect}") rescue nil ; raise
     end
 
     class Iter < Source
