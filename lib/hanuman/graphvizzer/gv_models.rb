@@ -42,15 +42,15 @@ module Hanuman
 
       def to_s
         str = []
-        str   << brace("subgraph#{quote("cluster_#{name}")}") ## subgraph "cluster_crust" {
-        str   << line(attrib("  label", quote(label)))        ##   label="crust";
-        items.each do |item|                                  ##
-          str << item.to_s                                    ##   "cherry_pie.crust.small_bowl"        [ shape=Mrecord, label="{small\nbowl}" ];
-        end                                                   ##   "cherry_pie.crust.flour"             [ shape=Mrecord, label="{flour}" ];
-        edges.each do |edge|                                  ##
-          str << edge.to_s                                    ##   "cherry_pie.crust.small_bowl"        -> "cherry_pie.crust.add_to_4";
-        end                                                   ##   "cherry_pie.crust.flour"             -> "cherry_pie.crust.add_to_4";
-        str << close_brace                                    ## }
+        str   << brace("subgraph #{quote("cluster_#{name}")}") ## subgraph "cluster_crust" {
+        str   << line(attrib("  label", quote(label)))         ##   label="crust";
+        items.each do |item|                                   ##
+          str << item.to_s                                     ##   "cherry_pie.crust.small_bowl"        [ shape=Mrecord, label="{small\nbowl}" ];
+        end                                                    ##   "cherry_pie.crust.flour"             [ shape=Mrecord, label="{flour}" ];
+        edges.each do |edge|                                   ##
+          str << edge.to_s                                     ##   "cherry_pie.crust.small_bowl"        -> "cherry_pie.crust.add_to_4";
+        end                                                    ##   "cherry_pie.crust.flour"             -> "cherry_pie.crust.add_to_4";
+        str << close_brace                                     ## }
         str.join("\n")
       end
 

@@ -59,15 +59,19 @@ end
 
 class Wukong::Batcher < Wukong::Processor
   register_action
-  include Hanuman::MultiInputs
+  include Hanuman::Slottable
   include Hanuman::OutputSlotted
 
   attr_accessor :queues
   field :delay, Integer, position: 0, doc: "number of records to hold in buffer"
 
-  consume :n_1, Integer, doc: "n-1'th value: the one just emitted"
-  consume :n_2, Integer, doc: "n-2'nd value: the one before the one just emitted"
-  consume :tictoc,  Integer, doc: "input to drive flow"
+  # consume :n_1, Integer, doc: "n-1'th value: the one just emitted"
+  # consume :n_2, Integer, doc: "n-2'nd value: the one before the one just emitted"
+  # consume :tictoc,  Integer, doc: "input to drive flow"
+
+  consume :n_1,    Integer, doc: "n-1'th value: the one just emitted"
+  consume :n_2,    Integer, doc: "n-2'nd value: the one before the one just emitted"
+  consume :tictoc, Integer, doc: "input to drive flow"
 
   # resets to an empty state, calls super
   def initialize(*)
@@ -105,18 +109,21 @@ class Wukong::Batcher < Wukong::Processor
 end
 
 Hanuman::Graph.class_eval do
-  include Hanuman::MultiInputs
-
+  include Hanuman::Slottable
 end
 
 Wukong.dataflow(:fibbonaci_series) do
   delay_buffer(1, name: :delay)
 
-  batcher(name: :feedback)  >
+  batcher(name: :feedback)
+
+  feedback.inslots
+
+  feedback >
     map(name: :summer, &:sum) >
     many_to_many(name: :fibonacci_n)
 
-  spew(4, item: 0, name: :ticker) > feedback.tictoc
+  spew(6, item: 0, name: :ticker) > feedback.tictoc
 
   fibonacci_n > :delay > feedback.n_2
   fibonacci_n          > feedback.n_1
