@@ -4,6 +4,7 @@ module Wukong
   # Holds graphs, supplies `processor` and similar stage template methods
   #
   module Universe
+    extend Gorillib::Concern
 
     def graph_id() nil ; end
 
@@ -25,10 +26,13 @@ module Wukong
     end
 
     def dataflow(name, attrs={}, &block)
-      attrs[:name] = name = name.to_sym
-      dataflow = @dataflows[name] ||= Dataflow.new(name: name, owner: self)
-      dataflow.receive!(attrs, &block)
-      dataflow
+      attrs[:_type] ||= Wukong::Dataflow
+      @dataflows.update_or_add(name, attrs.merge(name: name), &block)
+    end
+
+    def chain(name, attrs={}, &block)
+      attrs[:_type] ||= Wukong::Chain
+      dataflow(name, attrs, &block)
     end
 
     def workflow(name, attrs={}, &block)
@@ -40,7 +44,7 @@ module Wukong
 
     def self.extended(base)
       base.instance_eval do
-        @dataflows = Hash.new
+        @dataflows = Hanuman::StageCollection.new(self)
         @workflows = Hash.new
       end
     end

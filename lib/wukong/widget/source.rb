@@ -1,5 +1,6 @@
 module Wukong
   class Source < Hanuman::Action
+    include Hanuman::OutputSlotted
 
     def source?() true ; end
 
@@ -77,6 +78,16 @@ module Wukong
           yield next_item
           @num += 1
         end
+      end
+    end
+
+    class Spew < Wukong::Source
+      register_source
+      include Wukong::Source::CappedGenerator
+      field :item, Whatever, position: 1, doc: "An item to emit over and over and over"
+
+      def next_item
+        item
       end
     end
 

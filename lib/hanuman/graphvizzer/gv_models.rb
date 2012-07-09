@@ -118,7 +118,10 @@ module Hanuman
       end
 
       def abbreviate(word)
-        word.to_s.split(/[\W_]+/).reject(&:empty?).map{|str| str[0] }.join
+        word.to_s.
+          gsub(/-\d+$/,'').   # remove a trailing index (-0...)
+          split(/[\W_]+/).    # split into _ separated segment
+          reject(&:empty?).map{|str| str[0] }.join
       end
 
       def inslots_str

@@ -44,15 +44,26 @@ end
 
 RSpec::Core::DSL.module_eval do
   def describe_example_script(example_name, source_file, attrs={}, &block)
-    return unless attrs.delete(:only)
+    return unless attrs[:only]
     load Pathname.path_to(:examples, source_file)
     describe "Example: #{example_name}", attrs.merge(:examples_spec => true, :helpers => true) do
-      subject{ Wukong.dataflow(example_name) }
+      let(:example_name){ example_name }
       instance_eval(&block)
     end
   rescue StandardError => err
     warn "Broken example #{example_name} with script #{source_file} (#{attrs})"
     warn err
-    warn err.backtrace
+    warn err.backtrace.join("\n")
   end
+
+  def it_generates_graphviz
+    it 'generates a graphviz picture', :if => GRAPHVIZ do
+      require 'hanuman/graphvizzer/gv_presenter'
+      #
+      basename = Pathname.path_to(:tmp, example_name.to_s)
+      Wukong.to_graphviz.save(basename, 'png')
+      yield "#{basename}.dot" if block_given?
+    end
+  end
+
 end

@@ -1,5 +1,11 @@
 module Wukong
+
+  #
+  # Processor -- the primary participant in a dataflow
+  #
   class Processor < Hanuman::Action
+    include Hanuman::InputSlotted
+    include Hanuman::OutputSlotted
 
     # override this in your subclass
     def process(record)
@@ -20,7 +26,7 @@ module Wukong
   end
 
   class AsIs < Processor
-    self.register_processor
+    register_processor
 
     # accepts records, emits as-is
     def process(*args)
@@ -128,5 +134,18 @@ module Wukong
       self.count += 1
     end
   end
+
+  # Wukong.processor(:sum) do
+  #   register_action
+  #   field :total, Integer, writer: false, default: 0, doc: 'running total of input values'
+  #   def setup(*)
+  #     super
+  #     @total = 0
+  #   end
+  #   def process(num)
+  #     @total += num
+  #     emit(@total)
+  #   end
+  # end
 
 end

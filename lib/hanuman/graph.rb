@@ -67,7 +67,7 @@ module Hanuman
     end
 
     def chain(label, &block)
-      stage(name, name: name, _type: Hanuman::Chain, &block)
+      stage(name, name: name, _type: Wukong::Chain, &block)
     end
 
     def action(label, &block)
@@ -89,10 +89,10 @@ module Hanuman
       from_stage = lookup(from_stage)
       into_stage = lookup(into_stage)
 
-      from_stage.set_sink(into_stage)
-      into_stage.set_source(from_stage)
+      actual_from = from_stage.set_sink(into_stage)
+      actual_into = into_stage.set_source(from_stage)
 
-      edges[ [from_stage.graph_id, into_stage.graph_id] ] = { from: from_stage, into: into_stage }
+      edges[ [actual_from.graph_id, actual_into.graph_id] ] = { from: actual_from, into: actual_into }
 
       [from_stage, into_stage]
     end
@@ -125,8 +125,7 @@ module Hanuman
 end
 
 module Hanuman
-  class Chain < Graph
-    include Hanuman::InputSlotted
-    include Hanuman::OutputSlotted
+  Graph.class_eval do
+    include Slottable
   end
 end

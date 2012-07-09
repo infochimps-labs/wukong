@@ -1,10 +1,11 @@
 module Wukong
-  class Sink < Wukong::Processor
+  class Sink < Hanuman::Action
+    include Hanuman::InputSlotted
 
-    def sink?()   true ; end
+    def terminates?() true ; end
 
     class NullSink < Wukong::Sink
-      register_processor
+      register_action
       #
       def process(record)
         true # do nothing
@@ -19,7 +20,7 @@ module Wukong
     end
 
     class FileSink < Wukong::Sink::IO
-      register_processor
+      register_action
       magic :filename, Pathname, :position => 0, :doc => "Filename to write"
       attr_reader :file
       #
@@ -36,18 +37,18 @@ module Wukong
 
     # Writes all lines to $stdout
     class Stdout < Wukong::Sink::IO
-      register_processor
+      register_action
       def file() $stdout ; end
     end
 
     # Writes all lines to $stderr
     class Stderr < Wukong::Sink::IO
-      register_processor
+      register_action
       def file() $stderr ; end
     end
 
     class ArraySink < Wukong::Sink
-      register_processor
+      register_action
       magic :records, Array, :position => 0, :default => [], :writer => :protected
       #
       def process(record)

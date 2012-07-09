@@ -10,8 +10,9 @@ module Hanuman
       graph_id
     end
 
-    def gv_into_label() %Q{"#{graphviz_id}":"i"}  ; end
-    def gv_from_label() %Q{"#{graphviz_id}":"_o"} ; end
+
+    def gv_into_label() warn [self, self.class.ancestors]; %Q{"#{graphviz_id}":"i"}  ; end
+    def gv_from_label() warn [self, self.class.ancestors]; %Q{"#{graphviz_id}":"_o"} ; end
 
     def to_graphviz(gv)
       gv.node(self.graphviz_id,
@@ -28,10 +29,10 @@ module Hanuman
   module ::Wukong::Universe
     def to_graphviz
       gv = Hanuman::Graphvizzer::Universe.new(:name => self.name)
-      @workflows.each do |_, workflow|
+      @workflows.each_value do |workflow|
         workflow.to_graphviz(gv)
       end
-      @dataflows.each do |_, dataflow|
+      @dataflows.each_value do |dataflow|
         dataflow.to_graphviz(gv)
       end
       gv
@@ -43,8 +44,11 @@ module Hanuman
 
     def to_graphviz(gv)
       gv.graph(graphviz_id, :label => name) do |gv2|
-        stages.each_value{|stage| stage.to_graphviz(gv2) }
-        outslots.each_value{|outslot| gv2.node(self.graphviz_id, label: outslot.name, :outslots => [outslot.name]) }
+        inslots.each_value{|slot|  slot.to_graphviz(gv2) if slot.wired? }
+
+        stages.each_value{|stage|  stage.to_graphviz(gv2) }
+
+        outslots.each_value{|slot| slot.to_graphviz(gv2) if slot.wired? }
         #
         edges.each_value do |edge|
           gv2.edge(edge[:from].gv_from_label, edge[:into].gv_into_label)
@@ -53,18 +57,41 @@ module Hanuman
     end
   end
 
-  InputSlot.class_eval do
-    def gv_into_label() %Q{"#{stage.graphviz_id}":"#{name}"}  ; end
-    def gv_from_label() %Q{"#{stage.graphviz_id}":_o}         ; end
+  module Hanuman::Slottable
+    def to_graphviz(gv)
+      super.tap{|node| node.receive!(
+          :inslots  => inslots.to_a.map{|slot|  slot.name },
+          :outslots => outslots.to_a.map{|slot| slot.name },
+          ) }
+      end
   end
 
-  OutputSlot.class_eval do
+  module InputSlotted
+    def gv_into_label() %Q{"#{graphviz_id}":"i"}  ; end
+  end
+  module OutputSlotted
+    def gv_from_label() %Q{"#{graphviz_id}":"_o"} ; end
+  end
+
+  Slot.class_eval do
     def to_graphviz(gv)
       gv.node(self.graphviz_id, label: name, shape: :Mrecord)
     end
-    def graphviz_id() graph_id ;  end
-    def gv_into_label() %Q{"#{stage.graphviz_id}":i}  ; end
-    def gv_from_label() %Q{"#{stage.graphviz_id}":"_#{name}"} ; end
+    def graphviz_id() (stage.is_a?(Hanuman::Graph)||stage.is_a?(Wukong::Universe)) ? graph_id : stage.graph_id ; end
+  end
+
+  InputSlot.class_eval do
+    def gv_into_label() %Q{"#{graphviz_id}":"#{name}"}  ; end
+    def to_graphviz(gv)
+      super.tap{|node| node.receive!(inslots: [name] )}
+    end
+  end
+
+  OutputSlot.class_eval do
+    def gv_from_label() %Q{"#{graphviz_id}":"_#{name}"} ; end
+    def to_graphviz(gv)
+      super.tap{|node| node.receive!(outslots: [name] )}
+    end
   end
 
 end
