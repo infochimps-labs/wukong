@@ -1,6 +1,10 @@
 require 'wukong/widget/many_to_many'
 require 'gorillib/enumerable/sum'
 
+#
+# An example dataflow -- 
+#
+
 Wukong.processor(:delay_buffer) do
   attr_accessor :queue
   field :delay, Integer, position: 0, doc: "number of records to hold in buffer"
@@ -39,8 +43,6 @@ class Wukong::Batcher < Wukong::Processor
   include Hanuman::OutputSlotted
 
   attr_accessor :queues
-  field :delay, Integer, position: 0, doc: "number of records to hold in buffer"
-
   consume :n_1,    Integer, doc: "n-1'th value: the one just emitted"
   consume :tictoc, Integer, doc: "input to drive flow"
   consume :n_2,    Integer, doc: "n-2'nd value: the one before the one just emitted"
@@ -51,8 +53,8 @@ class Wukong::Batcher < Wukong::Processor
     @queues = Hash.new{|h,k| h[k] = Array.new } # autovivifying
   end
 
-  def process_input(topic, rec)
-    queues[topic] << rec
+  def process_input(channel, rec)
+    queues[channel] << rec
     emit(next_item) if ready?
   end
 
@@ -64,11 +66,6 @@ class Wukong::Batcher < Wukong::Processor
   def ready?
     inslots.values.all?{|inslot| queues[inslot.name].length > 0 }
   end
-
-end
-
-Hanuman::Graph.class_eval do
-  include Hanuman::Slottable
 end
 
 Wukong.chain(:fibbonaci_series) do

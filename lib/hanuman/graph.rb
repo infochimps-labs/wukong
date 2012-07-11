@@ -117,9 +117,8 @@ module Hanuman
     def process_stages() stages ; end
     def sink_stages()    []     ; end
 
-    def inspect_helper(detailed, attrs)
-      attrs[:edges] = [attrs[:edges].length] if attrs[:edges]
-      super
+    def to_inspectable
+      super.tap{|attrs| attrs[:edges] = [attrs[:edges].length] if attrs[:edges] }
     end
   end
 end

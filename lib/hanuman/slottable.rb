@@ -64,11 +64,11 @@ module Hanuman
       outslots
     end
 
-    def inspect(*args)
-      str = super ; terminal_char = str.slice!(-1)
-      str << %Q{ inslots=#{inslots.keys.join(",")}}   if inslots.present?
-      str << %Q{ outslots=#{outslots.keys.join(",")}} if outslots.present?
-      str << terminal_char
+    def to_inspectable
+      super.tap do |hsh|
+        if inslots.present?  then hsh[:inslots]  = inslots.keys.join(",")  else hsh.delete(:inslots)  ; end
+        if outslots.present? then hsh[:outslots] = outslots.keys.join(",") else hsh.delete(:outslots) ; end
+      end
     end
 
     private
@@ -94,7 +94,7 @@ module Hanuman
         define_method(slot_name){ outslots.fetch(slot_name) }
       end
 
-      def inspect(*args)
+      def inspect
         str = super ; terminal_char = str.slice!(-1)
         str << %Q{ inslots=#{class_inslots.keys.join(",")}}   if class_inslots.present?
         str << %Q{ outslots=#{class_outslots.keys.join(",")}} if class_outslots.present?
