@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'wukong'
 require 'gorillib/datetime/parse'
 
-load Pathname.path_to(:examples, 'munging/us_airline_delays/models.rb')
+load Pathname.path_to(:examples, 'munging/airline_flights/models.rb')
 
 describe 'Airline Flight Delays Dataset', :only do
   let(:example_tuple    ){ ["2007", "1",  "1", "1", "1232", "1225", "1341", "1340", "WN", "2891",   "N351", "69",  "75", "54",  "1",  "7", "SMF", "ONT", "389", "4", "11", "0", "",  "0", "0", "0", "0", "0", "0"] }
@@ -16,6 +16,9 @@ describe 'Airline Flight Delays Dataset', :only do
   let(:example_flight     ){ raw_flight.to_airline_flight                    }
   let(:cancelled_flight   ){ raw_cancelled.to_airline_flight              }
   let(:diverted_flight    ){ raw_diverted.to_airline_flight               }
+
+  let(:raw_airports_file  ){ File.open(Pathname.path_to(:data, 'airline_flights/openflights_airports-raw-sample.csv')) }
+  let(:raw_airlines_file  ){ File.open(Pathname.path_to(:data, 'airline_flights/openflights_airlines-raw-sample.csv')) }
 
   let(:example_flight_attrs) { {
       flight_datestr: '20070101', unique_carrier: "WN", flight_num: 2891,
@@ -31,7 +34,7 @@ describe 'Airline Flight Delays Dataset', :only do
 
   describe RawAirlineFlight do
     subject{ raw_flight }
-
+  
     it 'loads from a hash' do
       p subject.compact_attributes
       subject.compact_attributes.should == {
@@ -47,7 +50,7 @@ describe 'Airline Flight Delays Dataset', :only do
         carrier_delay: 0, weather_delay: 0, nas_delay: 0, security_delay: 0, late_aircraft_delay: 0,
       }
     end
-
+  
     it 'loads cancelled flights OK' do
       # ff = RawAirlineFlight.fields[:act_dep_itime].type
       flight = described_class.from_tuple(*cancelled_tuple_a)
@@ -65,7 +68,7 @@ describe 'Airline Flight Delays Dataset', :only do
         carrier_delay: 0, weather_delay: 0, nas_delay: 0, security_delay: 0, late_aircraft_delay: 0,
       }
     end
-
+  
     it 'loads diverted flights OK' do
       # ff = RawAirlineFlight.fields[:act_dep_itime].type
       flight = described_class.from_tuple(*diverted_tuple)
@@ -83,7 +86,7 @@ describe 'Airline Flight Delays Dataset', :only do
         carrier_delay: 0, weather_delay: 0, nas_delay: 0, security_delay: 0, late_aircraft_delay: 0,
       }
     end
-
+  
     it 'does dates right' do
       { normal:    [example_tuple,     raw_flight],
         cancelled: [cancelled_tuple_a, raw_cancelled],
@@ -100,21 +103,21 @@ describe 'Airline Flight Delays Dataset', :only do
         end
       end
     end
-
+  
     it 'receives idempotently' do
       subject.should == RawAirlineFlight.receive(subject.compact_attributes)
     end
-
+  
     it '#to_airline_flight' do
       flight = subject.to_airline_flight
       flight.should be_a(AirlineFlight)
       flight.compact_attributes.should == example_flight_attrs
     end
   end
-
+  
   describe AirlineFlight do
     subject{ example_flight }
-
+  
     it "makes sense" do
       { normal: example_flight, cancelled: cancelled_flight, diverted: diverted_flight
       }.each do |label, flight|
@@ -123,17 +126,23 @@ describe 'Airline Flight Delays Dataset', :only do
         linted.values.should be_all
       end
     end
-
+  
     it 'has correct field alignment' do
       described_class.field_names.should == example_flight_attrs.keys
       described_class.fields.values.map(&:position).should == (0..30).to_a
     end
 
+    it 'calculates local times correctly' do
+      Airport.load(raw_airports_file)
+      Airport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
+      
+    end
+  
   end
-
+  
   describe 'parsing raw' do
     it 'works' do
-      raw_file = File.open(Pathname.path_to(:data, 'us_airline_delays/us_airline_delays-raw-sample.csv'))
+      raw_file = File.open(Pathname.path_to(:data, 'airline_flights/airline_flights-raw-sample.csv'))
       raw_file.readline
       puts AirlineFlight.field_names.map{|fn| fn[0..6] }.join("\t")
       raw_file.each do |line|
@@ -153,6 +162,14 @@ describe 'Airline Flight Delays Dataset', :only do
           # ]
         # end
       end
+    end
+  end
+
+  describe RawOpenflightAirport do
+    it 'works' do
+      puts described_class.field_names.map{|fn| fn[0..6] }.join("\t")
+      Airport.load(raw_airports_file)
+      Airport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
     end
   end
 

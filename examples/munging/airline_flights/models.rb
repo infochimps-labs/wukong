@@ -177,19 +177,67 @@ end
 #     26,"Kugaaruk","Pelly Bay","Canada","YBB","CYBB",68.534444,-89.808056,56,-6,"A"
 #     3127,"Pokhara","Pokhara","Nepal","PKR","VNPK",28.200881,83.982056,2712,5.75,"N"
 #
-class RawAirport
-  field :airport_id, String, doc: "Unique OpenFlights identifier for this airport."
+class RawOpenflightAirport
+  include Gorillib::Model
+
+  field :airport_ofid, String, doc: "Unique OpenFlights identifier for this airport."
   field :name,       String, doc: "Name of airport. May or may not contain the City name."
   field :city,       String, doc: "Main city served by airport. May be spelled differently from Name."
   field :country,    String, doc: "Country or territory where airport is located."
-  field :iata_faa,   String, doc: "3-letter FAA code, for airports located in the USA. For all other airports, 3-letter IATA code, or blank if not assigned."
+  field :iata,       String, doc: "3-letter FAA code, for airports located in the USA. For all other airports, 3-letter IATA code, or blank if not assigned."
   field :icao,       String, doc: "4-letter ICAO code; Blank if not assigned."
   field :latitude,   Float,  doc: "Decimal degrees, usually to six significant digits. Negative is South, positive is North."
   field :longitude,  Float,  doc: "Decimal degrees, usually to six significant digits. Negative is West,  positive is East."
   field :altitude,   String, doc: "In feet."
-  field :timezone,   String, doc: "Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5."
-  field :dst,        String, doc: "Daylight savings time. One of E (Europe), A (US/Canada), S (South America), O (Australia), Z (New Zealand), N (None) or U (Unknown). See the readme for more."
+  field :utc_offset, Float,  doc: "Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5."
+  field :dst_rule,   String, doc: "Daylight savings time rule. One of E (Europe), A (US/Canada), S (South America), O (Australia), Z (New Zealand), N (None) or U (Unknown). See the readme for more."
 
+  def to_tsv
+    attrs = attributes
+    # FIXME
+    # attrs.each{|key, val| attrs[key] = val.to_s[0..6] if val.to_s.length > 7 } # FIXME: for testing
+    attrs.values.join("\t")
+  end
+
+  def to_airport
+    attrs = self.compact_attributes
+    Airport.receive(attrs)
+  end
+
+end
+
+class Airport
+  include Gorillib::Model
+
+  field :airport_ofid, String, doc: "Unique OpenFlights identifier for this airport."
+  field :iata,         String, doc: "3-letter FAA code, for airports located in the USA. For all other airports, 3-letter IATA code, or blank if not assigned."
+  field :icao,         String, doc: "4-letter ICAO code; Blank if not assigned."
+  field :utc_offset,   Float,  doc: "Hours offset from UTC. Fractional hours are expressed as decimals, eg. India is 5.5."
+  field :dst_rule,     String, doc: "Daylight savings time rule. One of E (Europe), A (US/Canada), S (South America), O (Australia), Z (New Zealand), N (None) or U (Unknown). See the readme for more."
+  field :latitude,     Float,  doc: "Decimal degrees, usually to six significant digits. Negative is South, positive is North."
+  field :longitude,    Float,  doc: "Decimal degrees, usually to six significant digits. Negative is West,  positive is East."
+  field :altitude,     String, doc: "In feet."
+  field :country,      String, doc: "Country or territory where airport is located."
+  field :city,         String, doc: "Main city served by airport. May be spelled differently from Name."
+  field :name,         String, doc: "Name of airport. May or may not contain the City name."
+
+  def utc_time_for(tm)
+    utc_time  = tm.get_utc + utc_offset
+    utc_time += (60*60) if TimezoneFixup.dst?(tm)
+    utc_time
+  end
+
+  AIRPORTS = Hash.new unless defined?(AIRPORTS)
+  def self.load(raw_file)
+    raw_file.each do |line|
+      tuple   = line.chomp.strip.split(",")
+      raise "yark, spurious fields" unless tuple.length == 11
+      tuple.map!{|val| val.gsub(/"/,'') }
+      airport = RawOpenflightAirport.from_tuple(*tuple).to_airport
+      AIRPORTS[airport.iata] = airport
+    end
+    nil
+  end
 end
 
 #
@@ -209,19 +257,37 @@ end
 #     412,"Aerolineas Argentinas",\N,"AR","ARG","ARGENTINA","Argentina","Y"
 #     413,"Arrowhead Airways",\N,"","ARH","ARROWHEAD","United States","N"
 #
-class Airline
-  field :airline_id, Integer,  doc: "Unique OpenFlights identifier for this airline."
-  field :name,       String,   doc: "Airline name."
-  field :alias,      String,   doc: "Alias of the airline. For example, 'All Nippon Airways' is commonly known as 'ANA'"
-  field :iata,       String,   doc: "2-letter IATA code, if available"
-  field :icao,       String,   doc: "3-letter ICAO code, if available"
-  field :callsign,   String,   doc: "Airline callsign"
-  field :country,    String,   doc: "Country or territory where airline is incorporated"
-  field :active,     :boolean, doc: 'true if the airline is or has until recently been operational, false if it is defunct. (This is only a rough indication and should not be taken as 100% accurate)'
+class RawOpenflightAirline
+  include Gorillib::Model
+
+  field :airline_ofid, Integer,  doc: "Unique OpenFlights identifier for this airline."
+  field :name,         String,   doc: "Airline name."
+  field :alias,        String,   doc: "Alias of the airline. For example, 'All Nippon Airways' is commonly known as 'ANA'"
+  field :iata_id,      String,   doc: "2-letter IATA code, if available"
+  field :icao_id,      String,   doc: "3-letter ICAO code, if available"
+  field :callsign,     String,   doc: "Airline callsign"
+  field :country,      String,   doc: "Country or territory where airline is incorporated"
+  field :active,       :boolean, doc: 'true if the airline is or has until recently been operational, false if it is defunct. (This is only a rough indication and should not be taken as 100% accurate)'
 
   def receive_active(val)
     super(case val when "Y" then true when "N" then false else val ; end)
   end
+
+  def to_airline
+    Airline.receive(self.compact_attributes)
+  end
+end
+
+class Airline
+  include Gorillib::Model
+  field :iata_id,      String,   doc: "2-letter IATA code, if available"
+  field :icao_id,      String,   doc: "3-letter ICAO code, if available"
+  field :airline_ofid, Integer,  doc: "Unique OpenFlights identifier for this airline."
+  field :alias,        String,   doc: "Alias of the airline. For example, 'All Nippon Airways' is commonly known as 'ANA'"
+  field :callsign,     String,   doc: "Airline callsign"
+  field :country,      String,   doc: "Country or territory where airline is incorporated"
+  field :active,       :boolean, doc: 'true if the airline is or has until recently been operational, false if it is defunct. (This is only a rough indication and should not be taken as 100% accurate)'
+  field :name,         String,   doc: "Airline name."
 end
 
 
@@ -242,13 +308,14 @@ end
 #     TOM,5013,ACE,1055,BFS,465,,0,320
 #
 class RawOpenflightRoute
+  include Gorillib::Model
 
   field :iataicao,              String,   doc: "2-letter (IATA) or 3-letter (ICAO) code of the airline."
-  field :airline_id,            Integer,  doc: "Unique OpenFlights identifier for airline (see Airline)."
+  field :airline_ofid,          Integer,  doc: "Unique OpenFlights identifier for airline (see Airline)."
   field :from_airport_iataicao, String,   doc: "3-letter (IATA) or 4-letter (ICAO) code of the source airport."
-  field :from_airport_id,       Integer,  doc: "Unique OpenFlights identifier for source airport (see Airport)"
+  field :from_airport_ofid,     Integer,  doc: "Unique OpenFlights identifier for source airport (see Airport)"
   field :into_airport_iataicao, String,   doc: "3-letter (IATA) or 4-letter (ICAO) code of the destination airport."
-  field :into_airport_id,       Integer,  doc: "Unique OpenFlights identifier for destination airport (see Airport)"
+  field :into_airport_ofid,     Integer,  doc: "Unique OpenFlights identifier for destination airport (see Airport)"
   field :codeshare,             :boolean, doc: "true if this flight is a codeshare (that is, not operated by Airline, but another carrier); empty otherwise."
   field :stops,                 Integer,  doc: "Number of stops on this flight, or '0' for direct"
   field :equipment_list,        String,   doc: "3-letter codes for plane type(s) generally used on this flight, separated by spaces"
