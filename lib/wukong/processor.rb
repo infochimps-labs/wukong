@@ -18,7 +18,8 @@ module Wukong
     end
 
     def bad_record(*args)
-      BadRecord.make(*args)
+      Log.error( { :contents => args }.to_json[0..1024] )
+      # BadRecord.make(*args)
     end
 
     # alias register_processor from register_stage

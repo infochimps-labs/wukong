@@ -2,7 +2,7 @@ require 'wukong/widget/many_to_many'
 require 'gorillib/enumerable/sum'
 
 #
-# An example dataflow -- 
+# An example dataflow --
 #
 
 Wukong.processor(:delay_buffer) do
@@ -68,9 +68,17 @@ class Wukong::Batcher < Wukong::Processor
   end
 end
 
-Wukong.chain(:fibbonaci_series) do
+Wukong.chain(:fibonacci_series) do
 
-  delay_buffer(1, name: :delay)
+  delay_buffer(1, name: :my_delay)
+
+  # * I don't want to have to name everything
+  #   - are few/some/most things named?
+  # * I must be able to have the same stage type on a graph more than once
+  # * If naming things is a general case, I want it to
+  #   - be clean, and for it to
+  #   - not cause a ruckus when stage type has its own args
+  #
 
   batcher(name: :feedback) >
     map(name: :summer, &:sum) >
@@ -81,7 +89,7 @@ Wukong.chain(:fibbonaci_series) do
   fibonacci_n          > feedback.n_1
   fibonacci_n          > output
   fibonacci_n > :delay > feedback.n_2
-  
+
   # preload the feedback buffer
   feedback.n_1.process(0)
   feedback.n_2.process(0)

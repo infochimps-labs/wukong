@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'wukong'
 
-describe_example_script :fibonacci_series, 'dataflow/fibonacci_series.rb', only: true, examples_spec: true do
+describe_example_script :fibonacci_series, 'dataflow/fibonacci_series.rb', examples_spec: true do
   subject{ Wukong.chain(:fibbonaci_series) }
 
   it 'generates a fibonacci sequence' do
