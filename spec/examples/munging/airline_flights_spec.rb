@@ -4,7 +4,7 @@ require 'gorillib/datetime/parse'
 
 load Pathname.path_to(:examples, 'munging/airline_flights/models.rb')
 
-describe 'Airline Flight Delays Dataset', :only do
+describe 'Airline Flight Delays Dataset' do
   let(:example_tuple    ){ ["2007", "1",  "1", "1", "1232", "1225", "1341", "1340", "WN", "2891",   "N351", "69",  "75", "54",  "1",  "7", "SMF", "ONT", "389", "4", "11", "0", "",  "0", "0", "0", "0", "0", "0"] }
   let(:cancelled_tuple_a){ ["2007", "1",  "1", "1",   "NA", "2030",   "NA", "2135", "WN", "2734",      "0", "NA",  "65", "NA", "NA", "NA", "SNA", "LAS", "226", "0",  "0", "1", "A", "0", "0", "0", "0", "0", "0"] }
   let(:cancelled_tuple_c){ ["2007", "1",  "4", "4",   "NA", "2120",   "NA", "2125", "WN", "1631",      "0", "NA",  "65", "NA", "NA", "NA", "PHX", "SAN", "304", "0",  "0", "1", "C", "0", "0", "0", "0", "0", "0"] }
@@ -17,8 +17,10 @@ describe 'Airline Flight Delays Dataset', :only do
   let(:cancelled_flight   ){ raw_cancelled.to_airline_flight              }
   let(:diverted_flight    ){ raw_diverted.to_airline_flight               }
 
-  let(:raw_airports_file  ){ File.open(Pathname.path_to(:data, 'airline_flights/openflights_airports-raw-sample.csv')) }
-  let(:raw_airlines_file  ){ File.open(Pathname.path_to(:data, 'airline_flights/openflights_airlines-raw-sample.csv')) }
+  let(:de_airports_filename   ){ Pathname.path_to(:data, 'airline_flights/dataexpo_airports-raw-sample.csv') }
+
+  let(:raw_airports_filename  ){ Pathname.path_to(:data, 'airline_flights/openflights_airports-raw-sample.csv') }
+  let(:raw_airlines_filename  ){ Pathname.path_to(:data, 'airline_flights/openflights_airlines-raw-sample.csv') }
 
   let(:example_flight_attrs) { {
       flight_datestr: '20070101', unique_carrier: "WN", flight_num: 2891,
@@ -133,16 +135,15 @@ describe 'Airline Flight Delays Dataset', :only do
     end
 
     it 'calculates local times correctly' do
-      Airport.load(raw_airports_file)
+      Airport.load(raw_airports_filename)
       Airport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
-      
     end
   
   end
   
   describe 'parsing raw' do
     it 'works' do
-      raw_file = File.open(Pathname.path_to(:data, 'airline_flights/airline_flights-raw-sample.csv'))
+      raw_file = File.open(raw_airlines_filename)
       raw_file.readline
       puts AirlineFlight.field_names.map{|fn| fn[0..6] }.join("\t")
       raw_file.each do |line|
@@ -165,10 +166,18 @@ describe 'Airline Flight Delays Dataset', :only do
     end
   end
 
+  describe RawDataexpoAirport, :only do
+    it 'works' do
+      puts described_class.field_names.map{|fn| fn[0..6] }.join("\t")
+      RawDataexpoAirport.load(de_airports_filename)
+      RawDataexpoAirport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
+    end
+  end
+
   describe RawOpenflightAirport do
     it 'works' do
       puts described_class.field_names.map{|fn| fn[0..6] }.join("\t")
-      Airport.load(raw_airports_file)
+      Airport.load(raw_airports_filename)
       Airport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
     end
   end

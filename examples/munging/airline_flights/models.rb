@@ -206,6 +206,34 @@ class RawOpenflightAirport
 
 end
 
+require 'csv'
+
+class RawDataexpoAirport
+  include Gorillib::Model
+
+  field :iata,    String, doc: "the international airport abbreviation code"
+  field :name,    String, doc: "of the airport"
+  field :city,    String, doc: "city in which the airport is located"
+  field :state,   String, doc: "state in which the airport is located"
+  field :country, String, doc: "country in which airport is located"
+  field :lat,     Float,  doc: "latitude of the airport"
+  field :lng,     Float,  doc: "longitude of the airport"
+ 
+  AIRPORTS = Hash.new unless defined?(AIRPORTS)
+  def self.load(raw_filename)
+    # CSV.foreach(raw_filename, :headers => true) do |row|
+    File.open(raw_filename).each do |row|
+      tuple = row.chomp.strip.split(",").map!{|val| val.gsub(/"/,'') }
+      # tuple = row.fields
+      p tuple.to_a
+      raise "yark, spurious fields: #{tuple.inspect}" unless tuple.length == fields.length
+      airport = RawDataexpoAirport.from_tuple(*tuple) # .to_airport
+      AIRPORTS[airport.iata] = airport
+    end
+    nil
+  end  
+end
+
 class Airport
   include Gorillib::Model
 
@@ -228,10 +256,10 @@ class Airport
   end
 
   AIRPORTS = Hash.new unless defined?(AIRPORTS)
-  def self.load(raw_file)
-    raw_file.each do |line|
+  def self.load(raw_filename)
+    File.open(raw_filename).each do |line|
       tuple   = line.chomp.strip.split(",")
-      raise "yark, spurious fields" unless tuple.length == 11
+      raise "yark, spurious fields" unless tuple.length == fields.length
       tuple.map!{|val| val.gsub(/"/,'') }
       airport = RawOpenflightAirport.from_tuple(*tuple).to_airport
       AIRPORTS[airport.iata] = airport
