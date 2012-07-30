@@ -17,9 +17,9 @@ describe 'Airline Flight Delays Dataset' do
   let(:cancelled_flight   ){ raw_cancelled.to_airline_flight              }
   let(:diverted_flight    ){ raw_diverted.to_airline_flight               }
 
-  let(:de_airports_filename   ){ Pathname.path_to(:data, 'airline_flights/dataexpo_airports-raw-sample.csv') }
+  let(:de_airports_filename   ){ Pathname.path_to(:data, 'airline_flights/dataexpo_airports-raw.csv') }
 
-  let(:raw_airports_filename  ){ Pathname.path_to(:data, 'airline_flights/openflights_airports-raw-sample.csv') }
+  let(:raw_airports_filename  ){ Pathname.path_to(:data, 'airline_flights/openflights_airports-raw.csv') }
   let(:raw_airlines_filename  ){ Pathname.path_to(:data, 'airline_flights/openflights_airlines-raw-sample.csv') }
 
   let(:example_flight_attrs) { {
@@ -166,19 +166,36 @@ describe 'Airline Flight Delays Dataset' do
     end
   end
 
-  describe RawDataexpoAirport, :only do
+  describe RawDataexpoAirport do
     it 'works' do
       puts described_class.field_names.map{|fn| fn[0..6] }.join("\t")
-      RawDataexpoAirport.load(de_airports_filename)
-      RawDataexpoAirport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
+      raw_airports = RawDataexpoAirport.load_csv(de_airports_filename)
+      raw_airports.each do |airport|
+        puts airport.to_tsv
+      end
     end
   end
 
   describe RawOpenflightAirport do
     it 'works' do
-      puts described_class.field_names.map{|fn| fn[0..6] }.join("\t")
-      Airport.load(raw_airports_filename)
-      Airport::AIRPORTS.each{|id,airport| puts airport.to_tsv }
+      puts described_class.field_names.join("\t") # .map{|fn| fn[0..6] }.join("\t")
+      raw_airports = described_class.load_csv(raw_airports_filename)
+      raw_airports.each do |airport|
+        # puts airport.to_tsv
+        linted = airport.lint
+        puts [airport.iata, airport.icao, linted.inspect, airport.to_tsv, ].join("\t") if linted.present?
+      end
+    end
+  end
+  
+  describe Airport do
+    it 'loads and reconciles' do
+      Airport.load(raw_airports_filename, de_airports_filename)
+      Airport::AIRPORTS.each{|id,airport|
+        #puts airport.to_tsv
+        linted = airport.lint
+        warn [airport.iata, airport.icao, airport.de_iata, "%-25s" % airport.name, linted.inspect].join("\t") if linted.present?
+      }
     end
   end
 
