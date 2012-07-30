@@ -14,6 +14,7 @@ module Wukong
     class FromJson < Stringifier
       # FIXME some of this belongs in gorillib factories...
       def process(record)
+        return unless record and not record.empty?
         obj = MultiJson.load(record)
         if obj.respond_to?(:has_key?) && obj.has_key?("_metadata")
           metadata_hash = obj.delete("_metadata")
