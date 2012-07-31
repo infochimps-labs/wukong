@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-Encoding.default_external="utf-8"
 
 require 'wukong'
 module PageviewsToTSV
@@ -8,6 +7,7 @@ module PageviewsToTSV
 # change spaces to tabs
 # un-urlencode names
 # change namespace name to number
+=begin
   NAMESPACES = {
     "Main" => 0,"" => 0,"Talk" => 1,
     "User" => 2,"User_Talk" => 3,
@@ -20,10 +20,10 @@ module PageviewsToTSV
     "Portal" => 100,"Portal_talk" => 101,
     "Book" => 108, "Book_talk" => 109,
   }
-  
+=end 
     # grab file name
     def process line
-      pp ENV  
+      yield ENV.pretty_inspect
     end
   end
 end
