@@ -3,15 +3,18 @@
 require 'wukong'
 require 'uri'
 require 'pathname'
+require 'json'
 load '../munging_utils.rb'
 
 module PageviewsToTSV
   class Mapper < Wukong::Streamer::LineStreamer
-  include MungingUtils
+
 # change spaces to tabs
 # un-urlencode names
 # change namespace name to number
+=begin
   NAMESPACES = {
+    "Special" => -1, "Media" => -2,
     "Main" => 0,"" => 0,"Talk" => 1,
     "User" => 2,"User_Talk" => 3,
     "Wikipedia" => 4, "Wikipedia_talk" => 5,
@@ -23,7 +26,10 @@ module PageviewsToTSV
     "Portal" => 100,"Portal_talk" => 101,
     "Book" => 108, "Book_talk" => 109,
   }
-  
+=end
+
+NAMESPACES = JSON.parse(IO.read("all_namespaces.json"))
+
   # the filename strings are formatted as
   # pagecounts-YYYYMMDD-HH0000.gz
     def time_from_filename(filename)
@@ -38,18 +44,29 @@ module PageviewsToTSV
     # grab file name
     def process line
       MungingUtils.guard_encoding(line) do |clean_line|
+        next unless clean_line =~ /^en /
         fields = clean_line.split(' ')[1..-1]
         out_fields = []
         # add the namespace
-        out_fields << NAMESPACES[fields[0].split(':')[0]]
+        namespace = nil
+        if fields[0].include? ':'
+          namespace = NAMESPACES[fields[0].split(':')[0]]
+          out_fields << (namespace || '0')
+        else
+          out_fields << '0'
+        end
         # add the title
-        out_fields << URI.unescape(fields[0][fields[0].index(':')+1..-1])
+        if namespace.nil?
+          out_fields << URI.unescape(fields[0])
+        else
+          out_fields << URI.unescape(fields[0][(fields[0].index(':')||-1)+1..-1])
+        end
         # add number of visitors in the hour
         out_fields << fields[2]
         # grab date info from filename
         file = Pathname.new(ENV['map_input_file']).basename
-        time = MungingUtils.time_from_filename(file)
-        fields += time_columns_from_time(time)
+        time = time_from_filename(file.to_s)
+        out_fields += MungingUtils.time_columns_from_time(time)
         yield out_fields
       end
     end
