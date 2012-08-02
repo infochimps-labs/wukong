@@ -1,17 +1,17 @@
 ## Encodings
-SQL dumps are theoretically encoded in UTF-8, but the Wikipedia dumps contain malformed characters. You might see a 'Invalid UTF-8 byte sequence' error when running a Wukong job as a result.
+All SQL dumps are theoretically encoded in UTF-8, but the Wikipedia dumps contain malformed characters. You might see a 'Invalid UTF-8 byte sequence' error when running a Wukong because of this.
 
-To fix this, use `guard_encoding` in MungingUtils to filter out invalid characters before attempting to process them. `guard_encoding` replaces all invalid characters with '�'.
+To fix this, use `guard_encoding` in `MungingUtils` to filter out malformed characters before attempting to process them. `guard_encoding` replaces all invalid characters with '�'.
 
-If you're piping things around on the command line and need to filter stuff there, pipe them through char_filter.rb.
+If you need to ensure that all characters are valid UTF-8 when piping things around on the command line, then pipe your stream through `char_filter.rb`.
 
-If, for some reason, you need an invalid UTF-8 character, pretty much any single-byte character above \x79 will do. e.g:
+If you need an invalid UTF-8 character, pretty much any single-byte character above \x79 will do. e.g:
 
-    [1] pry(main)> char = "\x80"
+    > char = "\x80"
     => "\x80"
-    [2] pry(main)> char.encoding.name
+    > char.encoding.name
     => "UTF-8"
-    [3] pry(main)> char.valid_encoding?
+    > char.valid_encoding?
     => false
 
 [James Gray's blog](http://blog.grayproductions.net/articles/understanding_m17n) is really valuable for further reading on this.
