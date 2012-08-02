@@ -1,5 +1,5 @@
 pages = LOAD '/data/rawd/wikipedia/wikipedia_pages/parsed.tsv' AS (id:int, namespace:int, title:chararray, restrictions:chararray, counter:long, is_redirect:int, is_new:int, random:float, touched:int, page_latest:int, len:int);
-pageviews = LOAD '/data/rawd/wikipedia/wikipedia_pageviews/test-200901' AS (namespace:int, title:chararray, num_visitors:chararray, year:int, month:int, day_of_month:int, hour_of_day:int, epoch_time:long, day_of_week:int);
+pageviews = LOAD '/data/rawd/wikipedia/wikipedia_pageviews/test-200901' AS (namespace:int, title:chararray, num_visitors:long, year:int, month:int, day_of_month:int, hour_of_day:int, epoch_time:long, day_of_week:int);
 
 first_join = JOIN pages BY (namespace,title) RIGHT OUTER, pageviews BY (namespace, title);
 final = FOREACH first_join GENERATE
