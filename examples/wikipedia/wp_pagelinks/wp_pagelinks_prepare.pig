@@ -16,4 +16,4 @@ second_join = join pages by (namespace, title) right outer, fixed_up_from by (in
 final = foreach second_join generate 
   fixed_up_from::from_id, fixed_up_from::from_namespace, fixed_up_from::from_title, 
   pages::id,              fixed_up_from::into_namespace, fixed_up_from::into_title;
-store final into '/data/rawd/wikipedia/wikpedia_pagelinks/edge_list';
+store final into '/data/rawd/wikipedia/wikipedia_pagelinks/edge_list';
