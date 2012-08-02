@@ -3,9 +3,11 @@
 require 'wukong'
 require 'uri'
 require 'pathname'
+load '../munging_utils.rb'
+
 module PageviewsToTSV
   class Mapper < Wukong::Streamer::LineStreamer
-
+  include MungingUtils
 # change spaces to tabs
 # un-urlencode names
 # change namespace name to number
@@ -33,28 +35,23 @@ module PageviewsToTSV
       return Time.new(year,month,day,hour)
     end
 
-  # grab file name
+    # grab file name
     def process line
-      fields = line.split(' ')[1..-1]
-      out_fields = []
-      # add the namespace
-      out_fields << NAMESPACES[fields[0].split(':')[0]]
-      # add the title
-      out_fields << URI.unescape(fields[0][fields[0].index(':')+1..-1])
-      # add number of visitors in the hour
-      out_fields << fields[2]
-      # grab date info from filename
-      file = Pathname.new(ENV['map_input_file']).basename
-      time = time_from_filename(file)
-      out_fields << time.year
-      out_fields << time.month
-      out_fields << time.day
-      out_fields << time.hour
-      # seconds since unix epoch
-      out_fields << time.to_i
-      # day of the week
-      out_fields << time.wday
-      yield out_fields
+      MungingUtils.guard_encoding(line) do |clean_line|
+        fields = clean_line.split(' ')[1..-1]
+        out_fields = []
+        # add the namespace
+        out_fields << NAMESPACES[fields[0].split(':')[0]]
+        # add the title
+        out_fields << URI.unescape(fields[0][fields[0].index(':')+1..-1])
+        # add number of visitors in the hour
+        out_fields << fields[2]
+        # grab date info from filename
+        file = Pathname.new(ENV['map_input_file']).basename
+        time = MungingUtils.time_from_filename(file)
+        fields += time_columns_from_time(time)
+        yield out_fields
+      end
     end
   end
 end
