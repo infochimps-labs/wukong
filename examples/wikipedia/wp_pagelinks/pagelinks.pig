@@ -5,7 +5,7 @@
  Link table is transformed to from_id, from_namespace, from_title, into_id, into_namespace, into_title
  Assumes that the combination of namespace and title uniquely identifies a page
 */
-pages = LOAD '/data/rawd/wikipedia/wikipedia_pages/parsed.tsv' AS (id:int, namespace:int, title:chararray, restrictions:chararray, counter:long, is_redirect:int, is_new:int, random:float, touched:int, page_latest:int, len:int);
+pages = LOAD '/data/rawd/wikipedia/wikipedia_pages/parsed' AS (id:int, namespace:int, title:chararray, restrictions:chararray, counter:long, is_redirect:int, is_new:int, random:float, touched:int, page_latest:int, len:int);
 links = LOAD '/data/rawd/wikipedia/wikipedia_pagelinks/parsed' AS (from_id:int, into_namespace:int, into_title:chararray);
 
 first_join = join pages by id right outer, links by from_id;
@@ -16,4 +16,4 @@ second_join = join pages by (namespace, title) right outer, fixed_up_from by (in
 final = foreach second_join generate 
   fixed_up_from::from_id, fixed_up_from::from_namespace, fixed_up_from::from_title, 
   pages::id,              fixed_up_from::into_namespace, fixed_up_from::into_title;
-store final into '/data/rawd/wikipedia/wikpedia_pagelinks/wikipedia_pagelinks2';
+store final into '/data/rawd/wikipedia/wikpedia_pagelinks/edge_list';

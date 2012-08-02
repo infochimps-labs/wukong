@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'wukong'
-load '../munging_utils.rb'
+load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
 
 module PagesToTSV
   class Mapper < Wukong::Streamer::LineStreamer

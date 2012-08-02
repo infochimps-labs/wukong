@@ -4,7 +4,7 @@ require 'wukong'
 require 'uri'
 require 'pathname'
 require 'json'
-load '../munging_utils.rb'
+load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
 
 module PageviewsToTSV
   class Mapper < Wukong::Streamer::LineStreamer
@@ -28,7 +28,7 @@ module PageviewsToTSV
   }
 =end
 
-NAMESPACES = JSON.parse(IO.read("all_namespaces.json"))
+NAMESPACES = JSON.parse(IO.read("/home/dlaw/dev/wukong/examples/wikipedia/namespaces.json"))
 
   # the filename strings are formatted as
   # pagecounts-YYYYMMDD-HH0000.gz
