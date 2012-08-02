@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding:UTF-8
 
 require 'wukong'
 require 'uri'
@@ -27,8 +28,8 @@ module PageviewsToTSV
     "Book" => 108, "Book_talk" => 109,
   }
 =end
-
-NAMESPACES = JSON.parse(IO.read("/home/dlaw/dev/wukong/examples/wikipedia/all_namespaces.json"))
+ns = File.open("/home/dlaw/dev/wukong/examples/wikipedia/all_namespaces.json",'r:UTF-8')
+NAMESPACES = JSON.parse(ns.read)
 
   # the filename strings are formatted as
   # pagecounts-YYYYMMDD-HH0000.gz
