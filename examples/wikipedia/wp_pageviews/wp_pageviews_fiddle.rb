@@ -28,7 +28,7 @@ module PageviewsToTSV
   }
 =end
 
-NAMESPACES = JSON.parse(IO.read("/home/dlaw/dev/wukong/examples/wikipedia/namespaces.json"))
+NAMESPACES = JSON.parse(IO.read("/home/dlaw/dev/wukong/examples/wikipedia/all_namespaces.json"))
 
   # the filename strings are formatted as
   # pagecounts-YYYYMMDD-HH0000.gz
