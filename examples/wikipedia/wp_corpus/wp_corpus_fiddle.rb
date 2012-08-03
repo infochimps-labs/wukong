@@ -28,7 +28,6 @@ module XMLTest
         if safe_line =~ /<\/page>/
           result = Crack::XML::parse(lines.join)
           @lines = []
-          puts "Page schema: #{get_keys(result)}"
           return [result]
         else
           return nil
