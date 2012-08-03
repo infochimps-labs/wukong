@@ -53,7 +53,7 @@ module XMLTest
       result << record['page']['id']
       result << record['page']['title']
       result << record['page']['ns']
-      result << record['page']['revision']['timespamp']
+      result << record['page']['revision']['timestamp']
       result << escape(record['page']['revision']['text'])
       yield result
     end
