@@ -2,6 +2,7 @@
 
 require 'wukong'
 require 'crack/xml'
+load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
 
 module XMLTest
   class Mapper < Wukong::Streamer::LineStreamer
@@ -11,13 +12,15 @@ module XMLTest
     end
 
     def recordize line
-      lines << line
-      if line =~ /<\/page>/
-        result = Crack::XML::parse(lines.join)
-        @lines = []
-        return [result]
-      else
-        return nil
+      MungingUtils.guard_encoding(line) do |safe_line|
+        lines << safe_line
+        if safe_line =~ /<\/page>/
+          result = Crack::XML::parse(lines.join)
+          @lines = []
+          return [result]
+        else
+          return nil
+        end
       end
     end
 
