@@ -45,6 +45,7 @@ module XMLTest
     def escape text
       text.gsub!(/\n/,"&#10;");
       text.gsub!(/\t/,"&#09;");
+      return text
     end
 
     def process record
@@ -53,7 +54,7 @@ module XMLTest
       result << record['page']['id']
       result << record['page']['title']
       result << record['page']['ns']
-      result << record['page']['revision']['timestamp']
+      result += MungingUtils.time_columns_from_time(Time.iso8601(record['page']['revision']['timestamp']))
       result << escape(record['page']['revision']['text'])
       yield result
     end
