@@ -10,6 +10,17 @@ module XMLTest
     def lines
       @lines ||= []
     end
+    
+    def get_keys hash
+      if hash.is_a?(Hash)
+        result = {}
+        hash.keys.each do |key|
+          result[key] = get_keys(hash[key])
+        end  
+        return result
+      end  
+      return nil
+    end
 
     def recordize line
       MungingUtils.guard_encoding(line) do |safe_line|
@@ -17,6 +28,7 @@ module XMLTest
         if safe_line =~ /<\/page>/
           result = Crack::XML::parse(lines.join)
           @lines = []
+          puts "Page schema: #{get_keys(result)}"
           return [result]
         else
           return nil
