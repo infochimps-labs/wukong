@@ -28,6 +28,8 @@ DESC
   gem.add_dependency             'gorillib',    "~> 0.4.0"
   gem.add_dependency             'configliere', "~> 0.4.8"
 
+  gem.add_dependency             'algorithms',  "~> 0.5"
+
   gem.add_development_dependency 'bundler',     "~> 1.1"
   gem.add_development_dependency 'rake',        ">= 0.9"
 
