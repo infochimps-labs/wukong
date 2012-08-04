@@ -9,22 +9,6 @@ class Airport
   BLANKISH_STRINGS = ["", nil, "NULL", '\\N', "NONE", "NA", "Null", "..."]
   OK_CHARS_RE      = /[^a-zA-Z0-9\ \/\.\,\-\(\)\'ÁÂÄÅÇÉÍÎÑÖØÜÞàáâãäåæçèéêëìíîïðñóôõöøúüýāăčėęěğİıŁłńōőřŞşŠšţťūźŽžơț]/
 
-  # Airports whose IATA and FAA codes differ; all are in the US, so their ICAO is "K"+the FAA id
-  FAA_ICAO_FIXUP = {
-    "GRM" => "CKC", "CLD" => "CRQ", "SDX" => "SEZ", "AZA" => "IWA", "SCE" => "UNV", "BLD" => "BVU",
-    "LKE" => "W55", "HSH" => "HND", "BKG" => "BBG", "UST" => "SGJ", "LYU" => "ELO", "WFK" => "FVE",
-    "FRD" => "FHR", "ESD" => "ORS", "RKH" => "UZA", "NZC" => "VQQ", "SCF" => "SDL", "JCI" => "IXD",
-    "AVW" => "AVQ", "UTM" => "UTA", "ONP" => "NOP", }
-
-
-  # BLD     KBVU    Boulder City Municipal Airport  Boulder City    United States
-  # GRM     KCKC    Grand Marais Cook County Airport        Grand Marais    United States
-  # CLD     KCRQ    McClellan-Palomar Airport       Carlsbad        United States
-  # AZA     KIWA    Phoenix-Mesa Gateway    Mesa    United States
-  # SDX     KSEZ    Sedona  Sedona  United States
-  # SCE     KUNV    University Park Airport State College Pennsylvania      United States
-  # LKE     KW55    Kenmore Air Harbor Seaplane Base        Seattle United States
-
   field :airport_ofid, String, doc: "Unique OpenFlights identifier for this airport."
   field :faa,          String, doc: "3-letter FAA code, or blank if not assigned."
   field :iata,         String, doc: "For all other airports, 3-letter IATA code, or blank if not assigned."
@@ -38,6 +22,28 @@ class Airport
   field :state,        String, doc: "State in which the airport is located"
   field :city,         String, doc: "Main city served by airport. May be spelled differently from Name."
   field :name,         String, doc: "Name of airport. May or may not contain the City name."
+
+  EXEMPLARS = %w[
+    ANC ATL AUS BDL BNA BOI BOS BWI CLE CLT
+    CMH DCA DEN DFW DTW EWR FLL HNL IAD IAH
+    IND JAX JFK LAS LAX LGA MCI MCO MDW MIA
+    MSP MSY OAK ORD PDX PHL PHX PIT PVD RDU
+    SAN SEA SFO SJC SJU SLC SMF STL TPA YYZ ]
+
+  # Airports whose IATA and FAA codes differ; all are in the US, so their ICAO is "K"+the FAA id
+  FAA_ICAO_FIXUP = {
+    "GRM" => "CKC", "CLD" => "CRQ", "SDX" => "SEZ", "AZA" => "IWA", "SCE" => "UNV", "BLD" => "BVU",
+    "LKE" => "W55", "HSH" => "HND", "BKG" => "BBG", "UST" => "SGJ", "LYU" => "ELO", "WFK" => "FVE",
+    "FRD" => "FHR", "ESD" => "ORS", "RKH" => "UZA", "NZC" => "VQQ", "SCF" => "SDL", "JCI" => "IXD",
+    "AVW" => "AVQ", "UTM" => "UTA", "ONP" => "NOP", }
+
+  # BLD     KBVU    Boulder City Municipal Airport  Boulder City    United States
+  # GRM     KCKC    Grand Marais Cook County Airport        Grand Marais    United States
+  # CLD     KCRQ    McClellan-Palomar Airport       Carlsbad        United States
+  # AZA     KIWA    Phoenix-Mesa Gateway    Mesa    United States
+  # SDX     KSEZ    Sedona  Sedona  United States
+  # SCE     KUNV    University Park Airport State College Pennsylvania      United States
+  # LKE     KW55    Kenmore Air Harbor Seaplane Base        Seattle United States
 
   def iata_to_faa
   end
