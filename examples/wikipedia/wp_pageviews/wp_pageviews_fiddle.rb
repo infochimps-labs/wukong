@@ -1,15 +1,21 @@
 #!/usr/bin/env ruby
+# encoding:UTF-8
 
 require 'wukong'
 require 'uri'
 require 'pathname'
+require 'json'
+load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
+
 module PageviewsToTSV
   class Mapper < Wukong::Streamer::LineStreamer
 
 # change spaces to tabs
 # un-urlencode names
 # change namespace name to number
+=begin
   NAMESPACES = {
+    "Special" => -1, "Media" => -2,
     "Main" => 0,"" => 0,"Talk" => 1,
     "User" => 2,"User_Talk" => 3,
     "Wikipedia" => 4, "Wikipedia_talk" => 5,
@@ -21,7 +27,10 @@ module PageviewsToTSV
     "Portal" => 100,"Portal_talk" => 101,
     "Book" => 108, "Book_talk" => 109,
   }
-  
+=end
+ns = File.open("/home/dlaw/dev/wukong/examples/wikipedia/all_namespaces.json",'r:UTF-8')
+NAMESPACES = JSON.parse(ns.read)
+
   # the filename strings are formatted as
   # pagecounts-YYYYMMDD-HH0000.gz
     def time_from_filename(filename)
@@ -33,28 +42,34 @@ module PageviewsToTSV
       return Time.new(year,month,day,hour)
     end
 
-  # grab file name
+    # grab file name
     def process line
-      fields = line.split(' ')[1..-1]
-      out_fields = []
-      # add the namespace
-      out_fields << NAMESPACES[fields[0].split(':')[0]]
-      # add the title
-      out_fields << URI.unescape(fields[0][fields[0].index(':')+1..-1])
-      # add number of visitors in the hour
-      out_fields << fields[2]
-      # grab date info from filename
-      file = Pathname.new(ENV['map_input_file']).basename
-      time = time_from_filename(file)
-      out_fields << time.year
-      out_fields << time.month
-      out_fields << time.day
-      out_fields << time.hour
-      # seconds since unix epoch
-      out_fields << time.to_i
-      # day of the week
-      out_fields << time.wday
-      yield out_fields
+      MungingUtils.guard_encoding(line) do |clean_line|
+        next unless clean_line =~ /^en /
+        fields = clean_line.split(' ')[1..-1]
+        out_fields = []
+        # add the namespace
+        namespace = nil
+        if fields[0].include? ':'
+          namespace = NAMESPACES[fields[0].split(':')[0]]
+          out_fields << (namespace || '0')
+        else
+          out_fields << '0'
+        end
+        # add the title
+        if namespace.nil?
+          out_fields << URI.unescape(fields[0])
+        else
+          out_fields << URI.unescape(fields[0][(fields[0].index(':')||-1)+1..-1])
+        end
+        # add number of visitors in the hour
+        out_fields << fields[2]
+        # grab date info from filename
+        file = Pathname.new(ENV['map_input_file']).basename
+        time = time_from_filename(file.to_s)
+        out_fields += MungingUtils.time_columns_from_time(time)
+        yield out_fields
+      end
     end
   end
 end
