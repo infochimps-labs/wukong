@@ -48,4 +48,29 @@ module MungingUtils
     Regexp.new("\\(#{regexes.join(',')}\\)")
   end
 
+  class SQLParser
+    attr_accessor :columns 
+   
+    def initialize(columns)
+      self.columns = columns
+    end
+
+    def columns=(columns)
+      @re = MungingUtils.create_sql_regex(columns)
+      @columns = columns
+    end
+
+    def parse(line, &blk)
+      MungingUtils.guard_encoding(line) do |clean_line|
+        return unless clean_line =~/INSERT INTO/
+        clean_line.scan(@re).each do |fields|
+          @columns.each_with_index do |type, index|
+            next unless type == :string
+            fields[index].gsub!(/\\(['"\\])/,'\1')
+          end
+          yield fields
+        end
+      end
+    end
+  end
 end
