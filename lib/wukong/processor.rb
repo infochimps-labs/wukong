@@ -29,7 +29,7 @@ module Wukong
     class_attribute :log
     self.log = Log
     
-    config :error_handler, Vayacondios::NotifierFactory, :default => Vayacondios::NotifierFactory.receive(type: 'log', log: self.log)
+    config :error_handler, Vayacondios::NotifierFactory, :default => ->{ Vayacondios::NotifierFactory.receive(type: 'log', log: self.log) }
     
     def bad_record(record, options = {})
       error_handler.notify(record, options.merge(level: 'error'))
