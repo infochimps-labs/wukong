@@ -1,3 +1,5 @@
+require 'vayacondios/notifier'
+
 module Wukong
   class Processor < Hanuman::Action
     include Hanuman::IsOwnInputSlot
@@ -20,6 +22,17 @@ module Wukong
 
     def self.register_processor(name=nil, &block)
       register_action(name, &block)
+    end
+    
+    include Vayacondios::Notifications
+    
+    class_attribute :log
+    self.log = Log
+    
+    config :error_handler, Vayacondios::NotifierFactory, :default => Vayacondios::NotifierFactory.receive(type: 'log', log: self.log)
+    
+    def bad_record(record, options = {})
+      error_handler.notify(record, options.merge(level: 'error'))
     end
   end
 
@@ -130,5 +143,4 @@ module Wukong
       self.count += 1
     end
   end
-
 end
