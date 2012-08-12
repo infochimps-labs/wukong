@@ -4,6 +4,8 @@ gem   'configliere', :github => 'infochimps-labs/configliere', :branch => 'maste
 gem   'gorillib',    :github => 'infochimps-labs/gorillib', :branch => 'version_1'
 gem   'multi_json',  ">= 1.1"
 
+gem   'extlib'
+
 gem   'addressable'
 gem   'htmlentities'
 gem   'home_run',    :platform => :mri, :require=>'date'
