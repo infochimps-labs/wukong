@@ -5,24 +5,20 @@
 
 Gem::Specification.new do |s|
   s.name = "wukong"
-  s.version = "2.0.2"
+  s.version = "2.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Philip (flip) Kromer"]
-  s.date = "2011-11-04"
+  s.date = "2012-08-12"
   s.description = "  Treat your dataset like a:\n\n      * stream of lines when it's efficient to process by lines\n      * stream of field arrays when it's efficient to deal directly with fields\n      * stream of lightweight objects when it's efficient to deal with objects\n\n  Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.\n"
   s.email = "flip@infochimps.org"
   s.executables = ["hdp-du", "hdp-sync", "hdp-wc", "wu-lign", "wu-sum", "hdp-parts_to_keys.rb"]
   s.extra_rdoc_files = [
-    "LICENSE.textile",
+    "LICENSE.md",
     "README.textile"
   ]
   s.files = [
-    "CHANGELOG.textile",
-    "INSTALL.textile",
-    "LICENSE.textile",
     "README.textile",
-    "TODO.textile",
     "bin/cutc",
     "bin/cuttab",
     "bin/greptrue",
@@ -130,10 +126,12 @@ Gem::Specification.new do |s|
     "examples/contrib/jeans/data/sizes",
     "examples/contrib/jeans/normalize.rb",
     "examples/contrib/jeans/sizes.rb",
+    "examples/corpus/bnc_word_freq.rb",
     "examples/corpus/bucket_counter.rb",
     "examples/corpus/dbpedia_abstract_to_sentences.rb",
     "examples/corpus/sentence_bigrams.rb",
     "examples/corpus/sentence_coocurrence.rb",
+    "examples/corpus/stopwords.rb",
     "examples/corpus/words_to_bigrams.rb",
     "examples/emr/README.textile",
     "examples/emr/dot_wukong_dir/credentials.json",
@@ -154,10 +152,13 @@ Gem::Specification.new do |s|
     "examples/pagerank/run_pagerank.sh",
     "examples/sample_records.rb",
     "examples/server_logs/apache_log_parser.rb",
+    "examples/server_logs/breadcrumb_edges.rb",
     "examples/server_logs/breadcrumbs.rb",
+    "examples/server_logs/histograms.rb",
     "examples/server_logs/logline.rb",
     "examples/server_logs/nook.rb",
     "examples/server_logs/nook/faraday_dummy_adapter.rb",
+    "examples/server_logs/page_counts.pig",
     "examples/server_logs/user_agent.rb",
     "examples/simple_word_count.rb",
     "examples/size.rb",
@@ -193,6 +194,9 @@ Gem::Specification.new do |s|
     "lib/wukong/extensions/struct.rb",
     "lib/wukong/extensions/symbol.rb",
     "lib/wukong/filename_pattern.rb",
+    "lib/wukong/helper.rb",
+    "lib/wukong/helper/stopwords.rb",
+    "lib/wukong/helper/tokenize.rb",
     "lib/wukong/logger.rb",
     "lib/wukong/periodic_monitor.rb",
     "lib/wukong/schema.rb",
@@ -224,8 +228,11 @@ Gem::Specification.new do |s|
     "lib/wukong/streamer/base.rb",
     "lib/wukong/streamer/counting_reducer.rb",
     "lib/wukong/streamer/filter.rb",
+    "lib/wukong/streamer/instance_streamer.rb",
+    "lib/wukong/streamer/json_streamer.rb",
     "lib/wukong/streamer/line_streamer.rb",
     "lib/wukong/streamer/list_reducer.rb",
+    "lib/wukong/streamer/model_streamer.rb",
     "lib/wukong/streamer/rank_and_bin_reducer.rb",
     "lib/wukong/streamer/record_streamer.rb",
     "lib/wukong/streamer/reducer.rb",
@@ -234,6 +241,10 @@ Gem::Specification.new do |s|
     "lib/wukong/streamer/summing_reducer.rb",
     "lib/wukong/streamer/uniq_by_last_reducer.rb",
     "lib/wukong/typed_struct.rb",
+    "notes/away/icss/icss_specification.textile",
+    "notes/away/swineherd/swineherd-old-readme.textile",
+    "notes/away/wukong-fs/wukong-fs-old-readme.textile",
+    "notes/away/wukong-transform/wukong-processor-old-readme.textile",
     "old/cassandra_streaming/berlitz_for_cassandra.textile",
     "old/cassandra_streaming/client_interface_notes.textile",
     "old/cassandra_streaming/client_schema.textile",
@@ -250,34 +261,61 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://mrflip.github.com/wukong"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.24"
   s.summary = "Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_development_dependency(%q<yard>, [">= 0"])
-      s.add_runtime_dependency(%q<addressable>, [">= 0"])
-      s.add_runtime_dependency(%q<extlib>, [">= 0"])
-      s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
       s.add_runtime_dependency(%q<configliere>, [">= 0"])
+      s.add_runtime_dependency(%q<gorillib>, [">= 0"])
+      s.add_runtime_dependency(%q<addressable>, [">= 0"])
+      s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
+      s.add_runtime_dependency(%q<multi_json>, [">= 1.1"])
+      s.add_runtime_dependency(%q<home_run>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, ["~> 1.1"])
+      s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_development_dependency(%q<yard>, [">= 0.7"])
+      s.add_development_dependency(%q<simplecov>, [">= 0.5"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.8"])
+      s.add_development_dependency(%q<RedCloth>, ["~> 4.2"])
+      s.add_development_dependency(%q<redcarpet>, [">= 2.1"])
+      s.add_development_dependency(%q<oj>, [">= 1.2"])
+      s.add_development_dependency(%q<json>, [">= 0"])
     else
-      s.add_dependency(%q<rspec>, [">= 1.2.9"])
-      s.add_dependency(%q<yard>, [">= 0"])
-      s.add_dependency(%q<addressable>, [">= 0"])
-      s.add_dependency(%q<extlib>, [">= 0"])
-      s.add_dependency(%q<htmlentities>, [">= 0"])
       s.add_dependency(%q<configliere>, [">= 0"])
+      s.add_dependency(%q<gorillib>, [">= 0"])
+      s.add_dependency(%q<addressable>, [">= 0"])
+      s.add_dependency(%q<htmlentities>, [">= 0"])
+      s.add_dependency(%q<multi_json>, [">= 1.1"])
+      s.add_dependency(%q<home_run>, [">= 0"])
+      s.add_dependency(%q<bundler>, ["~> 1.1"])
+      s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<yard>, [">= 0.7"])
+      s.add_dependency(%q<simplecov>, [">= 0.5"])
+      s.add_dependency(%q<rspec>, ["~> 2.8"])
+      s.add_dependency(%q<RedCloth>, ["~> 4.2"])
+      s.add_dependency(%q<redcarpet>, [">= 2.1"])
+      s.add_dependency(%q<oj>, [">= 1.2"])
+      s.add_dependency(%q<json>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rspec>, [">= 1.2.9"])
-    s.add_dependency(%q<yard>, [">= 0"])
-    s.add_dependency(%q<addressable>, [">= 0"])
-    s.add_dependency(%q<extlib>, [">= 0"])
-    s.add_dependency(%q<htmlentities>, [">= 0"])
     s.add_dependency(%q<configliere>, [">= 0"])
+    s.add_dependency(%q<gorillib>, [">= 0"])
+    s.add_dependency(%q<addressable>, [">= 0"])
+    s.add_dependency(%q<htmlentities>, [">= 0"])
+    s.add_dependency(%q<multi_json>, [">= 1.1"])
+    s.add_dependency(%q<home_run>, [">= 0"])
+    s.add_dependency(%q<bundler>, ["~> 1.1"])
+    s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<yard>, [">= 0.7"])
+    s.add_dependency(%q<simplecov>, [">= 0.5"])
+    s.add_dependency(%q<rspec>, ["~> 2.8"])
+    s.add_dependency(%q<RedCloth>, ["~> 4.2"])
+    s.add_dependency(%q<redcarpet>, [">= 2.1"])
+    s.add_dependency(%q<oj>, [">= 1.2"])
+    s.add_dependency(%q<json>, [">= 0"])
   end
 end
 
