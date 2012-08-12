@@ -7,6 +7,9 @@ Treat your dataset like a
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
+"RDocs for wukong available at rdoc.info":http://rdoc.info/gems/wukong/frames
+
+
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. 
 
 The **main documentation** lives on the "Wukong Pages.":http://mrflip.github.com/wukong Please feel free to add supplemental information to the "wukong wiki.":http://wiki.github.com/mrflip/wukong
