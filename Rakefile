@@ -1,13 +1,26 @@
 require 'rubygems' unless defined?(Gem)
-require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
+require 'bundler/setup'
+Bundler.setup(:default, :development)
 require 'rake'
+
+task :default => :rspec
+
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:rspec) do |spec|
+  Bundler.setup(:default, :development, :test)
+  spec.pattern = FileList['spec/**/*_spec.rb']
+end
+
+desc "Run RSpec with code coverage"
+task :cov do
+  ENV['WUKONG_COV'] = "yep"
+  Rake::Task["spec"].execute
+end
+
+require 'yard'
+YARD::Rake::YardocTask.new do
+  Bundler.setup(:default, :development, :docs)
+end
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
@@ -29,15 +42,3 @@ DESC
   gem.files       =  FileList["\w*", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"]
 end
 Jeweler::RubygemsDotOrgTasks.new
-
-require 'rspec/core'
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  Bundler.setup(:default, :development, :test)
-  spec.pattern = FileList['spec/**/*_spec.rb']
-end
-
-require 'yard'
-YARD::Rake::YardocTask.new do
-  Bundler.setup(:default, :development, :docs)
-end

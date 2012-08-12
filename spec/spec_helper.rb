@@ -1,10 +1,9 @@
+require 'bundler/setup' ; Bundler.require(:default, :development, :test)
+require 'rspec/autorun'
+
 if ENV['WUKONG_COV']
   require 'simplecov'
-  SimpleCov.start do
-    add_filter '/gorillib/'
-    add_filter '/away/'
-    add_group  'Hanuman', '/hanuman/'
-  end
+  SimpleCov.start
 end
 
 require 'wukong'
