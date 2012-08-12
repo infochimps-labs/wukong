@@ -3,4 +3,4 @@
 	url = git://github.com/infochimps-labs/wukong.wiki.git
 [submodule "data"]
 	path = data
-	url = git@github.com:infochimps-labs/wukong-example-data.git
+	url = git://github.com/infochimps-labs/wukong-example-data.git
