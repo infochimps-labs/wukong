@@ -1,0 +1,19 @@
+language: ruby
+rvm:
+  - 1.9.3
+  # - 1.9.2
+  # - jruby-19mode # JRuby in 1.9 mode
+  # - rbx-19mode
+
+before_install: "git clone -b version_1 git://github.com/infochimps-labs/gorillib.git ~/builds/infochimps-labs/gorillib"
+
+bundler_args: --without docs support
+
+branches:
+  only:
+    - master
+    - wukong_ng
+    - vanilla_2
+
+notifications:
+  email: false
