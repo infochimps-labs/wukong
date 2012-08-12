@@ -22,20 +22,23 @@ DESC
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  gem.add_dependency             'oj',          "~> 1.2"
-  gem.add_dependency             'multi_json',  ">= 1.3"
-
+  gem.add_dependency             'multi_json',  ">= 1.1"
   gem.add_dependency             'gorillib',    "~> 0.4.0"
-  gem.add_dependency             'configliere', "~> 0.4.8"
-
-  gem.add_dependency             'algorithms',  "~> 0.5"
+  gem.add_dependency             'configliere', "~> 0.4.13"
 
   gem.add_development_dependency 'bundler',     "~> 1.1"
-  gem.add_development_dependency 'rake',        ">= 0.9"
+  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'yard'
+  #
+  gem.add_development_dependency 'redcarpet'
+  gem.add_development_dependency 'oj',          "~> 1.2"
+  gem.add_development_dependency 'json',        "~> 1.2"
 
+  gem.add_development_dependency 'addressable'
+  gem.add_development_dependency 'htmlentities'
+  gem.add_development_dependency 'home_run'
   gem.add_development_dependency 'forgery'
   gem.add_development_dependency 'uuidtools'
-  gem.add_development_dependency 'addressable'
-  gem.add_development_dependency 'home_run'
 
 end
