@@ -1,14 +1,16 @@
-require 'bundler' ; Bundler.require(:default, :development, :test)
+require 'bundler/setup' ; Bundler.require(:default, :development, :test)
+require 'rspec/autorun'
 
-# SimpleCov.start do
-#   add_filter '/gorillib/'
-#   add_filter '/away/'
-#   add_group  'Hanuman', '/hanuman/'
-# end
+if ENV['WUKONG_COV']
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/gorillib/'
+    add_filter '/away/'
+    add_group  'Hanuman', '/hanuman/'
+  end
+end
 
-require 'wukong'
 require 'gorillib/pathname'
-
 Pathname.register_path(:wukong_root, File.expand_path('..', File.dirname(__FILE__)))
 Pathname.register_path(:examples,    :wukong_root, 'examples')
 Pathname.register_path(:tmp,         :wukong_root, 'tmp')
