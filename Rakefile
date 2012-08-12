@@ -8,13 +8,13 @@ task :default => :rspec
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:rspec) do |spec|
   Bundler.setup(:default, :development, :test)
-  spec.pattern = FileList['spec/**/*_spec.rb']
+  spec.pattern = 'spec/**/*_spec.rb'
 end
 
 desc "Run RSpec with code coverage"
 task :cov do
   ENV['WUKONG_COV'] = "yep"
-  Rake::Task["spec"].execute
+  Rake::Task[:rspec].execute
 end
 
 require 'yard'
