@@ -57,17 +57,17 @@ def dfs(city, seen)
 end
 sorted_cities = ['LAS', dfs('LAS', [])]
 
-gv_filename = Pathname.path_to(:tmp, 'airfares_mst')
-File.open("#{gv_filename}.dot", 'w') do |gv_file|
-  gv_file.puts "graph AirfareMST {\n  label=\"#{Time.now}\"; height= 800; labelloc = t; mindist = 1.5 ; "
-  # gv_file.puts "mode = hier;"
-  gv_file.puts 'node [ shape = "plaintext" ]; '
-  sorted_cities.flatten.each{|city| gv_file.puts "  #{city};" }
-  mst.sort_by(&:first).each do |from, hsh|
-    hsh.sort_by(&:first).each do |into, price|
-      gv_file.puts " %-7s -- %-7s [ label = \"%d\" ];" % [from, into, price]
-    end
-  end
-  gv_file.puts "}"
-end
-`neato -Tpng #{gv_filename}.dot -o #{gv_filename}.png`
+# gv_filename = Pathname.path_to(:tmp, 'airfares_mst')
+# File.open("#{gv_filename}.dot", 'w') do |gv_file|
+#   gv_file.puts "graph AirfareMST {\n  label=\"#{Time.now}\"; height= 800; labelloc = t; mindist = 1.5 ; "
+#   # gv_file.puts "mode = hier;"
+#   gv_file.puts 'node [ shape = "plaintext" ]; '
+#   sorted_cities.flatten.each{|city| gv_file.puts "  #{city};" }
+#   mst.sort_by(&:first).each do |from, hsh|
+#     hsh.sort_by(&:first).each do |into, price|
+#       gv_file.puts " %-7s -- %-7s [ label = \"%d\" ];" % [from, into, price]
+#     end
+#   end
+#   gv_file.puts "}"
+# end
+# `neato -Tpng #{gv_filename}.dot -o #{gv_filename}.png`

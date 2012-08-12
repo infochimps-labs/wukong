@@ -3,7 +3,7 @@ require 'wukong'
 
 load Pathname.path_to(:examples, 'graph/minimum_spanning_tree.rb')
 
-describe 'Minimum Spanning Tree', :examples_spec => true, :helpers => true do
+describe 'Minimum Spanning Tree', :examples_spec, :helpers do
 
   context Wukong::Widget::DisjointForest do
     subject{ Wukong::Widget::DisjointForest.new }
