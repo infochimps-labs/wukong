@@ -1,3 +1,5 @@
+require_relative './models'
+
 class Airport
   class IdMapping
     include Gorillib::Model

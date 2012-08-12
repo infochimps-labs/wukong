@@ -1,11 +1,6 @@
 require 'spec_helper'
 require 'wukong'
 
-require 'gorillib/model'
-require 'gorillib/model/factories'
-require 'gorillib/model/serialization'
-require 'gorillib/model/serialization/csv'
-
 load Pathname.path_to(:examples, 'munging/airline_flights/identifiers.rb')
 
 describe Airport::IdMapping, :only do
