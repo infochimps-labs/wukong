@@ -11,7 +11,8 @@ bundler_args: --without docs support
 
 branches:
   only:
-    # - wukong_ng
+    - master
+    - wukong_ng
     - vanilla_2
 
 notifications:
