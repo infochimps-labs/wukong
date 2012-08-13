@@ -18,11 +18,8 @@ module Weather
     end
 
     def process record
-      report = RawWeatherReport.new
-      report.receive_record record
-      final = WeatherReport.new
-      final.receive!(report.to_wire)
-      puts final.to_wire
+      report = RawWeatherReport.from_tuple(*record)
+      puts report.to_wire
     end
   end
 end
