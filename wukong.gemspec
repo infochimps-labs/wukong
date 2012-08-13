@@ -264,55 +264,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = "1.8.24"
   s.summary = "Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease."
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<configliere>, [">= 0"])
-      s.add_runtime_dependency(%q<gorillib>, [">= 0"])
-      s.add_runtime_dependency(%q<multi_json>, [">= 1.1"])
-      s.add_runtime_dependency(%q<addressable>, [">= 0"])
-      s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
-      s.add_runtime_dependency(%q<home_run>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.1"])
-      s.add_development_dependency(%q<rake>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.8"])
-      s.add_development_dependency(%q<yard>, [">= 0.7"])
-      s.add_development_dependency(%q<RedCloth>, ["~> 4.2"])
-      s.add_development_dependency(%q<redcarpet>, [">= 2.1"])
-      s.add_development_dependency(%q<oj>, [">= 1.2"])
-      s.add_development_dependency(%q<json>, [">= 0"])
-    else
-      s.add_dependency(%q<configliere>, [">= 0"])
-      s.add_dependency(%q<gorillib>, [">= 0"])
-      s.add_dependency(%q<multi_json>, [">= 1.1"])
-      s.add_dependency(%q<addressable>, [">= 0"])
-      s.add_dependency(%q<htmlentities>, [">= 0"])
-      s.add_dependency(%q<home_run>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.1"])
-      s.add_dependency(%q<rake>, [">= 0"])
-      s.add_dependency(%q<rspec>, ["~> 2.8"])
-      s.add_dependency(%q<yard>, [">= 0.7"])
-      s.add_dependency(%q<RedCloth>, ["~> 4.2"])
-      s.add_dependency(%q<redcarpet>, [">= 2.1"])
-      s.add_dependency(%q<oj>, [">= 1.2"])
-      s.add_dependency(%q<json>, [">= 0"])
-    end
-  else
-    s.add_dependency(%q<configliere>, [">= 0"])
-    s.add_dependency(%q<gorillib>, [">= 0"])
-    s.add_dependency(%q<multi_json>, [">= 1.1"])
-    s.add_dependency(%q<addressable>, [">= 0"])
-    s.add_dependency(%q<htmlentities>, [">= 0"])
-    s.add_dependency(%q<home_run>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.1"])
-    s.add_dependency(%q<rake>, [">= 0"])
-    s.add_dependency(%q<rspec>, ["~> 2.8"])
-    s.add_dependency(%q<yard>, [">= 0.7"])
-    s.add_dependency(%q<RedCloth>, ["~> 4.2"])
-    s.add_dependency(%q<redcarpet>, [">= 2.1"])
-    s.add_dependency(%q<oj>, [">= 1.2"])
-    s.add_dependency(%q<json>, [">= 0"])
-  end
+  s.add_dependency(%q<configliere>, [">= 0"])
+  s.add_dependency(%q<gorillib>, [">= 0"])
+  s.add_dependency(%q<multi_json>, [">= 1.1"])
+  s.add_dependency(%q<addressable>, [">= 0"])
+  s.add_dependency(%q<htmlentities>, [">= 0"])
+  s.add_dependency(%q<home_run>, [">= 0"])
 end
-
