@@ -26,8 +26,8 @@ EOF
   gem.require_paths = ['lib']
 
   gem.add_dependency             'multi_json',  ">= 1.1"
-  gem.add_dependency             'gorillib',    "~> 0.4.0"
-  gem.add_dependency             'configliere', "~> 0.4.13"
+  gem.add_dependency             'gorillib',    "~> 0.4.2"
+  gem.add_dependency             'configliere', ">= 0.4.15"
 
   gem.add_development_dependency 'bundler',     "~> 1.1"
   gem.add_development_dependency 'rake'

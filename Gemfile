@@ -24,12 +24,12 @@ end
 # Gems you would use if hacking on this gem (rather than with it)
 group :support do
   gem 'pry'
-  gem 'perftools.rb', :platform => :mri
+  gem 'perftools.rb',            :platform => :mri
   #
-  gem 'guard',       ">= 1.0"
-  gem 'guard-rspec', ">= 0.6"
-  gem 'guard-yard'
+  gem 'guard',       ">= 1.0",   :platform => :ruby_19
+  gem 'guard-rspec', ">= 0.6",   :platform => :ruby_19
+  gem 'guard-yard',              :platform => :ruby_19
   if RUBY_PLATFORM.include?('darwin')
-    gem 'rb-fsevent', ">= 0.9"
+    gem 'rb-fsevent', ">= 0.9",  :platform => :ruby_19
   end
 end
