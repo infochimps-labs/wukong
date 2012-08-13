@@ -24,12 +24,15 @@ end
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
-  gem.name        = "wukong"
-  gem.authors     = ["Philip (flip) Kromer"]
-  gem.email       = "flip@infochimps.org"
-  gem.homepage    = "http://mrflip.github.com/wukong"
+  Bundler.setup(:default, :development, :test)
+  gem.name        = 'wukong'
+  gem.homepage    = 'https://github.com/infochimps-labs/wukong'
+  gem.license     = 'Apache 2.0'
+  gem.email       = 'coders@infochimps.org'
+  gem.authors     = ['Infochimps']
+
   gem.summary     = %Q{Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease.}
-  gem.description = <<DESC
+  gem.description = <<-EOF
   Treat your dataset like a:
 
       * stream of lines when it's efficient to process by lines
@@ -37,8 +40,9 @@ Jeweler::Tasks.new do |gem|
       * stream of lightweight objects when it's efficient to deal with objects
 
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
-DESC
-  gem.executables = FileList[* %w[bin/hdp-du bin/hdp-sync bin/hdp-wc bin/wu-lign bin/wu-sum bin/*.rb]].pathmap('%f')
-  gem.files       =  FileList["\w*", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"]
+EOF
+
+  gem.executables = FileList[* %w[bin/wu-lign bin/*.rb]].pathmap('%f')
+  gem.files       = FileList["\w*", "**/*.md", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"]
 end
 Jeweler::RubygemsDotOrgTasks.new
