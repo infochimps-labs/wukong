@@ -161,7 +161,11 @@ class WeatherReport
 
   field :metadata, ReportMetadata, default: ReportMetadata.new
 
-  BLANKISH_INT = [9,99,999,9999,99999]
+  #BLANKISH_INT = [9,99,999,9999,99999]
+  #BLANKISH_INT_NEG = [-9,-99,-999,-9999,-99999]
+  #TODO: Figure out a proper way to check for blankness 
+  # without resorting to lists
+
   def receive!(hsh={})
     # prune the quality fields
     hsh.keys.each do |key|
