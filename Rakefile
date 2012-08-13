@@ -43,6 +43,9 @@ Jeweler::Tasks.new do |gem|
 EOF
 
   gem.executables = FileList[* %w[bin/wu-lign bin/*.rb]].pathmap('%f')
-  gem.files       = FileList["\w*", "**/*.md", "**/*.textile", "{bin,docpages,examples,lib,spec,utils}/**/*"]
+  gem.files       = FileList[
+    "README*", "VERSION", "Guardfile", "Rakefile",
+    "\w*", "notes/*.md", "{docpages,examples,lib,spec,utils}/**/*"].
+    reject{|f| f =~ %r{examples/server_logs} }
 end
 Jeweler::RubygemsDotOrgTasks.new

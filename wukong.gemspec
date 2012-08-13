@@ -8,54 +8,20 @@ Gem::Specification.new do |s|
   s.version = "2.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Philip (flip) Kromer"]
-  s.date = "2012-08-12"
+  s.authors = ["Infochimps"]
+  s.date = "2012-08-13"
   s.description = "  Treat your dataset like a:\n\n      * stream of lines when it's efficient to process by lines\n      * stream of field arrays when it's efficient to deal directly with fields\n      * stream of lightweight objects when it's efficient to deal with objects\n\n  Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.\n"
-  s.email = "flip@infochimps.org"
-  s.executables = ["hdp-du", "hdp-sync", "hdp-wc", "wu-lign", "wu-sum", "hdp-parts_to_keys.rb"]
+  s.email = "coders@infochimps.org"
+  s.executables = ["wu-lign", "hdp-parts_to_keys.rb"]
   s.extra_rdoc_files = [
     "LICENSE.md",
     "README.textile"
   ]
   s.files = [
+    "Guardfile",
     "README.textile",
-    "bin/cutc",
-    "bin/cuttab",
-    "bin/greptrue",
-    "bin/hdp-bin",
-    "bin/hdp-bzip",
-    "bin/hdp-cat",
-    "bin/hdp-catd",
-    "bin/hdp-cp",
-    "bin/hdp-du",
-    "bin/hdp-get",
-    "bin/hdp-kill",
-    "bin/hdp-kill-task",
-    "bin/hdp-ls",
-    "bin/hdp-mkdir",
-    "bin/hdp-mkdirp",
-    "bin/hdp-mv",
-    "bin/hdp-parts_to_keys.rb",
-    "bin/hdp-ps",
-    "bin/hdp-put",
-    "bin/hdp-rm",
-    "bin/hdp-sort",
-    "bin/hdp-stream",
-    "bin/hdp-stream-flat",
-    "bin/hdp-stream2",
-    "bin/hdp-sync",
-    "bin/hdp-wc",
-    "bin/md5sort",
-    "bin/setcat",
-    "bin/tabchar",
-    "bin/uniq-ord",
-    "bin/uniqc",
-    "bin/wu-date",
-    "bin/wu-datetime",
-    "bin/wu-hist",
-    "bin/wu-lign",
-    "bin/wu-plus",
-    "bin/wu-sum",
+    "Rakefile",
+    "VERSION",
     "docpages/INSTALL.textile",
     "docpages/LICENSE.textile",
     "docpages/README-elastic_map_reduce.textile",
@@ -151,15 +117,6 @@ Gem::Specification.new do |s|
     "examples/pagerank/pagerank_initialize.rb",
     "examples/pagerank/run_pagerank.sh",
     "examples/sample_records.rb",
-    "examples/server_logs/apache_log_parser.rb",
-    "examples/server_logs/breadcrumb_edges.rb",
-    "examples/server_logs/breadcrumbs.rb",
-    "examples/server_logs/histograms.rb",
-    "examples/server_logs/logline.rb",
-    "examples/server_logs/nook.rb",
-    "examples/server_logs/nook/faraday_dummy_adapter.rb",
-    "examples/server_logs/page_counts.pig",
-    "examples/server_logs/user_agent.rb",
     "examples/simple_word_count.rb",
     "examples/size.rb",
     "examples/stats/avg_value_frequency.rb",
@@ -241,33 +198,72 @@ Gem::Specification.new do |s|
     "lib/wukong/streamer/summing_reducer.rb",
     "lib/wukong/streamer/uniq_by_last_reducer.rb",
     "lib/wukong/typed_struct.rb",
-    "notes/away/icss/icss_specification.textile",
-    "notes/away/swineherd/swineherd-old-readme.textile",
-    "notes/away/wukong-fs/wukong-fs-old-readme.textile",
-    "notes/away/wukong-transform/wukong-processor-old-readme.textile",
-    "old/cassandra_streaming/berlitz_for_cassandra.textile",
-    "old/cassandra_streaming/client_interface_notes.textile",
-    "old/cassandra_streaming/client_schema.textile",
-    "old/cassandra_streaming/tuning.textile",
-    "spec/data/a_atsigns_b.tsv",
-    "spec/data/a_follows_b.tsv",
-    "spec/data/tweet.tsv",
-    "spec/data/twitter_user.tsv",
+    "notes/concepts.md",
+    "notes/dataflow-HOWTO.md",
+    "notes/dataflow.md",
+    "notes/graphviz.md",
+    "notes/guide-to-the-toolscape.md",
+    "notes/hanuman.md",
+    "notes/home.md",
+    "notes/philosophy.md",
+    "notes/references.md",
+    "notes/workflow-addenda.md",
+    "notes/workflow.md",
     "spec/spec.opts",
     "spec/spec_helper.rb",
     "spec/wukong/encoding_spec.rb",
     "spec/wukong/script_spec.rb",
     "wukong.gemspec"
   ]
-  s.homepage = "http://mrflip.github.com/wukong"
+  s.homepage = "https://github.com/infochimps-labs/wukong"
+  s.licenses = ["Apache 2.0"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
   s.summary = "Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease."
 
-  s.add_dependency(%q<configliere>, [">= 0"])
-  s.add_dependency(%q<gorillib>, [">= 0"])
-  s.add_dependency(%q<multi_json>, [">= 1.1"])
-  s.add_dependency(%q<addressable>, [">= 0"])
-  s.add_dependency(%q<htmlentities>, [">= 0"])
-  s.add_dependency(%q<home_run>, [">= 0"])
+  if s.respond_to? :specification_version then
+    s.specification_version = 3
+
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<configliere>, [">= 0.4.16"])
+      s.add_runtime_dependency(%q<gorillib>, [">= 0"])
+      s.add_runtime_dependency(%q<multi_json>, [">= 1.1"])
+      s.add_runtime_dependency(%q<extlib>, [">= 0"])
+      s.add_runtime_dependency(%q<addressable>, [">= 0"])
+      s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
+      s.add_runtime_dependency(%q<home_run>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, ["~> 1.1"])
+      s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_development_dependency(%q<yard>, [">= 0.7"])
+      s.add_development_dependency(%q<rspec>, [">= 2.8"])
+      s.add_development_dependency(%q<jeweler>, [">= 1.6"])
+    else
+      s.add_dependency(%q<configliere>, [">= 0.4.16"])
+      s.add_dependency(%q<gorillib>, [">= 0"])
+      s.add_dependency(%q<multi_json>, [">= 1.1"])
+      s.add_dependency(%q<extlib>, [">= 0"])
+      s.add_dependency(%q<addressable>, [">= 0"])
+      s.add_dependency(%q<htmlentities>, [">= 0"])
+      s.add_dependency(%q<home_run>, [">= 0"])
+      s.add_dependency(%q<bundler>, ["~> 1.1"])
+      s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<yard>, [">= 0.7"])
+      s.add_dependency(%q<rspec>, [">= 2.8"])
+      s.add_dependency(%q<jeweler>, [">= 1.6"])
+    end
+  else
+    s.add_dependency(%q<configliere>, [">= 0.4.16"])
+    s.add_dependency(%q<gorillib>, [">= 0"])
+    s.add_dependency(%q<multi_json>, [">= 1.1"])
+    s.add_dependency(%q<extlib>, [">= 0"])
+    s.add_dependency(%q<addressable>, [">= 0"])
+    s.add_dependency(%q<htmlentities>, [">= 0"])
+    s.add_dependency(%q<home_run>, [">= 0"])
+    s.add_dependency(%q<bundler>, ["~> 1.1"])
+    s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<yard>, [">= 0.7"])
+    s.add_dependency(%q<rspec>, [">= 2.8"])
+    s.add_dependency(%q<jeweler>, [">= 1.6"])
+  end
 end
+
