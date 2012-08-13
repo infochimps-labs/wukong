@@ -1,0 +1,2 @@
+gem 'gorillib', :path => '/Users/dlaw/dev/gorillib'
+gem 'wukong'
