@@ -21,7 +21,7 @@ end
 
 group :docs do
   gem 'RedCloth',    ">= 4.2",   :require => "redcloth"
-  gem 'redcarpet',   ">= 2.1",   :platform => :ruby
+  gem 'redcarpet',   ">= 2.1",   :platform => [:mri, :rbx]
   gem 'kramdown',                :platform => :jruby
 end
 
@@ -29,7 +29,7 @@ end
 group :test do
   gem 'simplecov',   ">= 0.5",   :platform => :ruby_19
   #
-  gem 'oj',          ">= 1.2",   :platform => :ruby
+  gem 'oj',          ">= 1.2",   :platform => [:mri, :rbx]
   gem 'json',                    :platform => :jruby
 end
 
