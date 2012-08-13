@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem   'configliere', ">= 0.4.15"
-gem   'gorillib',    "~> 0.4.2",  :github => 'infochimps-labs/gorillib', :branch => 'version_1'
+gem   'gorillib',    ">= 0.4",    :github => 'infochimps-labs/gorillib', :branch => 'version_1'
 
 gem   'multi_json',  ">= 1.1"
 
