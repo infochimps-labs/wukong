@@ -4,6 +4,7 @@ $: << File.dirname(__FILE__)
 require 'flat/lib/flat'
 require 'weather'
 require 'wukong'
+require 'pp'
 
 module Weather
   class Mapper < Wukong::Streamer::LineStreamer
@@ -19,7 +20,8 @@ module Weather
 
     def process record
       report = RawWeatherReport.from_tuple(*record)
-      puts report.to_wire
+      final_report = WeatherReport.new report.to_wire
+      pp final_report.to_wire
     end
   end
 end

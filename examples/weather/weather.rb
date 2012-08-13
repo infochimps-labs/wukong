@@ -8,7 +8,10 @@ class RawWeatherReport
   include Gorillib::Model::PositionalFields
 
   field :usaf_station_id, Integer
-  field :wban_station_id, Integer
+
+  # wban id appears to have 99999 as a blank value even though 
+  # it is not specified as such in the docs
+  field :wban_station_id, Integer 
   
   field :obs_date, String
   field :obs_time, String
