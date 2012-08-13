@@ -31,13 +31,11 @@ EOF
 
   gem.add_development_dependency 'bundler',     "~> 1.1"
   gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'yard'
-  gem.add_development_dependency 'redcarpet'
+  gem.add_development_dependency 'rspec'
 
   gem.add_development_dependency 'addressable'
   gem.add_development_dependency 'htmlentities'
-  gem.add_development_dependency 'home_run'
   gem.add_development_dependency 'forgery'
   gem.add_development_dependency 'uuidtools'
 
