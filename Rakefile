@@ -22,4 +22,6 @@ YARD::Rake::YardocTask.new do
   Bundler.setup(:default, :development, :docs)
 end
 
-Bundler::GemHelper.install_tasks
+Bundler::GemHelper.install_tasks do
+  Bundler.setup(:default, :development, :test)
+end

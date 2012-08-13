@@ -5,8 +5,6 @@ gemspec
 gem 'gorillib',    :path => '../gorillib'
 
 group :development do
-  gem 'oj',          ">= 1.2",   :platform => :ruby
-  gem 'json',                    :platform => :jruby
 end
 
 group :docs do
@@ -17,6 +15,9 @@ end
 # Gems for testing and coverage
 group :test do
   gem 'simplecov',   ">= 0.5", :platform => :ruby_19
+  #
+  gem 'oj',          ">= 1.2",   :platform => :ruby
+  gem 'json',                    :platform => :jruby
 end
 
 # Gems you would use if hacking on this gem (rather than with it)
