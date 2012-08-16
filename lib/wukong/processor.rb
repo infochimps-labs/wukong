@@ -1,4 +1,4 @@
-require 'vayacondios/notifier'
+require 'vayacondios-client'
 
 module Wukong
   class Processor < Hanuman::Action
