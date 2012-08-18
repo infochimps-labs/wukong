@@ -3,8 +3,10 @@ require 'configliere'; Settings.use :define
 require 'wukong/datatypes'
 require 'wukong/periodic_monitor'
 require 'wukong/logger'
+
 autoload :BadRecord,   'wukong/bad_record'
 autoload :TypedStruct, 'wukong/typed_struct'
+
 module Wukong
   autoload :Script,          'wukong/script'
   autoload :Streamer,        'wukong/streamer'

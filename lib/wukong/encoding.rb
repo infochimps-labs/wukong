@@ -1,22 +1,22 @@
 require 'htmlentities'
 require 'addressable/uri'
 
-# Fix a bug (?) in the HTMLEntities encoder class with $KCODE='NONE'
-HTMLEntities::Encoder.class_eval do
-private
-  def extended_entity_regexp
-    @extended_entity_regexp ||= (
-      if encoding_aware?
-        regexp = '[^\u{20}-\u{7E}]'
-      else
-        # regexp = '[^\x20-\x7E]'
-        regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
-      end
-      regexp += "|'" if @flavor == 'html4'
-      Regexp.new(regexp)
-      )
-  end
-end
+# # Fix a bug (?) in the HTMLEntities encoder class with $KCODE='NONE'
+# HTMLEntities::Encoder.class_eval do
+# private
+#   def extended_entity_regexp
+#     @extended_entity_regexp ||= (
+#       if encoding_aware?
+#         regexp = '[^\u{20}-\u{7E}]'
+#       else
+#         # regexp = '[^\x20-\x7E]'
+#         regexp = '[\x00-\x1f]|[\xc0-\xfd][\x80-\xbf]+'
+#       end
+#       regexp += "|'" if @flavor == 'html4'
+#       Regexp.new(regexp)
+#       )
+#   end
+# end
 
 module Wukong
   #

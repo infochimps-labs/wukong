@@ -32,5 +32,4 @@ describe "Wukong encoding" do
     end
   end
 
-
 end
