@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+warn [ARGV.inspect, $0]
+
+WULIGN_VERSION = "1.0"
+
 USAGE= %Q{
 # h1. wulign -- format a tab-separated file as aligned columns
 #
@@ -89,6 +93,25 @@ if ARGV[0] == '--help'
   exit
 end
 
+if ARGV.any?{|argv| argv == "--version" }
+  puts "name\t#{$0}\tversion\t#{WULIGN_VERSION}"
+  exit
+end
+
+if (idx = ARGV.find_index{|argv| argv == "--" })
+  FORMAT_SPECS = ARGV.slice!(idx+1 .. -1)
+  ARGV.pop
+else
+  FORMAT_SPECS = []
+end
+
+if ARGV.length >= 1
+  warn "I only work on one file right now, sorry!" unless ARGV.length == 1
+  INPUT_FILE = File.open(ARGV.first)
+else
+  INPUT_FILE = $stdin
+end
+
 #
 # How many initial lines to use to guess formatting.  Lines after this are
 # simply reformatted according to the consensus of the initial
@@ -134,9 +157,9 @@ col_maxmag = []
 rows       = []
 skip_col   = []
 has_header = false
-ARGV.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
+FORMAT_SPECS.each_with_index{|v,i| next if (v == '') ; maxw[i] = 0; skip_col[i] = true }
 FORMAT_GUESSING_LINES.times do
-  line = $stdin.readline rescue nil
+  line = INPUT_FILE.readline rescue nil
   break unless line
   row = line.chomp.split("\t").map{|s| s.strip }
   col_widths = row.map{|col| col.length }
@@ -156,13 +179,13 @@ FORMAT_GUESSING_LINES.times do
   rows << row
 end
 
-format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, minmag, maxmag, default|
+format = maxw.zip(col_types, col_minmag, col_maxmag, FORMAT_SPECS).map do |width, type, minmag, maxmag, default|
   next(lambda{|s| default % s rescue s }) if default.to_s != ''
   case type
   when :mixed, nil then lambda{|s| "%-#{width}s" % s }
   when :str        then lambda{|s| "%-#{width}s" % s }
-  when :int        then lambda{|s| "%#{width}d"  % s.gsub(/\D+/, "").to_i }
-  when :float      then lambda{|s| "%#{maxmag+minmag+2}.#{minmag}f" % s.to_f }
+  when :int        then lambda{|s| "%#{width}d"  % s.gsub(/[^\d\-\+]+/, "").to_i }
+  when :float      then lambda{|s| "%#{maxmag+minmag+2}.#{minmag}f" % s.gsub(/[^\d\.eE\-\+]+/, "").to_f }
   else raise "oops type #{type}"  end
 end
 
@@ -179,8 +202,9 @@ rows.each do |row|
   # note -- strips trailing columns
   dump_row(row, format)
 end
-$stdin.each do |line|
+INPUT_FILE.each do |line|
   row = line.chomp.split("\t").map{|s| s.strip }
   # note -- strips trailing columns
   dump_row(row, format)
 end
+exit(0)
