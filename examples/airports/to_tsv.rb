@@ -8,6 +8,15 @@ load 'flat/lib/flat.rb'
 # mshr_enhanced.txt, isd_stations.txt, and the
 # flat file parsing library to work.
 
+# mshr-enhanced format description can be found at
+# ftp://ftp.ncdc.noaa.gov/pub/data/homr/docs/MSHR_Enhanced_Table.txt
+
+# The actual mshr-enhanced table can be found at 
+# http://www.ncdc.noaa.gov/homr/file/mshr_enhanced.txt.zip
+
+# isd_stations can be found at
+# http://www1.ncdc.noaa.gov/pub/data/noaa/ish-history.txt
+
 # Format strings
 MSHR_FORMAT_STRING = %{s20 s10 s8 s8 s20 s20 s20 s20 s20 s20 s20 s20 s20 s20
                        s100 s30 s100 s30 s100 s100 s10 s40 s10 s50 s2 s2 s100 
