@@ -3,7 +3,7 @@
 
 ARGF.each do |line|
   if line.valid_encoding?
-    puts line
+    $stdout.write line
   else 
     repaired_line = []
     line.each_char do |char|
@@ -13,6 +13,6 @@ ARGF.each do |line|
         repaired_line << "�"
       end
     end
-    puts repaired_line.join
+    $stdout.write repaired_line.join
   end
 end
