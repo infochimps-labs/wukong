@@ -1,6 +1,19 @@
 #!/usr/bin/env ruby
 # encoding:UTF-8
 
+if ARGV.include?('--help')
+  puts <<USAGE
+wu-clean-encoding cleans malformed characters from stdin.
+
+If a character is malformed, as defined by valid_encoding?,
+it is replaced with a '?'.
+
+wu-clean-encoding was built to work with UTF-8, and no 
+guarantees are provided for other encodings.
+USAGE
+  exit(0)
+end
+
 ARGF.each do |line|
   if line.valid_encoding?
     $stdout.write line
