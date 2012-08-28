@@ -4,7 +4,7 @@ require 'wukong'
 require 'crack/xml'
 load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
 
-module ExtractCorpus
+module ArticlesExtractor
   class Mapper < Wukong::Streamer::LineStreamer
 
     def lines
@@ -60,4 +60,4 @@ module ExtractCorpus
   end
 end
 
-Wukong::Script.new(ExtractCorpus::Mapper,nil).run
+Wukong::Script.new(ArticlesExtractor::Mapper,nil).run
