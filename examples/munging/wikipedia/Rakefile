@@ -1,0 +1,163 @@
+require 'configliere'
+Settings.use :commandline
+
+require_relative '../rake_helper'
+
+DUMPS = ['20110722','20110803','20110901','20111007','20111115',
+         '20111201','20120104','20120211','20120307','20120403',
+         '20120502','20120601','20120702','20120802']
+
+def Settings.mini?; !! Settings.mini ; end # BANG BANG BANG
+
+Settings.define :pageviews_date_range_slug, description: 'The pageviews date range', default: '2012/2012-08'
+Settings.define :dump, description: 'The wikipedia dump to use', default: DUMPS[-1]
+Settings.define :mini, description: 'Run in mini mode - operate inside the mini version of the specified universe',type: :boolean, default: false
+Settings.define :n1_node_id, description: 'Node to construct the N1 subuniverse around', default: '13692155'
+Settings.define :n1_subuniverse, description: 'The output universe for N1 subuniverse generation', finally: ->(c) {c.n1_subuniverse ||= "n1_#{c.n1_node_id}"}
+
+Settings.resolve!
+
+if (not DUMPS.include? Settings.dump)
+  puts "Invalid dump specified. Must be one of [#{DUMPS.join(', ')}].\nExiting..."
+  exit
+end
+
+=begin
+  Universe is the universe that data is drawn from.
+  It is also the default universe the data is written into.
+  There are tasks (namely subuniverse generation) that do not write out
+  into the supplied universe. Be careful
+=end
+
+Pathname.register_paths(
+  project: 'wikipedia', 
+  universe: [Settings.universe],
+
+  orig: [Settings.orig_data_root,'orig'],
+  scratch: [Settings.scratch_data_root, 'scratch'],
+  results: [Settings.results_data_root, 'results'],
+  
+  #Origin
+  wiki_dumps: [:orig,'dumps.wikimedia.org'],
+  orig_enwiki: [:wiki_dumps, 'enwiki'],
+  orig_pageviews: [:wiki_dumps, 'other', 'pagecounts-raw', Settings.pageviews_date_range_slug],
+  orig_articles: [:orig_enwiki, Settings.dump, "enwiki-#{Settings.dump}-pages-articles.xml.bz2"],
+  orig_pages: [:orig_enwiki, Settings.dump, "enwiki-#{Settings.dump}-page.sql.gz"],
+  orig_pagelinks: [:orig_enwiki, Settings.dump,"enwiki-#{Settings.dump}-pagelinks.sql.gz"],
+
+  # Scratch
+  scratch: [:scratch, :project, :universe],
+  page_metadata_scratch: [:scratch,'page_metadata'],
+  articles_scratch: [:scratch, 'articles'],
+  pageviews_scratch: [:scratch, 'pageviews'],
+  pagelinks_scratch: [:scratch, 'pagelinks'],
+
+  # Results 
+  results: [:results, :project, :universe],
+  page_metadata_results: [:results, 'page_metadata'],
+  pageviews_results: [:results, 'pageviews'],
+  articles_results: [:results, 'articles'],
+  pagelinks_results: [:results, 'pagelinks'],
+  undirected_pagelinks_results: [:results, 'undirected_pagelinks'],
+
+  # N1 Subuniverse
+  n1_results: [:results,'wikipedia', Settings.n1_subuniverse],
+  n1_nodes_results: [:n1_results, 'nodes'],
+  n1_edges_results: [:n1_results, 'edges'],
+  n1_page_metadata_results: [:n1_results, 'page_metadata'],
+  n1_articles_results: [:n1_results, 'articles'],
+  n1_pageviews_results: [:n1_results, 'pageviews'],
+)
+
+namespace :wikipedia do
+  namespace :extract do
+    desc 'Extract the Wikipedia article corpus from bzipped XML files'
+    task :articles do 
+      wukong_xml('articles/wp_articles_extract.rb', :orig_articles, :articles_results)
+    end
+    
+    desc 'Extract the Wikipedia pages table from gzipped SQL dumps'
+    task :page_metadata do 
+      wukong('page_metadata/wp_page_metadata_extract.rb', :orig_pages, :page_metadata_results)
+    end
+
+    desc 'Extract Wikipedia pageview data from gzipped server logs'
+    task :pageviews do 
+      wukong('pageviews/wp_pageviews_extract.rb', :orig_pageviews, :pageviews_scratch)
+    end
+
+    desc 'Extract Wikipedia pagelinks data from gzipped SQL dumps'
+    task :pagelinks do 
+      wukong('pagelinks/wp_pagelinks_extract.rb', :orig_pagelinks, :pagelinks_scratch)
+    end
+  end
+  namespace :augment do
+    desc 'Augment extracted Wikipedia pageview data with page ID and other metadata'
+    task :pageviews => "extract:pageviews" do 
+      pig('pageviews/wp_pageviews_augment.pig',{
+        pages: :page_metadata_results, 
+        pageviews_extracted: :pageviews_scratch, 
+        pageviews_results: :pageviews_results,
+      })
+    end
+
+    desc 'Augment Wikipedia pagelinks data with page metadata'
+    task :pagelinks => "extract:pagelinks" do 
+      pig('pagelinks/wp_pagelinks_augment.pig',{
+        page_metadata: :page_metadata_results,
+        pagelinks_extracted: :pagelinks_scratch,
+        pagelinks_augmented: :pagelinks_results,
+      })
+    end
+
+    desc 'Undirect the Wikipedia pagelinks graph'
+    task :pagelinks_undirect => "augment:pagelinks" do 
+      pig('pagelinks/wp_pagelinks_undirect.pig',{
+        pagelinks_augmented: :pagelinks_results,
+        pagelinks_undirected: :pagelinks_undirected_results,
+      })
+    end
+  end
+  namespace :subuniverse do
+    desc 'Generate a list of node ids for the N1 neighborhood of the specified node'
+    task :n1_nodes  => 'augment:pagelinks_undirect' do 
+      pig('n1_subuniverse/wp_n1_nodes.pig',{
+        undirected_pagelinks: :undirected_pagelinks_results,
+        n1_nodes: :n1_nodes_results,
+        hub: Settings.n1_node_id,
+      })
+    end
+    desc 'Extract edge list for the N1 neighborhood of the specified node'
+    task :n1_edges => ['augment:pagelinks_undirect', :n1_nodes] do 
+      pig('n1_subuniverse/wp_n1_edges.pig',{
+        undirected_pagelinks: :undirected_pagelinks_results,
+        n1_nodes: :n1_nodes_results,
+        n1_edges: :n1_edges_results,
+      })
+    end
+    desc 'Extract page metadata for the N1 neighborhood of the specified node'
+    task :n1_page_metadata => ['augment:page_metadata', :n1_nodes] do 
+      pig('n1_subuniverse/wp_n1_page_metadata.pig',{
+        page_metadata: :page_metadata_results,
+        n1_nodes: :n1_nodes_results,
+        n1_page_metadata: :n1_page_metadata_results,
+      })
+    end
+    desc 'Extract articles for the N1 neighborhood of the specified node'
+    task :n1_articles => ['extract:articles', :n1_nodes] do 
+      pig('n1_subuniverse/wp_n1_articles.pig',{
+        articles: :articles_results,
+        n1_nodes: :n1_nodes_results,
+        n1_articles: :n1_articles_results,
+      })
+    end
+    desc 'Extract pageview data for the N1 neighborhood of the specified node'
+    task :n1_pageviews => ['augment:pageviews', :n1_nodes] do 
+      pig('n1_subuniverse/wp_n1_pageviews.pig',{
+        pageviews: :pageviews_results,
+        n1_nodes: :n1_nodes_results,
+        n1_pageviews: :n1_pageviews_results,
+      })
+    end
+  end
+end
