@@ -26,7 +26,7 @@ def pig(script_name, options={})
   cmd = Settings.pig_path
   options.each_pair do |k,v|
       v = Pathname.of(v) if v.is_a? Symbol
-      cmd += " -param #{k}=#{v}"
+      cmd += " -param #{k.upcase}=#{v}"
   end
   cmd += " #{script_name}"
   sh cmd

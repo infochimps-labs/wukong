@@ -7,6 +7,12 @@ require 'pathname'
 require 'json'
 load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
 
+=begin
+
+  Pig output format:
+  namespace:int, title:chararray, num_visitors:long, date:int, time:int, epoch_time:long, day_of_week:int
+=end
+
 module PageviewsExtractor
   class Mapper < Wukong::Streamer::LineStreamer
     #TODO: Add encoding guard and remove munging utils reference

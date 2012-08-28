@@ -46,6 +46,7 @@ Pathname.register_paths(
   orig_pagelinks: [:orig_enwiki, Settings.dump,"enwiki-#{Settings.dump}-pagelinks.sql.gz"],
 
   # Scratch
+  #TODO: recursive path definition WTF
   scratch: [:scratch, :project, :universe],
   page_metadata_scratch: [:scratch,'page_metadata'],
   articles_scratch: [:scratch, 'articles'],
@@ -70,6 +71,12 @@ Pathname.register_paths(
 )
 
 namespace :wikipedia do
+  namespace :utils do
+    desc 'Fetch a list of all Wikipedia namespaces and their IDs'
+    task :get_namespaces do
+      ruby('utils/get_namespaces.rb')
+    end
+  end
   namespace :extract do
     desc 'Extract the Wikipedia article corpus from bzipped XML files'
     task :articles do 
@@ -82,7 +89,7 @@ namespace :wikipedia do
     end
 
     desc 'Extract Wikipedia pageview data from gzipped server logs'
-    task :pageviews do 
+    task :pageviews => 'utils:get_namespaces' do 
       wukong('pageviews/extract_pageviews.rb', :orig_pageviews, :pageviews_scratch)
     end
 
@@ -95,9 +102,9 @@ namespace :wikipedia do
     desc 'Augment extracted Wikipedia pageview data with page ID and other metadata'
     task :pageviews => "extract:pageviews" do 
       pig('pageviews/augment_pageviews.pig',{
-        pages: :page_metadata_results, 
-        pageviews_extracted: :pageviews_scratch, 
-        pageviews_results: :pageviews_results,
+        page_metadata: :page_metadata_results, 
+        extracted_pageviews: :pageviews_scratch, 
+        augmented_pageviews_out: :pageviews_results,
       })
     end
 
@@ -105,16 +112,16 @@ namespace :wikipedia do
     task :pagelinks => "extract:pagelinks" do 
       pig('pagelinks/augment_pagelinks.pig',{
         page_metadata: :page_metadata_results,
-        pagelinks_extracted: :pagelinks_scratch,
-        pagelinks_augmented: :pagelinks_results,
+        extracted_pagelinks: :pagelinks_scratch,
+        augmented_pagelinks_out: :pagelinks_results,
       })
     end
 
     desc 'Undirect the Wikipedia pagelinks graph'
     task :pagelinks_undirect => "augment:pagelinks" do 
       pig('pagelinks/undirect_pagelinks.pig',{
-        pagelinks_augmented: :pagelinks_results,
-        pagelinks_undirected: :pagelinks_undirected_results,
+        augmented_pagelinks: :pagelinks_results,
+        undirected_pagelinks_out: :pagelinks_undirected_results,
       })
     end
   end
@@ -123,40 +130,40 @@ namespace :wikipedia do
     task :n1_nodes  => 'augment:pagelinks_undirect' do 
       pig('n1_subuniverse/n1_nodes.pig',{
         undirected_pagelinks: :undirected_pagelinks_results,
-        n1_nodes: :n1_nodes_results,
         hub: Settings.n1_node_id,
+        n1_nodes_out: :n1_nodes_results,
       })
     end
-    desc 'Extract edge list for the N1 neighborhood of the specified node'
-    task :n1_edges => ['augment:pagelinks_undirect', :n1_nodes] do 
-      pig('n1_subuniverse/n1_edges.pig',{
+    desc 'Extract pagelinks for the N1 neighborhood of the specified node'
+    task :n1_pagelinks => ['augment:pagelinks_undirect', :n1_nodes] do 
+      pig('subuniverse/sub_pagelinks.pig',{
         undirected_pagelinks: :undirected_pagelinks_results,
-        n1_nodes: :n1_nodes_results,
-        n1_edges: :n1_edges_results,
+        sub_nodes: :n1_nodes_results,
+        sub_pagelinks_out: :n1_edges_results,
       })
     end
     desc 'Extract page metadata for the N1 neighborhood of the specified node'
     task :n1_page_metadata => ['augment:page_metadata', :n1_nodes] do 
-      pig('n1_subuniverse/n1_page_metadata.pig',{
+      pig('subuniverse/sub_page_metadata.pig',{
         page_metadata: :page_metadata_results,
-        n1_nodes: :n1_nodes_results,
-        n1_page_metadata: :n1_page_metadata_results,
+        sub_nodes: :n1_nodes_results,
+        sub_page_metadata_out: :n1_page_metadata_results,
       })
     end
     desc 'Extract articles for the N1 neighborhood of the specified node'
     task :n1_articles => ['extract:articles', :n1_nodes] do 
-      pig('n1_subuniverse/n1_articles.pig',{
+      pig('subuniverse/sub_articles.pig',{
         articles: :articles_results,
-        n1_nodes: :n1_nodes_results,
-        n1_articles: :n1_articles_results,
+        sub_nodes: :n1_nodes_results,
+        sub_articles_out: :n1_articles_results,
       })
     end
     desc 'Extract pageview data for the N1 neighborhood of the specified node'
     task :n1_pageviews => ['augment:pageviews', :n1_nodes] do 
-      pig('n1_subuniverse/n1_pageviews.pig',{
+      pig('subuniverse/sub_pageviews.pig',{
         pageviews: :pageviews_results,
-        n1_nodes: :n1_nodes_results,
-        n1_pageviews: :n1_pageviews_results,
+        sub_nodes: :n1_nodes_results,
+        sub_pageviews_out: :n1_pageviews_results,
       })
     end
   end
