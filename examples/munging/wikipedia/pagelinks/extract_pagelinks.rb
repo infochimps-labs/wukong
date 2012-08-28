@@ -10,4 +10,4 @@ module PagelinksExtractor
   end
 end
 
-Wukong::Script.new(PagelinksToTSV::Mapper, nil).run
+Wukong::Script.new(PagelinksExtractor::Mapper, nil).run

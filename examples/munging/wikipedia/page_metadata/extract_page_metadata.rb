@@ -3,7 +3,7 @@
 require 'wukong'
 require 'wukong/streamer/sql_streamer'
 
-module PageMetdataExctractor
+module PageMetadataExtractor
   class Mapper < Wukong::Streamer::SQLStreamer
     #TODO: Add encoding guard
     columns [:int, :int, :string, :string, :int, 
