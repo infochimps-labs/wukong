@@ -10,7 +10,7 @@
  * a_into_b, b_into_a, and symmetric are really booleans.
  */
 
-edges = LOAD '/data/rawd/wikipedia/wikipedia_pagelinks/edge_list' AS (from:int, into:int);
+edges = LOAD '$pagelinks_augmented' AS (from:int, into:int);
 edges_sorted = FOREACH edges GENERATE ((from <= into)? from : into) AS node_a,
                                       ((from <= into)? into : from) AS node_b,
                                       ((from <= into)? 1 : 0) AS a_to_b,
@@ -22,4 +22,4 @@ edges_final = FOREACH edges_grouped GENERATE
   ((SUM(edges.$2) > 0) ? 1:0) AS a_into_b,
   ((SUM(edges.$3) > 0) ? 1:0) AS b_into_a,
   ((SUM(edges.$2) > 0 AND SUM(edges.$3) > 0) ? 1:0) as symmetric:int;
-STORE edges final INTO 'edges';
+STORE edges final INTO '$pagelinks_undirected';
