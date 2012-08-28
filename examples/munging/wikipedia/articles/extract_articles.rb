@@ -1,19 +1,16 @@
 #!/usr/bin/env ruby
 
+#  This script extracts wikipedia articles from bzipped xml and outputs
+#  them in TSV. 
+#
+#  Sample Pig LOAD Statement:
+#  all_articles = LOAD '$articles' AS 
+#    (id:int, title:chararray, namespace:int, revision_date:int, revision_time:int, 
+#    revision_epoch_time:long, revision_day_of_week:int, text:chararray);
+
 require 'wukong'
 require 'crack/xml'
 load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
-
-=begin
-  This script extracts wikipedia articles from bzipped xml and outputs
-  them in TSV. 
-
-  Pig Load Statement:
-  all_articles = LOAD '$articles' AS (id:int, title:chararray, namespace:int, 
-                                      revision_date:int, revision_time:int, 
-                                      revision_epoch_time:long, revision_day_of_week:int,
-                                      text:chararray);
-=end
 
 module ArticlesExtractor
   class Mapper < Wukong::Streamer::LineStreamer

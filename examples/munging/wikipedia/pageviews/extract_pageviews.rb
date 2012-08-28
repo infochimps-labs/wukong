@@ -1,17 +1,14 @@
 #!/usr/bin/env ruby
 # encoding:UTF-8
 
+# Pig output format:
+# namespace:int, title:chararray, num_visitors:long, date:int, time:int, epoch_time:long, day_of_week:int
+
 require 'wukong'
 require 'uri'
 require 'pathname'
 require 'json'
 load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
-
-=begin
-
-  Pig output format:
-  namespace:int, title:chararray, num_visitors:long, date:int, time:int, epoch_time:long, day_of_week:int
-=end
 
 module PageviewsExtractor
   class Mapper < Wukong::Streamer::LineStreamer
