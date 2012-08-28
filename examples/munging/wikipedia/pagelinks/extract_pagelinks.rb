@@ -1,25 +1,13 @@
 #!/usr/bin/env ruby
+
 require 'wukong'
+require 'wukong/streamer/sql_streamer'
 
-load '/home/dlaw/dev/wukong/examples/wikipedia/munging_utils.rb'
-
-module PagelinksToTSV
-  class Mapper < Wukong::Streamer::LineStreamer
-
-    COLUMNS = [:int, :int, :string]
-
-    def initialize
-      @sql_parser = MungingUtils::SQLParser.new(COLUMNS)
-    end
-
-    def process(line, &blk)
-      @sql_parser.parse(line, &blk)
-    end
+module PagelinksExtractor
+  class Mapper < Wukong::Streamer::SQLStreamer
+    #TODO: Add encoding guard
+    columns [:int, :int, :string]
   end
 end
 
-# go to town
-Wukong::Script.new(
-  PagelinksToTSV::Mapper,
-  nil
-).run
+Wukong::Script.new(PagelinksToTSV::Mapper, nil).run
