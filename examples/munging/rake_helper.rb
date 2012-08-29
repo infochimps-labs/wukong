@@ -1,16 +1,20 @@
 require 'gorillib'
 require 'gorillib/data_munging'
+require 'configliere'
 
 S3_DATA_ROOT = 's3n://bigdata.chimpy.us/data'
 HDFS_DATA_ROOT = '/data'
 
+
 Settings.define :orig_data_root, default: HDFS_DATA_ROOT, description: "directory root for input data"
 Settings.define :scratch_data_root, default: HDFS_DATA_ROOT, description: "directory root for scratch data"
 Settings.define :results_data_root, default: HDFS_DATA_ROOT, description: "directory root for results data"
+Settings.define :mini, description: 'Run in mini mode - operate inside the mini version of the specified universe',type: :boolean, default: false
 Settings.define :universe, description: 'Universe to draw data from', finally: ->(c){ c.universe ||= (c.mini? ? "mini" : "full") }
 Settings.define :pig_path, default: '/usr/local/bin/pig'
 Settings.define :local, type: :boolean, default: false
 
+def Settings.mini?; !! Settings.mini ; end # BANG BANG BANG
 def Settings.wu_run_cmd; (local ? '--run=local' : '--run') ; end;
 
 def wukong(script, input, output)

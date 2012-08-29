@@ -7,11 +7,8 @@ DUMPS = ['20110722','20110803','20110901','20111007','20111115',
          '20111201','20120104','20120211','20120307','20120403',
          '20120502','20120601','20120702','20120802']
 
-def Settings.mini?; !! Settings.mini ; end # BANG BANG BANG
-
 Settings.define :pageviews_date_range_slug, description: 'The pageviews date range', default: '2012/2012-08'
 Settings.define :dump, description: 'The wikipedia dump to use', default: DUMPS[-1]
-Settings.define :mini, description: 'Run in mini mode - operate inside the mini version of the specified universe',type: :boolean, default: false
 Settings.define :n1_node_id, description: 'Node to construct the N1 subuniverse around', default: '13692155'
 Settings.define :n1_subuniverse, description: 'The output universe for N1 subuniverse generation', finally: ->(c) {c.n1_subuniverse ||= "n1_#{c.n1_node_id}"}
 
