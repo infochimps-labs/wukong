@@ -5,6 +5,7 @@
 # all wikipedia languages. The output is stored (by default)
 # in a json file that represents a hash from namespace name => id
 
+require 'ruby-progressbar'
 require 'open-uri'
 require 'set'
 require 'configliere'
@@ -16,6 +17,7 @@ NS_FILE = 'namespaces'
 
 Settings.define :out_dir, flag: 'o', description: "Directory to drop the namespace file into.", default: File.expand_path(File.dirname(__FILE__))
 Settings.define :verbose, flag: 'v', description: "Get chatty", type: :boolean, default: false
+Settings.define :silent, description: "Say nothing", type: :boolean, default: false
 Settings.define :head_length, flag: 'h', description: "The number of lines to read into the wiki xml for the namespace definitions.", type: Integer, default: 100
 Settings.define :std_out, flag: 's', description: "Print output to standard out.", type: :boolean, default: false
 Settings.define :to_tsv, flag: 't', description: 'Format the output as a TSV instead of JSON', type: :boolean, default:false
@@ -39,12 +41,23 @@ end
 if Settings.verbose
   $stderr.puts "Retrieved the names of #{wikis.size} wikis"
   $stderr.puts "Grabbing namespace data"
+elsif (not Settings.silent)
+  progressbar = ProgressBar.create(:title => "Retrieving Namespaces...", :total => wikis.size, :format => '%t |%B| %c/%C %e  ')
 end
 
 wikis.each_with_index do |prefix,index|
+  progressbar.increment unless (Settings.silent or Settings.verbose)
   namespaces_by_wiki[prefix] = {}
   $stderr.puts "Getting namespaces for #{prefix}.wikipedia.org" if Settings.verbose
   raw = `curl -s 'http://dumps.wikimedia.org/#{prefix}wiki/latest/#{prefix}wiki-latest-pages-logging.xml.gz' | gzcat | head -n #{Settings.head_length}`
+  #TODO: Make this actually work
+  if $?.exitstatus != 0
+    out = "Could not access page dump for #{prefix}wiki." +
+          " This dump is probably being updated now." + 
+          " Namespaces for this wiki will not be included in the final output"
+    $stderr.puts out
+    next
+  end
   raw.each_line do |line|
     next unless line =~ /.*<\/?namespace[^>]*>/
     match = /<\/?namespace key="(?<key>-?\d+)"[^>]*>(?<ns>[^<]*)<\/namespace>/.match(line)
