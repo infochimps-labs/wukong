@@ -10,6 +10,7 @@ module Wukong
     autoload :InstanceStreamer,        'wukong/streamer/instance_streamer'
     #
     autoload :Filter,                  'wukong/streamer/filter'
+    autoload :EncodingCleaner,         'wukong/streamer/encoding_cleaner'
     #
     autoload :Reducer,                 'wukong/streamer/reducer'
     autoload :AccumulatingReducer,     'wukong/streamer/accumulating_reducer'
