@@ -2,10 +2,11 @@
 
 require 'wukong'
 require 'wukong/streamer/sql_streamer'
+require 'wukong/streamer/encoding_cleaner'
 
 module PagelinksExtractor
   class Mapper < Wukong::Streamer::SQLStreamer
-    #TODO: Add encoding guard
+    include Wukong::Streamer::EncodingCleaner
     columns [:int, :int, :string]
   end
 end
