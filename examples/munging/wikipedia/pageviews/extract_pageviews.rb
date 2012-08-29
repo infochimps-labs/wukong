@@ -13,12 +13,14 @@ require 'wukong/streamer'
 require 'wukong/streamer/encoding_cleaner'
 require_relative '../utils/munging_utils.rb'
 
+ENV['map_input_file'] ||= 'pagecounts-20120814-010000.gz'
+
 module PageviewsExtractor
   class Mapper < Wukong::Streamer::LineStreamer
     include Wukong::Streamer::EncodingCleaner
     include MungingUtils
 
-    ns_json_file = File.open("/home/dlaw/dev/wukong/examples/wikipedia/all_namespaces.json",'r:UTF-8')
+    ns_json_file = File.open("../utils/namespaces.json",'r:UTF-8')
     NAMESPACES = JSON.parse(ns_json_file.read)
 
   # the filename strings are formatted as
@@ -34,7 +36,7 @@ module PageviewsExtractor
 
     # grab file name
     def process line
-      next unless line =~ /^en /
+      yield nil unless line =~ /^en /
       fields = line.split(' ')[1..-1]
       out_fields = []
       # add the namespace

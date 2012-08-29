@@ -1,0 +1,6 @@
+source 'http://rubygems.org'
+  
+gem 'gorillib',    :path => '/Users/dlaw/dev/gorillib'
+gem 'ruby-progressbar'
+gem 'crack'
+gem 'wukong', :path =>'/Users/dlaw/dev/wukong_og'

@@ -40,6 +40,9 @@ module ArticlesExtractor
     end
 
     def process record
+      if record.has_key? 'mediawiki'
+        record = record['mediawiki']
+      end
       result = []
       result << record['page']['id']
       result << record['page']['title']
