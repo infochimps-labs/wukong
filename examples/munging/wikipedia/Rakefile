@@ -134,8 +134,8 @@ namespace :wikipedia do
       })
     end
     desc 'Extract pagelinks for the N1 neighborhood of the specified node'
-    task :n1_pagelinks => ['augment:pagelinks_undirect', :n1_nodes] do 
-      pig('subuniverse/sub_pagelinks.pig',{
+    task :n1_undirected_pagelinks => ['augment:pagelinks_undirect', :n1_nodes] do
+      pig('subuniverse/sub_undirected_pagelinks_within.pig',{
         undirected_pagelinks: :undirected_pagelinks_results,
         sub_nodes: :n1_nodes_results,
         sub_pagelinks_out: :n1_edges_results,
