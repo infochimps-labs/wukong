@@ -5,7 +5,7 @@
  Assumes that the combination of namespace and title uniquely identifies a page
  
  Output Format:
- from_id, into_id, from_namespace, from_title,  into_namespace, into_title
+ from_id:int, into_id:int, from_namespace:int, from_title:chararray,  into_namespace:int, into_title:chararray
 */
 
 %default PAGE_METADATA           '/data/results/wikipedia/full/page_metadata' -- page metadata for all Wikipedia pages
