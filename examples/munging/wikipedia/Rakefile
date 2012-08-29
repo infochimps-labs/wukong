@@ -46,20 +46,19 @@ Pathname.register_paths(
   orig_pagelinks: [:orig_enwiki, Settings.dump,"enwiki-#{Settings.dump}-pagelinks.sql.gz"],
 
   # Scratch
-  #TODO: recursive path definition WTF
-  scratch: [:scratch, :project, :universe],
-  page_metadata_scratch: [:scratch,'page_metadata'],
-  articles_scratch: [:scratch, 'articles'],
-  pageviews_scratch: [:scratch, 'pageviews'],
-  pagelinks_scratch: [:scratch, 'pagelinks'],
+  wiki_scratch: [:scratch, :project, :universe],
+  page_metadata_scratch: [:wiki_scratch,'page_metadata'],
+  articles_scratch: [:wiki_scratch, 'articles'],
+  pageviews_scratch: [:wiki_scratch, 'pageviews'],
+  pagelinks_scratch: [:wiki_scratch, 'pagelinks'],
 
   # Results 
-  results: [:results, :project, :universe],
-  page_metadata_results: [:results, 'page_metadata'],
-  pageviews_results: [:results, 'pageviews'],
-  articles_results: [:results, 'articles'],
-  pagelinks_results: [:results, 'pagelinks'],
-  undirected_pagelinks_results: [:results, 'undirected_pagelinks'],
+  wiki_results: [:results, :project, :universe],
+  page_metadata_results: [:wiki_results, 'page_metadata'],
+  pageviews_results: [:wiki_results, 'pageviews'],
+  articles_results: [:wiki_results, 'articles'],
+  pagelinks_results: [:wiki_results, 'pagelinks'],
+  undirected_pagelinks_results: [:wiki_results, 'undirected_pagelinks'],
 
   # N1 Subuniverse
   n1_results: [:results,'wikipedia', Settings.n1_subuniverse],
