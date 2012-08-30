@@ -2,9 +2,9 @@ require 'gorillib'
 require 'gorillib/data_munging'
 require 'configliere'
 
-S3_DATA_ROOT = 's3n://bigdata.chimpy.us/data'
+S3_BUCKET = 'bigdata.chimpy.us'
+S3_DATA_ROOT = "s3n://#{S3_BUCKET}/data"
 HDFS_DATA_ROOT = '/data'
-
 
 Settings.define :orig_data_root, default: HDFS_DATA_ROOT, description: "directory root for input data"
 Settings.define :scratch_data_root, default: HDFS_DATA_ROOT, description: "directory root for scratch data"
@@ -17,10 +17,19 @@ Settings.define :local, type: :boolean, default: false
 def Settings.mini?; !! Settings.mini ; end # BANG BANG BANG
 def Settings.wu_run_cmd; (local ? '--run=local' : '--run') ; end;
 
+def dir_exists? (dir)
+  if Settings.local
+    return File.exists? dir
+  else
+    `hadoop fs -test -e #{dir}`
+    return $?.existatus == 0
+  end
+end
+
 def wukong(script, input, output)
   input = Pathname.of(input)
   output = Pathname.of(output)
-  if File.exists? output
+  if dir_exists? output
     puts "#{output} exists. Assuming that this job has already run..."
     return
   end
@@ -30,7 +39,7 @@ end
 def wukong_xml(script, input, output, split_tag)
   input = Pathname.of(input)
   output = Pathname.of(output)
-  if File.exists? output
+  if dir_exists? output
     puts "#{output} exists. Assuming that this job has already run..."
     return
   end
@@ -41,7 +50,7 @@ def pig(script_name, options={})
   cmd = Settings.pig_path
   options.each_pair do |k,v|
     v = Pathname.of(v) if v.is_a? Symbol
-    if k.to_s.include? '_out' and File.exists? v
+    if k.to_s.include? '_out' and dir_exists? v
       puts "#{v} already exists. Assuming that this job has already run..."
       return
     else

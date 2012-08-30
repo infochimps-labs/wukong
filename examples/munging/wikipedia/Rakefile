@@ -30,7 +30,7 @@ Pathname.register_paths(
   project: 'wikipedia', 
   universe: [Settings.universe],
 
-  orig: [Settings.orig_data_root,'orig'],
+  orig: [Settings.orig_data_root,'origin'],
   scratch: [Settings.scratch_data_root, 'scratch'],
   results: [Settings.results_data_root, 'results'],
   
