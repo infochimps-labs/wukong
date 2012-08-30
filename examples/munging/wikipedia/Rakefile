@@ -72,6 +72,10 @@ Pathname.register_paths(
 namespace :utils do
   desc 'Fetch a list of all Wikipedia namespaces and their IDs'
   task :get_namespaces do
+    if File.exists 'utils/namespaces.json'
+      puts 'utils/namespaces.json exists... Assuming that namespaces have already been downloaded'
+      return
+    end
     ruby('utils/get_namespaces.rb')
   end
 end
