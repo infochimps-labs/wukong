@@ -13,6 +13,7 @@ module Wukong
   autoload :Store,           'wukong/store'
   autoload :FilenamePattern, 'wukong/filename_pattern'
   autoload :Decorator,       'wukong/decorator'
+  autoload :Parser,          'wukong/parser'
 
   def self.run mapper, reducer=nil, options={}
     Wukong::Script.new(mapper, reducer, options).run
