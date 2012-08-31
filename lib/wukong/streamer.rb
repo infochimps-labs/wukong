@@ -8,6 +8,8 @@ module Wukong
     autoload :StructStreamer,          'wukong/streamer/struct_streamer'
     autoload :StructRecordizer,        'wukong/streamer/struct_streamer'
     autoload :InstanceStreamer,        'wukong/streamer/instance_streamer'
+    autoload :FlatPackStreamer,        'wukong/streamer/flatpack_streamer'
+    autoload :SQLStreamer,             'wukong/streamer/sql_streamer'
     #
     autoload :Filter,                  'wukong/streamer/filter'
     autoload :EncodingCleaner,         'wukong/streamer/encoding_cleaner'
