@@ -22,28 +22,28 @@ def dir_exists? (dir)
     return File.exists? dir
   else
     `hadoop fs -test -e #{dir}`
-    return $?.existatus == 0
+    return $?.exitstatus == 0
   end
 end
 
-def wukong(script, input, output)
+def wukong(script, input, output, options={})
   input = Pathname.of(input)
   output = Pathname.of(output)
   if dir_exists? output
     puts "#{output} exists. Assuming that this job has already run..."
     return
   end
-  ruby(script, Settings.wu_run_cmd,'--rm',input, output)
+  opts = ['--rm']
+  options.each_pair do |k,v|
+    opts << "--#{k}=#{v}"
+  end
+  opts << input
+  opts << output
+  ruby(script, Settings.wu_run_cmd,*opts)
 end
 
 def wukong_xml(script, input, output, split_tag)
-  input = Pathname.of(input)
-  output = Pathname.of(output)
-  if dir_exists? output
-    puts "#{output} exists. Assuming that this job has already run..."
-    return
-  end
-  ruby(script,Settings.wu_run_cmd,'--rm',"--split_on_xml_tag=#{split_tag}", input, output)
+  wukong(script,input,output,{split_on_xml_tag: split_tag})
 end
 
 def pig(script_name, options={})
