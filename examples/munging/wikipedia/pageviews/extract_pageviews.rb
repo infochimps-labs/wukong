@@ -19,11 +19,11 @@ ENV['map_input_file'] ||= 'pagecounts-20071222-100000.gz'
 
 class String
   def is_enwiki?
-    return not (self =~ /^en /).nil?
+    return (not (self =~ /^en /).nil?)
   end
 
   def is_after_enwiki?
-    return not (line =~ /^(e[o-z][a-z]*|[f-z][a-z]+) /).nil?
+    return (not (self =~ /^(e[o-z][a-z]*|[f-z][a-z]+) /).nil?)
   end
 end
 
