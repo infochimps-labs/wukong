@@ -4,27 +4,39 @@
 # Pig output format:
 # namespace:int, title:chararray, num_visitors:long, date:int, time:int, epoch_time:long, day_of_week:int
 
-require 'wukong'
+$:.unshift '/home/dlaw/dev/wukong_og/lib'
+$:.unshift '/home/dlaw/dev/gorillib/lib'
+
 require 'uri'
 require 'pathname'
 require 'json'
 require 'wukong'
 require 'wukong/streamer'
 require 'wukong/streamer/encoding_cleaner'
-require_relative '../utils/munging_utils.rb'
+load '/home/dlaw/dev/wukong/examples/munging/wikipedia/utils/munging_utils.rb'
 
-ENV['map_input_file'] ||= 'pagecounts-20120814-010000.gz'
+ENV['map_input_file'] ||= 'pagecounts-20071222-100000.gz'
+
+class String
+  def is_enwiki?
+    return not (self =~ /^en /).nil?
+  end
+
+  def is_after_enwiki?
+    return not (line =~ /^(e[o-z][a-z]*|[f-z][a-z]+) /).nil?
+  end
+end
 
 module PageviewsExtractor
   class Mapper < Wukong::Streamer::LineStreamer
     include Wukong::Streamer::EncodingCleaner
     include MungingUtils
 
-    ns_json_file = File.open("../utils/namespaces.json",'r:UTF-8')
+    ns_json_file = File.open("/home/dlaw/dev/wukong/examples/munging/wikipedia/utils/namespaces.json",'r:UTF-8')
     NAMESPACES = JSON.parse(ns_json_file.read)
 
-  # the filename strings are formatted as
-  # pagecounts-YYYYMMDD-HH0000.gz
+    # the filename strings are formatted as
+    # pagecounts-YYYYMMDD-HH0000.gz
     def time_from_filename(filename)
       parts = filename.split('-')
       year = parts[1][0..3].to_i
@@ -34,9 +46,15 @@ module PageviewsExtractor
       return Time.new(year,month,day,hour)
     end
 
-    # grab file name
     def process line
-      yield nil unless line =~ /^en /
+      # we only want enwiki lines
+      return if @done
+      if line.is_after_enwiki?
+        @done = true
+        return
+      end
+      return if not line.is_enwiki?
+      # we have an enwiki line - process it!
       fields = line.split(' ')[1..-1]
       out_fields = []
       # add the namespace
@@ -64,4 +82,4 @@ module PageviewsExtractor
   end
 end
 
-Wukong::Script.new(PageviewsExtractor::Mapper, nil).run
+Wukong::Script.new(PageviewsExtractor::Mapper, Wukong::Streamer::LineStreamer).run

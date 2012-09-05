@@ -7,11 +7,12 @@ DUMPS = ['20110722','20110803','20110901','20111007','20111115',
          '20111201','20120104','20120211','20120307','20120403',
          '20120502','20120601','20120702','20120802']
 
-Settings.define :pageviews_date_range_slug, description: 'The pageviews date range', default: '2012/2012-08'
+Settings.define :pageviews_date_range_slug_in, description: 'The pageviews date range', default: '2012/2012-08'
+Settings.define :pageviews_date_range_slug_out, description: 'The pageviews date range', default: '2012/2012-08'
 Settings.define :dump, description: 'The wikipedia dump to use', default: DUMPS[-1]
 Settings.define :n1_node_id, description: 'Node to construct the N1 subuniverse around', default: '13692155'
 Settings.define :n1_subuniverse, description: 'The output universe for N1 subuniverse generation', finally: ->(c) {c.n1_subuniverse ||= "n1_#{c.n1_node_id}"}
-
+Settings.define :num_reducers, type: Integer, default: nil
 Settings.resolve!
 
 if (not DUMPS.include? Settings.dump)
@@ -30,23 +31,23 @@ Pathname.register_paths(
   project: 'wikipedia', 
   universe: [Settings.universe],
 
-  orig: [Settings.orig_data_root,'origin'],
+  orig: [Settings.orig_data_root,'ripd'],
   scratch: [Settings.scratch_data_root, 'scratch'],
   results: [Settings.results_data_root, 'results'],
   
   #Origin
   wiki_dumps: [:orig,'dumps.wikimedia.org'],
   orig_enwiki: [:wiki_dumps, 'enwiki'],
-  orig_pageviews: [:wiki_dumps, 'other', 'pagecounts-raw', Settings.pageviews_date_range_slug],
-  orig_articles: [:orig_enwiki, Settings.dump, "enwiki-#{Settings.dump}-pages-articles.xml"],
-  orig_pages: [:orig_enwiki, Settings.dump, "enwiki-#{Settings.dump}-page.sql"],
-  orig_pagelinks: [:orig_enwiki, Settings.dump,"enwiki-#{Settings.dump}-pagelinks.sql"],
+  orig_pageviews: [:wiki_dumps, 'other', 'pagecounts-raw', Settings.pageviews_date_range_slug_in],
+  orig_articles: [:orig_enwiki, Settings.dump, "enwiki-#{Settings.dump}-pages-articles.xml.gz"],
+  orig_pages: [:orig_enwiki, Settings.dump, "enwiki-#{Settings.dump}-page.sql.gz"],
+  orig_pagelinks: [:orig_enwiki, Settings.dump,"enwiki-#{Settings.dump}-pagelinks.sql.gz"],
 
   # Scratch
   wiki_scratch: [:scratch, :project, :universe],
   page_metadata_scratch: [:wiki_scratch,'page_metadata'],
   articles_scratch: [:wiki_scratch, 'articles'],
-  pageviews_scratch: [:wiki_scratch, 'pageviews'],
+  pageviews_scratch: [:wiki_scratch, 'pageviews',Settings.pageviews_date_range_slug_out],
   pagelinks_scratch: [:wiki_scratch, 'pagelinks'],
 
   # Results 
@@ -91,8 +92,12 @@ namespace :extract do
   end
 
   desc 'Extract Wikipedia pageview data from gzipped server logs'
-  task :pageviews => 'utils:get_namespaces' do 
-    wukong('pageviews/extract_pageviews.rb', :orig_pageviews, :pageviews_scratch)
+  task :pageviews do 
+    if Settings.num_reducers.nil?
+      wukong('pageviews/extract_pageviews.rb', :orig_pageviews, :pageviews_scratch)
+    else
+      wukong('pageviews/extract_pageviews.rb', :orig_pageviews, :pageviews_scratch,{reduce_tasks: Settings.num_reducers})
+    end
   end
 
   desc 'Extract Wikipedia pagelinks data from gzipped SQL dumps'
