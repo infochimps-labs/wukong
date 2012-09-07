@@ -26,7 +26,7 @@ DESC
   gem.add_dependency('configliere',        '~> 0.4')
   gem.add_dependency('multi_json',         '>= 1.3.6')
   gem.add_dependency('vayacondios-client', '>= 0.0.3')
-  gem.add_dependency('gorillib',           '0.4.0pre')
+  gem.add_dependency('gorillib',           '0.4.2')
   gem.add_dependency('forgery')
   gem.add_dependency('uuidtools')
   
