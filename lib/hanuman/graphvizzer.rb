@@ -102,8 +102,8 @@ module Hanuman
     end
 
     class Edge < Item
-      field :from, String
-      field :into, String
+      magic :from, String
+      magic :into, String
 
       def to_s
         str = ""
