@@ -1,7 +1,7 @@
 module Hanuman
 
   class Graph < Action
-    collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph'
+    collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph', :key_method => :name
     field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
     include Hanuman::IsOwnInputSlot
     include Hanuman::IsOwnOutputSlot

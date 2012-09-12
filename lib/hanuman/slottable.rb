@@ -8,7 +8,7 @@ module Hanuman
     extend  Gorillib::Concern
     include Inlinkable
     included do
-      field   :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
+      magic   :input,    Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph that feeds into this one'
     end
     def inputs
       input?  ? [input] : []
@@ -23,7 +23,7 @@ module Hanuman
     extend  Gorillib::Concern
     include Outlinkable
     included do
-      field  :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
+      magic  :output,   Hanuman::Stage, :writer => false, :tester => true, :doc => 'stage/slot in graph this one feeds into'
     end
     def outputs
       output? ? [output] : []
@@ -52,7 +52,7 @@ module Hanuman
     include Outlinkable
 
     included do
-      collection :outslots, Hanuman::OutputSlot
+      collection :outslots, Hanuman::OutputSlot, :key_method => :name
     end
 
     def inputs
@@ -174,7 +174,7 @@ module Hanuman
     include Slottable
 
     included do
-      collection :splat_inslots, Hanuman::InputSlot
+      collection :splat_inslots, Hanuman::InputSlot, :key_method => :name
     end
 
     def set_input(stage)
@@ -197,7 +197,7 @@ module Hanuman
     include Slottable
 
     included do
-      collection :splat_outslots, Hanuman::OutputSlot
+      collection :splat_outslots, Hanuman::OutputSlot, :key_method => :name
     end
 
     def set_output(stage)
