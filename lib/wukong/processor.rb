@@ -1,6 +1,6 @@
 require 'vayacondios-client'
 
-Settings.define :monitor_interval, :default => 50_000
+Settings.define :monitor_interval, :default => 50_000, :type => Integer
 
 module Wukong
   class ProcessorError < StandardError ; end
@@ -11,7 +11,6 @@ module Wukong
 
     field :name, Symbol, :default => ->{ self.class.handle }
     field :count, Integer, doc: 'Number of records seen this run', default: 0
-    class_attribute :monitor_interval ; self.monitor_interval = Settings.monitor_interval
 
     # override this in your subclass
     def process(record)
@@ -20,7 +19,7 @@ module Wukong
     # passes a record on down the line
     def emit(record)
       self.count += 1
-      if (count % monitor_interval == 0)
+      if (count % Settings.monitor_interval.to_i == 0)
         log.info "emit\t%-23s\t%-47s\t%s" % [self.class, self.inspect, record.inspect]
       end
       output.process(record)
