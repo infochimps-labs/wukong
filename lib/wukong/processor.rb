@@ -1,11 +1,15 @@
 require 'vayacondios-client'
 
 module Wukong
+  class ProcessorError < StandardError ; end
+
   class Processor < Hanuman::Action
     include Hanuman::IsOwnInputSlot
     include Hanuman::IsOwnOutputSlot
 
     field :name, Symbol, :default => ->{ self.class.handle }
+    field :count, Integer, doc: 'Number of records seen this run', default: 0
+    class_attribute :monitor_interval ; self.monitor_interval = 1000
 
     # override this in your subclass
     def process(record)
@@ -13,7 +17,17 @@ module Wukong
 
     # passes a record on down the line
     def emit(record)
+      self.count += 1
+      if (count % monitor_interval == 0)
+        log.info "emit\t%-23s\t%-47s\t%s" % [self.class, self.inspect, record.inspect]
+      end
       output.process(record)
+    rescue Wukong::ProcessorError
+      raise
+    rescue StandardError => err
+      next_block = output.name rescue "(bad stage)"
+      log.warn "#{self}: error emitting #{next_block}: #{err.message}"
+      raise Wukong::ProcessorError, err.message, err.backtrace
     end
 
     def bad_record(*args)
