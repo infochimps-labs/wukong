@@ -1,4 +1,4 @@
-require 'bundler' ; Bundler.require(:development)
+require 'bundler' ; Bundler.require(:default, :development)
 
 SimpleCov.start do
   add_filter '/gorillib/'
@@ -7,7 +7,10 @@ SimpleCov.start do
 end
 
 require 'wukong'
+require 'gorillib/model'
 require 'gorillib/pathname'
+require 'gorillib/type/extended'
+require 'wukong/model/faker'
 
 Pathname.register_path(:wukong_root, File.expand_path('..', File.dirname(__FILE__)))
 Pathname.register_path(:examples,    :wukong_root, 'examples')
