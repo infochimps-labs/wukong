@@ -139,23 +139,4 @@ module Wukong
       iter.each{|*args| emit(*args) }
     end
   end
-
-
-  module CountingProcessor
-    extend Gorillib::Concern
-    included do
-      field :count,     Integer, :doc => 'count of records this run', :default => 0, :writer => :protected
-    end
-
-    def setup
-      super
-      self.count = 0
-    end
-
-    # Does not process any records if over limit
-    def process(record)
-      super(record)
-      self.count += 1
-    end
-  end
 end
