@@ -55,7 +55,7 @@ class ApacheLogLine
   # Use the regex to break line into fields
   # Emit each record as flat line
   def self.make(line)
-    m = LOG_RE.match(line.chomp) or return 
+    m = LOG_RE.match(line.chomp) or return
     from_tuple *m.captures
   end
 end
