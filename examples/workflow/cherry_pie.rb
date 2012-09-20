@@ -1,11 +1,13 @@
 class Wukong::Workflow < Hanuman::Graph
+
   class Container  < Hanuman::Resource  ; end
 
   class Cook       < ActionWithInputs
     register_action
     field :trigger, String, :doc => 'stop cooking when this event is reached'
   end
-  class Cool       < ActionWithInputs          ; register_action ; end
+
+  class Cool       < ActionWithInputs ; register_action ; end
 
   class Combine    < ActionWithInputs ; register_action ; end
   class Split      < ActionWithInputs ; register_action ; end
@@ -16,6 +18,7 @@ class Wukong::Workflow < Hanuman::Graph
   class AddTo < ActionWithInputs
     register_action
     consumes :container
+
     def self.make(workflow, container, *input_stages, &block)
       options = input_stages.extract_options!
       super(workflow, *input_stages, options.merge(:container => container), &block)

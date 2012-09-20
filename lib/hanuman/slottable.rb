@@ -135,17 +135,17 @@ module Hanuman
 
     class SlotField < Gorillib::Model::Field
       self.visibilities = visibilities.merge(:reader => true, :writer => false, :tester => false)
-      field :basename, Symbol
+      field :basename,   Symbol
       field :stage_type, Whatever, :doc => 'type for stages this slot accepts'
       class_attribute :slot_type
 
-      def initialize(basename, type, model, options={})
+      def initialize(model, basename, type, options={})
         name = "#{basename}_slot"
         options[:stage_type] = type
         slot_type = self.slot_type
         options[:basename] = basename
         options[:default]  = ->{ slot_type.new(:name => basename, :stage => self) }
-        super(name, slot_type, model, options)
+        super(model, name, slot_type, options)
       end
     end
 

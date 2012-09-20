@@ -64,7 +64,7 @@ module Wukong
     end
 
     class Limit < Rejecter
-      include CountingProcessor
+      # include CountingProcessor
       field :max_records, Integer, :doc => 'maximum records to allow', :writer => true
 
       def reject?(*)
