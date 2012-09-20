@@ -8,10 +8,6 @@ shared_context 'wukong', :helpers => true do
     RSpec::Matchers.define("be_#{handle}_ish"){ match{|actual| actual.should =~ regexp } }
   end
 
-  def self.the(class_method, &block)
-    describe(class_method){ subject{described_class} ; its(class_method, &block) }
-  end
-
   let(:mock_val   ){ mock('mock val') }
   let(:mock_record){ mock('mock record') }
   let(:mock_stage    ){ m = mock('mock stage') ; m }
