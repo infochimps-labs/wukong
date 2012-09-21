@@ -23,12 +23,6 @@ module Wukong
         log.info "emit\t%-23s\t%-47s\t%s" % [self.class, self.inspect, record.inspect]
       end
       output.process(record)
-    rescue Wukong::ProcessorError
-      raise
-    rescue StandardError => err
-      next_block = output.name rescue "(bad stage)"
-      log.warn "#{self}: error emitting #{next_block}: #{err.message}"
-      raise Wukong::ProcessorError, err.message, err.backtrace
     end
 
     def bad_record(*args)
