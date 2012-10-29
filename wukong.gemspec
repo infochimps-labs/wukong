@@ -25,14 +25,14 @@ EOF
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  gem.add_dependency('bundler',                 '~> 1.1')
-  gem.add_dependency('configliere',             '>= 0.4.15')
+  gem.add_dependency('configliere',             '~> 0.4')
   gem.add_dependency('multi_json',              '>= 1.3.6')
   gem.add_dependency('vayacondios-client',      '>= 0.0.3')
   gem.add_dependency('gorillib',                '>= 0.4.2')
   gem.add_dependency('forgery')
   gem.add_dependency('uuidtools')
 
+  gem.add_development_dependency('bundler',     '~> 1.1')
   gem.add_development_dependency('rake',        '>= 0.9')
   gem.add_development_dependency('rspec',       '>= 2.8')
   gem.add_development_dependency('guard',       '>= 1.0')
