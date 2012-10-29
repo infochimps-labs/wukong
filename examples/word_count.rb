@@ -1,21 +1,15 @@
-#!/usr/bin/env ruby
-
 require 'wukong'
 
-# cat data/jabberwocky.txt | bin/wu-map examples/word_count.rb | sort  | bin/wu-red examples/word_count.rb | sort -rnk2 | head
 
-Wukong.processor(:add_count) do
-  def process(word)
-    emit [word, 1]
-  end
+Wukong.dataflow(:mapper) do
+  splitter  = map    { |line| line.downcase.strip.split(/\W/) }
+  cleaner   = reject { |word| word.length < 2                 }
+  add_count = foreach{ |word| emit [word, 1].join("\t")       } 
+  stdin > splitter > flatten > cleaner > add_count > stdout #  > splitter > flatten > cleaner > add_count > stdout
 end
 
 Wukong.processor(:accumulator) do
   attr_accessor :current, :count
-
-  def setup()  reset! ; end
-
-  def stop()   report_then_reset! ; end
 
   def reset!() @current = nil ; @count = 0 ; end
 
@@ -37,12 +31,11 @@ Wukong.processor(:accumulator) do
 
 end
 
-Wukong.dataflow(:mapper) do
-  splitter = map    { |line| line.downcase.strip.split(/\W/) }
-  cleaner  = reject { |word| word.length < 2 }
-  splitter > flatten > cleaner > add_count > to_tsv
+Wukong.dataflow(:reducer) do
+  from_tsv = map(label: 'from_tsv'){ |line|  line.split("\t") }
+  to_tsv   = map(label: 'to_tsv')  { |tuple| tuple.join("\t") }
+
+  stdin > from_tsv > accumulator > to_tsv > stdout
 end
 
-Wukong.dataflow(:reducer) do
-  from_tsv > accumulator > to_tsv
-end
+# # cat data/jabberwocky.txt | bin/wu-map examples/word_count.rb | sort  | bin/wu-red examples/word_count.rb | sort -rnk2 | head
