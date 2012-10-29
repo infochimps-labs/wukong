@@ -1,17 +1,9 @@
 #!/usr/bin/env ruby
-require 'rubygems' unless defined?(Gem)
-$LOAD_PATH.unshift(File.expand_path("../lib", File.dirname(__FILE__)))
+$:.unshift File.expand_path('../../lib', __FILE__)
 require 'wukong'
 
-load ARGV[0]
+wu_file = ARGV.shift
+load wu_file
 
-case File.basename($0)
-when 'wu-map' then run_mode = :mapper
-when 'wu-red' then run_mode = :reducer
-end
-
-Wukong::LocalRunner.new do
-  source :stdin,  Wukong::Source::Stdin.new
-  sink   :stdout, Wukong::Sink::Stdout.new
-  flow   Wukong.dataflow(run_mode)
-end.run
+flow = ($0 =~ /wu-map/) ? :mapper : :reducer
+Wukong::LocalRunner.run(flow)
