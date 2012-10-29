@@ -1,5 +1,0 @@
-README.textile
-lib/**/*.rb
-bin/*
-LICENSE
-examples/*.rb

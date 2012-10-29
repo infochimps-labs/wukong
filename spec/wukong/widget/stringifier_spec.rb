@@ -3,13 +3,6 @@ require 'wukong'
 
 describe 'wukong', :helpers => true do
 
-  # describe Wukong::Widget::Stringifier do
-  #   it 'is not registered as anything' do
-  #     Wukong.should_not be_streamer_exists( Wukong::Widget::Stringifier)
-  #     Wukong.should_not be_formatter_exists(Wukong::Widget::Stringifier)
-  #   end
-  # end
-
   describe 'json' do
     let(:json_data  ){ {'abc' => 'def'} }
     let(:json_string){ '{"abc":"def"}'  }
@@ -25,6 +18,13 @@ describe 'wukong', :helpers => true do
       it 'encodes' do
         subject.should_receive(:emit).with(json_string)
         subject.process(json_data)
+      end
+
+      it 'emits metadata in the _metadata key if record has _metadata' do
+        test_model_class.send(:include,Wukong::Event)
+        test_model._metadata = { :a => :b }
+        subject.should_receive(:emit).with('{"smurfiness":99,"_type":"anon","_metadata":{"a":"b"}}')
+        subject.process(test_model)
       end
     end
   end

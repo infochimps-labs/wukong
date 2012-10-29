@@ -1,7 +1,12 @@
 module Wukong
-  class Sink < Wukong::Processor
+  class Sink < Hanuman::Action
+    include Hanuman::InputSlotted
+
+    def terminates?() true ; end
 
     class NullSink < Wukong::Sink
+      register_action
+      #
       def process(record)
         true # do nothing
       end
@@ -15,13 +20,10 @@ module Wukong
     end
 
     class FileSink < Wukong::Sink::IO
-      field :filename, Pathname, :doc => "Filename to write"
+      register_action
+      magic :filename, Pathname, :position => 0, :doc => "Filename to write"
       attr_reader :file
-
-      def self.make(workflow, filename, stage_name=nil, attrs={})
-        super(workflow, attrs.merge(:filename => filename, :name => stage_name))
-      end
-
+      #
       def setup
         super
         filename.dirname.mkpath
@@ -31,25 +33,24 @@ module Wukong
       def stop
         @file.close if @file
       end
-
-      register_processor
     end
 
     # Writes all lines to $stdout
     class Stdout < Wukong::Sink::IO
+      register_action
       def file() $stdout ; end
-      register_processor
     end
 
     # Writes all lines to $stderr
     class Stderr < Wukong::Sink::IO
+      register_action
       def file() $stderr ; end
-      register_processor
     end
 
     class ArraySink < Wukong::Sink
-      field :records, Array, :default => [], :writer => :protected
-
+      register_action
+      magic :records, Array, :position => 0, :default => [], :writer => :protected
+      #
       def process(record)
         self.records << record
       end

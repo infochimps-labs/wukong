@@ -5,11 +5,14 @@ Settings.define :monitor_interval, :default => 50_000, :type => Integer
 module Wukong
   class ProcessorError < StandardError ; end
 
+  #
+  # Processor -- the primary participant in a dataflow
+  #
   class Processor < Hanuman::Action
-    include Hanuman::IsOwnInputSlot
-    include Hanuman::IsOwnOutputSlot
+    include Hanuman::InputSlotted
+    include Hanuman::OutputSlotted
 
-    field :name, Symbol, :default => ->{ self.class.handle }
+    field :name, Symbol, :default => ->{ self.class.to_s.underscore }
     field :count, Integer, doc: 'Number of records seen this run', default: 0
 
     # override this in your subclass
@@ -22,17 +25,19 @@ module Wukong
       if (count % Settings.monitor_interval.to_i == 0)
         log.info "emit\t%-23s\t%-47s\t%s" % [self.class, self.inspect, record.inspect]
       end
-      output.process(record)
+      (@sink||=self.sink).process(record)
     rescue Wukong::ProcessorError
       raise
     rescue StandardError => err
       next_block = output.name rescue "(bad stage)"
       log.warn "#{self}: error emitting #{next_block}: #{err.message}"
       raise Wukong::ProcessorError, err.message, err.backtrace
+    rescue StandardError => err ; err.polish("#{self.graph_id}: #{record.inspect} to #{@sink.inspect(false)}") rescue nil ; raise
     end
 
     def bad_record(*args)
-      BadRecord.make(*args)
+      Log.error( { :contents => args }.to_json[0..1024] )
+      # BadRecord.make(*args)
     end
 
     def self.register_processor(name=nil, &block)
@@ -49,14 +54,17 @@ module Wukong
     def bad_record(record, options = {})
       error_handler.notify(record, options.merge(level: 'error'))
     end
+
+    class << self ; alias_method :register_processor, :register_action ; end
   end
 
   class AsIs < Processor
+    register_processor
+
     # accepts records, emits as-is
     def process(*args)
       emit(*args)
     end
-    register_processor
   end
 
   class Null < Processor
@@ -84,15 +92,15 @@ module Wukong
 
     # @param [Proc] proc used for body of process method
     # @yield ... or supply it as a &block arg.
-    def initialize(prc=nil, &block)
-      prc ||= block or raise "Please supply a proc or a block to #{self.class}.new"
-      define_singleton_method(:process, prc)
+    def initialize(*args, &block)
+      attrs = args.extract_options!
+      @blk = block || args.shift || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
+      super(*args, attrs){}
+      define_singleton_method(:process, @blk)
     end
 
-    def self.make(workflow, *args, &block)
-      obj = new(*args, &block)
-      workflow.add_stage obj
-      obj
+    def inspect
+      super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{@blk.source_location.join(':')}}>"
     end
   end
 
@@ -106,24 +114,26 @@ module Wukong
   #   map{|str| str[/\b(love|hate|happy|sad)\b/] }
   #
   class Map < Processor
+    field :name, Symbol, :position => 0
     self.register_processor
     attr_reader :blk
 
     # @param [Proc] proc to delegate for call
     # @yield if proc is omitted, block must be supplied
-    def initialize(blk=nil, &block)
-      @blk = blk || block or raise "Please supply a proc or a block to #{self.class}.new"
+    def initialize(*args, &block)
+      attrs = args.extract_options!
+      @blk = block || attrs.delete(:blk) or raise "Please supply a proc or a block to #{self.class}.new"
+      super(*args, attrs){}
+      define_singleton_method(:call, @blk)
+    end
+
+    def inspect(*)
+      super[0..-2] << " ->(#{@blk.parameters.join(',')}){#{(@blk.source_location||[]).join(':')}}>"
     end
 
     def process(*args)
-      result = blk.call(*args)
+      result = call(*args)
       emit result unless result.nil?
-    end
-
-    def self.make(workflow, *args, &block)
-      obj = new(*args, &block)
-      workflow.add_stage obj
-      obj
     end
   end
 
@@ -131,7 +141,7 @@ module Wukong
   # Flatten emits each item in an enumerable as its own record
   #
   # @example turn a document into all its words
-  #   input > map{|line| line.split(/\W+/) } > flatten > output
+  #   source > map{|line| line.split(/\W+/) } > flatten > sink
   class Flatten < Processor
     self.register_processor
 

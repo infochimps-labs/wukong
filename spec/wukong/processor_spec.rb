@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'wukong'
 
-describe :processors, :helpers => true, :widgets => true do
+describe :processors, :helpers, :widgets do
   subject{ described_class.new }
   let(:mock_dataflow){ md = mock('dataflow') ; md }
 
@@ -11,9 +11,9 @@ describe :processors, :helpers => true, :widgets => true do
   end
 
   describe Wukong::Map do
-    it_behaves_like 'a processor'
+    it_behaves_like 'a processor', named: 'map'
     let(:sample_proc){ ->(rec){ rec.reverse } }
-    subject{ described_class.new(sample_proc) }
+    subject{ described_class.new(sample_proc){} }
 
     it 'emits whatever the proc does' do
       subject.should_receive(:emit).with("won ytineres")
@@ -21,13 +21,13 @@ describe :processors, :helpers => true, :widgets => true do
     end
 
     it 'accepts a proc or block arg' do
-      subject = sample_dataflow.map(->(rec){ rec.reverse })
+      subject = sample_dataflow.map{ |rec| rec.reverse }
       subject.should_receive(:emit).with("won ytineres")
       subject.process("serenity now")
     end
 
     it 'swallows a nil result' do
-      sample_proc.should_receive(:call).with(mock_val).and_return(nil)
+      subject.should_receive(:call).with(mock_val).and_return(nil)
       subject.should_not_receive(:emit)
       subject.process(mock_val)
     end
@@ -39,7 +39,7 @@ describe :processors, :helpers => true, :widgets => true do
   end
 
   describe Wukong::Foreach do
-    it_behaves_like 'a processor'
+    it_behaves_like 'a processor', named: 'foreach'
     let(:sample_proc){ ->(rec){ emit rec.reverse } }
     subject{ described_class.new(sample_proc) }
 
@@ -68,9 +68,9 @@ describe :processors, :helpers => true, :widgets => true do
   end
 
   describe Wukong::Flatten do
-    it_behaves_like 'a processor'
+    it_behaves_like 'a processor', named: 'flatten'
     it 'emits each item in each input' do
-      subject.set_output test_sink
+      subject.set_sink(test_sink)
       [ [:this, :that], [], 1..5, { :a => :b} ].each{|rec| subject.process(rec) }
       test_sink.records.should == [:this, :that, 1, 2, 3, 4, 5, [:a, :b]]
     end
@@ -81,7 +81,7 @@ describe :processors, :helpers => true, :widgets => true do
   end
 
   describe Wukong::AsIs do
-    it_behaves_like 'a processor'
+    it_behaves_like 'a processor', named: 'as_is'
     it 'emits each record' do
       subject.should_receive(:emit).with(:this)
       subject.should_receive(:emit).with(:that)
@@ -94,7 +94,7 @@ describe :processors, :helpers => true, :widgets => true do
   end
 
   describe Wukong::Null do
-    it_behaves_like 'a processor'
+    it_behaves_like 'a processor', named: 'null'
     it 'emits each record' do
       subject.should_not_receive(:emit)
       [:this, :that].each{|rec| subject.process(rec) }

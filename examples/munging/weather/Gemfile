@@ -1,0 +1,4 @@
+source 'http://rubygems.org'
+  
+gem 'gorillib',    :path => '/Users/dlaw/dev/gorillib'
+gem 'wukong', :path =>'/Users/dlaw/dev/wukong_og'

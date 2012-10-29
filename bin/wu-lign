@@ -161,8 +161,8 @@ format = maxw.zip(col_types, col_minmag, col_maxmag, ARGV).map do |width, type, 
   case type
   when :mixed, nil then lambda{|s| "%-#{width}s" % s }
   when :str        then lambda{|s| "%-#{width}s" % s }
-  when :int        then lambda{|s| "%#{width}d"  % s.gsub(/\D+/, "").to_i }
-  when :float      then lambda{|s| "%#{maxmag+minmag+2}.#{minmag}f" % s.to_f }
+  when :int        then lambda{|s| "%#{width}d"  % s.gsub(/[^\d\-\+]+/, "").to_i }
+  when :float      then lambda{|s| "%#{maxmag+minmag+2}.#{minmag}f" % s.gsub(/[^\d\.eE\-\+]+/, "").to_f }
   else raise "oops type #{type}"  end
 end
 

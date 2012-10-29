@@ -4,36 +4,36 @@ require 'wukong'
 describe :filters, :helpers => true do
   subject{ described_class.new }
 
-  describe Wukong::Widget::All do
-    it_behaves_like('a filter processor',
+  describe Wukong::Widget::IncludeAll do
+    it_behaves_like('a filter processor', :named => :include_all,
       :good => [true, false, nil, 1, Math::PI, 'The French Revolution', Object.new, Class.new],
       :bad  => [])
   end
 
-  describe Wukong::Widget::None do
-    it_behaves_like('a filter processor',
+  describe Wukong::Widget::ExcludeAll do
+    it_behaves_like('a filter processor', :named => :exclude_all,
       :good => [],
       :bad  => [true, false, nil, 1, Math::PI, 'The French Revolution', Object.new, Class.new])
   end
 
   describe Wukong::Widget::RegexpFilter do
     subject{ described_class.new(:pattern => /^m/) }
-    it_behaves_like('a filter processor',
+    it_behaves_like('a filter processor', :named => :regexp,
       :good => ['milbarge'],
       :bad  => ['fitzhume'] )
   end
 
-  describe Wukong::Widget::RegexpRejecter do
+  describe Wukong::Widget::NotRegexpFilter do
     subject{ described_class.new(:pattern => /^m/) }
-    it_behaves_like('a filter processor',
+    it_behaves_like('a filter processor', :named => :not_regexp,
       :good => ['fitzhume'],
       :bad  => ['milbarge'] )
   end
 
-  describe Wukong::Widget::ProcFilter do
+  describe Wukong::Widget::Select do
     let(:raw_proc){ ->(rec){ rec =~ /^m/ } }
-    subject{ described_class.new(raw_proc) }
-    it_behaves_like('a filter processor',
+    subject{ described_class.new(blk: raw_proc) }
+    it_behaves_like('a filter processor', :named => :select,
       :good => ['milbarge'],
       :bad  => ['fitzhume'] )
     context 'is created' do
@@ -43,17 +43,17 @@ describe :filters, :helpers => true do
         subject.should be_reject('fitzhume')
       end
       it 'with an explicit proc' do
-        subject = described_class.new( ->(rec){ rec =~ /^m/ } )
+        subject = described_class.new( blk: ->(rec){ rec =~ /^m/ } )
         subject.should be_select('milbarge')
         subject.should be_reject('fitzhume')
       end
     end
   end
 
-  describe Wukong::Widget::ProcRejecter do
+  describe Wukong::Widget::Reject do
     let(:raw_proc){ ->(rec){ rec =~ /^m/ } }
-    subject{ described_class.new(raw_proc) }
-    it_behaves_like('a filter processor',
+    subject{ described_class.new(blk: raw_proc) }
+    it_behaves_like('a filter processor', :named => :reject,
       :good => ['fitzhume'],
       :bad  => ['milbarge'] )
     context 'is created' do
@@ -63,7 +63,7 @@ describe :filters, :helpers => true do
         subject.should be_reject('milbarge')
       end
       it 'with an explicit proc' do
-        subject = described_class.new( ->(rec){ rec =~ /^m/ } )
+        subject = described_class.new( blk: ->(rec){ rec =~ /^m/ } )
         subject.should be_select('fitzhume')
         subject.should be_reject('milbarge')
       end
@@ -72,7 +72,7 @@ describe :filters, :helpers => true do
 
   describe Wukong::Widget::Limit do
     subject{ described_class.new(:max_records => 3) }
-    it_behaves_like 'a processor' do
+    it_behaves_like 'a processor', :named => :limit do
       before{ mock_next_stage }
 
       context 'creating' do
