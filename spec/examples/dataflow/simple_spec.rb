@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'wukong'
+# require 'wukong'
 
 # Hanuman::Graph.class_eval do
 #   def foo_graph(label, &block)
@@ -14,21 +14,21 @@ require 'wukong'
 #
 # end
 
-describe 'example', :examples_spec do
-  # describe_example_script(:simple, 'dataflow/simple.rb', :only => true) do
-  #   it 'runs' do
-  #     p subject
-  #   end
-  # end
+# describe 'example', :examples_spec do
+#   # describe_example_script(:simple, 'dataflow/simple.rb', :only => true) do
+#   #   it 'runs' do
+#   #     p subject
+#   #   end
+#   # end
 
-  it 'runs' do
-    # load Pathname.path_to(:examples, 'dataflow/simple.rb')
+#   it 'runs' do
+#     # load Pathname.path_to(:examples, 'dataflow/simple.rb')
 
-    Wukong.dataflow(:bob) do
-      ff = file_source(Pathname.path_to(:data, 'text/jabberwocky.txt')){ p self }
+#     Wukong.dataflow(:bob) do
+#       ff = file_source(Pathname.path_to(:data, 'text/jabberwocky.txt')){ p self }
 
 
-    end
+#     end
 
-  end
-end
+#   end
+# end
