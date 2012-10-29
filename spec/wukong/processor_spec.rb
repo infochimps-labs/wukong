@@ -1,109 +1,93 @@
 require 'spec_helper'
-require 'wukong'
 
-describe :processors, :helpers, :widgets do
-  subject{ described_class.new }
-  let(:mock_dataflow){ md = mock('dataflow') ; md }
+describe Wukong::Processor do
 
-  describe Wukong::Processor do
-    it_behaves_like 'it can be linked from'
-    it_behaves_like 'it can be linked into'
+  context '#process' do
+    it 'emits the record when process is called' do
+      subject.should_receive(:emit).with('I custom-made yo suit!')
+      subject.process('I custom-made yo suit!')
+    end
   end
-
-  describe Wukong::Map do
-    it_behaves_like 'a processor', named: 'map'
-    let(:sample_proc){ ->(rec){ rec.reverse } }
-    subject{ described_class.new(sample_proc){} }
-
-    it 'emits whatever the proc does' do
-      subject.should_receive(:emit).with("won ytineres")
-      subject.process("serenity now")
-    end
-
-    it 'accepts a proc or block arg' do
-      subject = sample_dataflow.map{ |rec| rec.reverse }
-      subject.should_receive(:emit).with("won ytineres")
-      subject.process("serenity now")
-    end
-
-    it 'swallows a nil result' do
-      subject.should_receive(:call).with(mock_val).and_return(nil)
-      subject.should_not_receive(:emit)
-      subject.process(mock_val)
-    end
-
-    it 'registers a dataflow helper `map`' do
-      st = sample_dataflow.map{|rec| rec.reverse }
-      st.should be_a(described_class)
+    
+  context '#emit' do
+    let(:delegate){ double :delegate, :call => 'psylocke'      }
+    subject       { described_class.receive(emitter: delegate) }
+    
+    it 'delegates emit to its received emitter' do
+      delegate.should_receive(:call).with('I am a mutant')
+      subject.emit('I am a mutant')
     end
   end
 
-  describe Wukong::Foreach do
-    it_behaves_like 'a processor', named: 'foreach'
-    let(:sample_proc){ ->(rec){ emit rec.reverse } }
-    subject{ described_class.new(sample_proc) }
+end
 
-    it 'calls the proc' do
-      subject.should_receive(:emit).with("won ytineres")
-      subject.process("serenity now")
+describe 'widgets' do
+  before(:each){ load 'wukong/widget/processors.rb' }
+  
+  context Wukong::Processor::Null do
+    
+    it 'is registered' do
+      Wukong.registry.should be_registered(:null)
     end
-
-    it 'does not call emit on your behalf' do
-      subject = sample_dataflow.foreach{|rec| rec.reverse }
-      mock_val.stub(:reverse)
-      subject.should_not_receive(:emit)
-      subject.process(mock_val)
-    end
-
-    it 'accepts a proc or block arg' do
-      subject = sample_dataflow.foreach{|rec| emit rec.reverse }
-      subject.should_receive(:emit).with("won ytineres")
-      subject.process("serenity now")
-    end
-
-    it 'registers a dataflow helper `foreach`' do
-      st = sample_dataflow.foreach{|rec| rec.reverse }
-      st.should be_a(described_class)
+    
+    context '#process' do
+      it 'returns nothing when process is called' do
+        subject.process('Nothing moves the Blob!').should be_nil
+      end
     end
   end
 
-  describe Wukong::Flatten do
-    it_behaves_like 'a processor', named: 'flatten'
-    it 'emits each item in each input' do
-      subject.set_sink(test_sink)
-      [ [:this, :that], [], 1..5, { :a => :b} ].each{|rec| subject.process(rec) }
-      test_sink.records.should == [:this, :that, 1, 2, 3, 4, 5, [:a, :b]]
+  context Wukong::Processor::Foreach do
+
+    it 'is registered' do
+      Hanuman::GlobalRegistry.should be_registered(:foreach)
     end
-    it 'registers a dataflow helper `flatten`' do
-      st = sample_dataflow.flatten
-      st.should be_a(described_class)
+    
+    context '#process' do
+      it 'calls its action method when process is called' do
+        subject.should_receive(:perform_action).with('To Me, My X-men')
+        subject.process('To Me, My X-men')
+      end
     end
   end
-
-  describe Wukong::AsIs do
-    it_behaves_like 'a processor', named: 'as_is'
-    it 'emits each record' do
-      subject.should_receive(:emit).with(:this)
-      subject.should_receive(:emit).with(:that)
-      [:this, :that].each{|rec| subject.process(rec) }
+  
+  context Wukong::Processor::Map do
+    
+    it 'is registered' do
+      Hanuman::GlobalRegistry.should be_registered(:map)
     end
-    it 'registers a dataflow helper `as_is`' do
-      st = sample_dataflow.as_is
-      st.should be_a(described_class)
-    end
-  end
-
-  describe Wukong::Null do
-    it_behaves_like 'a processor', named: 'null'
-    it 'emits each record' do
-      subject.should_not_receive(:emit)
-      [:this, :that].each{|rec| subject.process(rec) }
-    end
-    it 'registers a dataflow helper `null`' do
-      st = sample_dataflow.null
-      st.should be_a(described_class)
+    
+    context '#process' do
+      it 'calls its action method and emits the result when process is called' do
+        subject.should_receive(:perform_action).with("I'm the best there is at what I do").and_return("But what I do isn't very nice")
+        subject.should_receive(:emit).with("But what I do isn't very nice")
+        subject.process("I'm the best there is at what I do")
+      end
     end
   end
+  
+  context Wukong::Processor::Flatten do
 
-
+    it 'is registered' do
+      Hanuman::GlobalRegistry.should be_registered(:map)
+    end
+    
+    context '#process' do
+      context 'enumerable record' do
+        it 'emits each record separately, in order' do
+          subject.should_receive(:emit).with('Cable').ordered
+          subject.should_receive(:emit).with('Sabretooth').ordered
+          subject.should_receive(:emit).with('Bishop').ordered      
+          subject.process(%w[Cable Sabretooth Bishop])
+        end
+      end
+      
+      context 'single record' do
+        it 'emits the record singly' do
+          subject.should_receive(:emit).with('Archangel')
+          subject.process('Archangel')
+        end
+      end
+    end
+  end
 end
