@@ -1,13 +1,36 @@
+require 'gorillib/some'
+require 'gorillib/model'
+require 'tsort'
 
-require 'gorillib/string/inflections'
+require 'hanuman/registry'
+require 'hanuman/link'
+require 'hanuman/stage'              
+require 'hanuman/graph'
 
-require 'hanuman/interpreter'
-require 'hanuman/stage'              ## base object for building blocks
+module Hanuman
+  module Shortcuts
+    
+    def builder_shortcut(builder_type, label, &blk)
+      if GlobalRegistry.registered?(label)
+        builder = GlobalRegistry.retrieve(label)
+      else
+        builder = builder_type.receive(label: label)
+      end
+      GlobalRegistry.decorate_with_registry(builder) if builder.is_a?(GraphBuilder)
+      builder.define(&blk)      
+    end
+    
+    def add_shortcut_method_for(method_name, builder_type)
+      self.define_singleton_method(method_name){ |label, &blk| builder_shortcut(builder_type, label, &blk) }
+    end
 
+    def registry() Hanuman::GlobalRegistry ; end    
+    
+  end
 
-# require 'hanuman/slot'               ## coordinate connections
-# require 'hanuman/slottable'          ## coordinate connections
+  extend Hanuman::Shortcuts
+  
+  add_shortcut_method_for(:stage, StageBuilder)
+  add_shortcut_method_for(:graph, GraphBuilder)
 
-# require 'hanuman/action'             ## represents a transformation of products
-# require 'hanuman/product'            ## represents a product
-# require 'hanuman/graph'              ## contains stages
+end
