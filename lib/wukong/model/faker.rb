@@ -109,28 +109,28 @@ module Gorillib::Factory
       nil
     end
   end
-  
-  class StringFactory    ; def fake_value()        receive(Wukong::Faker::Helpers.fake_word)          ; end ; end
-  class GuidFactory      ; def fake_value()        receive(UUIDTools::UUID.random_create.to_s)        ; end ; end
-  class HostnameFactory  ; def fake_value()        receive(Wukong::Faker::Helpers.fake_hostname)      ; end ; end
-  class IpAddressFactory ; def fake_value()        receive(Wukong::Faker::Helpers.fake_ip_addresss)   ; end ; end
 
-  class SymbolFactory    ; def fake_value()        receive(Wukong::Faker::Helpers.fake_identifier)    ; end ; end
-  class PathnameFactory  ; def fake_value()        receive(Wukong::Faker::Helpers.fake_filename)      ; end ; end
+  StringFactory.class_eval   { def fake_value()        receive(Wukong::Faker::Helpers.fake_word)          ; end }
+  GuidFactory.class_eval     { def fake_value()        receive(UUIDTools::UUID.random_create.to_s)        ; end }
+  HostnameFactory.class_eval { def fake_value()        receive(Wukong::Faker::Helpers.fake_hostname)      ; end }
+  IpAddressFactory.class_eval{ def fake_value()        receive(Wukong::Faker::Helpers.fake_ip_addresss)   ; end }
 
-  class IntegerFactory   ; def fake_value(opts={}) receive(Wukong::Faker::Helpers.fake_integer(opts)) ; end ; end
-  class BignumFactory    ; def fake_value(opts={}) super({:min => 2**68, :max => 2**90}.merge(opts))  ; end ; end
+  SymbolFactory.class_eval   { def fake_value()        receive(Wukong::Faker::Helpers.fake_identifier)    ; end }
+  PathnameFactory.class_eval { def fake_value()        receive(Wukong::Faker::Helpers.fake_filename)      ; end }
 
-  class FloatFactory     ; def fake_value(opts={}) receive(Wukong::Faker::Helpers.fake_float(opts))   ; end ; end
-  class ComplexFactory   ; def fake_value()        receive(Kernel.rand, Kernel.rand)                  ; end ; end
-  class RationalFactory  ; def fake_value()        receive(Kernel.rand.to_r)                          ; end ; end
+  IntegerFactory.class_eval  { def fake_value(opts={}) receive(Wukong::Faker::Helpers.fake_integer(opts)) ; end }
+  BignumFactory.class_eval   { def fake_value(opts={}) super({:min => 2**68, :max => 2**90}.merge(opts))  ; end }
 
-  class TimeFactory      ; def fake_value()        receive(Time.now)                                  ; end ; end
+  FloatFactory.class_eval    { def fake_value(opts={}) receive(Wukong::Faker::Helpers.fake_float(opts))   ; end }
+  ComplexFactory.class_eval  { def fake_value()        receive(Kernel.rand, Kernel.rand)                  ; end }
+  RationalFactory.class_eval { def fake_value()        receive(Kernel.rand.to_r)                          ; end }
 
-  class ExceptionFactory ; def fake_value()        Exception.constants.sample                         ; end ; end
-  
-  class NilFactory       ; def fake_value()        nil                                                ; end ; end
-  class TrueFactory      ; def fake_value()        true                                               ; end ; end
-  class FalseFactory     ; def fake_value()        false                                              ; end ; end
-  class BooleanFactory   ; def fake_value()        [true, false].sample                               ; end ; end
+  TimeFactory.class_eval     { def fake_value()        receive(Time.now)                                  ; end }
+
+  ExceptionFactory.class_eval{ def fake_value()        Exception.constants.sample                         ; end }
+
+  NilFactory.class_eval      { def fake_value()        nil                                                ; end }
+  TrueFactory.class_eval     { def fake_value()        true                                               ; end }
+  FalseFactory.class_eval    { def fake_value()        false                                              ; end }
+  BooleanFactory.class_eval  { def fake_value()        [true, false].sample                               ; end }
 end

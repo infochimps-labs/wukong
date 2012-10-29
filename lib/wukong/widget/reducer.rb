@@ -1,6 +1,6 @@
 module Wukong
   class Counter < Wukong::Processor
-    field :count,       Integer, :doc => 'count of records this run'
+    magic :count,       Integer, :doc => 'count of records this run'
 
     def setup
       super

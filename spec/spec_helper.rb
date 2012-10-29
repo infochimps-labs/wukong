@@ -1,9 +1,12 @@
 require 'bundler' ; Bundler.require(:default, :development)
 
-SimpleCov.start do
-  add_filter '/gorillib/'
-  add_filter '/away/'
-  add_group  'Hanuman', '/hanuman/'
+if ENV['WUKONG_COV']
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/gorillib/'
+    add_filter '/away/'
+    add_group  'Hanuman', '/hanuman/'
+  end
 end
 
 require 'wukong'
@@ -18,7 +21,7 @@ Pathname.register_path(:tmp,         :wukong_root, 'tmp')
 Pathname.register_path(:data,        :wukong_root, 'data')
 Pathname.path_to(:tmp).mkpath
 
-Dir[ Pathname.path_to('spec', 'support', '*.rb') ].each{ |f| require f }
+Dir[ Pathname.path_to('spec', 'support', '*.rb') ].each{|f| require f }
 
 result   = `dot -V 2>&1` rescue nil
 GRAPHVIZ = ($?.exitstatus == 0) && (result =~ /dot - graphviz version/)
@@ -26,4 +29,5 @@ puts 'Some specs require graphviz to run -- brew/apt install graphviz, it is pre
 
 RSpec.configure do |config|
   include WukongTestHelpers
+  config.treat_symbols_as_metadata_keys_with_true_values = true
 end

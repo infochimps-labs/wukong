@@ -19,26 +19,16 @@ module Wukong
     include Gorillib::Model
 
     def _metadata
-      @_metadata ||= {}
+      (@extra_attributes||={})[:_metadata]
     end
 
     def _metadata= m
-      @_metadata = m
+      (@extra_attributes||={})[:_metadata] = m
     end
 
-    def to_wire options={}
+    def to_wire(options={})
       super(options).merge(:_metadata => self._metadata)
     end
   end
 
 end
-
-#
-# Example Usage
-#
-# def process(blob)
-#   record   = JSON.parse(blob)
-#   metadata = blob._metadata
-#   { :_id => metadata.event_id, :time => metadata.timestamp, :type => metadata.topic, :data => record }
-#   # ... now do stuff
-# end

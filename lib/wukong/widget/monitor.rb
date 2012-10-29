@@ -5,7 +5,7 @@ module Wukong
       include CountingProcessor
       register_processor
 
-      field :every, Integer, :default => 1000, :doc => "How often to announce progress"
+      magic :every, Integer, :default => 1000, :doc => "How often to announce progress"
 
       def process(rec)
         super(rec)

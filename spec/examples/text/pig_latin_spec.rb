@@ -1,10 +1,7 @@
 require 'spec_helper'
 require 'wukong'
-require 'wukong/local_runner'
 
-load Pathname.path_to(:examples, 'text/pig_latin.rb')
-
-describe 'Pig Latin', :examples_spec => true, :helpers => true do
+describe_example_script(:pig_latin, 'text/pig_latin.rb') do
 
   context 'processor' do
     subject{ Wukong::Widget::PigLatinize.new }

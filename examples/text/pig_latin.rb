@@ -28,8 +28,8 @@ Wukong.processor :pig_latinize do
 end
 
 ExampleUniverse.dataflow(:pig_latin) do
-  input  :default, file_source(Pathname.path_to(:data, 'text/gift_of_the_magi.txt'))
-  output :default, file_sink(  Pathname.path_to(:tmp, 'text/pig_latin/gift_of_the_magi.txt'))
+  set_input  :default, file_source(Pathname.path_to(:data, 'text/gift_of_the_magi.txt'))
+  set_output :default, file_sink(  Pathname.path_to(:tmp, 'text/pig_latin/gift_of_the_magi.txt'))
 
   input(:default) > pig_latinize > output(:default)
 end

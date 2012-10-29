@@ -8,17 +8,17 @@ shared_context 'wukong', :helpers => true do
     RSpec::Matchers.define("be_#{handle}_ish"){ match{|actual| actual.should =~ regexp } }
   end
 
-  let(:mock_val   ){ mock('mock val') }
-  let(:mock_record){ mock('mock record') }
-  let(:mock_stage    ){ m = mock('mock stage') ; m }
-  let(:mock_processor){ m = mock ; m.stub(:name => 'mock processor', :attributes => { :a => :b }) ; m }
+  let(:mock_val)      { mock('mock val')       }
+  let(:mock_record)   { mock('mock record')    }
+  let(:mock_stage)    { mock('mock stage')     }
+  let(:mock_processor){ mock('mock processor') }
 
-  let(:test_source){          Wukong::Integers.new(:name => :integers, :size => 100) }
-  let(:test_sink){            Wukong::Sink::ArraySink.new(:name => :test_sink) }
-  let(:test_processor_class){ Wukong::AsIs }
-  let(:test_processor){       test_processor_class.new }
-  let(:test_filter){          Wukong::Widget::RegexpFilter.new(:re => /^m/) }
-  let(:test_dataflow){        Wukong.dataflow(:test_dataflow) }
+  let(:test_source)         { Wukong::Integers.new(:name => :integers, :qty => 100) }
+  let(:test_sink)           { Wukong::Sink::ArraySink.new(:name => :test_sink)      }
+  let(:test_processor_class){ Wukong::AsIs                                          }
+  let(:test_processor)      { test_processor_class.new                              }
+  let(:test_filter)         { Wukong::Widget::RegexpFilter.new(:re => /^m/)         }
+  let(:test_dataflow)       { Wukong.dataflow(:test_dataflow)                       }
 end
 
 
@@ -38,6 +38,32 @@ module WukongTestHelpers
 
   def sample_data(name)
     File.open(sample_data_filename(name))
+  end
+
+end
+
+RSpec::Core::DSL.module_eval do
+  def describe_example_script(example_name, source_file, attrs={}, &block)
+    return unless attrs[:only]
+    load Pathname.path_to(:examples, source_file)
+    describe "Example: #{example_name}", attrs.merge(:examples_spec => true, :helpers => true) do
+      let(:example_name){ example_name }
+      instance_eval(&block)
+    end
+  rescue StandardError => err
+    warn "Broken example #{example_name} with script #{source_file} (#{attrs})"
+    warn err
+    warn err.backtrace.join("\n")
+  end
+
+  def it_generates_graphviz
+    it 'generates a graphviz picture', :if => GRAPHVIZ do
+      require 'hanuman/graphvizzer/gv_presenter'
+      #
+      basename = Pathname.path_to(:tmp, example_name.to_s)
+      Wukong.to_graphviz.save(basename, 'png')
+      yield "#{basename}.dot" if block_given?
+    end
   end
 
 end

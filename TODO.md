@@ -4,21 +4,21 @@
   - hooks up source to flow,
   - if iterated source, drives it, otherwise sits in the flow
 
-* these set the contract for the inbound resources
+* these set the contract for the inbound products
 
 ### slots
 
 Typical case: one input, `:input`, one output `:output`
 
-* there are as many resources as
+* there are as many products as
   - the total number of action stage outputs
-  - the concrete input resources
+  - the concrete input products
 * The number of rsrc->action edges is at most the total number of input slots
-  - (you cannot wire multiple resources to the same input slot)
+  - (you cannot wire multiple products to the same input slot)
 
 
 1. action stage B wires up to an action stage A (which really means "the full set of A's outputs")
-2. I wire action A's output as production resource X
+2. I wire action A's output as production product X
 3. 
 
 4. How do I address other stages?
@@ -71,7 +71,7 @@ __________________________________________________________________________
         |  foo   |
         ----------
 
-create a resource with no action? action with anonymous resource, wired up later?
+create a product with no action? action with anonymous product, wired up later?
 
 
 * connections:

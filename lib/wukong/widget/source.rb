@@ -1,31 +1,23 @@
 module Wukong
   class Source < Hanuman::Action
-    include Hanuman::IsOwnOutputSlot
-    def self.register_source(name=nil, &block)
-      register_action(name, &block)
-    end
+    include Hanuman::OutputSlotted
+
+    def source?() true ; end
+
+    class << self ; alias_method :register_source, :register_action ; end
 
     def drive
+      sink = self.sink
       each do |record|
-        output.process(record)
+        sink.process(record)
       end
-    end
-
-    def new_string_event string
-      metadata_hash = Hash.new
-      string.define_singleton_method(:_metadata) do
-        metadata_hash
-      end
-      string
+    rescue StandardError => err ; err.polish("#{self.name}: emitting to #{sink.inspect}") rescue nil ; raise
     end
 
     class Iter < Source
+      register_source
       # the enumerable object to delegate
-      attr_reader :obj
-
-      def initialize(obj)
-        @obj = obj
-      end
+      magic :obj, Whatever, :position => 0
       def each(&block)
         obj.each(&block)
       end
@@ -34,9 +26,10 @@ module Wukong
     class IO < Source
       attr_reader :file
 
-      def each(&block)
+      def each
         file.each do |line|
-          yield line.chomp
+          line.chomp!
+          yield line if block_given?
         end
       end
 
@@ -47,72 +40,63 @@ module Wukong
 
     # emits each line from $stdin
     class Stdin < Wukong::Source::IO
+      register_source
       def setup
         super
         @file = $stdin
       end
-      register_source
     end
 
     class FileSource < Wukong::Source::IO
-      field :filename, Pathname, :doc => "Filename to read from"
-
-      def self.make(workflow, filename, stage_name=nil, attrs={})
-        super(workflow, attrs.merge(:filename => filename, :name => stage_name))
-      end
+      register_source
+      magic :filename, Pathname, :position => 0, :doc => "Filename to read from"
 
       def setup
         super
         @file = File.open(filename)
       end
-
-      register_source
     end
 
     module CappedGenerator
       extend Gorillib::Concern
       included do
         attr_reader :num
-        field :size, Integer, :default => 2**63, :doc => "Number of items to generate", :writer => true
+        magic :qty, Integer, :position => 0, :default => 5, :doc => "Number of items to generate", :writer => true
       end
 
-      def setup
+      def setup(*)
         super
         @num = 0
-      end
-
-      def max
-        size
       end
 
       def next_item
       end
 
       def each
-        loop do
-          break if @num > max
+        (1..2**63).each do
+          break if @num >= qty
           yield next_item
           @num += 1
         end
       end
     end
 
+    class Spew < Wukong::Source
+      register_source
+      include Wukong::Source::CappedGenerator
+      field :item, Whatever, position: 1, doc: "An item to emit over and over and over"
+
+      def next_item
+        item
+      end
+    end
+
     class Integers < Wukong::Source
       register_source :integers
       include CappedGenerator
-      field :init, Integer, :default => 0, :doc => "Initial offset", :writer => true
-
-      def max
-        init + size - 1
-      end
 
       def next_item
         @num
-      end
-
-      def self.make(dataflow, size=nil, attrs={})
-        attrs[:size] = size if not size.nil?
-        super(dataflow, attrs)
       end
     end
 

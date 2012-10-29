@@ -7,9 +7,9 @@ module Wukong
       register_source
       include CappedGenerator
 
-      field :min_wordlen, Integer, :default =>  3, :doc => "Shortest word length to generate"
-      field :max_wordlen, Integer, :default => 10, :doc => "Largest word length to generate"
-      field :max_linelen, Integer, :default => 80, :doc => "Max line length to generate; might be shorter by up to `min_wordlen` chars."
+      magic :min_wordlen, Integer, :default =>  3, :doc => "Shortest word length to generate"
+      magic :max_wordlen, Integer, :default => 10, :doc => "Largest word length to generate"
+      magic :max_linelen, Integer, :default => 80, :doc => "Max line length to generate; might be shorter by up to `min_wordlen` chars."
       attr_accessor :rng
 
       def setup
