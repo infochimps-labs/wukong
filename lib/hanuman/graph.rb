@@ -1,136 +1,64 @@
 module Hanuman
-
-  # class Graph < Action
-  #   collection :stages, Hanuman::Stage, :doc => 'the sequence of stages on this graph', :key_method => :name
-  #   field      :edges,  Hash,           :doc => 'connections among all stages on the graph', :default => {}
-  #   include Hanuman::IsOwnInputSlot
-  #   include Hanuman::IsOwnOutputSlot
-
-  class StageCollection < Gorillib::ModelCollection
-    include Gorillib::Collection::CommonAttrs
-    self.item_type = Hanuman::Stage
-
-    # the graph that owns this collection
-    attr_reader :owner
-
-    def initialize(owner, options={})
-      super(options)
-      @owner = owner
-      @common_attrs = common_attrs.merge(owner: owner)
-    end
-
-    def label_for(stage)
-      ll = clxn.key(stage) || "#{stage.stage_type}_#{size+1}".to_sym
-      stage.write_attribute(:name, ll) unless stage.name?
-      ll
-    end
-
-  end
-
   class Graph < Stage
-    magic      :name,    Symbol,               position: 0, doc: 'name of this stage'
-    field      :stages,  Gorillib::Collection, doc: 'the sequence of stages on this graph',
-      default: ->{ StageCollection.new(self) }
-    field      :edges,   Gorillib::Collection, doc: 'connections among all stages on the graph', default: ->{ Gorillib::Collection.new } # Hash.new
+    include TSort
 
-    alias_method :wire, :receive!
-
-    #
-    # Construct stages
-    #
-
-    # create a stage with params and attrs (+ possible block)
-    # get the object representing a stage (+ possible block)
-    # replace a stage with a new stage at the given label
-
-    def stage(label, attrs={}, &block)
-      needs_label = (not stages.include?(label))
-      stage = stages.update_or_add(label, attrs, &block)
-      if needs_label
-        as(label, stage)
-      end
-      stage
+    field :stages, Hash,  :default => {}
+    field :links,  Array, :default => []
+    
+    def tsort_each_node(&blk)
+      stages.keys.each(&blk)
     end
 
-    def as(label, stage)
-      define_singleton_method(label){ stage }
-      stage
+    def tsort_each_child(node, &blk)
+      links.select{ |link| link.into == node }.map(&:from).each(&blk)
     end
 
-    # alias for get_stage
-    def [](label) stages.fetch(label.to_sym) ; end
-
-    def lookup(ref)
-      ref.is_a?(Symbol) ? self[ref] : ref
-    end
-
-    #
-    # Labelled stages
-    #
-
-    def subgraph(name, &block)
-      stage(name, name: name, _type: Hanuman::Graph, &block)
-    end
-
-    def chain(label, &block)
-      stage(name, name: name, _type: Wukong::Chain, &block)
-    end
-
-    def action(label, &block)
-      stage(name, name: name, _type: Hanuman::Action, &block)
-    end
-
-    def product(label, &block)
-      stage(name, name: name, _type: Hanuman::Product, &block)
-    end
-
-    #
-    # Connections among stages
-    #
-
-    #
-    # * look up the targets (resolving labels to stages, etc)
-    #
-    def connect(from_stage, into_stage)
-      from_stage = lookup(from_stage)
-      into_stage = lookup(into_stage)
-
-      actual_from = from_stage.set_sink(into_stage)
-      actual_into = into_stage.set_source(from_stage)
-
-      edges[ [actual_from.graph_id, actual_into.graph_id] ] = { from: actual_from, into: actual_into }
-
-      [from_stage, into_stage]
-    end
-
-    #
-    # Control flow
-    #
-
-    def setup
-      source_stages .each{|stage| stage.setup}
-      process_stages.each{|stage| stage.setup}
-      sink_stages   .each{|stage| stage.setup}
-    end
-
-    def stop
-      source_stages .each{|stage| stage.stop}
-      process_stages.each{|stage| stage.stop}
-      sink_stages   .each{|stage| stage.stop}
-    end
-
-    def source_stages()  []     ; end
-    def process_stages() stages ; end
-    def sink_stages()    []     ; end
-
-    def to_inspectable
-      super.tap{|attrs| attrs[:edges] = [attrs[:edges].length] if attrs[:edges] }
-    end
+    def directed_sort() self.tsort ; end
   end
-end
 
-module Hanuman
-  Graph.class_eval do
-    include Slottable
+  class GraphBuilder < StageBuilder
+
+    field :stages, Hash,  :default => {}
+    field :links,  Array, :default => []
+
+    def define(&blk)     
+      graph = for_class || define_class(label) 
+      self.instance_eval(&blk) if block_given?
+      extract_links!
+      graph.register
+    end
+
+    def build(options = {})
+      attrs  = serialize
+      stages = attrs.delete(:stages).inject({}){ |hsh, (name, builder)| hsh[name] = builder.build(options) ; hsh }
+      for_class.receive attrs.merge(stages: stages)
+    end
+
+    def namespace() Hanuman::Graph ; end
+
+    def handle_dsl_arguments_for(stage, *args, &blk)
+      options = args.extract_options!
+      stage.merge!(options)
+      stage
+    end
+
+    def extract_links!
+      stages.each_pair{ |name, builder| links << builder.links }
+      links.flatten!
+    end
+    
+    def serialize
+      attrs = attributes
+      args  = attrs.delete(:args)
+      attrs.delete(:for_class)
+      attrs.merge(args)      
+    end
+
+    def clone
+      cloned_attrs  = Hash[ serialize.select{ |key, val| key != :stages }.map{ |key, val| dup_key = key.dup rescue key ; dup_val = val.dup rescue val ; [ dup_key, dup_val ] } ]
+      cloned_links  = links.map{ |link| link.dup }
+      cloned_stages = Hash[ stages.map{ |stage| stage.clone } ]
+      self.class.receive(cloned_attrs.merge(links: cloned_links).merge(stages: cloned_stages).merge(for_class: for_class))
+    end
   end
 end

@@ -1,3 +1,24 @@
+require 'graphviz'
+  
+module Hanuman
+  class Graphvizzer
+
+    attr_accessor :hanuman_graph, :visual
+    
+    def initialize(hanuman_graph)
+      @hanuman_graph = hanuman_graph
+      @visual = GraphViz.new(@hanuman_graph.label, :type => :digraph)
+    end
+
+    def create
+      hanuman_graph.directed_sort.each{ |stage| visual.add_nodes(stage.to_s) }
+      hanuman_graph.links.each{ |link| visual.add_edges(link.from.to_s, link.into.to_s) }
+      visual.output(:png => 'test.png')
+    end
+  
+  end
+end
+
 # module Hanuman
 #   module Graphvizzer
 #     include Gorillib::Builder
