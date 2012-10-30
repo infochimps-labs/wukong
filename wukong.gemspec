@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
 EOF
 
   gem.files         = `git ls-files`.split("\n")
-  gem.executables   = [] # gem.files.grep(/^bin/).map{ |f| File.basename(f) }
+  gem.executables   = gem.files.grep(/^bin/).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
