@@ -36,7 +36,7 @@ class WukongServer < EM::Protocols::LineAndTextProtocol
     input = MultiJson.load data
     
     op = proc { @processor.process(input) }
-    callback = proc { send_data MultiJson.dump(@buffer) }
+    callback = proc { send_data MultiJson.dump(@buffer) + "\n" }
     EM.defer(op, callback)
       
   rescue MultiJson::DecodeError => ex
