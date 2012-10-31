@@ -41,7 +41,6 @@ class WukongServer < EM::Protocols::LineAndTextProtocol
 end
 
 EM::run {
-  path = '/tmp/wukong.sock'
-  EM::start_unix_domain_server(path, WukongServer)
-  puts "Listening on socket #{path}"
+  EM::start_server('localhost', 9500, WukongServer)
+  puts "Listening on localhost:9500"
 }
