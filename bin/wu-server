@@ -1,7 +1,15 @@
-require 'pry'
+require 'configliere'
 require 'wukong'
 require 'eventmachine'
 require 'multi_json'
+
+Settings({
+  host: "localhost",
+  port: 9500
+})
+
+Settings.use :commandline
+Settings.resolve!
 
 # Load the file on the command line
 wu_file = ARGV.shift
@@ -41,6 +49,6 @@ class WukongServer < EM::Protocols::LineAndTextProtocol
 end
 
 EM::run {
-  EM::start_server('localhost', 9500, WukongServer)
-  puts "Listening on localhost:9500"
+  EM::start_server(Settings[:host], Settings[:port], WukongServer)
+  puts "Listening on #{Settings[:host]}:#{Settings[:port]}"
 }
