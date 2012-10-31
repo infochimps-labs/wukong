@@ -1,0 +1,47 @@
+require 'pry'
+require 'wukong'
+require 'eventmachine'
+require 'multi_json'
+
+# Load the file on the command line
+wu_file = ARGV.shift
+load wu_file
+$processor = File.basename(wu_file, '.rb').to_sym
+
+# EventMachine server
+
+class WukongServer < EM::Protocols::LineAndTextProtocol
+  def post_init
+    puts "[server] Client connected"
+    
+    dataflow_class = Wukong.dataflow(:server){ send($processor) }
+    flow_builder = Wukong.registry.retrieve(:server)
+    flow = flow_builder.build(processor: $processor)
+    
+    @buffer = []
+    @processor = flow.stages.values.first
+    @processor.emitter = ->(value){ @buffer << value }
+  end
+
+  def receive_data(data)
+    @buffer = []
+    input = MultiJson.load data
+    
+    op = proc { @processor.process(input) }
+    callback = proc { send_data MultiJson.dump(@buffer) }
+    EM.defer(op, callback)
+      
+  rescue MultiJson::DecodeError => ex
+    STDERR.puts "[server] Dropped: Malformed request"
+  end
+
+  def unbind
+    puts "[server] Client disconnected."
+  end
+end
+
+EM::run {
+  path = '/tmp/wukong.sock'
+  EM::start_unix_domain_server(path, WukongServer)
+  puts "Listening on socket #{path}"
+}
