@@ -5,7 +5,7 @@ require 'gorillib/logger/log'
 require 'hanuman'
 
 require 'wukong/processor'
-require 'wukong/runner'
+require 'wukong/driver'
 require 'wukong/widget/processors'
 require 'wukong/emitter'
 require 'wukong/widget/source'
