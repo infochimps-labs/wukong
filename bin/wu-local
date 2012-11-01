@@ -2,9 +2,14 @@
 $:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'wukong'
+require 'configliere'
 
-wu_file   = ARGV.shift
+Settings.use(:commandline)
+Settings.define :proc, flag: 'p'
+Settings.resolve!
+
+wu_file   = Settings.rest.first
 load wu_file 
-processor = File.basename(wu_file, '.rb').to_sym
+processor = Settings.proc || File.basename(wu_file, '.rb')
 
-Wukong::LocalRunner.run(processor)
+Wukong::LocalDriver.run(processor.to_sym, Settings)
