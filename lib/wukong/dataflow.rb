@@ -8,6 +8,21 @@ module Wukong
       stage.merge!(options.merge(action: action).compact)
       stage      
     end
+  
+    def linkable_name(direction) 
+      case direction
+      when :in  then directed_sort.first
+      when :out then directed_sort.last
+      end
+    end
+
+    def method_missing(name, *args, &blk)
+      if stages[name]
+        handle_dsl_arguments_for(stages[name], *args, &blk)
+      else
+        super
+      end
+    end
     
   end
   
