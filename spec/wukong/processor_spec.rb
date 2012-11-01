@@ -3,22 +3,13 @@ require 'spec_helper'
 describe Wukong::Processor do
 
   context '#process' do
-    it 'emits the record when process is called' do
-      subject.should_receive(:emit).with('I custom-made yo suit!')
+    let(:blk){ proc { puts 'X-Men' } }
+    it 'yields the record when process is called with a block' do
+      subject.should_receive(:yield).with('I custom-made yo suit!')
       subject.process('I custom-made yo suit!')
     end
   end
     
-  context '#emit' do
-    let(:delegate){ double :delegate, :call => 'psylocke'      }
-    subject       { described_class.receive(emitter: delegate) }
-    
-    it 'delegates emit to its received emitter' do
-      delegate.should_receive(:call).with('I am a mutant')
-      subject.emit('I am a mutant')
-    end
-  end
-
 end
 
 describe 'widgets' do
@@ -37,19 +28,19 @@ describe 'widgets' do
     end
   end
 
-  context Wukong::Processor::Foreach do
+  # context Wukong::Processor::Foreach do
 
-    it 'is registered' do
-      Hanuman::GlobalRegistry.should be_registered(:foreach)
-    end
+  #   it 'is registered' do
+  #     Hanuman::GlobalRegistry.should be_registered(:foreach)
+  #   end
     
-    context '#process' do
-      it 'calls its action method when process is called' do
-        subject.should_receive(:perform_action).with('To Me, My X-men')
-        subject.process('To Me, My X-men')
-      end
-    end
-  end
+  #   context '#process' do
+  #     it 'calls its action method when process is called' do
+  #       subject.should_receive(:perform_action).with('To Me, My X-men')
+  #       subject.process('To Me, My X-men')
+  #     end
+  #   end
+  # end
   
   context Wukong::Processor::Map do
     
