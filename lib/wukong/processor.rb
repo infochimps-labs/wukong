@@ -7,9 +7,8 @@ module Wukong
 
   class Processor < Hanuman::Stage
 
-    field :action,   Whatever
-    field :emitter,  Whatever
-    field :log,      Whatever, :default => Log
+    field :action, Whatever
+    field :log,    Whatever, :default => Log
 
     # This is a placeholder method intended to be overridden
     def perform_action(*args) ; end 
@@ -27,12 +26,6 @@ module Wukong
     # This method is called once per record
     # Override this in your subclass
     def process(record)
-      emit(record)
-    end
-
-    # Emit one record at a time to be handled by the emitter
-    def emit(record)
-      emitter.call(record)
     end
 
     # This method is called after all records have been processed
