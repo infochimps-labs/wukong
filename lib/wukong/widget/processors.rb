@@ -1,6 +1,6 @@
 module Wukong
   class Processor
-
+    
     class Null < Processor
       def process(record)
         # ze goggles... zey do nussing!
@@ -8,31 +8,32 @@ module Wukong
       register
     end
     
-    class Foreach < Processor
-      def process(record)
-        perform_action(record)
-      end
-      register
-    end
+    # Until further notice, this processor is unusable due to the invocation of yield
+    # class Foreach < Processor
+    #   def process(record, &blk)
+    #     perform_action(record, &blk)
+    #   end
+    #   register
+    # end
 
     class Map < Processor
       def process(record)
-        emit perform_action(record)
+        yield perform_action(record)
       end
       register
     end
     
     class Flatten < Processor
       def process(records)
-        records.respond_to?(:each) ? records.each{ |record| emit(record) } : emit(records)
+        records.respond_to?(:each) ? records.each{ |record| yield(record) } : yield(records)
       end
       register
     end
     
     class Filter < Processor
-      def process(record) emit(record) if select?(record) ; end
-      def reject?(record) not select?(record)             ; end
-      def select?(record) true                            ; end
+      def process(record) yield(record) if select?(record) ; end
+      def reject?(record) not select?(record)              ; end
+      def select?(record) true                             ; end
     end
 
     class IncludeAll < Filter
@@ -52,35 +53,57 @@ module Wukong
     end
     
     class NotRegexpFilter < Filter
-     def select?(record)
-       not record.match perform_action
-     end
-     register(:not_regexp)      
+      def select?(record)
+        not record.match perform_action
+      end
+      register(:not_regexp)      
     end
 
-   class Limit < Filter
-     field :max, Float, :default => Float::INFINITY
-     def select?(record)
-       @count ||= 0.0
-       keep = @count < max
-       @count += 1
-       keep
-     end
-     register
-   end
+    class Limit < Filter
+      field :max, Float, :default => Float::INFINITY
+      def select?(record)
+        @count ||= 0.0
+        keep = @count < max
+        @count += 1
+        keep
+      end
+      register
+    end
 
-   class Select < Filter
-     def select?(record)
-       perform_action(record)
-     end
-     register
-   end
+    class Select < Filter
+      def select?(record)
+        perform_action(record)
+      end
+      register
+    end
+    
+    class Reject < Filter
+      def select?(record)
+        not perform_action(record)
+      end
+      register
+    end
 
-   class Reject < Filter
-     def select?(record)
-       not perform_action(record)
-     end
-     register
-   end
+    class Logger < Processor
+      field :level, Symbol, :default => :info
+      def process(record)
+        log.send(level, record)
+      end
+      register
+    end
+
+    # This is just a demo class, use only with small data
+    class Sort < Processor
+      def setup()
+        @records = []
+      end
+      def process(record)
+        @records << record
+      end
+      def finalize()
+        @records.sort.each{ |record| yield record }
+      end
+      register
+    end
   end
 end
