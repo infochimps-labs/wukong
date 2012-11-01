@@ -1,6 +1,6 @@
 ## OS
 .DS_Store
-Icon
+Icon
 nohup.out
 .bak
 
@@ -55,3 +55,4 @@ docpages
 away
 
 .rbx
+Gemfile.lock
