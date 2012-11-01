@@ -17,6 +17,7 @@ module Hanuman
   end
 
   class GraphBuilder < StageBuilder
+    include TSort
 
     field :stages, Hash,  :default => {}
     field :links,  Array, :default => []
@@ -53,6 +54,16 @@ module Hanuman
       attrs.delete(:for_class)
       attrs.merge(args)      
     end
+
+    def tsort_each_node(&blk)
+      stages.keys.each(&blk)
+    end
+
+    def tsort_each_child(node, &blk)
+      links.select{ |link| link.into == node }.map(&:from).each(&blk)
+    end
+
+    def directed_sort() self.tsort ; end
 
     def clone
       cloned_attrs  = Hash[ serialize.select{ |key, val| key != :stages }.map{ |key, val| dup_key = key.dup rescue key ; dup_val = val.dup rescue val ; [ dup_key, dup_val ] } ]
