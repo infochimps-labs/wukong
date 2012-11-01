@@ -65,12 +65,14 @@ module Hanuman
       klass
     end
     
+    def linkable_name(direction) self.label ; end
+
     def add_link(level, from, into)    
       links << Hanuman::LinkFactory.connect(level, from, into)
     end
 
     def into(other_stage)
-      self.add_link(:simple, self.label, other_stage.label)
+      self.add_link(:simple, self.linkable_name(:in), other_stage.linkable_name(:out))
       other_stage
     end
     alias_method :>, :into
