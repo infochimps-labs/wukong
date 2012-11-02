@@ -1,6 +1,6 @@
 require 'configliere'
-
 require 'gorillib/logger/log'
+require 'vayacondios-client'
 
 require 'hanuman'
 
