@@ -46,8 +46,9 @@ module Wukong
     end
 
     class RegexpFilter < Filter
+      field :match, Regexp
       def select?(record)
-        record.match perform_action
+        self.match.match perform_action
       end
       register(:regexp)
     end
@@ -94,14 +95,41 @@ module Wukong
 
     # This is just a demo class, use only with small data
     class Sort < Processor
+      field :on,        Whatever, :default => nil
+      field :separator, String,   :default => "\t"
+      field :reverse,   :boolean, :default => false
+      field :numeric,   :boolean, :default => false
+
       def setup()
         @records = []
       end
-      def process(record)
+      
+      def sortable(record)
+        case 
+        when self.on.nil? && record.respond_to?(:<=>) then record          
+        when record.respond_to?(self.on.to_s)         then record.send(self.on.to_s)
+        when self.on && record.is_a?(String)          then record.split(separator)[self.on.to_i]
+        when record.respond_to(:[])                   then record[self.on]          
+        end
+      end
+      
+      def process(record)        
         @records << record
       end
+      
+      def compare(x, y)
+        a = (sortable(x) or return -1) 
+        b = (sortable(y) or return  1)
+        if numeric
+          a = a.to_f ; b = b.to_f
+        end
+        a <=> b
+      end
+
       def finalize()
-        @records.sort.each{ |record| yield record }
+        sorted = @records.sort{ |x, y| compare(x, y) }
+        sorted.reverse! if reverse
+        sorted.each{ |record| yield record }
       end
       register
     end
