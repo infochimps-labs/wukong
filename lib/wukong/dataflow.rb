@@ -1,6 +1,14 @@
 module Wukong
   class DataflowBuilder < Hanuman::GraphBuilder
 
+    def describe desc
+      @description = desc
+    end
+
+    def description
+      @description
+    end
+    
     def namespace() Wukong::Dataflow ; end
 
     def handle_dsl_arguments_for(stage, *args, &action)
