@@ -10,6 +10,7 @@ require 'wukong/widget/processors'
 require 'wukong/emitter'
 require 'wukong/widget/source'
 require 'wukong/widget/sink'
+require 'wukong/widget/reducer'
 require 'wukong/dataflow'
 
 module Wukong

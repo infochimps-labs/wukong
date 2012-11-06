@@ -2,14 +2,26 @@
 $:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'wukong'
-require 'configliere'
 
+require 'configliere'
+def Settings.usage
+  "usage: #{File.basename($0)} [ --param=value | -p value | --param | -p] PROCESSOR|FLOW"
+end
 Settings.use(:commandline)
-Settings.define :proc, flag: 'p'
+Settings.define :run,         description: "Name of the processor or dataflow to use, default will be taken from basename of first argument.",          flag: 'r'
+Settings.define :environment, description: "Ruby config file to read for application environment", default: File.expand_path('config/environment.rb'),  flag: 'e'
+Settings.define :config,      description: "YAML config file to read for application settings",    default: File.expand_path('config/deploy_pack.yml'), flag: 'c'
 Settings.resolve!
 
-wu_file   = Settings.rest.first
+Settings.read(Settings[:config]) if File.exist?(Settings[:config]) && File.file?(Settings[:config]) && File.readable?(Settings[:config])
+require Settings[:environment] if File.exist?(Settings[:environment]) && File.file?(Settings[:environment]) && File.readable?(Settings[:environment])
+
+wu_file = Settings.rest.first
+if wu_file.nil?
+  Settings.dump_help
+  exit(1)
+end
 load wu_file 
-processor = Settings.proc || File.basename(wu_file, '.rb')
+processor = Settings.run || File.basename(wu_file, '.rb')
 
 Wukong::LocalDriver.run(processor.to_sym, Settings)

@@ -11,6 +11,14 @@ module Wukong
     field :log,      Whatever, :default => Log
     field :notifier, Vayacondios::NotifierFactory, :default => Vayacondios.default_notifier
 
+    def self.describe desc
+      @description = desc
+    end
+
+    def self.description
+      @description
+    end
+
     # This is a placeholder method intended to be overridden
     def perform_action(*args) ; end 
     
