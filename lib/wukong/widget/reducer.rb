@@ -8,7 +8,7 @@ module Wukong
       end
       
       def get field, obj
-        return unless field
+        return obj unless field
         case
         when field.is_a?(Fixnum) || field.to_s.to_i > 0
           # assume delimited
@@ -30,7 +30,7 @@ module Wukong
       def setup
         @count = 0
       end
-
+      
       def process(record)
         @count += 1
       end
