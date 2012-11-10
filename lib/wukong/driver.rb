@@ -27,20 +27,15 @@ module Wukong
     attr_accessor :dataflow, :source
     
     def initialize(dataflow, options = {})
-      builder   = Wukong.registry.retrieve(dataflow)
-      dataflow  = builder.build(options)
-      @dataflow = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
+      builder    = Wukong.registry.retrieve(dataflow)
+      dataflow   = builder.build(options)
+      @dataflow  = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
       @dataflow << Wukong.registry.retrieve(:stdout).build
-      @source   = Wukong.registry.retrieve(:stdin).build
+      @source    = Wukong.registry.retrieve(:stdin).build
     end
 
     def emitter
-      @emitter ||= Proc.new do |record, stage|
-        next_stage = stage_iterator(stage)
-        next_stage.process(record) do |next_record|      
-          emitter.call(next_record, next_stage) unless next_record.nil?
-        end unless next_stage.nil?      
-      end
+      @emitter ||= ProcEmitter.new(dataflow)
     end
 
     def stage_iterator(stage)
@@ -49,28 +44,56 @@ module Wukong
       dataflow[position + 1]    
     end
 
-    def send_through_processor(record, stage = nil)
-      emitter.call(record, stage)
-    end
-        
     def next_record(&blk)
       trap('SIGINT'){ break }              
       source.process(&blk)
     end
-    
+
     def run!      
       dataflow.each(&:setup)
       next_record do |record|
-        send_through_processor(record)
+        emitter.send_through_dataflow(record)
       end
       dataflow.each do |stage|
-        stage.finalize do |on_exit|        
-          send_through_processor(on_exit, stage) unless on_exit.nil?
-        end if stage.respond_to?(:finalize)
+        stage.finalize(&emitter.advance(stage)) if stage.respond_to?(:finalize)
         stage.stop
       end
       nil
     end
-    
   end
+end
+
+class ProcEmitter
+
+  attr_accessor :dataflow
+
+  def initialize(dataflow)
+    @dataflow = dataflow
+  end
+
+  def to_proc
+    return @wiring if @wiring
+    @wiring = Proc.new do |stage, record|
+      stage.process(record, &advance(stage)) if stage          
+    end
+  end
+
+  def send_through_dataflow(record)
+    self.call(dataflow.first, record)
+  end
+  
+  def advance(stage)
+    next_stage = stage_iterator(stage)
+    self.to_proc.curry.call(next_stage)
+  end
+
+  def stage_iterator(stage)
+    position = dataflow.find_index(stage)
+    dataflow[position + 1]    
+  end 
+
+  def call(*args)
+    to_proc.call(*args)
+  end
+  
 end
