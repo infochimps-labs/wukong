@@ -96,29 +96,21 @@ module Wukong
       register
     end
 
-    class Pretty < Processor
-      def process record
-        case record
-        when /^\s*\{/
-          begin
-            yield MultiJson.dump(MultiJson.load(record), :pretty => true)
-          rescue => e
-            yield record
-          end
-        else
-          yield record
-        end
+    class Topic < Processor
+      field :topic, Symbol
+      def process(record)
+        yield perform_action(record)
       end
-      register
-    end
 
-    class Extract < Processor
-      include DynamicGet
-      def process record
-        yield get(self.on, record)
+      def perform_action(record)
+        assign_topic(record, topic)
+      end      
+
+      def assign_topic(record, topic_name)
+        record.define_singleton_method(:topic){ topic_name }
+        record
       end
       register
     end
-    
   end
 end
