@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
 EOF
 
-  gem.files         = `git ls-files`.split("\n")
+  gem.files         = `git ls-files`.split("\n").reject { |path| path =~ /^(data|docpages|notes|old)/ }
   gem.executables   = gem.files.grep(/^bin/).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
