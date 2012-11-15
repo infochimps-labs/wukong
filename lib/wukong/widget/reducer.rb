@@ -1,30 +1,6 @@
+require_relative('utils')
 module Wukong
   class Processor
-
-    module DynamicGet
-
-      def self.included klass
-        klass.send(:field, :separator, String,   :default => "\t")
-      end
-      
-      def get field, obj
-        return obj unless field
-        case
-        when field.is_a?(Fixnum) || field.to_s.to_i > 0
-          # assume delimited
-          obj.split(separator)[field]
-        when field.to_s.to_i == 0
-          # assume complex field so it's a Hash, try JSON
-          begin
-            json = MultiJson.load(obj)
-            json[field.to_s]
-          rescue MultiJson::DecodeError => e
-            nil
-          end
-        end
-      end
-
-    end
 
     class Count < Processor
       def setup
@@ -47,7 +23,6 @@ module Wukong
       
       include DynamicGet
 
-      field :on,        Whatever, :default => nil
       field :reverse,   :boolean, :default => false
       field :numeric,   :boolean, :default => false
 
@@ -83,9 +58,7 @@ module Wukong
     class Group < Processor
 
       include DynamicGet
-
-      field :on,        Whatever, :default => nil
-
+      
       def process record
         start(record) unless defined?(@key)
         key = get_key(record)

@@ -1,27 +1,63 @@
 #!/usr/bin/env ruby
-$:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'wukong'
 
-require 'configliere'
-def Settings.usage
-  "usage: #{File.basename($0)} [ --param=value | -p value | --param | -p] PROCESSOR|FLOW"
+settings = Wukong::Local::Configuration
+settings.use(:commandline)
+
+def settings.usage
+  "usage: #{File.basename($0)} PROCESSOR|FLOW [ --param=value | -p value | --param | -p]"
 end
-Settings.use(:commandline)
-Settings.define :run,         description: "Name of the processor or dataflow to use, default will be taken from basename of first argument.",          flag: 'r'
-Settings.define :environment, description: "Ruby config file to read for application environment", default: File.expand_path('config/environment.rb'),  flag: 'e'
-Settings.define :config,      description: "YAML config file to read for application settings",    default: File.expand_path('config/deploy_pack.yml'), flag: 'c'
-Settings.resolve!
 
-Settings.read(Settings[:config]) if File.exist?(Settings[:config]) && File.file?(Settings[:config]) && File.readable?(Settings[:config])
-require Settings[:environment] if File.exist?(Settings[:environment]) && File.file?(Settings[:environment]) && File.readable?(Settings[:environment])
+settings.description = <<-EOF
+wu-local is a tool for running Wukong processors and flows locally on
+the command-line.  Use wu-local by passing it a processor and feeding
+in some data:
 
-wu_file = Settings.rest.first
-if wu_file.nil?
-  Settings.dump_help
+  $ echo 'UNIX is Clever and Fun...' | wu-local tokenizer.rb
+  UNIX
+  is
+  Clever
+  and
+  Fun
+
+If your processors have named fields you can pass them in as
+arguments:
+
+  $ echo 'UNIX is clever and fun...' | wu-local tokenizer.rb --min_length=4
+  UNIX
+  Clever
+
+You can chain processors and calls to wu-local together:
+
+  $ echo 'UNIX is clever and fun...' | wu-local tokenizer.rb --min_length=4 | wu-local downcaser.rb
+  unix
+  clever
+
+Which is a good way to develop a combined data flow which you can
+again test locally:
+
+  $ echo 'UNIX is clever and fun...' | wu-local tokenize_and_downcase_big_words.rb
+  unix
+  clever
+EOF
+
+settings.define :run, description: "Name of the processor or dataflow to use.  Defaults to basename of the given path.", flag: 'r'
+
+require 'wukong/boot' ; Wukong.boot!(settings)
+
+thing = settings.rest.first
+case
+when thing.nil?
+  settings.dump_help
   exit(1)
+when Wukong.registry.registered?(thing.to_sym)
+  processor = thing.to_sym
+when File.exist?(thing)
+  processor = settings.run || File.basename(thing, '.rb')
+else
+  settings.dump_help
+  exit(2)
 end
-load wu_file 
-processor = Settings.run || File.basename(wu_file, '.rb')
-
-Wukong::LocalDriver.run(processor.to_sym, Settings)
+# p settings
+Wukong::LocalDriver.run(processor.to_sym, settings)

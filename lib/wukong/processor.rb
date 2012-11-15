@@ -30,7 +30,11 @@ module Wukong
     # Valid notifier types are currently :http or :log
     # This processor's log is passed to vayacondios
     def receive_notifier(type)
-      @notifier = Vayacondios::NotifierFactory.receive(type: type, log: log)
+      if type.is_a?(Hash)
+        @notifier = Vayacondios::NotifierFactory.receive(type)
+      else
+        @notifier = Vayacondios::NotifierFactory.receive(type: type, log: log)
+      end
     end
 
     # Send information to Vayacondios; data goes in, the right thing happens
@@ -48,7 +52,18 @@ module Wukong
     def process(record)
     end
 
-    # This method is called after all records have been processed
+    # This method is called to signal the last record has been
+    # received but that further processing may still be done, events
+    # still be yielded, &c.
+    #
+    # This can be used within an aggregating processor (like a reducer
+    # in a map/reduce job) to start processing the final aggregate of
+    # records since the "last record" has already been received.
+    def finalize
+    end
+
+    # This method is called after all records have been passed.  It
+    # signals that processing should stop.
     def stop
     end
   
