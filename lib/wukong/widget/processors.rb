@@ -96,22 +96,6 @@ module Wukong
       register
     end
 
-    class Pretty < Processor
-      def process record
-        case record
-        when /^\s*\{/
-          begin
-            yield MultiJson.dump(MultiJson.load(record), :pretty => true)
-          rescue => e
-            yield record
-          end
-        else
-          yield record
-        end
-      end
-      register
-    end
-
     class Extract < Processor
       include DynamicGet
       def process record
