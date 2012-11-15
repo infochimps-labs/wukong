@@ -96,6 +96,14 @@ module Wukong
       register
     end
 
+    class Extract < Processor
+      include DynamicGet
+      def process record
+        yield get(self.on, record)
+      end
+      register
+    end
+    
     class Topic < Processor
       field :topic, Symbol
       def process(record)

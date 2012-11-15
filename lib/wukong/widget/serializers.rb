@@ -32,14 +32,32 @@ module Wukong
       register
     end
 
-
     class ToInspectStr < Serializer
       def process(*args)
         yield args.inspect
       end
+    end
+    
+    class Pretty < Processor
+      def process record
+        case record
+        when /^\s*\{/
+          yield pretty_json(record)
+        else
+          yield record
+        end
+      end
+
+      def pretty_json json
+        begin
+          MultiJson.dump(MultiJson.load(json), :pretty => true)
+        rescue => e
+          json
+        end
+      end
+      
       register
     end
 
   end
-
 end

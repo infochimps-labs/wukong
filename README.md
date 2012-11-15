@@ -161,3 +161,88 @@ yield a String argument (or something that will `to_s` appropriately).
 
 Wukong has a number of built-in widgets that are useful for
 scaffolding your dataflows.
+
+### Serializers
+
+Serializers are widgets which don't change the semantic meaning of a
+record, merely its representation.  Here's a list:
+
+* `to_json`, `from_json` for turning records into JSON or parsing JSON into records
+* `to_tsv`, `from_tsv` for turning Array records into TSV or parsing TSV into Array records
+* `pretty` for pretty printing JSON inputs
+
+When you're writing processors that are capable of running in
+isolation you'll want to ensure that you deserialize and serialize
+records on the way in and out, like this
+
+```ruby
+Wukong.processor(:on_my_own) do
+  def process json
+    obj = MultiJson.load(json)
+    
+    # do something with obj...
+    
+    yield MultiJson.dump(obj)
+  end
+end
+```
+
+For processors which will only run inside a data flow, you can
+optimize by not doing any (de)serialization until except at the very
+beginning and at the end
+
+```ruby
+Wukong.dataflow(:complicated) do
+  from_json > proc_1 > proc_2 > proc_3 ... proc_n > to_json
+end
+```
+
+in this approach, no serialization will be done between processors.
+
+### General Purpose
+
+There are several general purpose processors which implement common
+patterns on input and output data.  These are most useful within the
+context of a dataflow definition.
+
+* `null` does what you think it doesn't
+* `map` perform some block on each
+* `flatten` flatten the input array
+* `filter`, `select`, `reject` only let certain records through based on a block
+* `regexp`, `not_regexp` only pass records matching (or not matching) a regular expression
+* `limit` only let some number of records pass
+* `logger` send events to the local log stream
+* `extract` extract some part of each input event
+
+Some of these widgets can be used directly, perhaps with some
+arguments
+
+```ruby
+Wukong.processor(:log_everything) do
+  proc_1 > proc_2 > ... > logger
+end
+
+Wukong.processor(:log_everything_important) do
+  proc_1 > proc_2 > ... > regexp(match: /important/i) > logger
+end
+```
+
+Other widgets require a block to define their action:
+
+```ruby
+Wukong.processor(:log_everything_important) do
+  parser > select { |record| record.priority =~ /important/i } > logger
+end
+```
+
+### Reducers
+
+There are a selection of widgets that do aggregative operations like
+counting, sorting, and summing.  These are perfect to use within
+reducers in a map/reduce framework like Hadoop.
+
+* `count` emits a final count of all input records
+* `extract` will extract some part of a record (nth field, named key, &c.)
+* `sort` can sort input streams
+* `group` will group records by some extracting part and give a count of each group's size
+* `group_stats` will emit more complicated statistics (mean, std. dev.) on the group given some other value to measure
