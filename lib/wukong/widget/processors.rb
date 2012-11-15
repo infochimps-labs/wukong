@@ -35,8 +35,9 @@ module Wukong
 
     class Extract < Processor
       include DynamicGet
+      field :part, Whatever, :default => nil
       def process record
-        yield get(self.on, record)
+        yield get(self.part, record)
       end
       register
     end

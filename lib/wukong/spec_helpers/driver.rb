@@ -6,8 +6,8 @@ module Wukong
       # These are methods you call on this object within the spec DSL.
       #
       
-      def given event
-        @givens << event
+      def given *events
+        @givens.concat(events)
         self
       end
 
@@ -34,11 +34,12 @@ module Wukong
 
       def initialize proc, &block
         @proc   = proc
-        yield @proc if block_given?
+        yield @proc if @proc && block_given?
         @givens = []
       end
       
       def run
+        return false unless @proc
         @proc.setup
         @outputs = [].tap do |output_records|
           @givens.each do |given_record|
@@ -47,12 +48,15 @@ module Wukong
             end
           end
         end
-        @proc.finalize
+        @proc.finalize do |output_record|
+          @outputs << output_record
+        end
         @proc.stop
+        true
       end
 
       def outputs
-        @outputs
+        @outputs || []
       end
 
       private

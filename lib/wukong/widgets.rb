@@ -1,0 +1,6 @@
+require 'wukong/widget/source'
+require 'wukong/widget/sink'
+require 'wukong/widget/processors'
+require 'wukong/widget/reducers'
+require 'wukong/widget/serializers'
+require 'wukong/widget/filters'

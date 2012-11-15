@@ -1,24 +1,28 @@
 module Wukong
+  # This code is gross and nasty.
   module DynamicGet
 
     def self.included klass
       klass.send(:field, :separator, String,   :default => "\t")
-      klass.send(:field, :on,        Whatever, :default => nil)
     end
     
     def get field, obj
       return obj unless field
       case
-      when field.is_a?(Fixnum) || field.to_s.to_i > 0
-        # assume delimited
-        obj.split(separator)[field]
-      when field.to_s.to_i == 0
-        # assume complex field so it's a Hash, try JSON
+      when field.to_s.to_i > 0 && obj.is_a?(String)
+        obj.split(separator)[field.to_s.to_i - 1]
+      when field.to_s.to_i > 0
+        obj[field.to_s.to_i - 1]
+      when field.to_s.to_i == 0 && obj.is_a?(String) && obj =~ /^\s*\{/
         begin
           get_nested(field, MultiJson.load(obj))
         rescue MultiJson::DecodeError => e
-          nil
         end
+      when field.to_s.to_i == 0 && (!field.to_s.include?('.')) && obj.respond_to?(field.to_s)
+        obj.send(field.to_s)
+      when field.to_s.to_i == 0 && obj.respond_to?(:[])
+        get_nested(field, obj)
+      else obj
       end
     end
 
@@ -26,8 +30,7 @@ module Wukong
       parts = fields.to_s.split('.')
       field = parts.shift
       return unless field
-      if obj.include?(field)
-        slice = obj[field]
+      if slice = obj[field]
         return slice if parts.empty?
         get_nested(parts.join('.'), slice)
       end
