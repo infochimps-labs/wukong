@@ -32,6 +32,7 @@ EOF
   gem.add_dependency('forgery')
   gem.add_dependency('uuidtools')
   gem.add_dependency('eventmachine')
+  gem.add_dependency('log4r')
 
   gem.add_development_dependency('bundler',     '~> 1.1')
   gem.add_development_dependency('rake',        '>= 0.9')
