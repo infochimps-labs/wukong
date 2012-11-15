@@ -1,6 +1,7 @@
 require 'configliere'
 require 'wukong'
 require 'eventmachine'
+require 'em-synchrony'
 require 'multi_json'
 
 Settings({
@@ -16,13 +17,9 @@ wu_file = ARGV.shift
 load wu_file
 $processor = File.basename(wu_file, '.rb').to_sym
 
-# EventMachine server
-
-class WukongServer < EM::Protocols::LineAndTextProtocol
-  def post_init
-    puts "[server] Client connected"
-    
-    dataflow_class = Wukong.dataflow(:server){ send($processor) }
+class Wukong::Server
+  def prepare(options = {})
+    dataflow_class = Wukong.dataflow(:server){ send(options[:processor]) }
     flow_builder = Wukong.registry.retrieve(:server)
     flow = flow_builder.build(processor: $processor)
     
@@ -30,12 +27,30 @@ class WukongServer < EM::Protocols::LineAndTextProtocol
     @processor = flow.stages.values.first
     @processor.emitter = ->(value){ @buffer << value }
   end
+  
+  def process(record)
+    @process.process(record)
+  end
+  
+  def cleanup
+  end
+end
+
+
+# EventMachine server
+
+class WukongMachine < EM::Protocols::LineAndTextProtocol
+  def post_init
+    puts "[server] Client connected"
+    @wukong = WukongInterface.new
+    @wukong.prepare(processor: $processor)
+  end
 
   def receive_data(data)
     @buffer = []
     input = MultiJson.load data
     
-    op = proc { @processor.process(input) }
+    op = proc { @wukong.process(input) }
     callback = proc { send_data MultiJson.dump(@buffer) + "\n" }
     EM.defer(op, callback)
       
@@ -49,6 +64,6 @@ class WukongServer < EM::Protocols::LineAndTextProtocol
 end
 
 EM::run {
-  EM::start_server(Settings[:host], Settings[:port], WukongServer)
+  EM::start_server(Settings[:host], Settings[:port], WukongMachine)
   puts "Listening on #{Settings[:host]}:#{Settings[:port]}"
 }
