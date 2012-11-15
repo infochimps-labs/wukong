@@ -23,33 +23,45 @@ RSpec::Matchers.define :emit do |*expected|
     @count_only = true
   end
   
-  match do |proxy|
-    proxy.run
-    @actual   = proxy.outputs
-    @expected = expected
-
-    @actual_size   = @actual.size
-    @expected_size = (@count_only ? expected.first.to_i : expected.size)
-    
-    case
-    when @actual_size == 0 && @expected_size != 0
-      @reason = "Expected #{@expected_size} records but didn't emit any"
-    when @actual_size != 0 && @expected_size == 0
-      @reason = "Expected no output records but emitted #{@actual_size}"
-    when @actual_size != @expected_size
-      @reason = "Expected #{@expected_size} records but emitted #{@actual_size}"
+  match do |driver|
+    if driver.run
+      @ran      = true
+      @actual   = driver.outputs
+      @expected = expected
+      
+      @actual_size   = @actual.size
+      @expected_size = (@count_only ? expected.first.to_i : expected.size)
+      
+      case
+      when @actual_size == 0 && @expected_size != 0
+        @reason = "Expected #{@expected_size} records but didn't emit any"
+      when @actual_size != 0 && @expected_size == 0
+        @reason = "Expected no output records but emitted #{@actual_size}"
+      when @actual_size != @expected_size
+        @reason = "Expected #{@expected_size} records but emitted #{@actual_size}"
+      else
+        compare_record_for_record(actual) unless @count_only
+      end
     else
-      compare_record_for_record(actual) unless @count_only
+      @reason = "Could not initialize processor"
     end
     @passed = (@reason ? false : true)
   end
 
   failure_message_for_should do
-    "#{@reason}.  Expected #{expected_description}:\n\n  #{expected_representation}\n\nbut got #{actual_description}:\n\n  #{actual_representation}\n\n"
+    if @ran
+      "#{@reason}.  Expected #{expected_description}:\n\n  #{expected_representation}\n\nbut got #{actual_description}:\n\n  #{actual_representation}\n\n"
+    else
+      @reason
+    end
   end
   
   failure_message_for_should_not do
-    "#{@reason}.  Expected #{expected_description} to NOT match:\n\n  #{expected_representation}"
+    if @ran
+      "#{@reason}.  Expected #{expected_description} to NOT match:\n\n  #{expected_representation}"
+    else
+      @reason
+    end
   end
   
   def compare_record_for_record actual
@@ -96,15 +108,15 @@ RSpec::Matchers.define :emit do |*expected|
     case
     when @did_parse && @as_json   then "(after parsing from JSON) an object"
     when @did_parse && @delimited then "(after splitting on '#{@delimiter}') an object"
-    else "a string"
+    else "a #{@actual.class.to_s}"
     end
   end
 
   def expected_description
     case
-    when @as_json   then "JSON matching an object"
+    when @as_json   then "JSON matching an #{@expected.class}"
     when @delimited then "'#{@delimter}'-delimited output"
-    else 'output'
+    else @expected.class.to_s
     end
   end
 

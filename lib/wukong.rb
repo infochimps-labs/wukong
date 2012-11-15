@@ -7,15 +7,11 @@ require 'hanuman'
 
 require 'wukong/processor'
 require 'wukong/driver'
-require 'wukong/widget/processors'
+
 require 'wukong/emitter'
-require 'wukong/widget/source'
-require 'wukong/widget/sink'
-require 'wukong/widget/reducer'
-require 'wukong/widget/serializers'
-require 'wukong/widget/filters'
 require 'wukong/dataflow'
 require 'wukong/configuration'
+require 'wukong/widgets'
 
 module Wukong
   extend Hanuman::Shortcuts

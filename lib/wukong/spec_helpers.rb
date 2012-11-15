@@ -80,7 +80,10 @@ module Wukong
         options = (args.shift || {})
       end
       Wukong.boot!(Local::Configuration)
-      proc = Wukong.registry.retrieve(name.to_sym).build(Local::Configuration.merge(options))
+      proc_class = Wukong.registry.retrieve(name.to_sym)
+      if proc_class
+        proc_class.build(Local::Configuration.merge(options))
+      end
     end
 
     def processor *args

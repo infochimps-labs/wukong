@@ -238,11 +238,16 @@ end
 ### Reducers
 
 There are a selection of widgets that do aggregative operations like
-counting, sorting, and summing.  These are perfect to use within
-reducers in a map/reduce framework like Hadoop.
+counting, sorting, and summing.
 
 * `count` emits a final count of all input records
 * `extract` will extract some part of a record (nth field, named key, &c.)
 * `sort` can sort input streams
 * `group` will group records by some extracting part and give a count of each group's size
 * `group_stats` will emit more complicated statistics (mean, std. dev.) on the group given some other value to measure
+
+Here's an example of sorting data right on the command line
+
+```
+$ head novel.txt | wu-local tokenizer.rb | wu-local sort | wu-local group
+{
