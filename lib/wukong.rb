@@ -12,9 +12,12 @@ require 'wukong/widget/source'
 require 'wukong/widget/sink'
 require 'wukong/widget/reducer'
 require 'wukong/dataflow'
+require 'wukong/configuration'
 
 module Wukong
   extend Hanuman::Shortcuts
+
+  Error = Class.new(StandardError)
   
   add_shortcut_method_for(:processor, ProcessorBuilder)
   add_shortcut_method_for(:dataflow,  DataflowBuilder)
