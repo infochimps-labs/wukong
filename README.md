@@ -241,13 +241,40 @@ There are a selection of widgets that do aggregative operations like
 counting, sorting, and summing.
 
 * `count` emits a final count of all input records
-* `extract` will extract some part of a record (nth field, named key, &c.)
 * `sort` can sort input streams
 * `group` will group records by some extracting part and give a count of each group's size
-* `group_stats` will emit more complicated statistics (mean, std. dev.) on the group given some other value to measure
+* `moments` will emit more complicated statistics (mean, std. dev.) on the group given some other value to measure
 
 Here's an example of sorting data right on the command line
 
 ```
-$ head novel.txt | wu-local tokenizer.rb | wu-local sort | wu-local group
-{
+$ head tokens.txt | wu-local sort
+abhor
+abide
+abide
+able
+able
+able
+about
+...
+```
+
+Try adding group:
+
+```
+$ head tokens.txt | wu-local sort | wu-local group
+{:group=>"abhor", :count=>1}
+{:group=>"abide", :count=>2}
+{:group=>"able", :count=>3}
+{:group=>"about", :count=>3}
+{:group=>"above", :count=>1}
+...
+```
+
+You can also use these within a more complicated dataflow:
+
+```ruby
+Wukong.dataflow(:word_count) do
+  tokenize > remove_stopwords > sort > group
+end
+```
