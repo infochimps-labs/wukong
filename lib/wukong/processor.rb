@@ -1,3 +1,5 @@
+require 'log4r'
+
 module Wukong
   class ProcessorBuilder < Hanuman::StageBuilder
 
@@ -6,9 +8,9 @@ module Wukong
   end
 
   class Processor < Hanuman::Stage
-
+    
     field :action,   Whatever
-    field :log,      Whatever, :default => Log
+    field :log,      Whatever, :default => -> { log = Log4r::Logger.new(self.class.to_s) ; log.outputters = Log4r::StdoutOutputter.new('stdout', formatter: Log4r::PatternFormatter.new(pattern: "%d [%l] %c: %m")) ; log }
     field :notifier, Vayacondios::NotifierFactory, :default => Vayacondios.default_notifier
 
     def self.describe desc
@@ -17,6 +19,12 @@ module Wukong
 
     def self.description
       @description
+    end
+
+    def self.consumes label
+    end
+
+    def self.produces label
     end
 
     # This is a placeholder method intended to be overridden
@@ -49,7 +57,8 @@ module Wukong
 
     # This method is called once per record
     # Override this in your subclass
-    def process(record)
+    def process(record, &emit)
+      yield record
     end
 
     # This method is called to signal the last record has been
@@ -64,8 +73,10 @@ module Wukong
 
     # This method is called after all records have been passed.  It
     # signals that processing should stop.
+      
+    # This method is called after all records have been processed
     def stop
     end
-  
+
   end
 end

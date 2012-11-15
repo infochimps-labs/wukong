@@ -1,6 +1,7 @@
 require 'configliere'
 require 'gorillib/logger/log'
 require 'vayacondios-client'
+require 'multi_json'
 
 require 'hanuman'
 
@@ -11,6 +12,7 @@ require 'wukong/emitter'
 require 'wukong/widget/source'
 require 'wukong/widget/sink'
 require 'wukong/widget/reducer'
+require 'wukong/widget/serializers'
 require 'wukong/dataflow'
 require 'wukong/configuration'
 

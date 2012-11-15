@@ -120,5 +120,21 @@ module Wukong
       register
     end
     
+    class Topic < Processor
+      field :topic, Symbol
+      def process(record)
+        yield perform_action(record)
+      end
+
+      def perform_action(record)
+        assign_topic(record, topic)
+      end      
+
+      def assign_topic(record, topic_name)
+        record.define_singleton_method(:topic){ topic_name }
+        record
+      end
+      register
+    end
   end
 end
