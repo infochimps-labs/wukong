@@ -41,11 +41,9 @@ Here's a processor that reverses all each input record:
 ```ruby
 # in string_reverser.rb
 Wukong.processor(:string_reverser) do
-
   def process string
     yield string.reverse
   end
-
 end
 ```
 
@@ -56,9 +54,10 @@ command line on flat input files using `wu-local`:
 $ cat novel.txt
 It was the best of times, it was the worst of times.
 ...
+
 $ cat novel.txt | wu-local string_reverser.rb
 .semit fo tsrow eht saw ti ,semit fo tseb eht saw tI
-...
+```
 
 You can use yield as often (or never) as you need.  Here's a more
 complicated example to illustrate:
@@ -67,21 +66,18 @@ complicated example to illustrate:
 # in processors.rb
 
 Wukong.processor(:tokenizer) do
-
   def process line
     line.split.each { |token| yield token }
   end
-  
 end
   
 Wukong.processor(:starts_with) do
 
   field :letter, String, :default => 'a'
-
+  
   def process word
     yield word if word =~ Regexp.new("^#{letter}", true)
   end
-
 end
 ```
 
