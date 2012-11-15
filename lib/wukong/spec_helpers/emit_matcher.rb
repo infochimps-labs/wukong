@@ -45,11 +45,11 @@ RSpec::Matchers.define :emit do |*expected|
   end
 
   failure_message_for_should do
-    "Expected #{expected_description}:\n\n  #{expected_representation}\n\nbut got#{@parsed ? ' (after parsing)' : ''}:\n\n  #{actual_representation}}\n\n"
+    "#{@reason}.  Expected #{expected_description}:\n\n  #{expected_representation}\n\nbut got #{actual_description}:\n\n  #{actual_representation}\n\n"
   end
   
   failure_message_for_should_not do
-    "Expected #{expected_description} to NOT match:\n\n  #{expected_representation}"
+    "#{@reason}.  Expected #{expected_description} to NOT match:\n\n  #{expected_representation}"
   end
   
   def compare_record_for_record actual
@@ -62,6 +62,7 @@ RSpec::Matchers.define :emit do |*expected|
         @reason = "Could not properly parse the #{ordinalize(index)} record"
         return
       end
+      @did_parse = true
       if @reason.nil? && @parsed != @expected
         @reason   = "Mismatch of the #{ordinalize(index)} record"
         return
@@ -88,6 +89,14 @@ RSpec::Matchers.define :emit do |*expected|
     when @as_json   then MultiJson.load(@actual)
     when @delimited then @actual.split(@delimiter)
     else @actual
+    end
+  end
+
+  def actual_description
+    case
+    when @did_parse && @as_json   then "(after parsing from JSON) an object"
+    when @did_parse && @delimited then "(after splitting on '#{@delimiter}') an object"
+    else "a string"
     end
   end
 

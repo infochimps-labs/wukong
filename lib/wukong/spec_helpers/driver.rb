@@ -1,12 +1,10 @@
 module Wukong
-  module SpecHelper
+  module SpecHelpers
+    class Driver
 
-    class ProcProxy
-      def initialize proc, &block
-        @proc   = proc
-        yield @proc if block_given?
-        @givens = []
-      end
+      #
+      # These are methods you call on this object within the spec DSL.
+      #
       
       def given event
         @givens << event
@@ -29,7 +27,19 @@ module Wukong
         self
       end
 
+      #
+      # These are methods used for other spec code to interface with
+      # this driver.
+      #
+
+      def initialize proc, &block
+        @proc   = proc
+        yield @proc if block_given?
+        @givens = []
+      end
+      
       def run
+        @proc.setup
         @outputs = [].tap do |output_records|
           @givens.each do |given_record|
             @proc.process(serialize(given_record)) do |output_record|
@@ -37,19 +47,24 @@ module Wukong
             end
           end
         end
-      end
-
-      def serialize record
-        case
-        when @json      then MultiJson.dump(record)
-        when @delimited then record.map(&:to_s).join(@delimiter)
-        else record.to_s
-        end
+        @proc.finalize
+        @proc.stop
       end
 
       def outputs
         @outputs
       end
+
+      private
+      
+      def serialize record
+        case
+        when @json      then MultiJson.dump(record)
+        when @delimited then record.map(&:to_s).join(@delimiter)
+        else record
+        end
+      end
+
     end
   end
 end

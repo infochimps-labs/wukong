@@ -6,28 +6,52 @@ module Wukong
 
     class ToJson < Serializer
       def process(record)
-        yield ::MultiJson.dump(record)
+        begin
+          json = ::MultiJson.dump(record)
+        rescue => e
+          # FIXME -- should we log here or what?
+          return
+        end
+        yield json
       end
       register
     end
 
     class FromJson < Serializer
-      def process(record)
-        yield ::MultiJson.load(record)
+      def process(json)
+        begin
+          obj = ::MultiJson.load(json)
+        rescue => e
+          # FIXME -- should we log here or what?
+          return
+        end
+        yield obj
       end
       register
     end
 
     class ToTsv < Serializer
       def process(record)
-        yield record.join("\t")
+        begin
+          tsv = record.map(&:to_s).join("\t")
+        rescue => e
+          # FIXME -- should we log here or what?
+          return
+        end
+        yield tsv
       end
       register
     end
 
     class FromTsv < Serializer
-      def process(record)
-        yield record.split(/\t/)
+      def process(tsv)
+        begin
+          record = tsv.split(/\t/)
+        rescue => e
+          # FIXME -- should we log here or what?
+          return
+        end
+        yield record
       end
       register
     end
