@@ -13,6 +13,7 @@ require 'wukong/widget/source'
 require 'wukong/widget/sink'
 require 'wukong/widget/reducer'
 require 'wukong/widget/serializers'
+require 'wukong/widget/filters'
 require 'wukong/dataflow'
 require 'wukong/configuration'
 

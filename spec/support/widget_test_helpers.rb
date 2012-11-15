@@ -7,67 +7,26 @@ shared_context 'widgets', :helpers => true do
   end
 end
 
-shared_examples_for 'a processor' do |options={}|
+shared_examples_for "a filter processor" do |options|
+  name = options[:named]
+  if name
+    it_behaves_like 'a processor', :named => name
 
-  it{ should respond_to(:process) }
-  it{ should respond_to(:setup) }
-  it{ should respond_to(:stop) }
-  it{ should respond_to(:report) }
-  its(:report){ should be_a(Hash) }
+    goods = (options[:good] || [])
+    it 'accepts good objects' do
+      proc  = processor(name)
+      goods.each { |good| proc.given(good) }
+      proc.should emit(*goods)
+    end unless goods.empty?
 
-  if options[:named]
-    it 'creates a magic method' do
-      Wukong::Dataflow.should be_method_defined(options[:named])
-    end
+    bads = (options[:bad] || [])
+    it 'accepts bad objects' do
+      proc  = processor(name)
+      bads.each { |bad| proc.given(bad) }
+      proc.should emit(0).records
+    end unless bads.empty?
+    
   else
-    warn "please supply name for dataflow magic method on #{subject}"
-  end
-end
-
-shared_examples_for "a filter processor" do |objects|
-    it_behaves_like 'a processor', :named => objects[:named]
-
-  it 'accepts good objects' do
-    objects[:good].each do |obj|
-      subject.select?(obj).should be_true
-      subject.reject?(obj).should be_false
-    end
-  end unless objects[:good].empty?
-
-  it 'rejects bad objects' do
-    objects[:bad].each do |obj|
-      subject.select?(obj).should be_false
-      subject.reject?(obj).should be_true
-    end
-  end unless objects[:bad].empty?
-
-  context '#process' do
-    before{ mock_next_stage }
-
-    objects[:good].each do |obj|
-      it "passes along objects like #{obj.inspect}" do
-        next_stage.should_receive(:process).with(obj)
-        subject.process(obj)
-      end
-    end unless objects[:good].empty?
-    objects[:bad].each do |obj|
-      it "drops objects like #{obj.inspect}" do
-        next_stage.should_not_receive(:process)
-        subject.process(obj)
-      end
-    end unless objects[:bad].empty?
-
-    it "passes along good objects if select? is true" do
-      subject.stub(:select?).and_return(true)
-      subject.stub(:reject?).and_return(false)
-      next_stage.should_receive(:process).with(mock_record)
-      subject.process(mock_record)
-    end
-    it "drops objects if reject? is true" do
-      subject.stub(:select?).and_return(false)
-      subject.stub(:reject?).and_return(true)
-      next_stage.should_not_receive(:process)
-      subject.process(mock_record)
-    end
+    warn "Must supply a name for the filter processor you want to test"
   end
 end

@@ -1,17 +1,18 @@
 require 'wukong'
 require 'wukong/boot'
-require_relative('emit_matcher')
-require_relative('proc_proxy')
+require_relative('spec_helpers/emit_matcher')
+require_relative('spec_helpers/driver')
+require_relative('spec_helpers/shared_examples')
 
 module Wukong
   
   # This is a module that you can include in your own RSpec test
   # suite:
   #
-  #   # in spec/spec_helper.rb
-  #   require 'wukong/spec/helper'
+  #   # in your spec/spec_helper.rb
+  #   require 'wukong/spec_helpers'
   #   RSpec.configure do |config|
-  #     include Wukong::SpecHelper
+  #     include Wukong::SpecHelpers
   #   end
   #
   # This will give you the ability to write simple specs like the
@@ -64,23 +65,26 @@ module Wukong
   #     it "has a friend which does the same thing" do
   #       processor(:similar_tokenizer, :json => true).given("hi there").should emit(2).records
   #     end
-  module SpecHelper
+  module SpecHelpers
 
-    def processor *args
+    def create_processor *args
       case
       when args.empty?
-        name    = self.class.top_level_description
+        name    = self.class.description
         options = {}
       when args.first.is_a?(Hash)
-        name    = self.class.top_level_description
+        name    = self.class.description
         options = args.first
       else
         name    = args.shift
         options = (args.shift || {})
       end
-      
       Wukong.boot!(Local::Configuration)
-      ProcProxy.new(Wukong.registry.retrieve(name.to_sym).build(Local::Configuration.merge(options)))
+      proc = Wukong.registry.retrieve(name.to_sym).build(Local::Configuration.merge(options))
+    end
+
+    def processor *args
+      Driver.new(create_processor(*args))
     end
     alias_method :flow, :processor
 

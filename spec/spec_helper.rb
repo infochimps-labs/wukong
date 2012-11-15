@@ -11,6 +11,7 @@ if ENV['WUKONG_COV']
 end
 
 require 'wukong'
+require 'wukong/spec_helpers'
 require_relative './support/shared_examples_for_builders'
 require_relative './support/shared_examples_for_shortcuts'
 
@@ -30,7 +31,8 @@ require_relative './support/shared_examples_for_shortcuts'
 # GRAPHVIZ = ($?.exitstatus == 0) && (result =~ /dot - graphviz version/)
 # puts 'Some specs require graphviz to run -- brew/apt install graphviz, it is pretty awesome' unless GRAPHVIZ
 
-# RSpec.configure do |config|
-#   include WukongTestHelpers
-#   config.treat_symbols_as_metadata_keys_with_true_values = true
-# end
+RSpec.configure do |config|
+  config.mock_with :rspec
+  include Wukong::SpecHelpers
+  # config.treat_symbols_as_metadata_keys_with_true_values = true
+end

@@ -1,5 +1,4 @@
-# require 'spec_helper'
-# require 'wukong'
+require 'spec_helper'
 
 describe Wukong::Dataflow do
 
