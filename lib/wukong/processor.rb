@@ -39,7 +39,7 @@ module Wukong
     # This processor's log is passed to vayacondios
     def receive_notifier(type)
       if type.is_a?(Hash)
-        @notifier = Vayacondios::NotifierFactory.receive(type)
+        @notifier = Vayacondios::NotifierFactory.receive({type: 'log'}.merge(type))
       else
         @notifier = Vayacondios::NotifierFactory.receive(type: type, log: log)
       end

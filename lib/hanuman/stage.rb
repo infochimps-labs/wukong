@@ -75,7 +75,7 @@ module Hanuman
       self.add_link(:simple, self.linkable_name(:in), other_stage.linkable_name(:out))
       other_stage
     end
-    alias_method :>, :into
+    alias_method :|, :into
 
     def serialize()      
       attrs = attributes

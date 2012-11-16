@@ -1,4 +1,4 @@
-require 'bundler' ; Bundler.setup(:default, :development)
+require 'bundler' ; Bundler.setup(:default, :development, :test)
 
 if ENV['WUKONG_COV']
   require 'simplecov'

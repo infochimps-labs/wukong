@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-exec hadoop job -kill-task "$1"
