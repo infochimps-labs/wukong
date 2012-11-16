@@ -37,10 +37,9 @@ module Hanuman
       end
     end
     
-    def show()   REGISTRY.dup   ; end
-    
-    def clear!() REGISTRY.clear ; end
-
+    def show()           REGISTRY.dup              ; end
+    def clear!()         REGISTRY.clear            ; end
+    def merge!(contents) REGISTRY.merge!(contents) ; end
   end  
   
   GlobalRegistry = Registry.new unless defined? GlobalRegistry

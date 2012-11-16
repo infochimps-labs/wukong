@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-$:.unshift File.expand_path('../../lib', __FILE__)
-require 'wukong'
-
-wu_file = ARGV.shift
-load wu_file
-
-flow = ($0 =~ /wu-map/) ? :mapper : :reducer
-Wukong::LocalRunner.run(flow)

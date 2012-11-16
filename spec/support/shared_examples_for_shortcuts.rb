@@ -1,6 +1,14 @@
 shared_examples_for Hanuman::Shortcuts do
 
-  after(:each) { subject.registry.clear! }
+  before(:each) do
+    @orig_reg = subject.registry.show
+    subject.registry.clear!
+  end
+   
+  after(:each)  do
+    subject.registry.clear!
+    subject.registry.merge!(@orig_reg)
+  end
   
   context '.registry' do
     it 'returns the registry'  do
