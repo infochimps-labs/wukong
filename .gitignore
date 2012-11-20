@@ -55,5 +55,6 @@ docpages
 away
 
 .rbx
-Gemfile.lock
+Gemfile.lockBackup\ of\ *
+Backup*of*.numbers
 
