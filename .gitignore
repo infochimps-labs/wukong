@@ -42,3 +42,5 @@ pkg
 *.rdb
 
 .rbx
+
+Gemfile.lock
