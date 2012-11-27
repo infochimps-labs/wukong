@@ -1,0 +1,6 @@
+source :rubygems
+
+gem 'nokogiri'
+gem 'sanitize'
+gem 'addressable'
+gem 'forgery'
