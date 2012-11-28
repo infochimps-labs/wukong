@@ -46,4 +46,16 @@ describe "Filters" do
     end
   end
 
+  context :sample do
+    it_behaves_like 'a processor', :named => :sample
+    it "should pass everything given no 'fraction' argument" do
+      processor.given('snap', 'crackle', 'pop').should emit('snap', 'crackle', 'pop')
+    end
+    it "should pass everything given no 'fraction' argument" do
+      processor(:fraction => 0.5).tap do |proc|
+        proc.should_receive(:rand).and_return(0.7, 0.1, 0.6)
+      end.given('snap', 'crackle', 'pop').should emit('crackle')
+    end
+  end
+
 end
