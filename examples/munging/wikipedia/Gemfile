@@ -1,8 +1,0 @@
-source 'http://rubygems.org'
-  
-gem 'gorillib', :path => '/home/dlaw/dev/gorillib'
-gem 'ruby-progressbar'
-gem 'crack'
-gem 'rake'
-gem 'wukong', :path => '/home/dlaw/dev/wukong_og'
-gem 'json'
