@@ -27,7 +27,7 @@ Community Edition (**FIXME: link to this**) which combines all the
 Wukong tools together into a jetpack which fits comfortably over the
 shoulders of developers.
 
-<a name="processor"></a>
+<a name="processors"></a>
 ## Writing Simple Processors
 
 The fundamental unit of computation in Wukong is the processor.  A
@@ -120,6 +120,7 @@ $ cat novel.txt | wu-local processors.rb --run=tokenizer | wu-local regexp --mat
 
 There are many more simple <a href="#widgets">widgets</a> like these.
 
+<a name="flows"></a>
 ## Combining Processors into Dataflows
 
 Combining processors which each do one thing well together in a chain
@@ -149,6 +150,7 @@ times
 
 and it works exactly like before.
 
+<a name="serialization></a>
 ## Serialization
 
 The process method for a Processor must accept a String argument and
@@ -157,6 +159,7 @@ yield a String argument (or something that will `to_s` appropriately).
 **Coming Soon:** The ability to define `consumes` and `emits` to
   automatically handle serialization and deserialization.
 
+<a name="widgets></a>
 ## Widgets
 
 Wukong has a number of built-in widgets that are useful for

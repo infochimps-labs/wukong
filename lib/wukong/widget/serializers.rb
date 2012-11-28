@@ -62,7 +62,7 @@ module Wukong
       end
     end
     
-    class Pretty < Processor
+    class Pretty < Serializer
       def process record
         case record
         when /^\s*\{/

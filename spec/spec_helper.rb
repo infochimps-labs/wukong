@@ -14,6 +14,7 @@ require 'wukong'
 require 'wukong/spec_helpers'
 require_relative './support/shared_examples_for_builders'
 require_relative './support/shared_examples_for_shortcuts'
+require_relative './support/shared_context_for_reducers'
 
 # require 'gorillib/pathname'
 # require 'gorillib/type/extended'

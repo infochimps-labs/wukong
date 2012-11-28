@@ -1,7 +1,7 @@
 shared_examples_for 'a processor' do |options={}|
   name = options[:named]
   if name
-    it 'is registered' do
+    it "is registered with the name '#{name}'" do
       Wukong.registry.retrieve(name.to_sym).should_not be_nil
     end
     it{ create_processor(name).should respond_to(:setup)    }
