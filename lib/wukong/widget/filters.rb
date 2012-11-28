@@ -56,6 +56,14 @@ module Wukong
       register
     end
 
+    class Sample < Filter
+      field :fraction, Float, :default => 1.0
+      def select?(record)
+        rand() < fraction
+      end
+      register
+    end
+    
     class Select < Filter
       def select?(record)
         perform_action(record)
@@ -69,5 +77,6 @@ module Wukong
       end
       register
     end
+
   end
 end
