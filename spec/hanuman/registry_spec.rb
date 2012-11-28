@@ -2,8 +2,16 @@ require 'spec_helper'
 
 describe Hanuman::Registry, :hanuman => true do
 
-  before(:each)   { Hanuman.registry.clear! }
+  before(:each) do
+    @orig_reg = Hanuman.registry.show
+    Hanuman.registry.clear!
+  end
 
+  after(:each) do
+    Hanuman.registry.clear!
+    Hanuman.registry.merge!(@orig_reg)
+  end
+  
   let(:definition){ { :universe => 'Marvel' }                 }
   let(:builder)   { Hanuman::StageBuilder.receive(definition) }
   

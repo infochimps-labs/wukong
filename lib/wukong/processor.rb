@@ -2,11 +2,17 @@ require 'log4r'
 
 module Wukong
   class ProcessorBuilder < Hanuman::StageBuilder
-
-    def namespace() Wukong::Processor ; end
-
+    def namespace(*args)
+      args.first.is_a?(Class) ? args.first : Wukong::Processor
+    end
   end
 
+  # The Processor is the basic unit of computation in Wukong.  A
+  # processor can be thought of as an arbitrary function that takes
+  # certain inputs and produces certain (or no) outputs.
+  #
+  # A Processor can be written and tested purely in Ruby and on your
+  # local machine.  You can glue processors together
   class Processor < Hanuman::Stage
     
     field :action,   Whatever

@@ -36,8 +36,8 @@ module Hanuman
     field :label,     Symbol
     field :links,     Array, :default => []
 
-    def define(&blk)
-      stage = for_class || define_class(label)
+    def define(*args, &blk)
+      stage = for_class || define_class(label, *args)
       stage.class_eval(&blk) if block_given?
       stage.register
     end
@@ -56,11 +56,11 @@ module Hanuman
       self
     end
     
-    def namespace() Hanuman::Stage ; end
+    def namespace(*args) Hanuman::Stage ; end
  
-    def define_class(name)
-      klass   = namespace.const_get(name.to_s.camelize, Class.new(namespace)) rescue nil
-      klass ||= namespace.const_set(name.to_s.camelize, Class.new(namespace))
+    def define_class(name, *args)
+      klass   = namespace(*args).const_get(name.to_s.camelize, Class.new(namespace(*args))) rescue nil
+      klass ||= namespace(*args).const_set(name.to_s.camelize, Class.new(namespace(*args)))
       klass.set_builder(self)
       klass
     end

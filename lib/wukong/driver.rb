@@ -27,7 +27,7 @@ module Wukong
     attr_accessor :dataflow, :source
     
     def initialize(dataflow, options = {})
-      builder    = Wukong.registry.retrieve(dataflow)
+      builder    = (Wukong.registry.retrieve(dataflow) or raise Error.new("No such processor or dataflow: #{dataflow.inspect}"))
       dataflow   = builder.build(options)
       @dataflow  = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
       @dataflow << Wukong.registry.retrieve(:stdout).build

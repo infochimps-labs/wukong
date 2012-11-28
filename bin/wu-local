@@ -54,10 +54,16 @@ when thing.nil?
 when Wukong.registry.registered?(thing.to_sym)
   processor = thing.to_sym
 when File.exist?(thing)
+  load thing
   processor = settings.run || File.basename(thing, '.rb')
 else
   settings.dump_help
   exit(2)
 end
 # p settings
-Wukong::LocalDriver.run(processor.to_sym, settings)
+begin
+  Wukong::LocalDriver.run(processor.to_sym, settings)
+rescue Wukong::Error => e
+  $stderr.puts e.message
+  exit(3)
+end

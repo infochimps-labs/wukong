@@ -15,4 +15,14 @@ end
 
 task :default => :specs
 
+desc "Create a TAGS file for this project"
+task :tags do
+  files = [%w[Gemfile Guardfile Rakefile README.md].map { |b| File.join(File.dirname(__FILE__), b) }]
+  %w[bin examples lib spec].each do |dir|
+    files << Dir[File.join(File.dirname(__FILE__), "#{dir}/**/*.rb")]
+  end
+  files.each do |arry|
+    sh "etags", *arry unless arry.empty?
+  end
+end
 
