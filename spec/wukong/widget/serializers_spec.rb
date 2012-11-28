@@ -4,20 +4,20 @@ describe "Serializing" do
 
   context :to_json do
     
-    let(:emittable)     { {"hi" => "there"}                       }
-    let(:not_emittable) { a, b = {}, {} ; a['b'] = b ; b['a'] = a }
+    let(:emittable)     { {"hi" => "there"} }
+    let(:not_emittable) { {"n" => Float::INFINITY} }
 
     it_behaves_like 'a processor', :named => :to_json
     
     it "should handle valid records" do
-      processor.given(emittable).should emit(emittable).as_json
+      processor.given(emittable).should emit_json(emittable)
     end
-    
+
     it "should skip bad records" do
       processor.given(not_emittable).should emit(0).records
     end
+    
   end
-
 
   context :to_tsv do
     let(:emittable)     { ["foo", 2, :a] }
@@ -26,7 +26,7 @@ describe "Serializing" do
     it_behaves_like 'a processor', :named => :to_tsv
     
     it "should handle valid records" do
-      processor.given(emittable).should emit(emittable.map(&:to_s)).as_tsv
+      processor.given(emittable).should emit_tsv(emittable.map(&:to_s))
     end
     
     it "should skip bad records" do
@@ -78,7 +78,7 @@ describe "Pretty printing" do
     it_behaves_like 'a processor', :named => :pretty
 
     it "should prettify parseable records" do
-      processor(:pretty).given(parseable).should emit({'hi' => 'there'}).as_json
+      processor(:pretty).given(parseable).should emit_json({'hi' => 'there'})
     end
 
     it "should pass on non parseable records" do
