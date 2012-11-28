@@ -2,8 +2,16 @@ require 'spec_helper'
 
 describe Hanuman::Stage, :hanuman => true do
 
-  before{ Hanuman.registry.clear! }
-  
+  before(:each) do
+    @orig_reg = Hanuman.registry.show
+    Hanuman.registry.clear!
+  end
+
+  after(:each) do
+    Hanuman.registry.clear!
+    Hanuman.registry.merge!(@orig_reg)
+  end
+
   context 'a class inheriting from Hanuman::Stage' do
 
     klass = Object.const_set('Gambit', Class.new(Hanuman::Stage))
