@@ -14,7 +14,7 @@ module Wukong
 
     # Next pass the +settings+ to the Deploy pack itself to add
     # options it needs.
-    Deploy.pre_resolve(settings) if loaded_deploy_pack?
+    Deploy.configure(settings) if loaded_deploy_pack?
 
     # Resolve the +settings+ so we can capture all the options we need
     # from the command line, the environment, &c.
