@@ -20,7 +20,7 @@
 #
 #    examples/munging/wikipedia/articles/extract_articles-templated.rb --rm --run \
 #      /data/origin/dumps.wikimedia.org/enwiki/20120601/enwiki-20120601-pages-articles.xml
-#      /data/results/wikipedia/full/articles.xml.tsv
+#      /data/results/wikipedia/full/articles.json.tsv
 #
 
 require 'wukong'
@@ -31,7 +31,7 @@ require_relative '../utils/munging_utils.rb'
 
 # <page>
 #   <title>Anarchism</title>
-#   <ns>1</ns>
+#   <ns>0</ns>
 #   <id>12</id>
 #   <revision>
 #     <id>370845941</id>

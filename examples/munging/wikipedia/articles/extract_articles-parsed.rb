@@ -11,10 +11,21 @@
 #   (id:long, namespace:int, title:chararray, revision_timestamp:long, redirect:chararray, text:chararray);
 #
 
+# ## Usage
+#
+# Flattens the wikipedia 'enwiki-latest-pages-articles.xml.gz' into a
+# one-line-per-record heap.
+#
+#    examples/munging/wikipedia/articles/extract_articles-templated.rb --rm --run \
+#      /data/origin/dumps.wikimedia.org/enwiki/20120601/enwiki-20120601-pages-articles.xml
+#      /data/results/wikipedia/full/articles.json.tsv
+#
+
 require 'wukong'
 require 'wukong/streamer/encoding_cleaner'
 require 'crack/xml'
 require 'multi_json'
+require 'oj'
 require_relative '../utils/munging_utils.rb'
 
 module ArticlesExtractor
@@ -47,7 +58,7 @@ module ArticlesExtractor
       raw_text  = record['page']['revision']['text']
       
       # some few parts per million articles have an empty body -- workaround
-      raw_text = '' if not record['page']['revision']['text'].is_a?(String)
+      raw_text = '' if not raw_text.is_a?(String)
 
       result = [
         record['page']['id'],
