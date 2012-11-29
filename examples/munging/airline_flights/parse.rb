@@ -21,3 +21,6 @@
         linted = airport.lint
         warn [airport.iata, airport.icao, airport.de_iata, "%-25s" % airport.name, linted.inspect].join("\t") if linted.present?
       }
+
+
+# Model.from_tuple(...)
