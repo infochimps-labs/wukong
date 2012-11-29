@@ -189,18 +189,25 @@ module Wp2txt
     end
 
     EXCLUDE_SECTIONS = {
-        mw_heading:    false,
-        mw_paragraph:  false,
-        mw_table:      true,
-        mw_pre:        false,
-        mw_quote:      false,
-        mw_unordered:  false,
-        mw_ordered:    false,
-        mw_definition: false,
-        mw_redirect:   false,
-        mw_template:   true,
-        mw_title:      false,
-      }
+      mw_title:      false,
+      mw_heading:    false,
+      mw_paragraph:  false,
+      mw_link:       false,
+      mw_redirect:   false,
+      #
+      mw_pre:        false,
+      mw_quote:      false,
+      mw_unordered:  false,
+      mw_ordered:    false,
+      mw_definition: false,
+      #
+      mw_table:      true,
+      mw_htable:     true,
+      mw_blank:      true,
+      mw_math:       true,
+      mw_source:     true,
+      mw_template:   true,
+    }
 
     def polish
       contents = []
@@ -211,15 +218,18 @@ module Wp2txt
         case el_type
         when :mw_heading            then contents << format_wiki(element)
         when :mw_paragraph          then contents << format_wiki(element)
-        when :mw_table, :mw_htable  then contents << format_wiki(element)
+        when :mw_link               then contents << format_wiki(element)
+        when :mw_redirect           then contents << format_wiki(element) << "\n\n"
         when :mw_pre                then contents << element
         when :mw_quote              then contents << format_wiki(element)
         when :mw_unordered          then contents << format_wiki(element)
         when :mw_ordered            then contents << format_wiki(element)
         when :mw_definition         then contents << format_wiki(element)
-        when :mw_redirect           then contents << format_wiki(element) << "\n\n"
+        when :mw_table, :mw_htable  then contents << format_wiki(element)
+        when :mw_math, :mw_source   then contents << format_wiki(element)
+        when :mw_blank              then contents << format_wiki(element)
         else
-          warn "Unknown section #{el_type}, content '#{element.to_s[0..200]}'"
+          warn "Unknown section #{el_type}, content '#{element.to_s.gsub(/[\r\n]+/m,'')[0..200]}'"
           contents << format_wiki(element)
         end
       end
@@ -234,11 +244,11 @@ module Wp2txt
       # strip out templates. Several parts per million of these will fail for
       # bad structure; I assume that means some parts per thousand will be
       # mis-estimated. C'est la UGC.
-      text = remove_templates(text) if exclusions[:mw_template]
+      text = remove_templates(text) if EXCLUDE_SECTIONS[:mw_template]
 
       return '' if /\A\s*\z/m =~ text
       #
-      result = exclusions[:mw_title] ? "" : "# #{format_wiki(title)}\n\n"
+      result = EXCLUDE_SECTIONS[:mw_title] ? "" : "# #{format_wiki(title)}\n\n"
       result << text
       result.gsub!(/\n\n\n+/m){"\n\n"}
       result << "\n"
