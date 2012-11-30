@@ -56,7 +56,7 @@ module ArticlesExtractor
       redirect  = record['page']['redirect'] ? record['page']['redirect']['title'] : ''
       timestamp = Time.iso8601(record['page']['revision']['timestamp']).to_flat
       raw_text  = record['page']['revision']['text']
-      
+
       # some few parts per million articles have an empty body -- workaround
       raw_text = '' if not raw_text.is_a?(String)
 
@@ -67,7 +67,7 @@ module ArticlesExtractor
         record['page']['revision']['id'],
         timestamp,
         scrub_control_chars(redirect),
-        MultiJson.encode(raw_text)
+        safe_json_encode(raw_text)
       ]
       yield result
     end
