@@ -1,4 +1,7 @@
 # encoding:UTF-8
+
+require 'multi_json'
+
 module MungingUtils
   extend self # you can call MungingUtils.foo, or include it and call on self.
 
@@ -36,10 +39,19 @@ module MungingUtils
 
   # Modifies the text in place, replacing all non-keyboard characters (newline,
   # tab, anything not between ascii 0x20 and 0x7e) with their XML entity encoding
-  def flatten_xml_text(text)
-    text.gsub!(NON_PLAIN_ASCII_RE){|char| "&##{char.ord};" };
+  def safe_xml_encode(text)
+    text.gsub!(NON_PLAIN_ASCII_RE){|ch|  "\\u%04x" % ch.ord } unless jsonized.ascii_only?
     text
   end
+
+
+  # Returns a JSON encoded string, with all non-ASCII characters escaped
+  def safe_json_encode(string)
+    jsonized = MultiJson.encode(string)
+    jsonized.gsub!(NON_PLAIN_ASCII_RE){|ch| "\\u%04x" % ch.ord } unless jsonized.ascii_only?
+    jsonized
+  end
+
 
 end
 

@@ -93,7 +93,7 @@ module ArticlesExtractor
         info[:revision_id],
         timestamp,
         scrub_control_chars(redirect),
-        MultiJson.encode(text)
+        safe_json_encode(text)
       ]
       yield record
     end
