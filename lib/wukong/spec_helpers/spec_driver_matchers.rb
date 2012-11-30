@@ -160,7 +160,7 @@ module Wukong
           begin
             record.to_s.split(delimiter)
           rescue => e
-            raise Error.new("Could not parse as #{delimiter_type}': \n\n#{record}")
+            raise Error.new("Could not parse as #{delimited_type}': \n\n#{record}")
           end
         end
       end
@@ -170,7 +170,7 @@ module Wukong
       end
       
       def parse_modifier
-        ' (after parsing as #{delimiter_type})'
+        " (after parsing as #{delimited_type})"
       end
     end
 

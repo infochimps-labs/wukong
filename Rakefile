@@ -22,7 +22,7 @@ task :tags do
     files << Dir[File.join(File.dirname(__FILE__), "#{dir}/**/*.rb")]
   end
   files.each do |arry|
-    sh "etags", *arry unless arry.empty?
+    sh "etags", '-a', *arry unless arry.empty?
   end
 end
 

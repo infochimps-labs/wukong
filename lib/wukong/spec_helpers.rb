@@ -26,7 +26,7 @@ module Wukong
   # To each <tt>given_*</tt> method corresponds an <tt>emit_*</tt>
   # matcher which will actually run the processor on the given
   # inputs and compare against expected results.  Here's an example,
-  # using a simple +tokenizer+ processor.
+  # using a simple `tokenizer` processor.
   #
   #   subject { processor(:tokenizer) }
   #
@@ -70,16 +70,12 @@ module Wukong
   #   it "has a friend which does the same thing" do
   #     processor(:similar_tokenizer, :json => true).given("hi there").should emit(2).records
   #   end
-  
   module SpecHelpers
     include ProcessorHelpers
     include SpecMatchers
     include IntegrationRunner
     include IntegrationMatchers
   end
-  
-  class Processor
-    include SpecHelpers::ProcessorSpecMethods
-  end
-end
 
+  Processor.class_eval { include SpecHelpers::ProcessorSpecMethods }
+end
