@@ -5,7 +5,7 @@ module Wukong
       # Creates a new processor in a variety of convenient ways.
       #
       # Most simply, called without args, will return a new instance of
-      # a the klass named in the containing +describe+ or +context+:
+      # a the klass named in the containing `describe` or `context`:
       #
       #   context MyApp::Tokenizer do
       #     it "uses whitespace as the default separator between tokens" do
@@ -23,8 +23,8 @@ module Wukong
       #     end
       #   end
       #
-      # The +processor+ method can also be used inside RSpec's
-      # +subject+ and +let+ methods:
+      # The `processor` method can also be used inside RSpec's
+      # `subject` and `let` methods:
       #
       #   context "with no arguments" do
       #     subject { processor }
@@ -65,7 +65,7 @@ module Wukong
       end
       alias_method :flow, :processor
 
-      # Is the given +klass+ a Wukong::Processor?
+      # Is the given `klass` a Wukong::Processor?
       #
       # @param [Class] klass
       # @return [true, false]

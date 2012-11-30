@@ -1,11 +1,16 @@
 module Wukong
+
+  # :nodoc:
+  # 
   # This code is gross and nasty.
   module DynamicGet
 
+    # :nodoc:
     def self.included klass
       klass.send(:field, :separator, String,   :default => "\t")
     end
-    
+
+    # :nodoc:
     def get field, obj
       return obj unless field
       case
@@ -26,6 +31,7 @@ module Wukong
       end
     end
 
+    # :nodoc:
     def get_nested fields, obj
       parts = fields.to_s.split('.')
       field = parts.shift

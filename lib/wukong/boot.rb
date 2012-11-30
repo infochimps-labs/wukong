@@ -1,6 +1,6 @@
 module Wukong
 
-  # Boots Wukong, reading any and all relevant +settings+ for your
+  # Boots Wukong, reading any and all relevant `settings` for your
   # processors.
   #
   # This is most useful for any script which wants to run within a
@@ -12,16 +12,16 @@ module Wukong
     # to be running within a deploy pack.
     Boot.load_environment        if in_deploy_pack?
 
-    # Next pass the +settings+ to the Deploy pack itself to add
+    # Next pass the `settings` to the Deploy pack itself to add
     # options it needs.
     Deploy.configure(settings) if loaded_deploy_pack?
 
-    # Resolve the +settings+ so we can capture all the options we need
+    # Resolve the `settings` so we can capture all the options we need
     # from the command line, the environment, &c.
     settings.resolve!
 
     # Now boot the deploy pack itself, passing in its known location
-    # and the +settings+
+    # and the `settings`
     Deploy.boot!(settings, Boot.deploy_pack_dir) if loaded_deploy_pack?
   end
 
