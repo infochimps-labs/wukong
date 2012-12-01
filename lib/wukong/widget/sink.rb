@@ -3,7 +3,11 @@ module Wukong
     
     class Stdout < Sink
       def process(record)
-        $stdout.puts record
+        begin
+          $stdout.puts record
+        rescue Errno::EPIPE => e
+          exit(2)
+        end
       end
       register
     end

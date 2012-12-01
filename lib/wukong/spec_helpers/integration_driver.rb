@@ -3,13 +3,13 @@ require 'open3'
 module Wukong
   module SpecHelpers
 
-    # Provides a +command+ method for writing integration tests for
+    # Provides a `command` method for writing integration tests for
     # commands.
     module IntegrationRunner
 
       # Spawn a command and capture its STDOUT, STDERR, and exit code.
       #
-      # The +args+ will be joined together into a command line.
+      # The `args` will be joined together into a command line.
       #
       # It is expected that you will use the matchers defined in
       # IntegrationMatchers in your integration tests:
@@ -29,14 +29,14 @@ module Wukong
       # @param [Array<String>] args
       #
       # @overload command(*args, options={})
-      #   If the last element of +args+ is a Hash it will be used for
+      #   If the last element of `args` is a Hash it will be used for
       #   options.
       #
       #   The :env option specifies the command line environment to
       #   use for the command.  By default this will be the value of
-      #   the Ruby process's own +ENV+ variable.  If running in a
-      #   context in which the +integration_env+ method is defined,
-      #   its return value will be merged on top of +ENV+.  An
+      #   the Ruby process's own `ENV` variable.  If running in a
+      #   context in which the `integration_env` method is defined,
+      #   its return value will be merged on top of `ENV`.  An
       #   explicitly provided :env option will again be merged on top.
       #
       #   The :cwd option specifies the working directory to start in.

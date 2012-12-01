@@ -2,13 +2,6 @@ require 'spec_helper'
 
 describe "Filters" do
 
-  context :include_all do
-    it_behaves_like 'a processor', :named => :include_all
-    it "should pass everything" do
-      processor.given('', 3, 'hi', nil).should emit('', 3, 'hi', nil)
-    end
-  end
-
   context :null do
     it_behaves_like 'a processor', :named => :null
     it "should not pass anything, ever" do
@@ -16,6 +9,13 @@ describe "Filters" do
     end
   end
 
+  context :identity do
+    it_behaves_like 'a processor', :named => :identity
+    it "should pass everything, always" do
+      processor.given('', 3, 'hi', nil).should emit('', 3, 'hi', nil)
+    end
+  end
+  
   context :regexp do
     it_behaves_like 'a processor', :named => :regexp
     it "should pass everything given no 'match' argument" do

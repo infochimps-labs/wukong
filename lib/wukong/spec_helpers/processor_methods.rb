@@ -49,6 +49,60 @@ module Wukong
       def given_csv *records
         self.given_delimited(",", *records)
       end
+
+      # Return the output of the processor on the given records.
+      #
+      # Calling this method, like passing the processor to an `emit`
+      # matcher, will trigger processing of all the given records.
+      #
+      # Returns a SpecDriver, which is a subclass of array, so the
+      # usual matchers like `include` and so on should work, as well
+      # as explicitly indexing to introspect on particular records.
+      #
+      # @return [SpecDriver]
+      def output
+        SpecDriver.new(self).run
+      end
+
+      # Return the output of the processor on the given records,
+      # parsing as a string with the given `delimiter` first.
+      #
+      # @param [String] delimiter
+      # @see #output
+      # @return [Array<String>]
+      def delimited_output(delimiter)
+        output.map { |record| record.split(delimiter) }
+      end
+      
+      # Return the output of the processor on the given records,
+      # parsing as TSV first.
+      #
+      # @see #output
+      # @see #delimited_output
+      # @return [Array<String>]
+      def tsv_output
+        delimited_output("\t")
+      end
+      
+      # Return the output of the processor on the given records,
+      # parsing as CSV first.
+      #
+      # @see #output
+      # @see #delimited_output
+      # @return [Array<String>]
+      def csv_output
+        delimited_output(",")
+      end
+
+      # Return the output of the processor on the given records,
+      # parsing as JSONS first.
+      #
+      # @see #output
+      # @return [Hash,Array]
+      def json_output
+        output.map { |record| MultiJson.load(record) }
+      end
+
     end
   end
 end

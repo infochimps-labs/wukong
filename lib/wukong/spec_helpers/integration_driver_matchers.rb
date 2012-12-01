@@ -5,8 +5,8 @@ module Wukong
     # integration tests for Wukong's command-line APIs.
     module IntegrationMatchers
 
-      # Checks that each +expectation+ appears in the STDOUT of the
-      # command.  Order is irrelevant and each +expectation+ can be
+      # Checks that each `expectation` appears in the STDOUT of the
+      # command.  Order is irrelevant and each `expectation` can be
       # either a String to check for inclusion or a Regexp to match
       # with.
       #
@@ -15,8 +15,8 @@ module Wukong
         StdoutMatcher.new(*expectations)
       end
 
-      # Checks that each +expectation+ appears in the STDERR of the
-      # command.  Order is irrelevant and each +expectation+ can be
+      # Checks that each `expectation` appears in the STDERR of the
+      # command.  Order is irrelevant and each `expectation` can be
       # either a String to check for inclusion or a Regexp to match
       # with.
       #
@@ -25,7 +25,7 @@ module Wukong
         StderrMatcher.new(*expectations)
       end
 
-      # Checks that the command exits with the given +code+.
+      # Checks that the command exits with the given `code`.
       #
       # @param [Integer] code
       def exit_with code
@@ -51,7 +51,7 @@ module Wukong
       # Return whether or not the given command's output matches
       # expectations.
       #
-      # If an expectation failes to match, the +failed_expectation+
+      # If an expectation failes to match, the `failed_expectation`
       # attribute will be set accordingly.
       #
       # @param [IntegrationDriver] driver
@@ -150,9 +150,9 @@ module Wukong
     # A matcher for the exit code of a command.
     class ExitCodeMatcher < IntegrationMatcher
 
-      # Initialize this matcher with the given +code+.
+      # Initialize this matcher with the given `code`.
       #
-      # If +code+ is the symbol <tt>:non_zero</tt> then the
+      # If `code` is the symbol <tt>:non_zero</tt> then the
       # expectation will be any non-zero exit code.
       #
       # @param [Integer,Symbol] code
