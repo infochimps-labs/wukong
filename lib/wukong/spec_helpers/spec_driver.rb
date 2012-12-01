@@ -20,7 +20,7 @@ module Wukong
           self << output
         end
         processor.stop
-        true
+        self
       end
 
     end

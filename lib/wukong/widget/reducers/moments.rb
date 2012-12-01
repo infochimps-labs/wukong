@@ -62,9 +62,7 @@ module Wukong
       end
 
       def finalize
-        super() do |record|
-          yield record.merge(:results => results) if record
-        end
+        yield({:group => key, :count => size}.merge(:results => results))
       end
       
       register
