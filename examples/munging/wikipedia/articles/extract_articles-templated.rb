@@ -20,7 +20,7 @@
 #
 #    examples/munging/wikipedia/articles/extract_articles-templated.rb --rm --run \
 #      /data/origin/dumps.wikimedia.org/enwiki/20120601/enwiki-20120601-pages-articles.xml
-#      /data/results/wikipedia/full/articles.json.tsv
+#      /data/results/wikipedia/full/articles.tsv
 #
 
 require 'wukong'
