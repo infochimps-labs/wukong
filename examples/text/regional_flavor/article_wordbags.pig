@@ -16,11 +16,7 @@ define TokenizeText    varaha.text.TokenizeText();
 define LDATopics       varaha.topic.LDATopics();
 define RangeConcat     org.pygmalion.udf.RangeBasedStringConcat('0', ' ');
 
--- Load the data
--- magi_text = LOAD '$data_dir/text/gift_of_the_magi.txt' AS (line:chararray);
--- magi_text = LOAD '/tmp/magi_json' AS (line:chararray);
-
--- Load the data: the integers from 0 .. 1023
+-- Load the markup-stripped wikipedia text
 torture_strings = LOAD '$data_dir/helpers/torture/string_handling_test.tsv' AS (
   desc:chararray, len:int, bytesize:int, str:chararray, has_str:int, jsonized_str:chararray,
   escaped_chars:chararray, escaped_bytes:chararray, chars_list:chararray, bytes_list:chararray

@@ -19,6 +19,9 @@
 require 'wukong'
 require 'multi_json'
 require 'oj'
+require 'strscan'
+require 'find'
+require 'sanitize'
 #
 require_relative '../utils/munging_utils.rb'
 require_relative './wp2txt_article'

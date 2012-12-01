@@ -1,6 +1,38 @@
 source :rubygems
 
-gem 'nokogiri'
-gem 'sanitize'
-gem 'addressable'
-gem 'forgery'
+gem "configliere",        '~> 0.4'
+gem "multi_json",         '>= 1.3.6'
+gem "vayacondios-client", '>= 0.0.3'
+gem "gorillib",           '>= 0.4.2'
+gem "uuidtools"
+gem "eventmachine"
+gem "log4r"
+
+group :examples do
+  gem "forgery"
+  gem "nokogiri"
+  # gem "sanitize"
+  gem "addressable"
+  gem "forgery"
+  gem "crack"
+  gem "oj"
+  gem "activesupport"
+end
+
+group :development do
+  gem "bundler",            '~> 1.1'
+  gem "rake",               '>= 0.9'
+  gem "rspec",              '>= 2.8'
+  gem "guard",              '>= 1.0'
+  gem "guard-rspec",        '>= 0.6'
+  gem "simplecov",          '>= 0.5'
+  gem "pry"
+  gem "ap"
+end
+
+group :docs do
+  gem "yard"
+  gem "redcarpet"
+  gem "addressable"
+  gem "htmlentities"
+end
