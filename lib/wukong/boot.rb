@@ -58,12 +58,12 @@ module Wukong
     #
     # @return [String]
     def self.deploy_pack_dir
-      return File.dirname(ENV["BUNDLE_GEMFILE"]) if ENV["BUNDLE_GEMFILE"]
+      return File.dirname(ENV["BUNDLE_GEMFILE"]) if ENV["BUNDLE_GEMFILE"] && is_deploy_pack_dir?(File.dirname(ENV["BUNDLE_GEMFILE"]))
       return @deploy_pack_dir if @deploy_pack_dir
       wd     = Dir.pwd
       parent = File.dirname(wd)
       until wd == parent
-        return wd if File.exist?(File.join(wd, 'Gemfile')) && File.exist?(File.join(wd, 'config', 'environment.rb'))
+        return wd if is_deploy_pack_dir?(wd)
         wd     = parent
         parent = File.dirname(wd)
       end
@@ -83,6 +83,15 @@ module Wukong
     def self.load_environment
       require environment_file
     end
+
+    # Could `dir` be a deploy pack dir?
+    #
+    # @param [String] dir
+    # @return [true, false]
+    def self.is_deploy_pack_dir? dir
+      dir && !dir.empty? && File.directory?(dir) && File.exist?(File.join(dir, 'Gemfile')) && File.exist?(File.join(dir, 'config', 'environment.rb'))
+    end
+    
   end
   
 end
