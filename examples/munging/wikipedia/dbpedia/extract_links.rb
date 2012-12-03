@@ -2,107 +2,79 @@
 require_relative './dbpedia_common'
 require 'ap'
 
-Settings.define :dbpedia_filetype, description: 'The dbpedia file type ("geo_coordinates", etc) -- taken from input filename if available'
-
-
-
-
-module Re
-  ##
-  # Container for the character classes specified in
-  # <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>.
-  # Borrowed from the addressable gem
-  module Uri
-    ALPHA      = "a-zA-Z"
-    DIGIT      = "0-9"
-    GEN_DELIMS = "\\:\\/\\?\\#\\[\\]\\@"
-    SUB_DELIMS = "\\!\\$\\&\\'\\(\\)\\*\\+\\,\\;\\="
-    RESERVED   = GEN_DELIMS + SUB_DELIMS
-    UNRESERVED = ALPHA + DIGIT + "\\-\\.\\_\\~"
-    PCHAR      = UNRESERVED + SUB_DELIMS + "\\:\\@"
-    SCHEME     = ALPHA + DIGIT + "\\-\\+\\."
-    AUTHORITY  = PCHAR
-    PATH       = PCHAR + "\\/"
-    QUERY      = PCHAR + "\\/\\?"
-    FRAGMENT   = PCHAR + "\\/\\?"
-    #
-    PATHSEG    = ""
-  end
-end
+# Notes:
 #
-#
-#
+# * disambiguation: `generic disambiguates specifics` -- `["Alien", "Alien_(law)"]` and `["Alien", "Alien_(film)"]`
+# * redirects:      `dupe    redirects to  actual`    -- `["Oxygen-13", "Isotopes_of_oxygen"]`
+# * page_link:      `from    links to      into`      -- `["Achilles", "Greeks"]
+
 module Dbpedia
 
-  # Notes:
-  #
-  # * disambiguations: `[:generic, :specific]` -- that is, `["Alien", "Alien_(law)"]` and `["Alien", "Alien_(film)"]`
-  # * redirects:       `[:dupe,    :actual]`   -- that is, `["
-  #
-  #
-  #
-  MAPPING_FIELDS = {
-    # atomic topic properties
-    title:               [:page_id, :wp_ns, :wikipedia_id,                 :title,                             ],
-    page_id:             [:page_id, :wp_ns, :wikipedia_id,                 :wikipedia_pageid,                  ],
-    wikipedia_lang:      [:page_id, :wp_ns, :wikipedia_id,                 :url,   :slug,      :lang,          ],
-    wikipedia_link:      [:page_id, :wp_ns, :wikipedia_id,                 :url,   :slug,      :revision_id,  ],
-    wikipedia_backlink:  [:page_id, :wp_ns, :wikipedia_id,                 :url,   :slug,      :revision_id,  ],
-    abstract_short:      [:page_id, :wp_ns, :wikipedia_id,                 :abstract,                          ],
-    abstract_long:       [:page_id, :wp_ns, :wikipedia_id,                 :abstract,                          ],
-    geo_coordinates:     [:page_id, :wp_ns, :wikipedia_id,                 :lat,                :lng,          ],
-    geo_coord_skip_a:    [],
-    geo_coord_skip_b:    [],
-    # links between topics
-    page_links:          [:page_id, :wp_ns, :from_id,                      :into_id,                           ],
-    disambiguations:     [:page_id, :wp_ns, :generic_wpid,                 :specific_wpid,                     ],
-    redirects:           [:page_id, :wp_ns, :dupe_id,                      :wikipedia_id,                      ],
-    # external links and s
-    external_links:      [:page_id, :wp_ns, :wikipedia_id, :property,      :weblink_url,                       ],
-    homepages:           [:page_id, :wp_ns, :wikipedia_id, :property,      :weblink_url,                       ],
-    geonames:            [:page_id, :wp_ns, :wikipedia_id,                 :geonames_id,                       ],
-    musicbrainz:         [:page_id, :wp_ns, :wikipedia_id,                 :musicbrainz_type,  :musicbrainz_id,],
-    nytimes:             [:page_id, :wp_ns, :wikipedia_id,                 :nytimes_id,                        ],
-    uscensus:            [:page_id, :wp_ns, :wikipedia_id,                 :country_id, :state_id, :kind, :adm2_id, :adm3_id, :adm4_id ],
-    pnd:                 [:page_id, :wp_ns, :wikipedia_id,                 :pnd_id,                            ],
-    # category links
-    article_categories:  [:page_id, :wp_ns, :wikipedia_id,                 :specific_wpid,                     ],
-    category_skos_skip:  [:page_id, :wp_ns, :wikipedia_id,                 :skos_relation,       ],
-    category_skos_title: [:page_id, :wp_ns, :wikipedia_id, :skos_relation, :category_title,                    ],
-    category_skos_reln:  [:page_id, :wp_ns, :wikipedia_id, :skos_relation, :into_wpid,                         ],
-    # properties
-    wordnet:             [:page_id, :wp_ns, :wikipedia_id, :property,      :wn_reln,  :wn_class, :wn_pos, :wn_idx, ],
-    property_bool:       [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :val_type,     ],
-    property_int:        [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :val_type,     ],
-    property_float:      [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :val_type,     ],
-    property_date:       [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :val_type,     ],
-    property_yearmonth:  [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :val_type,     ],
-    property_monthday:   [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :val_type,     ],
-    property_str:        [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                               ],
-    #
-    persondata_reln:     [:page_id, :wp_ns, :wikipedia_id, :property,      :into_wpid,                         ],
-    persondata_type:     [:page_id, :wp_ns, :wikipedia_id, :property,                                          ],
-    property_foaf:       [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                               ],
-    property_desc:       [:page_id, :wp_ns, :wikipedia_id, :property,      :name,                              ],
-    yago:                [:page_id, :wp_ns, :wikipedia_id,                 :scheme,             :schema_class, ],
-    instance_type_a:     [:page_id, :wp_ns, :wikipedia_id,                 :scheme,             :schema_class, ],
-    instance_type_b:     [:page_id, :wp_ns, :wikipedia_id,                 :scheme,             :schema_class, ],
-    property_specmap:    [:page_id, :wp_ns, :wikipedia_id, :property,      :val,                :units,        ],
-    # topical_concepts:  [:page_id, :wp_ns, :wikipedia_id, :skos_subject   :x,                                 ],  #<http://dbpedia.org/resource/Futurama   r(:wiki_category,
-  }
-
+  DECIMAL_NUM_RE  = '[\-\+\d]+\.\d+'
+  URI_PATHCHARS   = '\w\-\.\'~!$&()*+,;=:@'
   # all backslash-escaped character, or non-quotes, up to first quote
   DBLQ_STRING_C   = '"(?<%s>(?:\\.|[^\"])*)"'
-  DECIMAL_NUM_RE  = '[\-\+\d]+\.\d+'
+
+  MAPPING_INFO = {
+    # atomic topic properties
+    title:               { kind: :title,               fields: [:page_id, :wp_ns, :wikipedia_id, :title,                                      ],  },
+    page_id:             { kind: :page_id,             fields: [:page_id, :wp_ns, :wikipedia_id, :wikipedia_pageid,                           ],  },
+    abstract_short:      { kind: :abstract_short,      fields: [:page_id, :wp_ns, :wikipedia_id, :abstract,                                   ],  },
+    abstract_long:       { kind: :abstract_long,       fields: [:page_id, :wp_ns, :wikipedia_id, :abstract,                                   ],  },
+    wikipedia_lang:      { kind: :skip,                fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :url,     :slug,  :lang,                  ],  },
+    wikipedia_link:      { kind: :wikipedia_link,      fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :url,     :slug,  :revision_id,           ],  },
+    wikipedia_backlink:  { kind: :skip,                fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :url,     :slug,  :revision_id,           ],  },
+    geo_coordinates:     { kind: :geo_coordinates,     fields: [:page_id, :wp_ns, :wikipedia_id, :lat,        :lng,                           ],  },
+    geo_coord_skip_a:    { kind: :skip,                fields: [],      },
+    geo_coord_skip_b:    { kind: :skip,                fields: [],      },
+    # links between topics
+    page_link:           { kind: :page_link,           fields: [:page_id, :wp_ns, :from_id,      :relation,   :into_id,                       ],  },
+    disambiguation:      { kind: :disambiguation,      fields: [:page_id, :wp_ns, :generic_wpid, :relation,   :specific_wpid,                 ],  },
+    redirects:           { kind: :redirects,           fields: [:page_id, :wp_ns, :dupe_id,      :relation,   :wikipedia_id,                  ],  },
+    # external links and sameas'es
+    external_link:       { kind: :external_link,       fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :weblink_url,                   ],  },
+    homepage:            { kind: :homepage,            fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :weblink_url,                   ],  },
+    geonames:            { kind: :sameas,              fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :geonames_id,                   ],  },
+    musicbrainz:         { kind: :sameas,              fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :musicbrainz_type,  :musicbrainz_id,], },
+    nytimes:             { kind: :sameas,              fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :nytimes_id,                    ],  },
+    pnd:                 { kind: :sameas,              fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :pnd_id,                        ],  },
+    uscensus:            { kind: :sameas,              fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :country_id, :state_id, :kind, :adm2_id, :adm3_id, :adm4_id],  },
+    # category links
+    category_skos_type:  { kind: :instance_of,         fields: [:page_id, :wp_ns, :wikipedia_id, :scheme,     :obj_class                      ],  },
+    category_skos_title: { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :val_type,   :category_title,   ],  },
+    category:            { kind: :category,            fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :specific_wpid,                 ],  },
+    category_subject:    { kind: :subject,             fields: [:page_id, :wp_ns, :wikipedia_id, :scheme,     :into_wpid,                     ],  },
+    category_reln:       { kind: :category_reln,   fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :into_wpid,                     ],  },
+    # properties
+    wordnet:             { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :wn_reln,    :wn_class,   :wn_pos, :wn_idx,  ],  },
+    property_bool:       { kind: :property_bool,       fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_int:        { kind: :property_int,        fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_float:      { kind: :property_float,      fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_date:       { kind: :property_date,       fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_yearmonth:  { kind: :property_yearmonth,  fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_monthday:   { kind: :property_monthday,   fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_str:        { kind: :property_str,        fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    #
+    persondata_reln:     { kind: :persondata_reln,     fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :into_wpid,                     ],  },
+    # persondata_type:   { kind: :# persondata_type,   fields: [:page_id, :wp_ns, :wikipedia_id, :property,                                   ],  },
+    property_foaf:       { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_desc:       { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :name,             ],  },
+    yago:                { kind: :category,            fields: [:page_id, :wp_ns, :wikipedia_id, :scheme,     :obj_class,                     ],  },
+    instance_type_a:     { kind: :instance_of,         fields: [:page_id, :wp_ns, :wikipedia_id, :scheme,     :obj_class,                     ],  },
+    instance_type_b:     { kind: :instance_of,         fields: [:page_id, :wp_ns, :wikipedia_id, :scheme,     :obj_class,                     ],  },
+    property_specmap:    { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :units,        :val,            ],  },
+    # topical_concepts:  { kind: :# topical_concepts,  fields: [:page_id, :wp_ns, :wikipedia_id, :skos_subject   :x,                          ],  },
+  }
 
   RDF_RES = {
     # type descriptions
     dbpedia_class:    'http://dbpedia\.org/class/(?<%s>[^>\s]+)',
-    yago_class:       'http://dbpedia\.org/class/(?<%s>yago)/(?<%s>[\w\/]+)',
     dbpedia_ontb:     'http://dbpedia\.org/ontology',
     dbpedia_ont:      'http://dbpedia\.org/ontology/(?<%s>[\w\/]+)',
     dbpedia_prop:     'http://dbpedia\.org/property/(?<%s>\w+)',
-    dbpedia_rsrc:     "http://dbpedia\\.org/resource/(?<%s>[#{Re::Uri::PCHAR}%%\/]+)",
+    dbpedia_rsrc:     'http://dbpedia\.org/resource/(?<%s>['           + URI_PATHCHARS + '%%\/]+)',
+    yago_class:       'http://dbpedia\.org/class/(?<%s>yago)/(?<%s>['  + URI_PATHCHARS + '%%\/]+)',
+    wikipedia_rsrc:   '(?<%s>http://\w\w\.wikipedia\.org/wiki/(?<%s>[' + URI_PATHCHARS + '%%\/]+))',
     wiki_category:    'http://en\.wikipedia\.org/wiki/Category:Futurama?oldid=485425712\\#absolute-line=1',
     wiki_link_id:     'http://en\.wikipedia\.org/wiki/(?<%s>[^\?]+)\?oldid=(?<%s>\d+)(?:\\#absolute-line=(?<%s>\d+))?',
     wiki_link_id_sec: 'http://en\.wikipedia\.org/wiki/(?<%s>[^\?]+)\?oldid=(?<%s>\d+)\\#?(?:section=(?<%s>.*?)\&relative-line=(?<%s>\d+))?(?:&?absolute-line=(?<%s>\d+))?',
@@ -122,10 +94,9 @@ module Dbpedia
     wgs_latorlng:     'http://www\.w3\.org/2003/01/geo/wgs84_pos\\#(?:lat|long)',
     #                  http://www.rdfabout.com/rdf/usgov/geo/  us     /     ak       /    counties   /bethel_area  /an_subarea   /aniak          >
     uscensus_url:     'http://www.rdfabout.com/rdf/usgov/geo/(?<%s>us)/(?<%s>\w\w)(?:/(?<%s>counties)/(?<%s>\w+)(?:/(?<%s>\w+)\/?(?<%s>\w+)?)?)?',
-    # uscensus_url:     'http://www\.rdfabout\.com/rdf/usgov/geo/(?<%s>us)/(?<%s>\w\w)/(?<%s>counties)/(?<%s>\w+)/(?<%s>\w+)\/(?<%s>\w+)',
     # category links
-    skos_concept:     'http://www\.w3\.org/2004/02/skos/core\\#(?<%s>[a-zA-Z]+)',
     skos_subject:     'http://www\.w3\.org/2004/02/skos/core\\#subject',
+    skos_concept:     'http://www\.w3\.org/2004/02/skos/core\\#(?<%s>[a-zA-Z]+)',
     foaf_homepage:    'http://xmlns\.com/foaf/0\.1/homepage',
     foaf_name:        'http://xmlns\.com/foaf/0\.1/name',
     foaf_topic:       'http://xmlns\.com/foaf/0\.1/(?:isPrimaryTopicOf|primaryTopic)',
@@ -144,7 +115,6 @@ module Dbpedia
     rdf_string:       '"(?<%s>(?:\\\\.|[^\"])*)"@en',
     dbpedia_value:    '"(?<%s>(?:\\\\.|[^\"])*)"\\^\\^<http://dbpedia\.org/datatype/(?<%s>[a-zA-Z]+)>',
     #
-    wikipedia_rsrc:   '(?<%s>http://\w\w\.wikipedia\.org/wiki/(?<%s>[' + Re::Uri::PCHAR + '%%/]+))',
     url_loose:        '(?<%s>(?:https?|ftp)://(?:[a-zA-Z0-9\-]+\.)+(?:[a-zA-Z\-]+)[^\s>]*)',
     # rdf_value:        '\"(?<%s>-?\d\d\d\d-\d\d-\d\d|-?\d\d\d\d-\d\d|--\d\d-\d\d|[\+\-]?\d+|[\+\-]?\d+\.\d+(?:[eE][\+\-]?\d+)?|true|false)\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>integer|date|gYearMonth|gMonthDay|gYear|positiveInteger|nonNegativeInteger|float|double|boolean)>',
     schema_type:      'http://(?<%s>www\\.w3\\.org/2002/07/owl|schema\\.org|dbpedia\\.org/ontology|purl\\.org/ontology|xmlns.com/foaf/0\\.1)[/\\#](?<%s>[^>]+)'
@@ -158,155 +128,108 @@ module Dbpedia
     'xmlns.com/foaf/0.1'     => 'foaf'
   }
 
-  private
   # lookup regexp in above table, sub in variable names
+  private
   def self.r(regexp_name, *args)
     RDF_RES[regexp_name] % args
   end
   public
 
-  MAPPING_INFO = {
+  MAPPING_RES = {
     # atomic topic properties
-    title:               { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_label)}>                          \s#{r(:rdf_string, :title )}            \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>     \s#{r(:rdf_eol)}  \z}x, },
-    page_id:             { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageID>            \s#{r(:rdf_int,    :wikipedia_pageid, :_dtyp)}   \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>     \s#{r(:rdf_eol)}  \z}x, },
-    wikipedia_lang:      { re: %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>         \s<#{r(:purl_lang)}>                          \s#{r(:rdf_string, :lang)}               \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    wikipedia_link:      { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_topic)}>                         \s<#{r(:wikipedia_rsrc, :url, :slug)}>         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    wikipedia_backlink:  { re: %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>        \s<#{r(:foaf_topic)}>                         \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>           \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    abstract_short:      { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_comment)}>                        \s#{r(:rdf_string, :abstract)}            \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>     \s#{r(:rdf_eol)}  \z}x, },
-    abstract_long:       { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/abstract>              \s#{r(:rdf_string, :abstract)}            \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>     \s#{r(:rdf_eol)}  \z}xm, },
-    geo_coordinates:     { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:georss_type)}>                        \s#{r(:georss_latlng, :lat, :lng)}               \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    geo_coord_skip_a:    { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<http://www\.opengis\.net/gml/_Feature>        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    geo_coord_skip_b:    { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:wgs_latorlng)}>                       \s#{r(:rdf_float, :val, :_dtyp)}                 \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    # links between topics
-    page_links:          { re: %r{\A<#{r(:dbpedia_rsrc,    :from_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageWikiLink>      \s<#{r(:dbpedia_rsrc, :into_id)}>                \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x, },
-    disambiguations:     { re: %r{\A<#{r(:dbpedia_rsrc,    :generic_wpid)}>         \s<#{r(:dbpedia_ontb)}/wikiPageDisambiguates> \s<#{r(:dbpedia_rsrc, :specific_wpid)}>          \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x, },
-    redirects:           { re: %r{\A<#{r(:dbpedia_rsrc,    :dupe_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageRedirects>     \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>           \s#{r(:rdf_eol)}   \z}x, },
+    title:               %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_label)}>                          \s#{r(:rdf_string, :title )}                   \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
+    page_id:             %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageID>            \s#{r(:rdf_int,    :wikipedia_pageid, :_dtyp)} \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
+    wikipedia_lang:      %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>         \s<#{r(:purl_lang)}>                          \s#{r(:rdf_string, :lang)}                       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    wikipedia_link:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_topic)}>                         \s<#{r(:wikipedia_rsrc, :url, :slug)}>         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    wikipedia_backlink:  %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>        \s<#{r(:foaf_topic)}>                         \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    abstract_short:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_comment)}>                        \s#{r(:rdf_string, :abstract)}                 \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
+    abstract_long:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/abstract>              \s#{r(:rdf_string, :abstract)}                 \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}xm,
+    geo_coordinates:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:georss_type)}>                        \s#{r(:georss_latlng, :lat, :lng)}             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    geo_coord_skip_a:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<http://www\.opengis\.net/gml/_Feature>      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    geo_coord_skip_b:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:wgs_latorlng)}>                       \s#{r(:rdf_float, :val, :_dtyp)}               \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    # links between topic
+    page_link:           %r{\A<#{r(:dbpedia_rsrc,    :from_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageWikiLink>      \s<#{r(:dbpedia_rsrc, :into_id)}>              \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    disambiguation:      %r{\A<#{r(:dbpedia_rsrc,    :generic_wpid)}>         \s<#{r(:dbpedia_ontb)}/wikiPageDisambiguates> \s<#{r(:dbpedia_rsrc, :specific_wpid)}>        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    redirects:           %r{\A<#{r(:dbpedia_rsrc,    :dupe_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageRedirects>     \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>                                                                                                                       \s#{r(:rdf_eol)}   \z}x,
     # external links and sameas'es
-    external_links:      { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageExternalLink>  \s<#{r(:url_loose, :weblink_url)}>               \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    homepages:           { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_homepage)}>                      \s<#{r(:url_loose, :weblink_url)}>               \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    geonames:            { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:geonames_rsrc, :geonames_id)}>           \s#{r(:rdf_eol)}  \z}x, },
-    musicbrainz:         { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:musicbrainz_rsrc, :musicbrainz_type, :musicbrainz_id)}>    \s#{r(:rdf_eol)}  \z}x, },
-    nytimes:             { re: %r{\A<#{r(:nytimes_rsrc,    :nytimes_id)}>           \s<#{r(:same_as)}>                            \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>           \s#{r(:rdf_eol)}   \z}x, },
-    uscensus:            { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:uscensus_url, :country_id, :state_id, :kind, :adm2_id, :adm3_id, :adm4_id)}>                \s#{r(:rdf_eol)}  \z}x, },
-    pnd:                 { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/individualisedPnd>     \s#{r(:rdf_string, :pnd_id)}             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
+    external_link:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageExternalLink>  \s<#{r(:url_loose, :weblink_url)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    homepage:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_homepage)}>                      \s<#{r(:url_loose, :weblink_url)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    geonames:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:geonames_rsrc, :geonames_id)}>                                                                                                                       \s#{r(:rdf_eol)}  \z}x,
+    musicbrainz:         %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:musicbrainz_rsrc, :musicbrainz_type, :musicbrainz_id)}>                                                                                              \s#{r(:rdf_eol)}  \z}x,
+    nytimes:             %r{\A<#{r(:nytimes_rsrc,    :nytimes_id)}>           \s<#{r(:same_as)}>                            \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>                                                                                                                       \s#{r(:rdf_eol)}   \z}x,
+    uscensus:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:uscensus_url, :country_id, :state_id, :kind, :adm2_id, :adm3_id, :adm4_id)}>                                                                         \s#{r(:rdf_eol)}  \z}x,
+    pnd:                 %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/individualisedPnd>     \s#{r(:rdf_string, :pnd_id)}                   \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     # category links
-    article_categories:  { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_subject)}>                       \s<#{r(:dbpedia_rsrc, :specific_wpid)}>          \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x, },
-    category_skos_skip:  { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:skos_concept, :skos_relation)}>          \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x, },
-    category_skos_title: { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :skos_relation)}>       \s#{r(:rdf_string, :category_title)}             \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x, },
-    category_skos_reln:  { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :skos_relation)}>       \s<#{r(:dbpedia_rsrc, :into_wpid)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
+    category:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_subject)}>                       \s<#{r(:dbpedia_rsrc, :specific_wpid)}>        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_skos_type:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:skos_concept, :obj_class)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_subject:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_subject, :relation)}>            \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_reln:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :relation)}>            \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_skos_title: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :relation)}>            \s#{r(:rdf_string, :category_title)}           \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
     # properties
-    wordnet:             { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_prop, :property)}>            \s<#{r(:wordnet_inst, :wn_reln, :wn_class, :wn_pos, :wn_idx)}>      \s#{r(:rdf_eol)}  \z}x, },
+    wordnet:             %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_prop, :property)}>            \s<#{r(:wordnet_inst, :wn_reln, :wn_class, :wn_pos, :wn_idx)}>                                                                                               \s#{r(:rdf_eol)}  \z}x,
     #
-    property_bool:       { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_bool,      :val, :val_type) }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_int:        { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_int,       :val, :val_type) }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_float:      { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_float,     :val, :val_type) }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_date:       { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_date,      :val, :val_type) }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_yearmonth:  { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_yearmonth, :val, :val_type) }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_monthday:   { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_monthday,  :val, :val_type) }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_str:        { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_string,    :val)            }         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
+    property_bool:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_bool,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_int:        %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_int,       :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_float:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_float,     :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_date:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_date,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_yearmonth:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_yearmonth, :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_monthday:   %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_monthday,  :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_str:        %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_string,    :val)            }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     #
-    persondata_reln:     { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s<#{r(:dbpedia_rsrc, :into_wpid)}>              \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    persondata_type:     { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<http://xmlns.com/foaf/0\.1/Person>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_foaf:       { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_prop, :property)}>               \s#{r(:rdf_string, :val)}                        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_desc:       { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_desc, :property)}>               \s#{r(:rdf_string,:name)}                        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    yago:                { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:yago_class,  :scheme, :schema_class)}>   \s#{r(:rdf_eol)}  \z}x,  },
-    instance_type_a:     { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:dbpedia_ont,       :schema_class)}>              \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,  },
-    instance_type_b:     { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:schema_type, :org, :schema_class)}>      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    property_specmap:    { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:dbpedia_value, :val, :units)}    }x, }, #            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}>  \s#{r(:rdf_eol)}  \z}x, },
-    # topical_concepts:  { re: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_subject)}>                       \s<#{r(:x, )}> \z},
+    persondata_reln:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_foaf:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_prop, :property)}>               \s#{r(:rdf_string, :val)}                      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_desc:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_desc, :property)}>               \s#{r(:rdf_string,:name)}                      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    yago:                %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:yago_class,  :scheme, :obj_class)}>                                                                                                                  \s#{r(:rdf_eol)}  \z}x,
+    instance_type_a:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:dbpedia_ont,          :obj_class)}>    \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    instance_type_b:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:schema_type, :org,    :obj_class)}>    \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_specmap:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:dbpedia_value, :val, :units)}           \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    # topical_concepts:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_subject)}>                       \s<#{r(:x, )}> \z},
   }
-  MAPPING_FIELDS.each{|re_name, re| MAPPING_INFO[re_name][:fields] = re }
+  MAPPING_RES.each{|re_name, re| MAPPING_INFO[re_name][:re] = re }
   SKIPPAPLE_FIELDS = [:flavor, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno, :val_lang, :name_lang, :_dtyp]
-
-  # persondata: {"name"=>12, "description"=>11, "birthPlace"=>17, "deathPlace"=>9, "birthDate"=>10, "deathDate"=>8, "surname"=>10, "givenName"=>10},
-
-  DBPEDIA_FLAVOR_INFO = {
-    title:               ['labels_en',                               [:title,              ],  ],
-    page_id:             ['page_ids_en',                             [:page_id,            ],  ],
-    wikipedia_link:      ['wikipedia_links_en',                      [:wikipedia_links, :wikipedia_backlink, :wikipedia_lang,      ],   ],
-    abstract_short:      ['short_abstracts_en',                      [:abstract_short,      ],  ],
-    abstract_long:       ['long_abstracts_en',                       [:abstract_long,       ],  ],
-    geo_coordinates:     ['geo_coordinates_en',                      [:geo_coordinates, :geo_coord_skip_a, :geo_coord_skip_b, ],        ],
-    #                                                                #
-    page_links:          ['page_links_unredirected_en',              [:page_links,          ],  ],
-    disambiguations:     ['disambiguations_unredirected_en',         [:disambiguations,     ],  ],
-    redirects:           ['redirects_transitive_en',                 [:redirects,           ],  ],
-    #                                                                #
-    external_links:      ['external_links_en',                       [:external_links,      ],  ],
-    homepages:           ['homepages_en',                            [:homepages,           ],  ],
-    geonames:            ['geonames_links',                          [:geonames,            ],  ],
-    musicbrainz:         ['musicbrainz_links',                       [:musicbrainz,         ],  ],
-    nytimes:             ['nytimes_links',                           [:nytimes,             ],  ],
-    uscensus:            ['uscensus_links',                          [:uscensus,            ],  ],
-    pnd:                 ['pnd_en',                                  [:pnd,                 ],  ],
-    #                                                                #
-    article_categories:  ['article_categories_en',                   [:article_categories,  ],  ],
-    category_title:      ['category_labels_en',                      [:title,     ],  ],
-    category_skos:       ['skos_categories_en',                      [:category_skos_skip, :category_skos_title, :category_skos_reln ],      ],
-    #                                                                #
-    wordnet:             ['wordnet_links',                           [:wordnet,             ],  ],
-    persondata:          ['persondata_unredirected_en',              [:persondata_reln, :persondata_type,          ],   ],
-    yago:                ['yago_links',                              [:yago,                :instance_type_a, :instance_type_b,  ],  ],
-    instance_types:      ['instance_types_en',                       [:yago,                :instance_type_a, :instance_type_b,  ],  ],
-    property_specmap:    ['specific_mappingbased_properties_en',     [:property_specmap,    ],  ],
-    property_mapped:     ['mappingbased_properties_unredirected_en', [
-        :property_str, :property_bool, :property_int,
-        :property_float, :property_date, :property_yearmonth, :property_monthday,
-        :persondata_reln, :persondata_type, :property_foaf, :property_desc, ],      ],
-    topical_concepts:    ['topical_concepts_unredirected_en',        [:topical_concepts,    ],  ],
-  }
 
   class RdfExtractor < Wukong::Streamer::LineStreamer
     include MungingUtils
     attr_accessor :flavor, :kind, :filename, :regexps, :seen_keys, :seen_props
 
     def initialize(*args)
-      Settings[:dbpedia_filetype] ||= Settings[:input_paths].to_s
-      Settings[:dbpedia_filetype] = File.basename(Settings[:dbpedia_filetype]).gsub(/[\.\-].*/, '')
-      @flavor, flavor_info = DBPEDIA_FLAVOR_INFO.detect{|flavor, (filename, _r)| filename == Settings[:dbpedia_filetype] }
-      @kind, @filename, @regexps = flavor_info
       @seen_keys  = Hash.new(0)
       @seen_props = Hash.new(0)
-      Log.info ['about me', self.inspect, Settings].join("\t")
+    end
+
+    def record_for_flavor(kind, fields, flavor, hsh)
+      hsh.merge!( wp_ns: 0, flavor: flavor )
+      return if kind == :skip
+
+      case flavor
+      when :property_str, :property_foaf   then  hsh[:val] = MultiJson.encode(hsh[:val])
+      when :abstract_long, :abstract_short then  hsh[:abstract] = MultiJson.encode(hsh[:abstract])
+      when :title                          then  hsh[:title] = MultiJson.encode(hsh[:title])
+      when :category_skos_title            then  hsh[:category_title] = MultiJson.encode(hsh[:category_title])
+      when :category_skos_type then hsh[:scheme] = 'skos'
+      when :category_subject   then hsh[:scheme] = 'subject'
+      when :instance_type_a    then hsh[:scheme] = 'dbpedia'
+      when :instance_type_b
+        hsh[:scheme] = SCHEMA_SCHEMES[hsh.delete(:org)]
+      when :wikipedia_link, :wikipedia_backlink
+        raise "Titles disagree!" unless hsh[:slug] == hsh[:wikipedia_id]
+      end
+
+      # record seen properties, seen fields
+      hsh.except(*fields).except(*SKIPPAPLE_FIELDS).
+        each{|key, val| @seen_keys[key] += 1 if val.present? }
+      seen_props[hsh[:property]] += 1 if hsh[:property].present?
+      sanity_check(hsh)
+      #
+      [kind] + hsh.values_at(*fields)
     end
 
     def sanity_check(hsh)
       hsh.each{|key,val| raise if CONTROL_CHARS_RE =~ val.to_s }
     end
 
-    def record_for_flavor(fields, flavor, hsh)
-      hsh.merge!( wp_ns: 0, flavor: flavor )
-
-      case flavor
-      when :geo_coord_skip_a, :geo_coord_skip_b, :persondata_type, :category_skos_skip, :category_skos_title, :wikipedia_lang
-        return
-      when :property_str, :property_foaf
-        hsh[:val] = MultiJson.encode(hsh[:val])
-      when :abstract_long, :abstract_short
-        hsh[:abstract] = MultiJson.encode(hsh[:abstract])
-      when :title
-        hsh[:title] = MultiJson.encode(hsh[:title])
-      when :category_skos_label
-        hsh[:category_skos_label] = MultiJson.encode(hsh[:category_title])
-      when :wikipedia_link, :wikipedia_backlink
-        raise "Titles disagree!" unless hsh[:slug] == hsh[:wikipedia_id]
-      when :instance_type_a
-        hsh[:scheme] = 'dbpedia'
-      when :instance_type_b
-        hsh[:scheme] = SCHEMA_SCHEMES[hsh.delete(:org)]
-      end
-      #
-      hsh.except(*fields).except(*SKIPPAPLE_FIELDS).
-        each{|key, val| @seen_keys[key] += 1 if val.present? }
-      seen_props[hsh[:property]] += 1 if hsh[:property].present?
-      sanity_check(hsh)
-      #
-      hsh.values_at(*fields)
-    end
-
     def after_stream
-      Log.info ["Unused keys:     ", seen_keys.inspect ].join("\t")
-      Log.info ["Seen properties: ", seen_props.inspect].join("\t")
+      Log.info ["seen keys:", seen_keys.inspect, "seen props:", seen_props.inspect].join("\t")
     end
 
     def process(line)
@@ -315,12 +238,11 @@ module Dbpedia
 
       MAPPING_INFO.each do |flavor, info|
         next unless mm = info[:re].match(line)
-        puts [flavor, line].join("\t")
-        yield record_for_flavor(info[:fields], flavor, mm.as_hash)
+        yield record_for_flavor(info[:kind], info[:fields], flavor, mm.as_hash)
         return
       end
 
-      puts ['not found:', line].join("\t")
+      Log.warn ['not found:', line].join("\t")
     end
   end
 end
