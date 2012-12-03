@@ -15,9 +15,16 @@ module Dbpedia
   # all backslash-escaped character, or non-quotes, up to first quote
   DBLQ_STRING_C   = '"(?<%s>(?:\\.|[^\"])*)"'
 
+  # output flavors:
+  #
+  # :abstract_long   :abstract_short      :category :category_reln  :disambiguation
+  # :external_link   :geo_coordinates     :homepage :instance_of    :page_id :page_link
+  # :persondata_reln :property :redirects :sameas   :subject :title :wikipedia_link
+  #
+
   MAPPING_INFO = {
     # atomic topic properties
-    title:               { kind: :title,               fields: [:page_id, :wp_ns, :wikipedia_id, :title,                                      ],  },
+    title:               { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,  :title,                                      ],  },
     page_id:             { kind: :page_id,             fields: [:page_id, :wp_ns, :wikipedia_id, :wikipedia_pageid,                           ],  },
     abstract_short:      { kind: :abstract_short,      fields: [:page_id, :wp_ns, :wikipedia_id, :abstract,                                   ],  },
     abstract_long:       { kind: :abstract_long,       fields: [:page_id, :wp_ns, :wikipedia_id, :abstract,                                   ],  },
@@ -44,7 +51,7 @@ module Dbpedia
     category_skos_title: { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :val_type,   :category_title,   ],  },
     category:            { kind: :category,            fields: [:page_id, :wp_ns, :wikipedia_id, :flavor,     :specific_wpid,                 ],  },
     category_subject:    { kind: :subject,             fields: [:page_id, :wp_ns, :wikipedia_id, :scheme,     :into_wpid,                     ],  },
-    category_reln:       { kind: :category_reln,   fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :into_wpid,                     ],  },
+    category_reln:       { kind: :category_reln,       fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :into_wpid,                     ],  },
     # properties
     wordnet:             { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :wn_reln,    :wn_class,   :wn_pos, :wn_idx,  ],  },
     property_bool:       { kind: :property_bool,       fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
@@ -204,13 +211,14 @@ module Dbpedia
       case flavor
       when :property_str, :property_foaf   then  hsh[:val] = MultiJson.encode(hsh[:val])
       when :abstract_long, :abstract_short then  hsh[:abstract] = MultiJson.encode(hsh[:abstract])
-      when :title                          then  hsh[:title] = MultiJson.encode(hsh[:title])
+      when :title                          then  hsh[:title] = MultiJson.encode(hsh[:title]) ; hsh[:property] = 'title'
       when :category_skos_title            then  hsh[:category_title] = MultiJson.encode(hsh[:category_title])
       when :category_skos_type then hsh[:scheme] = 'skos'
       when :category_subject   then hsh[:scheme] = 'subject'
       when :instance_type_a    then hsh[:scheme] = 'dbpedia'
       when :instance_type_b
         hsh[:scheme] = SCHEMA_SCHEMES[hsh.delete(:org)]
+        return if hsh[:scheme] == 'owl'
       when :wikipedia_link, :wikipedia_backlink
         raise "Titles disagree!" unless hsh[:slug] == hsh[:wikipedia_id]
       end
