@@ -58,6 +58,7 @@ module Wukong
     #
     # @return [String]
     def self.deploy_pack_dir
+      return File.dirname(ENV["BUNDLE_GEMFILE"]) if ENV["BUNDLE_GEMFILE"]
       return @deploy_pack_dir if @deploy_pack_dir
       wd     = Dir.pwd
       parent = File.dirname(wd)
