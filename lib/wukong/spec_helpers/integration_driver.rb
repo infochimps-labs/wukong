@@ -87,15 +87,17 @@ module Wukong
       # @return [true, false]
       def run!
         return false if ran?
-        Open3.popen3(env, cmd) do |i, o, e, wait_thr|
-          self.pid = wait_thr.pid
-
-          @inputs.each { |input| i.puts(input) }
-          i.close
-
-          self.stdout    = o.read
-          self.stderr    = e.read
-          self.exit_code = wait_thr.value.to_i
+        FileUtils.cd(cwd) do
+          Open3.popen3(env, cmd) do |i, o, e, wait_thr|
+            self.pid = wait_thr.pid
+            
+            @inputs.each { |input| i.puts(input) }
+            i.close
+            
+            self.stdout    = o.read
+            self.stderr    = e.read
+            self.exit_code = wait_thr.value.to_i
+          end
         end
         @ran = true
       end
@@ -114,6 +116,17 @@ module Wukong
 
       def on *events
         @inputs.concat(events)
+        self
+      end
+      alias_method :<, :on
+
+      def in dir
+        @cwd = dir
+        self
+      end
+
+      def using env
+        @env = env
         self
       end
 

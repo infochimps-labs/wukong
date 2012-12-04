@@ -80,7 +80,7 @@ module Wukong
 
       # :nodoc:
       def failure_message
-        "Ran\n\n  #{formatted_command}\n\nand expected #{output_description}\n\n#{formatted_output}\n\nto #{match_type}\n\n  #{failed_expectation}"
+        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nand expected #{output_description}\n\n#{formatted_output}\n\nto #{match_type}\n\n  #{failed_expectation}#{formatted_error_output}"
       end
 
       # :nodoc:
@@ -94,8 +94,25 @@ module Wukong
       end
 
       # :nodoc:
+      def formatted_error_output
+        output_description.to_s =~ /stderr/ ? "\n\nSTDOUT was\n\n#{driver.stdout}" : "\n\nSTDERR was\n\n#{driver.stderr}"
+      end
+
+      # :nodoc:
       def formatted_command
-        "$ #{driver.cmd}"
+        "  $ #{driver.cmd}"
+      end
+
+      # :nodoc:
+      def formatted_env
+        ['  {'].tap do |lines|
+          driver.env.each_pair do |key, value|
+            if key =~ /^(BUNDLE_GEMFILE|PATH|RUBYLIB)$/
+              lines << "    #{key} => #{value},"
+            end
+          end
+          lines << '  }'
+        end.join("\n")
       end
 
       # :nodoc:
@@ -182,12 +199,12 @@ module Wukong
 
       # :nodoc:
       def failure_message
-        "Ran\n\n  #{formatted_command}\n\nexpecting #{expected_exit_code_description}  Got #{driver.exit_code} instead."
+        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nexpecting #{expected_exit_code_description}  Got #{driver.exit_code} instead.#{formatted_error_output}"
       end
 
       # :nodoc:
       def negative_failure_message
-        "Ran\n\n  #{formatted_command}\n\nNOT expecting #{expected_exit_code_description}."
+        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nNOT expecting #{expected_exit_code_description}.#{formatted_error_output}"
       end
 
       # :nodoc:
