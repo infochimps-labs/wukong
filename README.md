@@ -131,7 +131,7 @@ the last example:
 ```
 # in find_t_words.rb
 Wukong.dataflow(:find_t_words) do
-  tokenizer > regexp(match: /^t/)
+  tokenizer | regexp(match: /^t/)
 end
 ```
 
@@ -196,7 +196,7 @@ beginning and at the end
 
 ```ruby
 Wukong.dataflow(:complicated) do
-  from_json > proc_1 > proc_2 > proc_3 ... proc_n > to_json
+  from_json | proc_1 | proc_2 | proc_3 ... proc_n | to_json
 end
 ```
 
@@ -222,11 +222,11 @@ arguments
 
 ```ruby
 Wukong.processor(:log_everything) do
-  proc_1 > proc_2 > ... > logger
+  proc_1 | proc_2 | ... | logger
 end
 
 Wukong.processor(:log_everything_important) do
-  proc_1 > proc_2 > ... > regexp(match: /important/i) > logger
+  proc_1 | proc_2 | ... | regexp(match: /important/i) | logger
 end
 ```
 
@@ -234,7 +234,7 @@ Other widgets require a block to define their action:
 
 ```ruby
 Wukong.processor(:log_everything_important) do
-  parser > select { |record| record.priority =~ /important/i } > logger
+  parser | select { |record| record.priority =~ /important/i } | logger
 end
 ```
 
@@ -278,7 +278,7 @@ You can also use these within a more complicated dataflow:
 
 ```ruby
 Wukong.dataflow(:word_count) do
-  tokenize > remove_stopwords > sort > group
+  tokenize | remove_stopwords | sort | group
 end
 ```
 
