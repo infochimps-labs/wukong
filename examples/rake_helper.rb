@@ -4,7 +4,7 @@ require 'gorillib/data_munging'
 require 'pry'
 require 'rake'
 
-BOOK_ROOT = (ENV['BOOK_CONTENTS'] || File.expand_path('..', File.dirname(__FILE__)))
+PROJ_ROOT = (ENV['PROJ_CONTENTS'] || File.expand_path('..', File.dirname(__FILE__)))
 
 Settings.define :mini, type: :boolean, default: false, description: "use sample data or full data?"
 Settings.resolve!
@@ -14,11 +14,11 @@ Settings[:mini_slug] = Settings.mini ? "-sample" : ""
 task :force
 
 Pathname.register_paths(
-  book_root: BOOK_ROOT,
-  root: [:book_root],
-  code: [:book_root, 'code'],
-  data: [:book_root, 'data'],
-  work: [:book_root, 'tmp'],
+  proj_root: PROJ_ROOT,
+  root: [:proj_root],
+  code: [:proj_root, 'code'],
+  data: [:proj_root, 'data'],
+  work: [:proj_root, 'tmp'],
   )
 
 require 'rake/name_space'

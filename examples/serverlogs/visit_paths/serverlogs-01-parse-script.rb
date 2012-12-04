@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', File.dirname(__FILE__))
-require          'wukong/script'
-require_relative './logline'
+require_relative './common'
 
 class ApacheLogParser < Wukong::Streamer::LineStreamer
   # create a Logline object from each record and serialize it flat to disk

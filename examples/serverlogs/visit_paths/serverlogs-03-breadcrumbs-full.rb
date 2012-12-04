@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', File.dirname(__FILE__))
 require          'configliere'
 Settings.define :page_types, type: Array, default: ['page', 'video'], description: "Acceptable page types"
-require          'wukong/script'
-require_relative './logline'
-
+require_relative './common'
 
 #
 # Group all visitors, and then troll through all the pages they've visited
@@ -24,7 +21,7 @@ class BreadcrumbsMapper < Wukong::Streamer::ModelStreamer
   self.model_klass = Logline
   def process visit, *args
     # return unless Settings.page_types.include?(visit.page_type)
-    yield [visit.ip, visit.day_hr, visit.visit_time.to_i, visit.path]
+    yield [visit.ip, visit.day_hr, visit.requested_at.to_i, visit.path]
   end
 end
 
@@ -58,12 +55,11 @@ class BreadcrumbsReducer < Wukong::Streamer::Reducer
     super
   end
   def accumulate ip, day_hr, itime, path, *args
-    # @path_times << "(#{itime},#{path})"
-    @path_times << "#{itime}:#{path}"
+    @path_times << "(#{itime},#{path})"
   end
   def finalize
-    # yield [key, "{" << @path_times.join(",") << "}"]
-    yield [key, @path_times.join("|")]
+    path_times_str = ("{" << @path_times.join(",") << "}")
+    yield [key, path_times_str]
   end
 end
 
