@@ -281,3 +281,179 @@ Wukong.dataflow(:word_count) do
   tokenize > remove_stopwords > sort > group
 end
 ```
+
+## Testing
+
+Wukong comes with several helpers to make writing specs using
+[RSpec](http://rspec.info/) easier.
+
+The only method that you need to test in a Processor is the `process`
+method.  The rest of the processor's methods and functionality are
+provided by Wukong and are already tested.
+
+You may want to test this process method in two ways:
+
+* unit tests of the class itself in various contexts
+* integration tests of running the class with the `wu-local` (or other) command-line runner
+
+### Unit Tests
+
+Let's start with a simple processor
+
+```ruby
+# in tokenizer.rb
+Wukong.processor(:tokenizer) do
+  def process text
+    text.downcase.gsub(/[^\s\w]/,'').split.each do |token|
+      yield token
+    end
+  end
+end
+```
+
+You could test this processor directly:
+
+```ruby
+# in spec/tokenizer_spec.rb
+require 'spec_helper'
+describe :tokenizer do
+  subject { Wukong::Processor::Tokenizer.new }
+  before  { subject.setup                    }
+  after   { subject.finalize ; subject.stop  }
+  it "correctly counts tokens" do
+    expect { |b| subject.process("Hi there, Wukong!", &b) }.to yield_successive_args('hi', 'there', 'wukong')
+  end
+end
+```
+
+but having to handle the yield from the block yourself can lead to
+verbose and unreadable tests.  Wukong defines some helpers for this
+case.  Require and include them first in your `spec_helper.rb`:
+
+```ruby
+# spec/spec_helper.rb
+require 'wukong'
+require 'wukong/spec_helpers'
+RSpec.configure do |config|
+  config.include(Wukong::SpecHelpers)
+end
+```
+
+and then use them in your test
+
+```ruby
+# in spec/tokenizer_spec.rb
+require 'spec_helper'
+describe :tokenizer do
+  it_behaves_like 'a processor', :named => :tokenizer
+  it "emits the correct number of tokens" do
+    processor.given("Hi there.\nMy name is Wukong!").should emit(6).records
+  end
+  it "eliminates all punctuation" do
+    processor.given("Never!").output.first.should_not include(',')
+  end
+  it "downcases all input text" do
+    processor.given("Whatever").output.first.should match(/^w/)
+  end
+end
+```
+
+Let's look at each kind of helper:
+
+* The `a processor` shared example (invoked with RSpec's
+  `it_behaves_like` helper) adds some tests that ensure that the
+  processor conforms to the API of a Wukong::Processor.
+
+* The `processor` method instantiates a processor very similarly to
+  the way `wu-local` instantiates one on the command-line.  It accepts
+  a (registered) processor name and options and creates a new
+  processor.  If no name is given, the argument of the enclosing
+  `describe` or `context` block is used.  The object returned by
+  `processor` is the Wukong::Processor you're testing so you can
+  directly declare introspect on it or declare expectations about its
+  behavior.
+
+* The `given` method (and other helpers like `given_json`,
+  `given_tsv`, &c.) is added to the Processor class when
+  Wukong::SpecHelpers is required. It's a way of lazily feeding
+  records to a processor, without having to go through the `process`
+  method directly and having to handle the block or the processor's
+  lifecycle as in the prior example.
+
+* The `output` and `emit` matchers will `process` all previously
+  `given` records when they are called. This lets you separate
+  instantiation, input, expectations, and output. Here's a more
+  complicated example:
+
+The same helpers can be used to test dataflows as well as
+processors. For complete details, see documentation for the
+Wukong::SpecHelpers module.
+
+### Integration Tests
+
+Sometimes unit tests aren't enough and you need to test your
+processors or flows as they will be run in production using
+`wu-local`.
+
+For these use cases, Wukong provides some integration helpers that
+make testing command line processes easier.
+
+```ruby
+# spec/integration/tokenizer_spec.rb
+context "running the tokenizer with wu-local" do
+  subject { command("wu-local tokenizer") < "hi there" }
+  it { should exit_with(0)               }
+  it { should have_stdout("hi", "there") }
+end
+
+context "interpreting its arguments" do
+  context "with a valid --match argument" do
+    subject { command("wu-local tokenizer --match='^hi'") < "hi there" }
+	it      { should     exit_with(0) }
+	it      { should     have_stdout("hi")    }
+	it      { should_not have_stdout("there") }
+  end
+  context "with a malformed --match argument" do
+    # invalid b/c the regexp is broken...
+    subject { command("wu-local tokenizer --match='^[h'") < "hi there" }
+	it      { should exit_with(:non_zero)   }
+	it      { should have_stderr(/invalid/) }
+  end
+end
+```
+
+Let's go through the helpers:
+
+* The `command` helper creates a wrapper around a command-line that will be launched.  The command's environment and working directory will be taken from the current values of `ENV` and `Dir.pwd`, unless
+
+  * The `in` or `using` arguments are chained with `command` to specify the working directory and environment:
+
+  ```ruby
+  command("some-command with --args").in("/my/working/directory").using("THIS" => "ENV_HASH", "WILL_BE" => "MERGED_OVER_EXISTING_ENV")
+  ```
+
+  * The scope in which the `command` helper is called defines methods `integration_cwd` and `integration_env`.  This can be done through including a module in your `spec_helper.rb`:
+
+  ```ruby
+  # in spec/support/integration_helper.rb
+  module IntegrationHelper
+    def integration_cwd
+	  "/my/working/directory"
+	end
+	def integration_env
+	  { "THIS" => "ENV_HASH", "WILL_BE" => "MERGED_OVER_EXISTING_ENV" }
+	end
+  end
+
+  # in spec/spec_helper.rb
+  require_relative("support/integration_helper")
+  RSpec.configure do |config|
+    config.include(IntegrationHelper)
+  end
+  ```  
+
+* The `command` helper can accept input with the `<` method.  Input can be either a String or an Array of strings.  It will be passed to the command over STDIN.
+
+* The `have_stdout` and `have_stderr` matchers let you test the STDOUT or STDERR of the command for particular strings or regular expressions.
+
+* The `exit_with` matcher lets you test the exit code of the command.  You can pass the symbol `:non_zero` to set the expectation of _any_ non-zero exit code.
