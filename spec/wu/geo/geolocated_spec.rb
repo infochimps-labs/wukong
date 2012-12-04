@@ -1,5 +1,5 @@
 require          'gorillib/data_munging'
-require_relative '../geolocated'
+require          'wu/geo/geolocated'
 
 describe Wukong::Geolocated do
   let(:aus_lng){   -97.759003 } # Austin, TX -- infochimps HQ

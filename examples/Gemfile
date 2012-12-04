@@ -11,7 +11,7 @@ gem "log4r"
 group :examples do
   gem "forgery"
   gem "nokogiri"
-  # gem "sanitize"
+  gem "sanitize"
   gem "addressable"
   gem "forgery"
   gem "crack"
@@ -28,6 +28,7 @@ group :development do
   gem "simplecov",          '>= 0.5'
   gem "pry"
   gem "ap"
+  gem "ruby-progressbar"
 end
 
 group :docs do
