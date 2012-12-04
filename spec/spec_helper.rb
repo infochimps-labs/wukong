@@ -35,5 +35,5 @@ require_relative './support/shared_context_for_reducers'
 RSpec.configure do |config|
   config.mock_with :rspec
   include Wukong::SpecHelpers
-  # config.treat_symbols_as_metadata_keys_with_true_values = true
+  config.treat_symbols_as_metadata_keys_with_true_values = true
 end
