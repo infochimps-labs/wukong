@@ -1,0 +1,6 @@
+# This is a minimal Gemfile that lets Wukong boot up (but not work).
+gem 'configliere'
+gem 'gorillib'
+gem 'multi_json'
+gem 'vayacondios-client'
+gem 'log4r'
