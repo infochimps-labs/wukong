@@ -60,10 +60,12 @@ else
   settings.dump_help
   exit(2)
 end
-# p settings
+
 begin
-  Wukong::LocalDriver.run(processor.to_sym, settings)
-rescue Wukong::Error => e
+  EM.run do 
+    Wu::StdioServer.start processor.to_sym, settings
+  end
+rescue Wu::Error => e
   $stderr.puts e.message
   exit(3)
 end

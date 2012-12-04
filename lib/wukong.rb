@@ -2,12 +2,13 @@ require 'configliere'
 require 'gorillib/logger/log'
 require 'vayacondios-client'
 require 'multi_json'
+require 'eventmachine'
 
 require 'hanuman'
 
 require 'wukong/processor'
 require 'wukong/driver'
-
+require 'wukong/server'
 require 'wukong/emitter'
 require 'wukong/dataflow'
 require 'wukong/configuration'
