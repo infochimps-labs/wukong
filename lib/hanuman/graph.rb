@@ -31,8 +31,13 @@ module Hanuman
 
     def build(options = {})
       attrs  = serialize
-      stages = attrs.delete(:stages).inject({}){ |hsh, (name, builder)| hsh[name] = builder.build(options) ; hsh }
+      stages = attrs.delete(:stages).inject({}){ |hsh, (name, builder)| hsh[name] = builder.build(stage_specific_options(name, options)) ; hsh }
       for_class.receive attrs.merge(stages: stages)
+    end
+
+    def stage_specific_options(stage, options)
+      scope = options.delete(stage) || {}
+      options.merge(scope)
     end
 
     def namespace() Hanuman::Graph ; end
