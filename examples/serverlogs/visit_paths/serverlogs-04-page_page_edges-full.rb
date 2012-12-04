@@ -1,18 +1,16 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', File.dirname(__FILE__))
-require          'wukong/script'
-require_relative './logline'
+require_relative './common'
 
 class BreadcrumbsMapper < Wukong::Streamer::ModelStreamer
   self.model_klass = Logline
   def process visit, *args
     # return unless Settings.page_types.include?(visit.page_type)
-    yield [visit.ip, visit.visit_time.to_i, visit.path]
+    yield [visit.ip, visit.requested_at.to_i, visit.path]
   end
 end
 
 class BreadcrumbEdgesReducer < Wukong::Streamer::Reducer
-  def get_key ip, itime, path
+  def get_key(ip, itime, path)
     [ip]
   end
   def start!(*args)

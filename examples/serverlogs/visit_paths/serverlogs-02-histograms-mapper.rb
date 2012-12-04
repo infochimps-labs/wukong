@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', File.dirname(__FILE__))
-require          'wukong/script'
-require_relative './logline'
+require_relative './common'
 
 class HistogramsMapper < Wukong::Streamer::ModelStreamer
   self.model_klass = Logline
