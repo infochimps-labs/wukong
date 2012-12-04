@@ -27,7 +27,6 @@ describe Wukong::Processor do
     end
   end
   
-  
   context :extract do
     subject { processor(:extract) }
     
