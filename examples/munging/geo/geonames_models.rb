@@ -75,4 +75,33 @@ module Geo
   class GeonamesCountry < GeonamesPlace
     self.place_klass = Geo::Country
   end
+
+  # http://download.geonames.org/export/zip/
+  #
+  # country code      : iso country code, 2 characters
+  # postal code       : varchar(20)
+  # place name        : varchar(180)
+  # admin name1       : 1. order subdivision (state) varchar(100)
+  # admin code1       : 1. order subdivision (state) varchar(20)
+  # admin name2       : 2. order subdivision (county/province) varchar(100)
+  # admin code2       : 2. order subdivision (county/province) varchar(20)
+  # admin name3       : 3. order subdivision (community) varchar(100)
+  # admin code3       : 3. order subdivision (community) varchar(20)
+  # latitude          : estimated latitude (wgs84)
+  # longitude         : estimated longitude (wgs84)
+  # accuracy          : accuracy of lat/lng from 1=estimated to 6=centroid
+  class GeonamesPostal
+    field :country_id,   String, doc: "iso country code, 2 characters"
+    field :postal_id,    String, doc: "varchar(20)"
+    field :name,         String, doc: "varchar(180)"
+    field :admin1_name,  String, doc: "1. order subdivision (state) varchar(100)"
+    field :admin1_id,    String, doc: "1. order subdivision (state) varchar(20)"
+    field :admin2_name,  String, doc: "2. order subdivision (county/province) varchar(100)"
+    field :admin2_id,    String, doc: "2. order subdivision (county/province) varchar(20)"
+    field :admin3_name,  String, doc: "3. order subdivision (community) varchar(100)"
+    field :admin3_id,    String, doc: "3. order subdivision (community) varchar(20)"
+    field :latitude,     String, doc: "estimated latitude (wgs84)"
+    field :longitude,    String, doc: "estimated longitude (wgs84)"
+    field :accuracy,     String, doc: "accuracy of lat/lng from 1=estimated to 6=centroid"
+  end
 end
