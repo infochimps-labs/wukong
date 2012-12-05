@@ -1,8 +1,18 @@
 module Wukong
   class Processor
 
-    # An empty parent class for all Serializers to subclass.
+    SerializerError = Class.new(StandardError)
+
     class Serializer < Processor
+      field :on_error, Symbol, default: :log
+
+      def handle_error(record, err)
+        case on_error
+        when :log    then log.warn "Bad record: #{record}. Error: #{err.backtrace.join("\n")}"
+        when :notify then notify('error', record: record, error: err)
+        end          
+      end
+
     end
 
     # A widget for serializing inputs to JSON.
@@ -15,19 +25,23 @@ module Wukong
     #
     # @see FromJson
     class ToJson < Serializer
+      field :pretty, :boolean, default: false
+
       # Yields the input `record` serialized as JSON.
       #
       # @param [Object] record
       # @yield [json] the serialized json output
       # @yieldparam [String] json
       def process(record)
-        begin
-          json = ::MultiJson.dump(record)
-        rescue => e
-          # FIXME -- should we log here or what?
-          return
+        raise SerializerError.new("Cannot serialize: <nil>") if record.nil?
+        if record.respond_to?(:to_json) && !record.is_a?(Hash) # We only want to invoke to_json if it has been explicitly defined
+          json = record.to_json(pretty: pretty)
+        else
+          json = MultiJson.dump(record.try(:to_wire) || record, pretty: pretty)
         end
         yield json
+      rescue => e
+        handle_error(record, e)
       end
       register
     end
@@ -47,14 +61,15 @@ module Wukong
       # @param [String] json
       # @yield [obj] the deserialized object
       # @yieldparam [Object] obj
-      def process(json)
-        begin
-          obj = ::MultiJson.load(json)
-        rescue => e
-          # FIXME -- should we log here or what?
-          return
+      def process(record)
+        if record.respond_to?(:from_json)
+          obj = record.from_json
+        else
+          obj = MultiJson.load(record)
         end
         yield obj
+      rescue => e
+        handle_error(record, e)       
       end
       register
     end
@@ -75,13 +90,16 @@ module Wukong
       # @yield [tsv] the serialized TSV output
       # @yieldparam [String] tsv
       def process(record)
-        begin
-          tsv = record.map(&:to_s).join("\t")
-        rescue => e
-          # FIXME -- should we log here or what?
-          return
+        if record.respond_to?(:to_tsv)
+          tsv = record.to_tsv
+        else         
+          wire_format = record.try(:to_wire) || record
+          raise SerializerError.new("Record must be in Array format to be serialized as TSV") unless wire_format.respond_to?(:map)
+          tsv = wire_format.map(&:to_s).join("\t")
         end
         yield tsv
+      rescue => e
+        handle_error(record, e)
       end
       register
     end
@@ -101,14 +119,15 @@ module Wukong
       # @param [String] tsv
       # @yield [obj] the deserialized object
       # @yieldparam [Object] obj
-      def process(tsv)
-        begin
-          record = tsv.split(/\t/)
-        rescue => e
-          # FIXME -- should we log here or what?
-          return
+      def process(record)
+        if record.respond_to?(:from_tsv)
+          obj = record.from_tsv
+        else
+          obj = record.split(/\t/)
         end
-        yield record
+        yield obj
+      rescue => e        
+        handle_error(record, e)
       end
       register
     end
@@ -236,52 +255,23 @@ module Wukong
       # @param [Array<Object>]
       # @yield [inspected]
       # @yieldparam [String] inspected
-      def process(*args)
-        yield args.size == 1 ? args.first.inspect : args.inspect
+      def process(record)
+        yield record.inspect
       end
       register
     end
+    
+    class Recordize < Serializer
+      field :model, Whatever
 
-    # A widget for pretty printing input records.
-    #
-    # @example Pretty printing JSON on the command-line
-    #
-    #   $ cat input
-    #   {"id": 1, "word": "apple" }
-    #   $ cat input | wu-local pretty
-    #   {
-    #     "id":2,
-    #     "parent_id":3
-    #   }
-    class Pretty < Serializer
-      # Pretty print `record` if we can.
-      #
-      # @param [Object] record
-      # @yield [pretty]
-      # @yieldparam [String] pretty the pretty-printed record
-      def process record
-        if record.is_a?(String) && record =~ /^\s*\{/
-          yield pretty_json(record)
-        else
-          yield record.to_s
-        end
+      def process(record)
+        wire_format = record.try(:to_wire) || record
+        raise SerializerError.new("Record must be in hash format to be recordized") unless wire_format.is_a?(Hash)
+        yield model.receive(wire_format)
+      rescue => e        
+        handle_error(record, e)  
       end
-
-      # Attempt to pretty-print the given `json`, returning the
-      # original on an error.
-      #
-      # @param [String] json ugly JSON
-      # @return [String] prettier JSON
-      def pretty_json json
-        begin
-          MultiJson.dump(MultiJson.load(json), :pretty => true)
-        rescue => e
-          json
-        end
-      end
-      
       register
-    end
-
+    end    
   end
 end

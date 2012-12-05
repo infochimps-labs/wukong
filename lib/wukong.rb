@@ -1,17 +1,19 @@
 require 'configliere'
-require 'gorillib/logger/log'
 require 'vayacondios-client'
 require 'multi_json'
+require 'eventmachine'
+require 'log4r'
 
 require 'hanuman'
 
+require 'wukong/logger' 
 require 'wukong/processor'
-require 'wukong/driver'
-
-require 'wukong/emitter'
 require 'wukong/dataflow'
 require 'wukong/configuration'
 require 'wukong/widgets'
+require 'wukong/driver'
+require 'wukong/server'
+# require 'wukong/runner'
 
 # The Wukong module will contain all code for Wukong's core (like
 # Processors and Dataflows) as well as all plugins.
@@ -29,3 +31,6 @@ module Wukong
   add_shortcut_method_for(:dataflow,  DataflowBuilder)
 
 end
+
+# Alias module name for shorter namespaces
+Wu = Wukong

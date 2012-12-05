@@ -91,7 +91,6 @@ module Wukong
     def self.is_deploy_pack_dir? dir
       dir && !dir.empty? && File.directory?(dir) && File.exist?(File.join(dir, 'Gemfile')) && File.exist?(File.join(dir, 'config', 'environment.rb'))
     end
-    
   end
   
 end

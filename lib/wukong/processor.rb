@@ -1,5 +1,3 @@
-require 'log4r'
-
 module Wukong
   class ProcessorBuilder < Hanuman::StageBuilder
     def namespace(*args)
@@ -14,23 +12,59 @@ module Wukong
   # A Processor can be written and tested purely in Ruby and on your
   # local machine.  You can glue processors together
   class Processor < Hanuman::Stage
+    include Logging
+    include Vayacondios::Notifications
     
     field :action,   Whatever
-    field :log,      Whatever, :default => -> { log = Log4r::Logger.new(self.class.to_s) ; log.outputters = Log4r::StdoutOutputter.new('stdout', formatter: Log4r::PatternFormatter.new(pattern: "%d [%l] %c: %m")) ; log }
-    field :notifier, Vayacondios::NotifierFactory, :default => Vayacondios.default_notifier
 
-    def self.describe desc
-      @description = desc
+    class << self
+
+      def describe desc
+        @description = desc
+      end
+      
+      def description
+        @description
+      end
+      
+      def consumes(klass, options = {})
+        validate_and_set_consume(klass)
+        validate_and_set_serialize(:from, options)
+      end
+
+      def produces(klass, options = {})
+        validate_and_set_produce(klass)
+        validate_and_set_serialize(:to, options)      
+      end
+      
+      def validate_and_set_consume klass
+        @consume = klass if valid_recordizer?(klass)
+      end
+
+      def validate_and_set_produce klass
+        @produce = klass if valid_recordizer?(klass)
+      end
+      
+      def valid_recordizer? klass
+        klass.instance_methods.include?(:to_primitive) && klass.respond_to?(:receive)
+      end
+      
+      def valid_serializer? label
+        %w[ tsv json xml ].include? label
+      end
+
+      def validate_and_set_serialize(direction, options)
+        instance_variable_set("@serialize_#{direction}", options[direction]) if valid_serializer?(options[direction])
+      end
+
     end
-
-    def self.description
-      @description
+        
+    def expected_record_type(type)
+      self.class.instance_variable_get("@#{type}")
     end
-
-    def self.consumes label
-    end
-
-    def self.produces label
+    
+    def expected_serialization(direction)
+      self.class.instance_variable_get("@serialization_#{direction.to_s}")
     end
 
     # This is a placeholder method intended to be overridden
@@ -39,21 +73,6 @@ module Wukong
     # The action attribute is turned into the perform action method
     def receive_action(action)
       self.define_singleton_method(:perform_action, &action)
-    end
-
-    # Valid notifier types are currently :http or :log
-    # This processor's log is passed to vayacondios
-    def receive_notifier(type)
-      if type.is_a?(Hash)
-        @notifier = Vayacondios::NotifierFactory.receive({type: 'log'}.merge(type))
-      else
-        @notifier = Vayacondios::NotifierFactory.receive(type: type, log: log)
-      end
-    end
-
-    # Send information to Vayacondios; data goes in, the right thing happens
-    def notify(topic, cargo)
-      notifier.notify(topic, cargo)
     end
 
     # This method is called after the processor class has been instantiated
@@ -66,6 +85,19 @@ module Wukong
     def process(record, &emit)
       yield record
     end
+
+    # This method is called to signal the last record has been
+    # received but that further processing may still be done, events
+    # still be yielded, &c.
+    #
+    # This can be used within an aggregating processor (like a reducer
+    # in a map/reduce job) to start processing the final aggregate of
+    # records since the "last record" has already been received.
+    def finalize
+    end
+
+    # This method is called after all records have been passed.  It
+    # signals that processing should stop.
       
     # This method is called after all records have been processed
     def stop
