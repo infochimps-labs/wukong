@@ -69,3 +69,6 @@ rescue Wu::Error => e
   $stderr.puts e.message
   exit(3)
 end
+
+# One day, it will be this easy...
+# Wukong::LocalRunner.run!    
