@@ -52,7 +52,7 @@ module Wukong
           tsv = record.to_tsv
         else         
           wire_format = record.try(:to_wire) || record
-          raise SerializerError.new("Record must be in Array format to be received") unless wire_format.respond_to?(:map)
+          raise SerializerError.new("Record must be in Array format to be serialized as TSV") unless wire_format.respond_to?(:map)
           tsv = wire_format.map(&:to_s).join("\t")
         end
         yield tsv
