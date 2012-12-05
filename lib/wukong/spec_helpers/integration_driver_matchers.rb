@@ -231,6 +231,11 @@ module Wukong
         "exit with #{expected_exit_code_description}"
       end
 
+      # :nodoc:
+      def output_description
+        "STDOUT"
+      end
+
     end
   end
 end
