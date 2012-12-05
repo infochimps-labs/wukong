@@ -152,5 +152,18 @@ module Wukong
       end
       register
     end
+
+    # Mixin processor behavior
+    module BufferedProcessor
+      def setup()                           ; end
+      def process(record) @buffer << record ; end
+      def stop()                            ; end
+    end
+  
+    module StdoutProcessor
+      def setup()         $stdout.sync        ; end
+      def process(record) $stdout.puts record ; end
+      def stop()                              ; end
+    end
   end
 end

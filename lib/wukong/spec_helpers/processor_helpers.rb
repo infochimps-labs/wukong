@@ -54,18 +54,13 @@ module Wukong
       #     ...
       #   end
       def processor *args, &block
-        case
-        when args.empty?
-          create_processor(self.class.description, {}, &block)
-        when args.first.is_a?(Hash)
-          create_processor(self.class.description, args.first, &block)
-        else
-          create_processor(args[0], (args[1] || {}), &block)
-        end
+        options = args.extract_options!
+        name    = args.first || self.class.description
+        create_processor(name, options, &block)
       end
       alias_method :flow, :processor
 
-      # Is the given `klass` a Wukong::Processor?
+      # Is the given +klass+ a Wukong::Processor?
       #
       # @param [Class] klass
       # @return [true, false]
@@ -92,4 +87,3 @@ module Wukong
     end
   end
 end
-

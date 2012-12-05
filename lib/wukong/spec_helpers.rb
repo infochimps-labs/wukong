@@ -79,3 +79,4 @@ module Wukong
 
   Processor.class_eval { include SpecHelpers::ProcessorSpecMethods }
 end
+

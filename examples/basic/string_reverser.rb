@@ -2,11 +2,14 @@ Wukong.processor(:string_reverser) do
 
   def setup
     log.info("Inside the setup method")
+    @count = 0
+    EM.add_periodic_timer(10){ notify('metrics', count: @count) }
   end
 
-  def process(rec) 
-    notify('metrics', bad_word: rec, level: :warn) if rec.match(/fuck|shit|piss/)
-    yield rec.values
+  def process(record) 
+    @count += 1
+    yield record.reverse
+    yield nil
   end
 
   def finalize
@@ -17,10 +20,4 @@ Wukong.processor(:string_reverser) do
     log.info("Inside the stop method")
   end
 
-end
-
-Wukong.dataflow(:chained) do
-
-  from_json > string_reverser > to_tsv > topic(topic: 'foobar')
-  
 end

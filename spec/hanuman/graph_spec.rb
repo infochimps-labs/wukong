@@ -32,6 +32,20 @@ describe Hanuman::GraphBuilder, :hanuman => true do
   end
   
   context '#build' do
+    before do
+      Wukong.processor(:foo) do
+        field :bones, String
+      end
+      Wukong.dataflow(:bar) do
+        foo
+      end
+    end
+    
+    let(:graph){ Wukong.registry.retrieve(:bar) }
+    it 'builds stages with specific options' do
+      built = graph.build(foo: { bones: 'lala' })
+      built.stages[:foo].bones.should eq('lala')
+    end
   end
   
   context '#serialize' do
