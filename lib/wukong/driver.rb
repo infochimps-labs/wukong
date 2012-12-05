@@ -1,99 +1,93 @@
-module Wukong  
-  class Driver
+module Wukong
+  module DriverMethods
 
-    class << self
-      def run(dataflow, options)
-        new(dataflow, options).run!
-      end
+    def driver
+      @driver ||= Driver.new(dataflow)
     end
 
     def lookup(label)
-      builder = Wukong.registry.retrieve(label)
-      builder.build(@settings)
+      raise "could not find definition for #{label}" unless Wukong.registry.registered?(label.to_sym)
+      Wukong.registry.retrieve(label.to_sym)
     end
     
-    def wire(flow)
-      using = @settings[:wiring] || :emitter
-      if flow.complete?
-        flow.links.each do |link| 
-          Hanuman::LinkFactory.connect(using, flow.stages[link.from], flow.stages[link.into])
-        end
+    def lookup_and_build(label, options = {})
+      lookup(label).build(options)
+    end
+    
+    def build_serializer(direction, label)
+      lookup_and_build("#{direction}_#{label}")
+    end
+
+    def add_serialization(dataflow, direction, label)
+      case direction
+      when :to   then dataflow.push    build_serializer(direction, label)
+      when :from then dataflow.unshift build_serializer(direction, label)
       end
-      flow
     end
+
+    def setup_dataflow
+      dataflow.each(&:setup)
+    end
+
+    def finalize_and_stop_dataflow
+      dataflow.each do |stage|
+        stage.finalize(&driver.start_with(stage)) if stage.respond_to?(:finalize)
+        stage.stop
+      end      
+    end
+
+    # So pretty...
+    def construct_dataflow(label, options)
+      dataflow = lookup_and_build(label, options)
+      dataflow = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
+      expected_input_model  = (options[:consumes].constantize rescue nil)    || dataflow.first.expected_record_type(:consumes)
+      dataflow.unshift lookup_and_build(:recordizer, model: expected_input_model) if expected_input_model
+      expected_output_model = (options[:produces].constantize rescue nil)    || dataflow.first.expected_record_type(:produces)
+      dataflow.push lookup_and_build(:recordizer, model: expected_input_model)    if expected_input_model
+      expected_input_serialization = options[:from] || dataflow.last.expected_serialization(:from)
+      add_serialization(dataflow, :from, expected_input_serialization)            if expected_input_serialization
+      expected_output_serialization = options[:to] || dataflow.last.expected_serialization(:to)
+      add_serialization(dataflow, :to, expected_output_serialization)             if expected_output_serialization
+      dataflow.push self
+    end    
   end
-  
-  class LocalDriver < Driver
-    attr_accessor :dataflow, :source
+
+  class Driver
+    attr_accessor :dataflow
+
+    def initialize(dataflow)
+      @dataflow = dataflow
+    end
+
+    def to_proc
+      return @wiring if @wiring
+      @wiring = Proc.new do |stage, record|
+        stage.process(record, &advance(stage)) if stage          
+      end
+    end
+
+    def send_through_dataflow(record)
+      start_with(dataflow.first).call(record)
+    end
     
-    def initialize(dataflow, options = {})
-      builder    = (Wukong.registry.retrieve(dataflow) or raise Error.new("No such processor or dataflow: #{dataflow.inspect}"))
-      dataflow   = builder.build(options)
-      @dataflow  = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
-      @dataflow << Wukong.registry.retrieve(:stdout).build
-      @source    = Wukong.registry.retrieve(:stdin).build
+    def start_with(stage)
+      to_proc.curry.call(stage)
     end
 
-    def emitter
-      @emitter ||= ProcEmitter.new(dataflow)
+    def advance(stage)
+      next_stage = stage_iterator(stage)
+      start_with(next_stage)
     end
 
+    # This should properly be defined on dataflow/builder
     def stage_iterator(stage)
-      return dataflow.first if stage.nil?
       position = dataflow.find_index(stage)
       dataflow[position + 1]    
+    end 
+
+    def call(*args)
+      to_proc.call(*args)
     end
-
-    def next_record(&blk)
-      trap('SIGINT'){ break }              
-      source.process(&blk)
-    end
-
-    def run!      
-      dataflow.each(&:setup)
-      next_record do |record|
-        emitter.send_through_dataflow(record)
-      end
-      dataflow.each do |stage|
-        stage.finalize(&emitter.advance(stage)) if stage.respond_to?(:finalize)
-        stage.stop
-      end
-      nil
-    end
+    
   end
-end
-
-class ProcEmitter
-
-  attr_accessor :dataflow
-
-  def initialize(dataflow)
-    @dataflow = dataflow
-  end
-
-  def to_proc
-    return @wiring if @wiring
-    @wiring = Proc.new do |stage, record|
-      stage.process(record, &advance(stage)) if stage          
-    end
-  end
-
-  def send_through_dataflow(record)
-    self.call(dataflow.first, record)
-  end
-  
-  def advance(stage)
-    next_stage = stage_iterator(stage)
-    self.to_proc.curry.call(next_stage)
-  end
-
-  def stage_iterator(stage)
-    position = dataflow.find_index(stage)
-    dataflow[position + 1]    
-  end 
-
-  def call(*args)
-    to_proc.call(*args)
-  end
-  
 end
