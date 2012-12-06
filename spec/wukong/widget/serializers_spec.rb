@@ -2,14 +2,14 @@ require 'spec_helper'
 
 shared_context 'serializers', serializer: true do
   let(:bad_record){ nil }
-  let(:serializer){ create_processor(self.class.top_level_description, on_error: :skip) }  
-
-  it_behaves_like 'a serializer'
+  let(:serializer){ create_processor(self.class.top_level_description, on_error: :skip) }
 end
 
 shared_examples_for 'a serializer' do
   it_behaves_like 'a processor'
+end
 
+shared_examples_for 'a serializer that complains on bad recors', :handles_errors => true do
   it 'handles errors on bad records' do
     serializer.should_receive(:handle_error).with(bad_record, a_kind_of(Exception)).and_return(nil)
     serializer.given(bad_record).should emit(0).records
@@ -18,17 +18,21 @@ end
 
 describe :to_json, serializer: true do
   let(:valid_record) { { hi: 'there' }        }
-  let(:bad_record)   { { no: Float::INFINITY} }
-
   it 'serializes valid records' do
     serializer.given(valid_record).should emit('{"hi":"there"}')
   end
 
+  it 'handles errors on bad records' do
+    MultiJson.should_receive(:dump).with(:unserializable_record, kind_of(Hash)).and_raise(StandardError)
+    serializer.should_receive(:handle_error).with(:unserializable_record, a_kind_of(Exception)).and_return(nil)
+    serializer.given(:unserializable_record).should emit(0).records
+  end
+  
   context 'pretty' do
     let(:serializer){ create_processor(:to_json, pretty: true) }
     
     it 'prettifies valid records' do
-      serializer.given(valid_record).should emit("{\n  \"hi\": \"there\"\n}")
+      serializer.given(valid_record).output.first.should include("\n")
     end  
   end
 
@@ -43,7 +47,7 @@ describe :to_json, serializer: true do
   end
 end
 
-describe :to_tsv, serializer: true do
+describe :to_tsv, serializer: true, handles_errors: true do
   let(:valid_record) { ["foo", 2, :a] }
   
   it 'serializes valid records' do
@@ -61,7 +65,7 @@ describe :to_tsv, serializer: true do
   end
 end
 
-describe :from_json, serializer: true do
+describe :from_json, serializer: true, handles_errors: true do
   let(:valid_record) { '{"hi": "there"}' }
   let(:bad_record)   { '{"832323:'       }
   
@@ -80,7 +84,7 @@ describe :from_json, serializer: true do
   end
 end
 
-describe :from_tsv, serializer: true do
+describe :from_tsv, serializer: true, handles_errors: true do
   let(:valid_record) { "foo\t2\ta" }
   
   it 'deserializes valid records' do
@@ -102,7 +106,7 @@ describe :to_inspect do
   it_behaves_like 'a processor'
 end
 
-describe :recordize, serializer: true do
+describe :recordize, serializer: true, handles_errors: true do
   let(:model_instance) { double('model')                                                   }
   let(:model_klass)    { double('model_def', receive: model_instance)                      }
   let(:serializer)     { create_processor(:recordize, model: model_klass, on_error: :skip) }
