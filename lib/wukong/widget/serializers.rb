@@ -4,12 +4,12 @@ module Wukong
     SerializerError = Class.new(StandardError)
 
     class Serializer < Processor
-      field :on_error, Symbol, default: :log
+      field :on_error, String, default: 'log'
 
       def handle_error(record, err)
         case on_error
-        when :log    then log.warn "Bad record: #{record}. Error: #{err.backtrace.join("\n")}"
-        when :notify then notify('error', record: record, error: err)
+        when 'log'    then log.warn "Bad record: #{record}. Error: #{err.backtrace.join("\n")}"
+        when 'notify' then notify('error', record: record, error: err)
         end          
       end
 
