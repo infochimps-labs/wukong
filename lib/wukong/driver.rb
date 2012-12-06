@@ -41,12 +41,12 @@ module Wukong
       dataflow = lookup_and_build(label, options)
       dataflow = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
       expected_input_model  = (options[:consumes].constantize rescue nil)    || dataflow.first.expected_record_type(:consumes)
-      dataflow.unshift lookup_and_build(:recordizer, model: expected_input_model) if expected_input_model
+      dataflow.unshift lookup_and_build(:recordize, model: expected_input_model)  if expected_input_model
       expected_output_model = (options[:produces].constantize rescue nil)    || dataflow.first.expected_record_type(:produces)
-      dataflow.push lookup_and_build(:recordizer, model: expected_input_model)    if expected_input_model
-      expected_input_serialization = options[:from] || dataflow.last.expected_serialization(:from)
+      dataflow.push lookup_and_build(:recordize, model: expected_output_model)    if expected_output_model
+      expected_input_serialization  = options[:from] || dataflow.last.expected_serialization(:from)
       add_serialization(dataflow, :from, expected_input_serialization)            if expected_input_serialization
-      expected_output_serialization = options[:to] || dataflow.last.expected_serialization(:to)
+      expected_output_serialization = options[:to]   || dataflow.last.expected_serialization(:to)
       add_serialization(dataflow, :to, expected_output_serialization)             if expected_output_serialization
       dataflow.push self
     end    
