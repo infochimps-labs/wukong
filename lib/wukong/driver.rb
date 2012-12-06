@@ -31,7 +31,7 @@ module Wukong
 
     def finalize_and_stop_dataflow
       dataflow.each do |stage|
-        stage.finalize(&driver.start_with(stage)) if stage.respond_to?(:finalize)
+        stage.finalize(&driver.advance(stage)) if stage.respond_to?(:finalize)
         stage.stop
       end      
     end
