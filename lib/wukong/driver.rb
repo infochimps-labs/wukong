@@ -14,14 +14,14 @@ module Wukong
       lookup(label).build(options)
     end
     
-    def build_serializer(direction, label)
-      lookup_and_build("#{direction}_#{label}")
+    def build_serializer(direction, label, options)
+      lookup_and_build("#{direction}_#{label}", options)
     end
 
-    def add_serialization(dataflow, direction, label)
+    def add_serialization(dataflow, direction, label, options)
       case direction
-      when :to   then dataflow.push    build_serializer(direction, label)
-      when :from then dataflow.unshift build_serializer(direction, label)
+      when :to   then dataflow.push    build_serializer(direction, label, options)
+      when :from then dataflow.unshift build_serializer(direction, label, options)
       end
     end
 
@@ -45,9 +45,9 @@ module Wukong
       expected_output_model = (options[:produces].constantize rescue nil)    || dataflow.first.expected_record_type(:produces)
       dataflow.push lookup_and_build(:recordize, model: expected_output_model)    if expected_output_model
       expected_input_serialization  = options[:from] || dataflow.last.expected_serialization(:from)
-      add_serialization(dataflow, :from, expected_input_serialization)            if expected_input_serialization
+      add_serialization(dataflow, :from, expected_input_serialization, options)   if expected_input_serialization
       expected_output_serialization = options[:to]   || dataflow.last.expected_serialization(:to)
-      add_serialization(dataflow, :to, expected_output_serialization)             if expected_output_serialization
+      add_serialization(dataflow, :to, expected_output_serialization, options)    if expected_output_serialization
       dataflow.push self
     end    
   end
