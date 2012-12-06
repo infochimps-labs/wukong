@@ -27,34 +27,24 @@ module Wukong
         @description
       end
       
-      def consumes(klass, options = {})
-        validate_and_set_consume(klass)
-        validate_and_set_serialize(:from, options)
+      def consumes(*args)
+        options   = args.extract_options!
+        @consumes = options[:as]
+        validate_and_set_serialization(:from, args.first)
       end
 
-      def produces(klass, options = {})
-        validate_and_set_produce(klass)
-        validate_and_set_serialize(:to, options)      
+      def produces(*args)
+        options   = args.extract_options!
+        @produces = options[:as]
+        validate_and_set_serialization(:to, args.first)      
       end
-      
-      def validate_and_set_consume klass
-        @consume = klass if valid_recordizer?(klass)
-      end
-
-      def validate_and_set_produce klass
-        @produce = klass if valid_recordizer?(klass)
-      end
-      
-      def valid_recordizer? klass
-        klass.instance_methods.include?(:to_primitive) && klass.respond_to?(:receive)
-      end
-      
+            
       def valid_serializer? label
-        %w[ tsv json xml ].include? label
+        label
       end
 
-      def validate_and_set_serialize(direction, options)
-        instance_variable_set("@serialize_#{direction}", options[direction]) if valid_serializer?(options[direction])
+      def validate_and_set_serialization(direction, label)
+        instance_variable_set("@serialization_#{direction}", label) if %w[ tsv json xml ].include?(label.to_s)
       end
 
     end
@@ -66,7 +56,7 @@ module Wukong
     def expected_serialization(direction)
       self.class.instance_variable_get("@serialization_#{direction.to_s}")
     end
-
+    
     # This is a placeholder method intended to be overridden
     def perform_action(*args) ; end 
     
