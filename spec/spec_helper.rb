@@ -1,5 +1,3 @@
-require 'bundler' ; Bundler.setup(:default, :development, :test)
-
 require 'wukong'
 require 'wukong/spec_helpers'
 require_relative './support/shared_examples_for_shortcuts'
