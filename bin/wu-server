@@ -17,15 +17,16 @@ load wu_file
 $processor = File.basename(wu_file, '.rb').to_sym
 
 # EventMachine server
-
+$clients = 0
 class WukongServer < EM::Protocols::LineAndTextProtocol
   def post_init
     puts "[server] Client connected"
-    
+    $clients += 1
+
     dataflow_class = Wukong.dataflow(:server){ send($processor) }
     flow_builder = Wukong.registry.retrieve(:server)
     flow = flow_builder.build(processor: $processor)
-    
+
     @buffer = []
     @processor = flow.stages.values.first
     @processor.emitter = ->(value){ @buffer << value }
@@ -34,17 +35,22 @@ class WukongServer < EM::Protocols::LineAndTextProtocol
   def receive_data(data)
     @buffer = []
     input = MultiJson.load data
-    
+
     op = proc { @processor.process(input) }
     callback = proc { send_data MultiJson.dump(@buffer) + "\n" }
     EM.defer(op, callback)
-      
+
   rescue MultiJson::DecodeError => ex
     STDERR.puts "[server] Dropped: Malformed request"
   end
 
   def unbind
     puts "[server] Client disconnected."
+    $clients -= 1
+    if $clients <= 0
+      puts "I die with honor."
+      exit
+    end
   end
 end
 
