@@ -15,8 +15,8 @@ module Wukong
 
     def initialize(label, settings)
       super
-      @settings = settings
-      @dataflow = construct_dataflow(label, settings)      
+      @settings = settings      
+      @dataflow = construct_dataflow(label, settings)
     end
       
   end
@@ -82,4 +82,38 @@ module Wukong
     end
     
   end
+end
+
+class StupidServer
+
+  attr_accessor :dataflow, :settings
+  
+  def initialize(label, settings)
+    @settings = settings
+    builder   = Wukong.registry.retrieve(label.to_sym)
+    dataflow  = builder.build(settings)
+    @dataflow = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
+    @dataflow << self
+  end
+
+  def dumb_driver
+    @dumb_driver ||= Wukong::Driver.new(dataflow)
+  end
+
+  def stop() ; end
+  def setup() ; end
+  def process(record) $stdout.puts record ; end
+
+  def run!
+    dataflow.each(&:setup)
+
+    while line = $stdin.readline.chomp rescue nil do
+      dumb_driver.send_through_dataflow(line)
+    end
+    dataflow.each do |stage|
+      stage.finalize(&dumb_driver.advance(stage)) if stage.respond_to?(:finalize)
+      stage.stop
+    end      
+
+  end  
 end
