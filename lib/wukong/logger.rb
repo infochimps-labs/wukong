@@ -4,7 +4,7 @@ module Wukong
     attr_reader :created_log
 
     def self.defaults
-      Log4r::StdoutOutputter.new('console', formatter: Log4r::PatternFormatter.new(pattern: "%l %d [%-20c] -- %m"))
+      Log4r::StderrOutputter.new('console', formatter: Log4r::PatternFormatter.new(pattern: "%l %d [%-20c] -- %m"))
     end
 
     def self.configure(klass, options = {})
