@@ -43,7 +43,7 @@ again test locally:
 EOF
 
 settings.define :run,        description: "Name of the processor or dataflow to use.  Defaults to basename of the given path.", flag: 'r'
-settings.define :tcp_server, description: "Run locally as a tcp server on a specified port", default: false,                    flag: 't'
+# settings.define :tcp_server, description: "Run locally as a tcp server on a specified port", default: false,                    flag: 't'
 require 'wukong/boot' ; Wukong.boot!(settings)
 
 thing = settings.rest.first
@@ -61,14 +61,16 @@ else
   exit(2)
 end
 
-begin
-  EM.run do
-    settings.tcp_server ? Wu::TCPServer.start(processor.to_sym, settings) : Wu::StdioServer.start(processor.to_sym, settings)
-  end
-rescue Wu::Error => e
-  $stderr.puts e.message
-  exit(3)
-end
+StupidServer.new(processor.to_sym, settings).run!
+
+# begin
+#   EM.run do
+#     settings.tcp_server ? Wu::TCPServer.start(processor.to_sym, settings) : Wu::StdioServer.start(processor.to_sym, settings)
+#   end
+# rescue Wu::Error => e
+#   $stderr.puts e.message
+#   exit(3)
+# end
 
 # One day, it will be this easy...
 # Wukong::LocalRunner.run!
