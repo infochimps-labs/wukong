@@ -61,16 +61,17 @@ else
   exit(2)
 end
 
-StupidServer.new(processor.to_sym, settings).run!
 
-# begin
-#   EM.run do
-#     settings.tcp_server ? Wu::TCPServer.start(processor.to_sym, settings) : Wu::StdioServer.start(processor.to_sym, settings)
-#   end
-# rescue Wu::Error => e
-#   $stderr.puts e.message
-#   exit(3)
-# end
+
+begin
+  # EM.run do
+  #   settings.tcp_server ? Wu::TCPServer.start(processor.to_sym, settings) : Wu::StdioServer.start(processor.to_sym, settings)
+  # end
+  StupidServer.new(processor.to_sym, settings).run!
+rescue Wu::Error => e
+  $stderr.puts e.message
+  exit(3)
+end
 
 # One day, it will be this easy...
 # Wukong::LocalRunner.run!

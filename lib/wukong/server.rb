@@ -90,7 +90,7 @@ class StupidServer
   
   def initialize(label, settings)
     @settings = settings
-    builder   = Wukong.registry.retrieve(label.to_sym)
+    builder   = (Wukong.registry.retrieve(label.to_sym) or raise Wukong::Error.new("No such processor or dataflow: #{label}"))
     dataflow  = builder.build(settings)
     @dataflow = dataflow.respond_to?(:stages) ? dataflow.directed_sort.map{ |name| dataflow.stages[name] } : [ dataflow ]
     @dataflow << self
