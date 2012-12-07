@@ -8,7 +8,7 @@ module Wukong
 
       def handle_error(record, err)
         case on_error
-        when 'log'    then log.warn "Bad record: #{record}. Error: #{err.backtrace.join("\n")}"
+        when 'log'    then log.warn "Bad record: #{record}"
         when 'notify' then notify('error', record: record, error: err)
         end          
       end
