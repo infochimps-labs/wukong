@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require_relative './dbpedia_common'
-require 'ap'
 
 # Notes:
 #
@@ -31,7 +30,7 @@ module Dbpedia
     wikipedia_lang:      { kind: :skip,                fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :url,     :slug,  :lang,                  ],  },
     wikipedia_link:      { kind: :wikipedia_link,      fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :url,     :slug,  :revision_id,           ],  },
     wikipedia_backlink:  { kind: :skip,                fields: [:page_id, :wp_ns, :wikipedia_id, :relation,   :url,     :slug,  :revision_id,           ],  },
-    geo_coordinates:     { kind: :geo_coordinates,     fields: [:page_id, :wp_ns, :wikipedia_id, :lat,        :lng,                           ],  },
+    geo_coordinates:     { kind: :geo_coordinates,     fields: [:page_id, :wp_ns, :wikipedia_id, :lat,        :lng,     :quadkey              ],  },
     geo_coord_skip_a:    { kind: :skip,                fields: [],      },
     geo_coord_skip_b:    { kind: :skip,                fields: [],      },
     # links between topics
@@ -55,6 +54,7 @@ module Dbpedia
     # properties
     wordnet:             { kind: :property,            fields: [:page_id, :wp_ns, :wikipedia_id, :wn_reln,    :wn_class,   :wn_pos, :wn_idx,  ],  },
     property_bool:       { kind: :property_bool,       fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
+    property_year:       { kind: :property_year,       fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
     property_int:        { kind: :property_int,        fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
     property_float:      { kind: :property_float,      fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
     property_date:       { kind: :property_date,       fields: [:page_id, :wp_ns, :wikipedia_id, :property,   :val_type,   :val,              ],  },
@@ -116,7 +116,8 @@ module Dbpedia
     rdf_date:         '\"(?<%s>-?\d\d\d\d-\d\d-\d\d              )\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>date)>',
     rdf_yearmonth:    '\"(?<%s>-?\d\d\d\d-\d\d                   )\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>gYearMonth)>',
     rdf_monthday:     '\"(?<%s>--\d\d-\d\d                       )\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>gMonthDay)>',
-    rdf_int:          '\"(?<%s>[\+\-]?\d+                        )\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>integer|gYear|positiveInteger|nonNegativeInteger)>',
+    rdf_int:          '\"(?<%s>[\+\-]?\d+                        )\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>integer|positiveInteger|nonNegativeInteger)>',
+    rdf_year:         '\"(?<%s>[\+\-]?\d+                        )\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>gYear)>',
     rdf_float:        '\"(?<%s>[\+\-]?\d+\.\d+(?:[eE][\+\-]?\d+)?)\"\\^\\^<http://www\.w3\.org/2001/XMLSchema\\#(?<%s>float|double)>',
     # all backslash-escaped character, or non-quotes, up to first quote
     rdf_string:       '"(?<%s>(?:\\\\.|[^\"])*)"@en',
@@ -181,6 +182,7 @@ module Dbpedia
     property_date:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_date,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     property_yearmonth:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_yearmonth, :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     property_monthday:   %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_monthday,  :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_year:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_year,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     property_str:        %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_string,    :val)            }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     #
     persondata_reln:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
@@ -196,7 +198,7 @@ module Dbpedia
   SKIPPAPLE_FIELDS = [:flavor, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno, :val_lang, :name_lang, :_dtyp]
 
   class RdfExtractor < Wukong::Streamer::LineStreamer
-    include MungingUtils
+    include Wu::Munging::Utils
     attr_accessor :flavor, :kind, :filename, :regexps, :seen_keys, :seen_props
 
     def initialize(*args)
@@ -204,8 +206,11 @@ module Dbpedia
       @seen_props = Hash.new(0)
     end
 
+    def coerce_int(  hsh, field) ; hsh[field] = (hsh[field].present? ? Integer(hsh[field]) : nil) ; end
+    def coerce_float(hsh, field) ; hsh[field] = (hsh[field].present? ? Float(hsh[field])   : nil) ; end
+
     def record_for_flavor(kind, fields, flavor, hsh)
-      hsh.merge!( wp_ns: 0, flavor: flavor )
+      hsh.merge!( kind: kind, flavor: flavor, wp_ns: 0 )
       return if kind == :skip
 
       case flavor
@@ -221,14 +226,21 @@ module Dbpedia
         return if hsh[:scheme] == 'owl'
       when :wikipedia_link, :wikipedia_backlink
         raise "Titles disagree!" unless hsh[:slug] == hsh[:wikipedia_id]
-      end
 
-      # record seen properties, seen fields
+      when :property_float then coerce_float(hsh, :val)
+      when :property_int   then coerce_int(hsh, :val)
+      when :geo_coordinates
+        coerce_float(hsh, :lng)
+        coerce_float(hsh, :lat)
+        hsh[:quadkey] = Wu::Geo::Geolocation.point_to_quadkey(hsh[:lng], hsh[:lat]) if (hsh[:lng] && hsh[:lat])
+      end
+      #
+      # note the properties and fields we've seen
       hsh.except(*fields).except(*SKIPPAPLE_FIELDS).
         each{|key, val| @seen_keys[key] += 1 if val.present? }
       seen_props[hsh[:property]] += 1 if hsh[:property].present?
-      sanity_check(hsh)
       #
+      sanity_check(hsh)
       [kind] + hsh.values_at(*fields)
     end
 
@@ -236,25 +248,27 @@ module Dbpedia
       hsh.each{|key,val| raise if CONTROL_CHARS_RE =~ val.to_s }
     end
 
+    def extract_record(rdf_line)
+      MAPPING_INFO.each do |flavor, info|
+        next unless mm = info[:re].match(rdf_line)
+        return record_for_flavor(info[:kind], info[:fields], flavor, mm.as_hash)
+      end
+      Log.warn ['not found:', line].join("\t")
+      return nil
+    end
+
     def after_stream
       Log.info ["seen keys:", seen_keys.inspect, "seen props:", seen_props.inspect].join("\t")
     end
 
     def process(line)
-      return if line =~ /\A(?:\#|$)/
-      if (line =~ /=> \w+\.\w+ <=/) then yield [line] ; return ; end
-
-      MAPPING_INFO.each do |flavor, info|
-        next unless mm = info[:re].match(line)
-        yield record_for_flavor(info[:kind], info[:fields], flavor, mm.as_hash)
-        return
-      end
-
-      Log.warn ['not found:', line].join("\t")
+      return if line =~ /\A(?:\#|$|==>.*<==)/
+      result = extract_record(line) or return
+      yield result
+    rescue StandardError => err
+      Log.warn [err.class, err.message, line]
     end
   end
 end
-
-
 
 Wukong::Script.new(Dbpedia::RdfExtractor, nil).run

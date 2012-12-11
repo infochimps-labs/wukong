@@ -57,3 +57,5 @@ away
 .rbx
 Gemfile.lock
 Backup*of*.numbers
+
+pig_*.log

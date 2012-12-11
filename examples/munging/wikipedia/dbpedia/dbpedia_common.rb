@@ -1,5 +1,7 @@
+$LOAD_PATH.push(File.expand_path('../../../../lib', File.dirname(__FILE__)))
 
 require 'wukong'
 require 'multi_json'
 require 'gorillib'
-require_relative '../utils/munging_utils.rb'
+require 'wu/munging'
+require 'wu/geo/geolocation'
