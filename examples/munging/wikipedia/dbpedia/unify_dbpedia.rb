@@ -8,12 +8,15 @@ class DbpediaArticle
   field :page_id,         :integer
   field :wikipedia_id,    :string
   field :namespace,       :integer
-  field :title,           :string
   field :lang,            :string
   field :revision_id,     :integer
+  #
+  field :title,           :string
+  #
   field :longitude,       :float
   field :latitude,        :float
   field :quadkey,         :string
+  #
   field :url,             :string
   field :description,     :string
   field :abstract,        :string
@@ -21,12 +24,9 @@ class DbpediaArticle
   field :extended_props,  :array, default: ->{ Array.new }
   #
   field :links_into,      :array, default: ->{ Array.new }
-  field :links_from,      :array, default: ->{ Array.new }
   field :disamb_ofs,      :array, default: ->{ Array.new }
   field :redirect_ofs,    :array, default: ->{ Array.new }
   field :weblinks_into,   :array, default: ->{ Array.new }
-  field :homepage,        :string
-  field :sameas,          :hash,  default: ->{ Hash.new }
   field :categories,      :array, default: ->{ Array.new }
   field :relations,       :array, default: ->{ Array.new }
 
@@ -78,7 +78,7 @@ module Dbpedia
       end
     end
     class PropertyInteger   < Property ; field :val, :integer ;  end
-    class PropertyBoolean   < Property ; field :val, :boolean ;  end
+    class PropertyBool      < Property ; field :val, :boolean ;  end
     class PropertyFloat     < Property ; field :val, :float   ;  end
     class PropertyDate      < Property ; field :val, :string  ;  end
     class PropertyYear      < Property ; field :val, :string  ;  end
@@ -103,7 +103,7 @@ module Dbpedia
         article.revision_id = revision_id
       end
     end
-    class PageId        < DirectProperty ; field :val,  :integer ; end
+    class PageId        < DirectProperty ; field :val,  :integer     ; end
     class Description   < DirectProperty ; field :val,  :json_string ; end
     class Abstract      < DirectProperty ; field :val,  :json_string ; end
 
@@ -116,46 +116,54 @@ module Dbpedia
       end
     end
 
-    # class Wordnet
-    # end
     class Relation < Base
       field :rel,       :string
-      field :into_wpid, :string
+      field :into, :string
     end
-    class CategoryReln < Relation
-      def populate(article) ; article.relations |= [{ rel: rel, into: into_wpid }] ; end
+
+    class Redirects < Relation
+      def populate(article) ; article.redirect_ofs  |= [into] ; end
+    end
+    class Disambiguation < Relation
+      def populate(article) ; article.disamb_ofs    |= [into] ; end
+    end
+    class PageLink < Relation
+      def populate(article) ; article.links_into    |= [into] ; end
     end
     class Category < Relation
-      def populate(article) ; article.categories |= ["wp-#{into_wpid}"] ; end
+      def populate(article) ; article.categories    |= [into] ; end
+    end
+
+    class CategoryReln < Relation
+      def populate(article) ; article.relations     |= [ ["cat-#{rel}", into] ] ; end
     end
     class InstanceOf < Base
       field :scheme, :string
       field :obj_class, :string
-      def populate(article) ; article.categories |= ["#{scheme}-#{obj_class}"] ; end
+      def populate(article) ; article.relations     |= [ ["inst-#{scheme}", obj_class] ] ; end
     end
 
-    class Redirects < Relation
-      def populate(article) ; article.redirect_ofs |= [into_wpid] ; end
+    class ExternalLink < Relation
+      def populate(article) ; article.weblinks_into |= [ ['web', into ] ] ; end
     end
-    class Disambiguation < Relation
-      def populate(article) ; article.disamb_ofs   |= [into_wpid] ; end
+    class Homepage < Relation
+      def populate(article) ; article.weblinks_into |= [ ['homepage', into] ] ; end
     end
-    class PageLink < Relation
-      def populate(article) ; article.links_into |= [into_wpid] ; end
-    end
-
-
-
-    class Weblink < Base
-      field :rel,      :string
-      field :into_url, :string
+    class Sameas < Relation
+      field :stuff, Array
+      def initialize(wikipedia_id, rel, into, *stuff)
+        super(wikipedia_id, rel, into)
+        receive_stuff(stuff)
+      end
+      def populate(article) ; article.relations     |= [ [rel, into, *stuff] ] ; end
     end
 
-    class ExternalLink < Weblink
-      def populate(article) ; article.weblinks_into |= [into_url] ; end
-    end
-    class Homepage < Weblink
-      def populate(article) ; article.homepage = [into_url] ; end
+    class Wordnet < Base
+      field :wn_reln,   :string
+      field :wn_class,  :string
+      field :wn_pos,    :string
+      field :wn_idx,    :integer
+      def populate(article) ; article.relations     |= [ [ 'wordnet', wn_reln, wn_class, wn_pos, wn_idx ] ] ; end
     end
 
   end
@@ -169,7 +177,7 @@ module Dbpedia
     end
 
     def accumulate(wikipedia_id, kind, *info)
-      return if %w[disambiguation homepage abstract description ].include?(kind)
+      # return if %w[disambiguation homepage abstract description ].include?(kind)
       item = Dbpedia::Element.make(wikipedia_id, kind, *info)
       item.populate(@article)
     rescue StandardError => err
