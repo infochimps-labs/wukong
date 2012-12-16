@@ -201,6 +201,15 @@ module Wu
         lng_lat_zl_to_quadkey(longitude, latitude, POINT_ZL)
       end
 
+      # Convert latitude in degrees to integer tile x,y coordinates at given
+      # zoom level.  Assigns points outside the tile coverage to "0000..."
+      # (north) and "33333..." (south) rather than raising an error.
+      def point_to_quadkey_withpoles(longitude, latitude)
+        if    (MAX_LATITUDE ..  90.0).include?(latitude) then return ("0"*POINT_ZL)
+        elsif (-90.0 .. MIN_LATITUDE).include?(latitude) then return ("3"*POINT_ZL) end
+        lng_lat_zl_to_quadkey(longitude, latitude, POINT_ZL)
+      end
+
       #
       # Bounding box coordinates
       #

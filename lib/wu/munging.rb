@@ -58,14 +58,15 @@ module Wu
       # NOTE: modifies the text in-place
       #
       def safe_xml_encode(text)
-        text.gsub!(NON_PLAIN_ASCII_RE){|ch|  "&#%04x;" % ch.ord } unless jsonized.ascii_only?
+        text.gsub!(NON_PLAIN_ASCII_RE){|ch|  "&#%04x;" % ch.ord }
         text
       end
 
       # Returns a JSON encoded string, with all non-ASCII characters escaped
-      def safe_json_encode(string)
-        jsonized = MultiJson.encode(string)
-        jsonized.gsub!(NON_PLAIN_ASCII_RE){|ch| "\\u%04x" % ch.ord } unless jsonized.ascii_only?
+      def safe_json_encode(obj, options={})
+        regexp = options[:pretty] ? /[^\n\x20-\x7e]/m : NON_PLAIN_ASCII_RE
+        jsonized = MultiJson.encode(obj, options.to_hash)
+        jsonized.gsub!(regexp){|ch| "\\u%04x" % ch.ord }
         jsonized
       end
 

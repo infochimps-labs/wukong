@@ -52,56 +52,27 @@ describe Wu::Geo::Geolocation do
     end
 
     #
-    # Pixel coordinates
-    #
-
-    it "returns a map pizel size given a zoom level" do
-      Wu::Geo::Geolocation.map_pixel_size(3).should == 2048
-    end
-
-    it "returns a pixel_x, pixel_y pair given a longitude, latitude and zoom level" do
-      Wu::Geo::Geolocation.lng_lat_zl_to_pixel_xy(aus_lng, aus_lat, 3).should == [468, 843]
-    end
-
-    it "returns a longitude, latitude pair given pixel_x, pixel_y and zoom level" do
-      lng, lat = Wu::Geo::Geolocation.pixel_xy_zl_to_lng_lat(aus_pixel_x_3, aus_pixel_y_3, 3)
-      lat.round(4).should ==  30.2970
-      lng.round(4).should == -97.7344
-    end
-
-    it "returns a tile x-y pair given a pixel x-y pair" do
-      Wu::Geo::Geolocation.pixel_xy_to_tile_xy(aus_pixel_x_3, aus_pixel_y_3).should == [1,3]
-    end
-
-    it "returns a pixel x-y pair given a float tile x-y pair" do
-      Wu::Geo::Geolocation.tile_xy_to_pixel_xy(aus_tile_x_3,      aus_tile_y_3     ).should == [467.86048, 843.15136]
-    end
-
-    it "returns a pixel x-y pair given an integer tile x-y pair" do
-      Wu::Geo::Geolocation.tile_xy_to_pixel_xy(aus_tile_x_3.to_i, aus_tile_y_3.to_i).should == [256, 768]
-    end
-
-    #
     # Quadkey coordinates
     #
+    context 'quadkey coordinates' do
+      it "returns a quadkey given a tile x-y pair and a zoom level" do
+        Wu::Geo::Geolocation.tile_xy_zl_to_quadkey(aus_tile_x_3,  aus_tile_y_3,  3).should == "023"
+        Wu::Geo::Geolocation.tile_xy_zl_to_quadkey(aus_tile_x_8,  aus_tile_y_8,  8).should == "02313012"
+        Wu::Geo::Geolocation.tile_xy_zl_to_quadkey(aus_tile_x_11, aus_tile_y_11,11).should == "02313012033"
+      end
 
-    it "returns a quadkey given a tile x-y pair and a zoom level" do
-      Wu::Geo::Geolocation.tile_xy_zl_to_quadkey(aus_tile_x_3,  aus_tile_y_3,  3).should == "023"
-      Wu::Geo::Geolocation.tile_xy_zl_to_quadkey(aus_tile_x_8,  aus_tile_y_8,  8).should == "02313012"
-      Wu::Geo::Geolocation.tile_xy_zl_to_quadkey(aus_tile_x_11, aus_tile_y_11,11).should == "02313012033"
-    end
+      it "returns a quadkey given a longitude, latitude and a zoom level" do
+        Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat,  3).should == "023"
+        Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat,  8).should == "02313012"
+        Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat, 11).should == "02313012033"
+        Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat, 16).should == "0231301203311211"
+      end
 
-    it "returns a quadkey given a longitude, latitude and a zoom level" do
-      Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat,  3).should == "023"
-      Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat,  8).should == "02313012"
-      Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat, 11).should == "02313012033"
-      Wu::Geo::Geolocation.lng_lat_zl_to_quadkey(aus_lng, aus_lat, 16).should == "0231301203311211"
-    end
-
-    it "returns a packed quadkey (an integer) given a tile xy and zoom level" do
-      Wu::Geo::Geolocation.tile_xy_zl_to_packed_qk(aus_tile_x_3.floor,  aus_tile_y_3.floor,  3).should == "023".to_i(4)
-      Wu::Geo::Geolocation.tile_xy_zl_to_packed_qk(aus_tile_x_8.floor,  aus_tile_y_8.floor,  8).should == "02313012".to_i(4)
-      Wu::Geo::Geolocation.tile_xy_zl_to_packed_qk(aus_tile_x_11.floor, aus_tile_y_11.floor,11).should == "02313012033".to_i(4)
+      it "returns a packed quadkey (an integer) given a tile xy and zoom level" do
+        Wu::Geo::Geolocation.tile_xy_zl_to_packed_qk(aus_tile_x_3.floor,  aus_tile_y_3.floor,  3).should == "023".to_i(4)
+        Wu::Geo::Geolocation.tile_xy_zl_to_packed_qk(aus_tile_x_8.floor,  aus_tile_y_8.floor,  8).should == "02313012".to_i(4)
+        Wu::Geo::Geolocation.tile_xy_zl_to_packed_qk(aus_tile_x_11.floor, aus_tile_y_11.floor,11).should == "02313012033".to_i(4)
+      end
     end
 
     context '.packed_qk_zl_to_tile_xy' do
@@ -193,6 +164,38 @@ describe Wu::Geo::Geolocation do
       lat.should be_within(0.0001).of( 30.2739)
     end
 
+
+    #
+    # Pixel coordinates
+    #
+    context 'pixel coordinates' do
+
+      it "returns a map pizel size given a zoom level" do
+        Wu::Geo::Geolocation.map_pixel_size(3).should == 2048
+      end
+
+      it "returns a pixel_x, pixel_y pair given a longitude, latitude and zoom level" do
+        Wu::Geo::Geolocation.lng_lat_zl_to_pixel_xy(aus_lng, aus_lat, 3).should == [468, 843]
+      end
+
+      it "returns a longitude, latitude pair given pixel_x, pixel_y and zoom level" do
+        lng, lat = Wu::Geo::Geolocation.pixel_xy_zl_to_lng_lat(aus_pixel_x_3, aus_pixel_y_3, 3)
+        lat.round(4).should ==  30.2970
+        lng.round(4).should == -97.7344
+      end
+
+      it "returns a tile x-y pair given a pixel x-y pair" do
+        Wu::Geo::Geolocation.pixel_xy_to_tile_xy(aus_pixel_x_3, aus_pixel_y_3).should == [1,3]
+      end
+
+      it "returns a pixel x-y pair given a float tile x-y pair" do
+        Wu::Geo::Geolocation.tile_xy_to_pixel_xy(aus_tile_x_3,      aus_tile_y_3     ).should == [467.86048, 843.15136]
+      end
+
+      it "returns a pixel x-y pair given an integer tile x-y pair" do
+        Wu::Geo::Geolocation.tile_xy_to_pixel_xy(aus_tile_x_3.to_i, aus_tile_y_3.to_i).should == [256, 768]
+      end
+    end
 
   end # module methods
 
