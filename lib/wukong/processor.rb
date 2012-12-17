@@ -57,21 +57,38 @@ module Wukong
       self.class.instance_variable_get("@serialization_#{direction.to_s}")
     end
     
-    # This is a placeholder method intended to be overridden
-    def perform_action(*args) ; end 
+    # When instantiated with a block, the block will replace this
+    # method.
+    #
+    # @param [Array<Object>] args
+    # @yield record a record that might be yielded by the block
+    # @yieldparam [Object] record the yielded record
+    def perform_action(*args)
+    end 
     
-    # The action attribute is turned into the perform action method
+    # :nodoc:
+    #
+    # The action attribute is turned into the perform action method.
+    #
+    # @param [Proc] action
     def receive_action(action)
       self.define_singleton_method(:perform_action, &action)
     end
 
-    # This method is called after the processor class has been instantiated
-    # but before any records are given to it to process
+    # This method is called after the processor class has been
+    # instantiated but before any records are given to it to process.
+    #
+    # Override this method in your subclass.
     def setup
     end
 
-    # This method is called once per record
-    # Override this in your subclass
+    # This method is called once per record.
+    #
+    # Override this method in your subclass.
+    #
+    # @param [Object] record
+    # @yield record the record you want to yield
+    # @yieldparam [Object] record the yielded record
     def process(record, &emit)
       yield record
     end
@@ -83,13 +100,18 @@ module Wukong
     # This can be used within an aggregating processor (like a reducer
     # in a map/reduce job) to start processing the final aggregate of
     # records since the "last record" has already been received.
+    #
+    # Override this method in your subclass
+    #
+    # @yield record the record you want to yield
+    # @yieldparam [Object] record the yielded record
     def finalize
     end
 
     # This method is called after all records have been passed.  It
     # signals that processing should stop.
-      
-    # This method is called after all records have been processed
+    #
+    # Override this method in your subclass.
     def stop
     end
 

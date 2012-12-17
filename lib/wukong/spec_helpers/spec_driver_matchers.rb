@@ -30,8 +30,8 @@ module Wukong
 
       attr_accessor :driver, :expected, :reason, :expected_record, :actual_record, :mismatched_index
 
-      def matches?(processor)
-        self.driver = SpecDriver.new(processor)
+      def matches?(dataflow)
+        self.driver = SpecDriver.new(dataflow)
         driver.run
         if actual_size != expected_size
           self.reason = :size
@@ -137,7 +137,7 @@ module Wukong
           begin
             MultiJson.load(record)
           rescue => e
-            raise Error.new("Could not parse output of processor as JSON: \n\n#{record}")
+            raise Error.new("Could not parse output of dataflow as JSON: \n\n#{record}")
           end
         end
       end

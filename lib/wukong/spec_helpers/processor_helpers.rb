@@ -48,41 +48,25 @@ module Wukong
       # You can even name the processor directly if you want to:
       #
       #   context "tokenizers" do
-      #     let(:default_tokenizer) { processor(:tokenizer)                          }
-      #     let(:complex_tokenizer) { processor(:complex_tokenizer, stemming: true)  }
-      #     let(:french_tokenizer)  { processor(:complex_tokenizer, stemming: true)  }
+      #     let(:default_tokenizer) { processor(:tokenizer)                                          }
+      #     let(:complex_tokenizer) { processor(:complex_tokenizer, stemming: true)                  }
+      #     let(:french_tokenizer)  { processor(:complex_tokenizer, stemming: true, language: 'fr')  }
       #     ...
       #   end
-      def processor *args, &block
-        options = args.extract_options!
-        name    = args.first || self.class.description
-        create_processor(name, options, &block)
+      def flow *args, &block
+        options  = args.extract_options!
+        name     = args.first || self.class.description
+        create_dataflow(name, options, &block)
       end
-      alias_method :flow, :processor
-
-      # Is the given +klass+ a Wukong::Processor?
-      #
-      # @param [Class] klass
-      # @return [true, false]
-      def processor? klass
-        klass.build.is_a?(Processor)
-      end
+      alias_method :processor, :flow
 
       # :nodoc:
-      def create_processor name_or_klass, options={}, &block
-        if name_or_klass.is_a?(Class)
-          klass = name_or_klass
-        else
-          klass = Wukong.registry.retrieve(name_or_klass.to_s.to_sym)
-          raise Error.new("Could not find a Wukong::Processor class named '#{name_or_klass}'") if klass.nil?
-        end
-        raise Error.new("#{klass} is not a subclass of Wukong::Processor") unless processor?(klass)
+      def create_dataflow name, options={}, &block
         settings = Configliere::Param.new
-        Wukong.boot!(settings)
-        proc = klass.build(settings.merge(options))
-        proc.setup
-        proc.instance_eval(&block) if block_given?
-        proc
+        settings.merge!(options)
+        dataflow = SpecDriver.new(name, settings).dataflow
+        dataflow.instance_eval(&block) if block_given?
+        dataflow
       end
     end
   end

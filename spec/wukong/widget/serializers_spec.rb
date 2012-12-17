@@ -21,12 +21,6 @@ describe :to_json, serializer: true do
   it 'serializes valid records' do
     serializer.given(valid_record).should emit('{"hi":"there"}')
   end
-
-  it 'handles errors on bad records' do
-    MultiJson.should_receive(:dump).with(:unserializable_record, kind_of(Hash)).and_raise(StandardError)
-    serializer.should_receive(:handle_error).with(:unserializable_record, a_kind_of(Exception)).and_return(nil)
-    serializer.given(:unserializable_record).should emit(0).records
-  end
   
   context 'pretty' do
     let(:serializer){ create_processor(:to_json, pretty: true) }

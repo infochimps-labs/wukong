@@ -1,10 +1,10 @@
 require 'wukong'
-require 'wukong/boot'
 require_relative('spec_helpers/processor_helpers')
 require_relative('spec_helpers/processor_methods')
 require_relative('spec_helpers/spec_driver_matchers')
 require_relative('spec_helpers/integration_driver')
 require_relative('spec_helpers/integration_driver_matchers')
+require_relative('spec_helpers/integration_helpers')
 require_relative('spec_helpers/shared_examples')
 
 module Wukong
@@ -75,6 +75,7 @@ module Wukong
     include SpecMatchers
     include IntegrationRunner
     include IntegrationMatchers
+    include IntegrationHelpers
   end
 
   Processor.class_eval { include SpecHelpers::ProcessorSpecMethods }
