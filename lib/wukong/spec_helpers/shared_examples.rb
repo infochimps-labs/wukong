@@ -12,3 +12,12 @@ shared_examples_for 'a processor' do |options = {}|
   it{ should respond_to(:stop)     }
   it{ should respond_to(:notify)   }
 end
+
+shared_examples_for 'a plugin' do |options = {}|
+  it "has a 'configure' method " do
+    should respond_to(:configure)
+  end
+  it "has a 'boot' method" do
+    should respond_to(:boot)
+  end
+end

@@ -1,144 +1,188 @@
+require_relative("deploy_pack_loader")
 module Wukong
-  module CommandlineRunner
-            
-    def exit_with_status(status, options = {})
-      warn options[:msg] if options[:msg]
-      @env.dump_help     if options[:show_help]
-      exit(status)
-    end    
 
-    def env= settings
-      @env = settings
+  # A base class which handles
+  #
+  # * requiring any necessary code like deploy packs or code from command-line arguments
+  # * having all plugins configure settings as necessary
+  # * resolving settings
+  # * having all plugins boot from now resolved settings
+  # * parsing command-line arguments
+  # * instantiating and handing over control to a driver which runs the actual code
+  #
+  # If you subclass this class, you'll likely want to implement the
+  #
+  # * `args_to_load` method to load any additional code or libraries given on the command-line
+  # * `evaluate_args` method to evaulate (resolved) arguments to decide what to do
+  # * `run_driver` method to instantiate the appropriate driver and hand over control
+  class Runner
+    include Logging
+    include DeployPackLoader
+
+    # The settings object that will be configured and booted from.
+    # All plugins will configure this object.
+    attr_accessor :settings
+
+    # Create a new Runner with the given +settings+.
+    #
+    # Uses an empty Configliere::Param object if no +settings+ are
+    # given.
+    #
+    # @param [Configliere::Param] settings
+    def initialize settings=Configliere::Param.new
+      self.settings = settings
     end
 
-    def self.included(base)
-      base.extend(ClassMethods)
+    # The name of the currently running program.
+    #
+    # @return [String]
+    def program_name
+      File.basename($0)
     end
-    
-    module ClassMethods
-      
-      def usage(usg = nil)
-        return @usage if usg.nil?
-        @usage = usg
-      end
 
-      def desc(dsc = nil)
-        return @description if dsc.nil?
-        @decription = desc
-      end
+    # The parsed command-line arguments.
+    #
+    # Will raise an error if +boot+ hasn't been called yet.
+    #
+    # @return [Array<String>]
+    def args
+      settings.rest
+    end
 
-      def add_param(*args)
-        defined_params << args
-      end
-      
-      def defined_params
-        @defined_params ||= []
-      end
+    # The root directory we should consider ourselves to be running
+    # in.
+    #
+    # Defaults to the root directory of a deploy pack if we're running
+    # inside one, else just returns `Dir.pwd`.
+    #
+    # @return [String]
+    def root
+      in_deploy_pack? ? deploy_pack_dir : Dir.pwd
+    end
 
-      def base_config(conf = nil)
-        return @base_configuration if conf.nil?
-        @base_configuration = conf
-      end
+    # Return the usage message for this runner.
+    #
+    # @return [String] the usage message
+    def usage
+      ["usage: #{program_name} [ --param=val | --param | -p val | -p ]", self.class.usage].compact.join(' ')
+    end
 
-      def decorate_environment! env
-        usg = self.usage
-        env.define_singleton_method(:usage){ usg }
-        env.description = self.desc
-        defined_params.each{ |params| env.send(:define, *params) }
-      end
+    # Convenience method for setting the usage message of a Runner.
+    #
+    # @param [String, nil] msg set the usage message
+    # @return [String] the usage message
+    def self.usage msg=nil
+      return @usage unless msg
+      @usage = msg
+    end
 
-      def in_deploy_pack?
-        return @in_deploy_pack unless @in_deploy_pack.nil?
-        @in_deploy_pack = (find_deploy_pack_dir != '/')
-      end
+    # Return the description text for this runner.
+    #
+    # @return [String] the description text
+    def description
+      self.class.description
+    end
 
-      def find_deploy_pack_dir
-        return @deploy_pack_dir if @deploy_pack_dir
-        wd     = Dir.pwd
-        parent = File.dirname(wd)
-        until wd == parent
-          return wd if File.exist?(File.join(wd, 'Gemfile')) && File.exist?(File.join(wd, 'config', 'environment.rb'))
-          wd     = parent
-          parent = File.dirname(wd)
-        end
-        @deploy_pack_dir = wd
-      end
-
-      def run!(*run_params)
-        settings   = base_configuration || Configliere::Param.use(:commandline)
-        boot_environment(settings) if in_deploy_pack?
-        runner     = new(*run_params)
-        runner.env = settings.resolve!
-        runner.run(*settings.rest)
-      end
-      
-    end    
-  end
-  
-  class LocalRunner
-    include CommandlineRunner
-    base_configuration
-
-    usage 'usage: wu-local PROCESSOR|FLOW [ --param=value | -p value | --param | -p]'
-    desc  <<EOF
- wu-local is a tool for running Wukong processors and flows locally on
- the command-line.  Use wu-local by passing it a processor and feeding
- in some data:
-
-   $ echo 'UNIX is Clever and Fun...' | wu-local tokenizer.rb
-   UNIX
-   is
-   Clever
-   and
-   Fun
-
- If your processors have named fields you can pass them in as
- arguments:
-
-   $ echo 'UNIX is clever and fun...' | wu-local tokenizer.rb --min_length=4
-   UNIX
-   Clever
-
- You can chain processors and calls to wu-local together:
-
-   $ echo 'UNIX is clever and fun...' | wu-local tokenizer.rb --min_length=4 | wu-local downcaser.rb
-   unix
-   clever
-
- Which is a good way to develop a combined data flow which you can
- again test locally:
-
-   $ echo 'UNIX is clever and fun...' | wu-local tokenize_and_downcase_big_words.rb
-   unix
-   clever
-EOF
-    
-    add_param :run,        description: "Name of the processor or dataflow to use. Defaults to basename of the given path.", flag: 'r'
-    add_param :tcp_server, description: "Run locally as a server using provided TCP port", default: false,                   flag: 't'
-
-    def run *args
-      arg = args.first
-      case
-      when arg.nil?
-        exit_with_status(1, show_help: true, msg: "Must pass a processor name or path to a processor file. Got <#{arg}>")
-      when Wukong.registry.registered?(arg.to_sym)
-        processor = arg.to_sym
-      when File.exist?(arg)
-        load arg
-        processor = @env.run || File.basename(arg, '.rb')
-      else
-        exit_with_status(2, show_help: true, msg: "Must pass a processor name or path to a processor file. Got <#{arg}>")
-      end     
-      run_em_server(processor, @env)
+    # Convenience method for setting the description message of a Runner.
+    #
+    # @param [String, nil] msg set the description message
+    # @return [String] the description message
+    def self.description msg=nil
+      return @description unless msg
+      @description = msg
     end
     
-    def run_em_server(processor, env)
-      EM.run do 
-        env.tcp_server ? Wu::TCPServer.start(processor, env) : Wu::StdioServer.start(processor, env)
-      end
-    rescue Wu::Error => e
-      exit_with_status(3, msg: e.backtrace.join("\n"))
+    # Load any additional code that we found out about on the
+    # command-line.
+    #
+    # You'll want to override this method in your own Runner class.
+    #
+    # @return [Array<String>] paths to load culled from the ARGV.
+    def args_to_load
+      ruby_file_args || []
     end
 
-  end
+    # Returns all pre-resolved arguments which are Ruby files.
+    #
+    # @return [Array<String>]
+    def ruby_file_args
+      ARGV.find_all { |arg| arg.to_s =~ /\.rb$/ && arg.to_s !~ /^--/ }
+    end
+    
+    # Evaluate all arguments from the command-line.
+    #
+    # You'll want to override this method in your own Runner class.
+    def evaluate_args
+    end
+
+    # Run this runner.
+    #
+    # You'll want to override this method in your own Runner class.
+    def run
+    end
+
+    # Run this runner, booting up, evaluating all arguments, and
+    # running the driver.
+    #
+    # Will rescue any Wukong::Error with a logged error message and
+    # exit.
+    def self.run(settings=Configliere::Param.new)
+      runner = new(settings)
+      begin
+        runner.boot
+        runner.run
+      rescue Wukong::Error => e
+        log.error(e.message)
+        exit(127)
+      end
+    end
+
+    # Boots the runner by loading all code, configuring all settings,
+    # resolving the settings, and booting all plugins as necessary,
+    # and evaluating command-line arguments.
+    def boot
+      load_all_code
+      configure_settings
+      settings.resolve!
+      Wukong.boot_plugins(settings, root)
+      evaluate_args
+    end
+    
+    private
+    
+    # Loads all code, whether from a deploy pack or additionally
+    # passed on the command line.
+    def load_all_code
+      load_environment_code
+      (args_to_load || []).each do |path|
+        load_ruby_file(path)
+      end
+    end
+
+    # Loads a single Ruby file, capturing LoadError and SyntaxError
+    # and raising Wukong::Error instead (so it can be easily captured
+    # by the Runner).
+    #
+    # @param [String] path
+    # @raise [Wukong::Error] if there is an error
+    def load_ruby_file path
+      return unless path
+      begin
+        load path
+      rescue LoadError, SyntaxError => e
+        raise Error.new(e.message)
+      end
+    end
+
+    # Configure the settings object, adding this runner's usage and
+    # description, but also settings from all plugins.
+    def configure_settings
+      settings.use(:commandline)
+      settings.description = self.description if self.description
+      u = self.usage
+      settings.define_singleton_method(:usage){ u } if u
+      Wukong.configure_plugins(settings, program_name)
+    end
+    
+  end    
 end

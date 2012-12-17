@@ -1,25 +1,29 @@
 module Wukong
   module SpecHelpers
     class SpecDriver < Array
-
-      attr_reader :processor
-
-      def initialize processor
+      
+      include Wukong::DriverMethods
+      
+      def initialize *args
         super()
-        @processor = processor
+        if args.size == 1
+          self.dataflow = args.first
+        else
+          self.dataflow, _ = construct_dataflow(args[0], args[1])
+        end
+        setup_dataflow
+      end
+
+      def process output
+        self << output
       end
       
       def run
-        return false unless processor
-        processor.given_records.each do |input|
-          processor.process(input) do |output|
-            self << output
-          end
+        return false unless dataflow
+        dataflow.given_records.each do |input|
+          driver.send_through_dataflow(input)
         end
-        processor.finalize do |output|
-          self << output
-        end
-        processor.stop
+        finalize_and_stop_dataflow
         self
       end
 

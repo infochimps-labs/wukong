@@ -415,7 +415,7 @@ context "interpreting its arguments" do
   end
   context "with a malformed --match argument" do
     # invalid b/c the regexp is broken...
-    subject { command("wu-local tokenizer --match='^[h'") < "hi there" }
+    subject { command("wu-local tokenizer --match='^(h'") < "hi there" }
 	it      { should exit_with(:non_zero)   }
 	it      { should have_stderr(/invalid/) }
   end
@@ -457,3 +457,195 @@ Let's go through the helpers:
 * The `have_stdout` and `have_stderr` matchers let you test the STDOUT or STDERR of the command for particular strings or regular expressions.
 
 * The `exit_with` matcher lets you test the exit code of the command.  You can pass the symbol `:non_zero` to set the expectation of _any_ non-zero exit code.
+
+## Plugins
+
+Wukong has a built-in plugin framework to make it easy to adapt Wukong
+processors to new backends or add other functionality.  The
+`Wukong::Local` module and the `wu-local` program it supports is
+itself a Wukong plugin.
+
+The following shows how you might build a simplified version of
+`Wukong::Local` as a new plugin.  We'll call this plugin `Cat` as it
+will implement a program `wu-cat` that is similar in function to
+`wu-local` (just simplified).
+
+The first thing to do is include the `Wukong::Plugin` module in your
+code:
+
+
+```Ruby
+# in lib/cat.rb
+#
+# This Wukong plugin works like wu-local but replicates some silly
+# features of cat like numbered lines.
+module Cat
+
+  # This registers Cat as a Wukong plugin.
+  include Wukong::Plugin
+
+  # Defines any settings specific to Cat.  Cat doesn't need to, but
+  # you can define global settings here if you want.  You can also
+  # check the `program` name to decide whether to apply your settings.
+  # This helps you not pollute other commands with your stuff.
+  def self.configure settings, program
+	if program == 'wu-cat'
+	  settings.define(:input,  :description => "The input file to use")
+	  settings.define(:number, :description => "Prepend each input record with a consecutive number", :type => :boolean)
+	end
+  end
+
+  # Lets Cat boot up with settings that have already been resolved
+  # from the command-line or other sources like config files or remote
+  # servers added by other plugins.
+  #
+  # The `root` directory in which the program is executing is also
+  # provided.
+  def self.boot settings, root
+    puts "Cat booting up using resolved settings within directory #{root}"
+  end
+end
+```
+
+If your plugin doesn't interact directly with the command-line
+(through a wu-tool like `wu-local` or `wu-hadoop`) and doesn't
+directly interface with passing records to processors then you can
+just require the rest of your plugin's code and stop.
+
+### Write a Runner to interact with the command-line
+
+A Runner is a class which interacts with the command-line.  It's used
+to implement Wukong programs like `wu-local` or `wu-hadoop`.  Here's
+what the actual program file would look like for our example plugin's
+`wu-cat` program.
+
+```ruby
+#!/usr/bin/env ruby
+# in bin/wu-cat
+require 'cat'
+Cat::Runner.run
+```
+
+The Cat::Runner class is implemented separately.
+
+```ruby
+# in lib/cat/runner.rb
+require_relative('driver')
+module Cat
+
+  # Implements the `wu-cat` command.
+  class Runner < Wukong::Runner
+
+    usage "PROCESSOR|FLOW"
+	description <<-EOF
+	
+	wu-cat lets you run a Wukong processor or dataflow on the
+	command-line.  Try it like this.
+
+    $ wu-cat --input=data.txt
+	hello
+	my
+	friend
+
+    Connect the output to a processor in upcaser.rb
+	
+    $ wu-cat --input=data.txt upcaser.rb
+	HELLO
+	MY
+	FRIEND
+
+    You can also include add line numbers to the output.
+
+    $ wu-cat --number --input=data.txt upcaser.rb
+	1	HELLO
+	2	MY
+	3	FRIEND
+    EOF
+
+    # The processor we're going to use.
+    attr_accessor :processor
+
+    # Evaluates the (parsed) command-line args to find the processor name.
+    def evaluate_args
+	  self.processor = (args.first or raise Wukong::Error.new("Must provide a processor as the first argument"))
+	end
+
+    # Delgates to a driver class to run the processor.
+    def run
+	  Driver.new(processor, settings).start
+	end
+	
+  end
+end
+```
+
+The Cat::Runner subclasses Wukong::Runner and only has to define the
+following methods:
+
+* `Cat::Runner#evaluate_args` which can evaluate the (already initialized) `args` Array and do argument checking, further initialization, and so on.
+* `Cat::Runner#run` which actually does the work
+
+Code in the file `upcaser.rb`, one of the elements of
+`Cat::Runner#args`, will automatically be loaded before
+`Cat::Runner#evaluate_args` is called.  You can customize this
+behavior with by overriding `Cat::Runner#args_to_load`.
+
+### Write a Driver to interact with processors
+
+The `Cat::Runner#run` method delegates to the `Cat::Driver` class to
+handle instantiating and interacting with processors.
+
+```ruby
+# in lib/cat/driver.rb
+module Cat
+
+  # A class for driving a processor from `wu-cat`.
+  class Driver
+
+    # Lets us count the records.
+    attr_accessor :number
+
+    # Gives methods to construct and interact with dataflows.
+    include Wukong::DriverMethods
+
+    # Create a new Driver for a dataflow with the given `label` using
+    # the given `settings`.
+    #
+    # @param [String] label the name of the dataflow
+    # @param [Configliere::Param] settings the settings to use when creating the dataflow
+    def initialize label, settings
+      self.settings = settings
+      self.dataflow = construct_dataflow(label, settings)
+      self.number   = 1
+    end
+
+    # The file handle of the input file.
+    #
+    # @return [File]
+    def input_file
+      @input_file ||= File.new(settings[:input])
+    end
+
+    # Starts feeding records to the processor
+    def start
+      while line = input_file.readline rescue nil
+        driver.send_through_dataflow(line)
+      end
+    end
+
+    # Process each record that comes back from the dataflow.
+	#
+	# @param [Object] record the yielded record
+    def process record
+      if settings[:number]
+        puts [number, record].map(&:to_s).join("\t")
+      else
+        puts record.to_s
+      end
+	  self.number += 1
+    end
+
+  end
+end
+```
+
