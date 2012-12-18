@@ -78,6 +78,8 @@ module Wukong
         end
         raise Error.new("#{klass} is not a subclass of Wukong::Processor") unless processor?(klass)
         settings = Configliere::Param.new
+        settings.use(:commandline)
+        ARGV.replace([])
         Wukong.boot!(settings)
         proc = klass.build(settings.merge(options))
         proc.setup

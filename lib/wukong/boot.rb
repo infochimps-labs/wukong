@@ -18,7 +18,7 @@ module Wukong
 
     # Resolve the `settings` so we can capture all the options we need
     # from the command line, the environment, &c.
-    settings.resolve!
+    settings.resolve!(false)
 
     # Now boot the deploy pack itself, passing in its known location
     # and the `settings`

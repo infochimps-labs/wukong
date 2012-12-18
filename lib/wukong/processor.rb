@@ -47,6 +47,16 @@ module Wukong
         instance_variable_set("@serialization_#{direction}", label) if %w[ tsv json xml ].include?(label.to_s)
       end
 
+      def configure(settings)
+        fields.each_pair do |name, field|
+          field_props = {}.tap do |props|
+            props[:description] = field.doc unless field.doc == "#{name} field"
+            props[:type]        = field.type.product
+          end
+          settings.define(name, field_props)
+        end
+      end
+
     end
         
     def expected_record_type(type)

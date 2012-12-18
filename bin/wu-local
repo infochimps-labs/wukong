@@ -61,6 +61,10 @@ else
   exit(2)
 end
 
+if settings[:help]
+  Wukong.registry
+  exit(3)
+end
 
 
 begin
@@ -70,7 +74,7 @@ begin
   StupidServer.new(processor.to_sym, settings).run!
 rescue Wu::Error => e
   $stderr.puts e.message
-  exit(3)
+  exit(4)
 end
 
 # One day, it will be this easy...
