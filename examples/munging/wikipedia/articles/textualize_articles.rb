@@ -23,25 +23,25 @@ require 'strscan'
 require 'find'
 require 'sanitize'
 #
-require_relative '../utils/munging_utils.rb'
+require_relative '../../../../lib/wu/munging'
 require_relative './wp2txt_article'
 require_relative './wp2txt_utils'
 
 module TextualizeArticles
 
   class Mapper < Wukong::Streamer::RecordStreamer
-    include MungingUtils
+    include Wu::Munging::Utils
 
     @@errors   = 0
     MAX_ERRORS = 1_000
 
-    def process(id, namespace, title, revision_id, timestamp, redirect, raw_text)
+    def process(id, namespace, wikipedia_id, revision_id, timestamp, title, redirect, raw_text)
 
       text          = MultiJson.decode(raw_text)
       article       = Wp2txt::Article.new(text, title)
       jsonized_text = MultiJson.encode(article.polish)
 
-      yield [id, namespace, title, revision_id, timestamp, redirect, jsonized_text]
+      yield [id, namespace, wikipedia_id, revision_id, timestamp, title, redirect, jsonized_text]
 
     rescue StandardError => err
       Wukong.bad_record("Bad Record", err, raw_text)

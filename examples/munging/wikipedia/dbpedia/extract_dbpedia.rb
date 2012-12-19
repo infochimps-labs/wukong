@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 require_relative './dbpedia_common'
+require_relative '../utils/encoder_ring'
 
 # Notes:
 #
@@ -23,8 +25,8 @@ module Dbpedia
 
   MAPPING_INFO = {
     # atomic topic properties
-    title:               { kind: :title,              fields: [:wikipedia_id, :title,      :url, :lang,  :revision_id          ], },
-    page_id:             { kind: :page_id,            fields: [:wikipedia_id, :wikipedia_pageid,                               ], },
+    title:               { kind: :title,              fields: [:wikipedia_id, :title,            :url, :lang, :revision_id     ], },
+    page_id:             { kind: :page_id,            fields: [:wikipedia_id, :wikipedia_pageid, :url, :lang, :revision_id     ], },
     description:         { kind: :description,        fields: [:wikipedia_id, :abstract,                                       ], },
     abstract_long:       { kind: :abstract,           fields: [:wikipedia_id, :abstract,                                       ], },
     geo_coordinates:     { kind: :geo_coordinates,    fields: [:wikipedia_id, :lng,        :lat,        :quadkey               ], },
@@ -48,7 +50,7 @@ module Dbpedia
     yago_link:           { kind: :sameas,             fields: [:wikipedia_id, :flavor,     :yago_id,                           ], },
     # category links
     category_skos_type:  { kind: :instance_of,        fields: [:wikipedia_id, :scheme,     :obj_class                          ], },
-    category_skos_title: { kind: :property,           fields: [:wikipedia_id, :relation,   :val_type,   :category_title,       ], },
+    category_skos_title: { kind: :skip,               fields: [:wikipedia_id, :relation,   :val_type,   :category_title,       ], },
     category:            { kind: :category,           fields: [:wikipedia_id, :flavor,     :cat_wpid,                          ], },
     category_subject:    { kind: :subject,            fields: [:wikipedia_id, :scheme,     :into_wpid,                         ], },
     category_reln:       { kind: :category_reln,      fields: [:wikipedia_id, :relation,   :into_wpid,                         ], },
@@ -61,7 +63,7 @@ module Dbpedia
     property_date:       { kind: :property_date,      fields: [:wikipedia_id, :property,   :val_type,   :val,                  ], },
     property_yearmonth:  { kind: :property_yearmonth, fields: [:wikipedia_id, :property,   :val_type,   :val,                  ], },
     property_monthday:   { kind: :property_monthday,  fields: [:wikipedia_id, :property,   :val_type,   :val,                  ], },
-    property_string:     { kind: :property_string, fields: [:wikipedia_id, :property,   :val_type,   :val,                  ], },
+    property_string:     { kind: :property_string,    fields: [:wikipedia_id, :property,   :val_type,   :val,                  ], },
     #
     persondata_reln:     { kind: :property_string,    fields: [:wikipedia_id, :property,   :val_type,   :val,            ], },
     # persondata_type:   { kind: :# persondata_type,  fields: [:wikipedia_id, :property,                                       ], },
@@ -147,58 +149,58 @@ module Dbpedia
 
   MAPPING_RES = {
     # atomic topic properties
-    title:               %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_label)}>                          \s#{r(:rdf_string, :title )}                   \s<(?<url>#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)})>                                \s#{r(:rdf_eol)}  \z}x,
-    page_id:             %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageID>            \s#{r(:rdf_integer,    :wikipedia_pageid, :_dtyp)} \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
-    wikipedia_lang:      %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>           \s<#{r(:purl_lang)}>                          \s#{r(:rdf_string, :lang)}                       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    wikipedia_link:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_topic)}>                         \s<#{r(:wikipedia_rsrc, :url, :slug)}>         \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    wikipedia_backlink:  %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>           \s<#{r(:foaf_topic)}>                         \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    description:         %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_comment)}>                        \s#{r(:rdf_string, :abstract)}                 \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
-    abstract_long:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/abstract>              \s#{r(:rdf_string, :abstract)}                 \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}xm,
-    geo_coordinates:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:georss_type)}>                        \s#{r(:georss_latlng, :lat, :lng)}             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    geo_coord_skip_a:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<http://www\.opengis\.net/gml/_Feature>      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    geo_coord_skip_b:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:wgs_latorlng)}>                       \s#{r(:rdf_float, :val, :_dtyp)}               \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    title:               %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_label)}>                          \s#{r(:rdf_string, :title )}                       \s<(?<url>#{r(:wiki_link_id, :wikipedia_slug, :revision_id, :article_lineno)})>                                \s#{r(:rdf_eol)}  \z}x,
+    page_id:             %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageID>            \s#{r(:rdf_integer,    :wikipedia_pageid, :_dtyp)} \s<(?<url>#{r(:wiki_link_id, :wikipedia_slug, :revision_id, :article_lineno)})>                                \s#{r(:rdf_eol)}  \z}x,
+    wikipedia_lang:      %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>           \s<#{r(:purl_lang)}>                          \s#{r(:rdf_string, :lang)}                       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    wikipedia_link:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_topic)}>                         \s<#{r(:wikipedia_rsrc, :url, :slug)}>         \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    wikipedia_backlink:  %r{\A<#{r(:wikipedia_rsrc,  :url, :slug)}>           \s<#{r(:foaf_topic)}>                         \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    description:         %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_comment)}>                        \s#{r(:rdf_string, :abstract)}                 \s<#{r(:wiki_link_id, :wikipedia_slug, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
+    abstract_long:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/abstract>              \s#{r(:rdf_string, :abstract)}                 \s<#{r(:wiki_link_id, :wikipedia_slug, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}xm,
+    geo_coordinates:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:georss_type)}>                        \s#{r(:georss_latlng, :lat, :lng)}             \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    geo_coord_skip_a:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<http://www\.opengis\.net/gml/_Feature>      \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    geo_coord_skip_b:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:wgs_latorlng)}>                       \s#{r(:rdf_float, :val, :_dtyp)}               \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     # links between topic
-    page_link:           %r{\A<#{r(:dbpedia_rsrc,    :from_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageWikiLink>      \s<#{r(:dbpedia_rsrc, :into_id)}>              \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    disambiguation:      %r{\A<#{r(:dbpedia_rsrc,    :generic_wpid)}>         \s<#{r(:dbpedia_ontb)}/wikiPageDisambiguates> \s<#{r(:dbpedia_rsrc, :specific_wpid)}>        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    page_link:           %r{\A<#{r(:dbpedia_rsrc,    :from_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageWikiLink>      \s<#{r(:dbpedia_rsrc, :into_id)}>              \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    disambiguation:      %r{\A<#{r(:dbpedia_rsrc,    :generic_wpid)}>         \s<#{r(:dbpedia_ontb)}/wikiPageDisambiguates> \s<#{r(:dbpedia_rsrc, :specific_wpid)}>        \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     redirects:           %r{\A<#{r(:dbpedia_rsrc,    :dupe_id)}>              \s<#{r(:dbpedia_ontb)}/wikiPageRedirects>     \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>                                                                                                                       \s#{r(:rdf_eol)}   \z}x,
     # external links and sameas'es
-    external_link:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageExternalLink>  \s<#{r(:url_loose, :weblink_url)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    homepage:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_homepage)}>                      \s<#{r(:url_loose, :weblink_url)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    external_link:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/wikiPageExternalLink>  \s<#{r(:url_loose, :weblink_url)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    homepage:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_homepage)}>                      \s<#{r(:url_loose, :weblink_url)}>             \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     geonames:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:geonames_rsrc, :geonames_id)}>                                                                                                                       \s#{r(:rdf_eol)}  \z}x,
     musicbrainz:         %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:musicbrainz_rsrc, :musicbrainz_type, :musicbrainz_id)}>                                                                                              \s#{r(:rdf_eol)}  \z}x,
     nytimes:             %r{\A<#{r(:nytimes_rsrc,    :nytimes_id)}>           \s<#{r(:same_as)}>                            \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>                                                                                                                       \s#{r(:rdf_eol)}   \z}x,
     uscensus:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:same_as)}>                            \s<#{r(:uscensus_url, :country_id, :state_id, :kind, :adm2_id, :adm3_id, :adm4_id)}>                                                                         \s#{r(:rdf_eol)}  \z}x,
     yago_link:           %r{\A<#{r(:yago_rsrc,       :yago_id)}>              \s<#{r(:same_as)}>                            \s<#{r(:dbpedia_rsrc, :wikipedia_id)}>                                                                                                                       \s#{r(:rdf_eol)}  \z}x,
-    pnd:                 %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/individualisedPnd>     \s#{r(:rdf_string, :pnd_id)}                   \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    pnd:                 %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ontb)}/individualisedPnd>     \s#{r(:rdf_string, :pnd_id)}                   \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     # category links
-    category:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_subject)}>                       \s<#{r(:dbpedia_rsrc, :cat_wpid)}>        \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    category_skos_type:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:skos_concept, :obj_class)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    category_subject:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_subject, :relation)}>            \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    category_reln:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :relation)}>            \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    category_skos_title: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :relation)}>            \s#{r(:rdf_string, :category_title)}           \s<#{r(:wiki_link_id, :wikipedia_id2, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
+    category:            %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_subject)}>                       \s<#{r(:dbpedia_rsrc, :cat_wpid)}>        \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_skos_type:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:skos_concept, :obj_class)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_subject:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_subject, :relation)}>            \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_reln:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :relation)}>            \s<#{r(:dbpedia_rsrc, :into_wpid)}>            \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    category_skos_title: %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_concept, :relation)}>            \s#{r(:rdf_string, :category_title)}           \s<#{r(:wiki_link_id, :wikipedia_slug, :revision_id, :article_lineno)}>                                        \s#{r(:rdf_eol)}  \z}x,
     # properties
     wordnet:             %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_prop, :property)}>            \s<#{r(:wordnet_inst, :wn_reln, :wn_class, :wn_pos, :wn_idx)}>                                                                                               \s#{r(:rdf_eol)}  \z}x,
     #
-    property_bool:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_bool,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_integer:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_integer,       :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_float:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_float,     :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_date:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_date,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_yearmonth:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_yearmonth, :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_monthday:   %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_monthday,  :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_year:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_year,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_string:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_string,    :val)            }       \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_bool:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_bool,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_integer:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_integer,       :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_float:      %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_float,     :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_date:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_date,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_yearmonth:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_yearmonth, :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_monthday:   %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_monthday,  :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_year:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_year,      :val, :val_type) }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_string:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:rdf_string,    :val)            }       \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     #
-    persondata_reln:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s<#{r(:dbpedia_rsrc, :val)}>                  \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_foaf:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_prop, :property)}>               \s#{r(:rdf_string, :val)}                      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_desc:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_desc, :property)}>               \s#{r(:rdf_string, :val)}                      \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    persondata_reln:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s<#{r(:dbpedia_rsrc, :val)}>                  \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_foaf:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:foaf_prop, :property)}>               \s#{r(:rdf_string, :val)}                      \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_desc:       %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:purl_desc, :property)}>               \s#{r(:rdf_string, :val)}                      \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     yago:                %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:yago_class,  :scheme, :obj_class)}>                                                                                                                  \s#{r(:rdf_eol)}  \z}x,
-    instance_type_a:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:dbpedia_ont,          :obj_class)}>    \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    instance_type_b:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:schema_type, :org,    :obj_class)}>    \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
-    property_specmap:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:dbpedia_value, :val, :units)}           \s<#{r(:wiki_link_id_sec, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    instance_type_a:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:dbpedia_ont,          :obj_class)}>    \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    instance_type_b:     %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:rdf_type)}>                           \s<#{r(:schema_type, :org,    :obj_class)}>    \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
+    property_specmap:    %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:dbpedia_ont, :property)}>             \s#{r(:dbpedia_value, :val, :units)}           \s<#{r(:wiki_link_id_sec, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno)}> \s#{r(:rdf_eol)}  \z}x,
     # topical_concepts:  %r{\A<#{r(:dbpedia_rsrc,    :wikipedia_id)}>         \s<#{r(:skos_subject)}>                       \s<#{r(:x, )}> \z},
   }
   MAPPING_RES.each{|re_name, re| MAPPING_INFO[re_name][:re] = re }
-  SKIPPAPLE_FIELDS = [:flavor, :wikipedia_id2, :revision_id, :article_section, :section_lineno, :article_lineno, :val_lang, :name_lang, :_dtyp]
+  SKIPPAPLE_FIELDS = [:flavor, :wikipedia_slug, :revision_id, :article_section, :section_lineno, :article_lineno, :val_lang, :name_lang, :_dtyp]
 
   class RdfExtractor < Wukong::Streamer::LineStreamer
     include Wu::Munging::Utils
@@ -213,10 +215,46 @@ module Dbpedia
     def coerce_integer(  hsh, field) ; hsh[field] = (hsh[field].present? ? Integer(hsh[field]) : nil) ; end
     def coerce_float(hsh, field) ; hsh[field] = (hsh[field].present? ? Float(hsh[field])   : nil) ; end
 
+    def unescape_rdf_string!(str)
+      # things like \u2603 or \U0001033E
+      str.gsub!(%r{\\(u[0-9A-F]{4,4}|U[0-9A-F]{8,8})}){ [$1[1..-1].to_i(16)].pack("U") }
+      # unescape quotes and backslashes
+      str.gsub!(%r{\\[\"\\]}, {'\\\\' => '\\', '\\"' => '"' })
+      str
+    end
+
     def unescape_and_encode(str)
-      str.gsub!(%r{\\\"}, '"')
-      str.gsub!(%r{\\u([0-9A-F][0-9A-F][0-9A-F][0-9A-F])}){ [$1.to_i(16)].pack("U") }
+      unescape_rdf_string!(str)
       safe_json_encode(str)
+    end
+
+    # What_t%D0%BDe_%E2%99%AF$*!_Do_%CF%89%CE%A3_(k)%CF%80ow!%3F
+    # What_t%D0%BDe_%E2%99%AF$*!_Do_%CF%89%CE%A3_(k)%CF%80ow!%3F
+    # What_t\u043De_\u266F$*!_Do_\u03C9\u03A3_(k)\u03C0ow!%3F
+    # What_t\u043De_\u266F$*!_Do_\u03C9\u03A3_(k)\u03C0ow!%3F   What tнe ♯$*! Do ωΣ (k)πow!?
+    #
+    # What_t%D0%BDe%E2%83%97_%E2%99%AF$*!_D%E2%83%97%F0%9D%9E%B1_%F0%9D%93%8C%CE%A3_(k)%CF%80ow!%3F
+    # What_t%D0%BDe%E2%83%97_%E2%99%AF$*!_D%E2%83%97%F0%9D%9E%B1_%F0%9D%93%8C%CE%A3_(k)%CF%80ow!%3F
+    # What_t\u043De\u20D7_\u266F$*!_D\u20D7\U0001D7B1_\U0001D4CC\u03A3_(k)\u03C0ow!%3F
+    # What_t\u043De\u20D7_\u266F$*!_D\u20D7\U0001D7B1_\U0001D4CC\u03A3_(k)\u03C0ow!%3F
+    # What What tнē #$*! D̄ө ωΣ (k)πow!?
+
+    # verify that we understand the conversion from title (`What tнē #$*! D̄ө ωΣ (k)πow!?`) to
+    # * dbpedia_id (`What_t%D0%BDe_%E2%99%AF$*!_Do_%CF%89%CE%A3_(k)%CF%80ow!%3F`)
+    #   which is ascii-only and contains no `' ?\`"%^'`,
+    # * URL slug   (`What_tнe_♯$*!_Do_ωΣ_(k)πow!%3F`)
+    #   which my have high-order characters but contains no `' ?\`"%^'`,
+    def check_slugging(hsh)
+      raw_title        = hsh[:title].dup
+      title            = unescape_rdf_string!(hsh[:title].dup)
+      wikipedia_slug_2 = Wikipedia.title_to_wikipedia_slug(raw_title)
+      wikipedia_id_2   = Wikipedia.title_to_wikipedia_id(title)
+      #
+      ok1 = (hsh[:wikipedia_id]   == wikipedia_id_2)
+      ok2 = (hsh[:wikipedia_slug] == wikipedia_slug_2)
+      if not ok1 && ok2 && true
+        warn [ok1, ok2, hsh[:wikipedia_id], wikipedia_id_2, hsh[:wikipedia_slug], wikipedia_slug_2, title].join("\t")
+      end
     end
 
     def record_for_flavor(kind, fields, flavor, hsh)
@@ -229,6 +267,7 @@ module Dbpedia
       when :abstract_long, :description
         hsh[:abstract] = unescape_and_encode(hsh[:abstract])
       when :title
+        # check_slugging(hsh) ; return
         hsh[:property] = flavor
         hsh[:lang]     = 'en'
         hsh[:title]    = unescape_and_encode(hsh[:title])
@@ -276,7 +315,8 @@ module Dbpedia
         return
       end
       line =~ %r{<http://dbpedia.org/resource/(.)}
-      yield ["bad_match-#{$1}", line].join("\t")
+      yield ["bad_match-#{$1}", line]
+    rescue SystemCallError ; raise
     rescue StandardError => err
       Log.warn [err.class, err.message, err.backtrace[0..2], line]
     end

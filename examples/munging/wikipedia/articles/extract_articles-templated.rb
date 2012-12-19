@@ -27,7 +27,8 @@ require 'wukong'
 require 'wukong/streamer/encoding_cleaner'
 require 'crack/xml'
 require 'multi_json'
-require_relative '../utils/munging_utils.rb'
+require_relative '../../../../lib/wu/munging'
+require_relative '../utils/encoder_ring'
 
 # <page>
 #   <title>Anarchism</title>
@@ -52,7 +53,7 @@ require_relative '../utils/munging_utils.rb'
 module ArticlesExtractor
   class Mapper < Wukong::Streamer::LineStreamer
     include Wukong::Streamer::EncodingCleaner
-    include MungingUtils
+    include Wu::Munging::Utils
 
     def initialize(*)
       super
@@ -85,13 +86,15 @@ module ArticlesExtractor
       timestamp = [info[:rts_yr], info[:rts_mo], info[:rts_day], info[:rts_hr], info[:rts_min], info[:rts_sec], 'Z'].join
       text      = Crack::XML::parse("<text>#{info[:text]}</text>")['text'] || ''
       redirect  = info[:redirect] || ''
+      wikipedia_id = Wikipedia.title_to_wikipedia_id(info[:title])
 
       record = [
         info[:id],
         info[:ns],
-        scrub_control_chars(info[:title]),
+        wikipedia_id,
         info[:revision_id],
         timestamp,
+        scrub_control_chars(info[:title]),
         scrub_control_chars(redirect),
         safe_json_encode(text)
       ]

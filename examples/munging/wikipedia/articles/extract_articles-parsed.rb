@@ -56,6 +56,7 @@ module ArticlesExtractor
       redirect  = record['page']['redirect'] ? record['page']['redirect']['title'] : ''
       timestamp = Time.iso8601(record['page']['revision']['timestamp']).to_flat
       raw_text  = record['page']['revision']['text']
+      wikipedia_id = Wikipedia.title_to_wikipedia_id(scrub_control_chars(record['page']['title']))
 
       # some few parts per million articles have an empty body -- workaround
       raw_text = '' if not raw_text.is_a?(String)
@@ -63,9 +64,10 @@ module ArticlesExtractor
       result = [
         record['page']['id'],
         record['page']['ns'],
-        scrub_control_chars(record['page']['title']),
+        wikipedia_id,
         record['page']['revision']['id'],
         timestamp,
+        scrub_control_chars(record['page']['title']),
         scrub_control_chars(redirect),
         safe_json_encode(raw_text)
       ]

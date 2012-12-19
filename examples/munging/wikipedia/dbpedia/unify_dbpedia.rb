@@ -2,34 +2,9 @@
 require_relative './dbpedia_common'
 require 'gorillib/model/positional_fields'
 require 'gorillib/string/inflections'
+require 'wu/wikipedia/models'
 
-class DbpediaArticle
-  include Gorillib::Model
-  field :page_id,         :integer
-  field :wikipedia_id,    :string
-  field :namespace,       :integer
-  field :lang,            :string
-  field :revision_id,     :integer
-  #
-  field :title,           :string
-  #
-  field :longitude,       :float
-  field :latitude,        :float
-  field :quadkey,         :string
-  #
-  field :url,             :string
-  field :description,     :string
-  field :abstract,        :string
-  #
-  field :extended_props,  :array, default: ->{ Array.new }
-  #
-  field :links_into,      :array, default: ->{ Array.new }
-  field :disamb_ofs,      :array, default: ->{ Array.new }
-  field :redirect_ofs,    :array, default: ->{ Array.new }
-  field :weblinks_into,   :array, default: ->{ Array.new }
-  field :categories,      :array, default: ->{ Array.new }
-  field :relations,       :array, default: ->{ Array.new }
-
+Wu::Wikipedia::DbpediaArticle.class_eval do
   def write_attribute(attr, *args)
     warn [attr] if not self.class.field_names.include?(attr.to_sym)
     super
@@ -91,6 +66,9 @@ module Dbpedia
         article.write_attribute(kind, val)
       end
     end
+    class Description   < DirectProperty ; field :val,  :json_string ; end
+    class Abstract      < DirectProperty ; field :val,  :json_string ; end
+
     class Title < DirectProperty
       field :val,           :json_string
       field :url,           :string
@@ -99,13 +77,20 @@ module Dbpedia
       def populate(article)
         super
         article.url         = url
-        article.lang        = lang
         article.revision_id = revision_id
       end
     end
-    class PageId        < DirectProperty ; field :val,  :integer     ; end
-    class Description   < DirectProperty ; field :val,  :json_string ; end
-    class Abstract      < DirectProperty ; field :val,  :json_string ; end
+    class PageId        < DirectProperty
+      field :val,  :integer
+      field :url,           :string
+      field :lang,          :string
+      field :revision_id,   :string
+      def populate(article)
+        super
+        article.url         ||= url  if url.present?
+        article.revision_id ||= revision_id if revision_id.present?
+      end
+    end
 
     class GeoCoordinates < Base
       field :longitude, :float
@@ -166,6 +151,10 @@ module Dbpedia
       def populate(article) ; article.relations     |= [ [ 'wordnet', wn_reln, wn_class, wn_pos, wn_idx ] ] ; end
     end
 
+    # class Subject < Base
+    #   def populate(article) ; end
+    # end
+
   end
 
   class UnifyDbpedia < Wukong::Streamer::AccumulatingReducer
@@ -173,11 +162,13 @@ module Dbpedia
     #
     def start!(key, *)
       super
-      @article = DbpediaArticle.new(wikipedia_id: key)
+      @article = Wu::Wikipedia::DbpediaArticle.new(wikipedia_id: key)
     end
 
     def accumulate(wikipedia_id, kind, *info)
-      # return if %w[disambiguation homepage abstract description ].include?(kind)
+      return if wikipedia_id =~ /\Abad_match-/
+      return if %w[ subject ].include?(kind)
+      return if (kind == 'property') && (info.first == 'prefLabel')
       item = Dbpedia::Element.make(wikipedia_id, kind, *info)
       item.populate(@article)
     rescue StandardError => err
@@ -185,12 +176,17 @@ module Dbpedia
     end
 
     def finalize
+      @article.namespace ||= 0
       hsh = @article.to_wire.compact_blank
-      return unless hsh.keys.size > 8
-      yield [safe_json_encode(hsh, pretty: true)]
+      # return unless hsh.keys.size > 8
+
+      # yield [hsh[:page_id], hsh[:namespace], hsh[:wikipedia_id], hsh[:title]]
+      yield [hsh[:page_id], hsh[:namespace], hsh[:wikipedia_id], safe_json_encode(hsh, pretty: false)]
     end
   end
 
 end
 
-Wukong::Script.new(Dbpedia::UnifyDbpedia, nil).run
+Wukong::Script.new(Wukong::Streamer::LineStreamer, Dbpedia::UnifyDbpedia,
+  reduce_tasks: 15,
+  partition_fields: 1, sort_fields: 1 ).run
