@@ -4,16 +4,17 @@ require 'multi_json'
 require 'eventmachine'
 require 'log4r'
 
-require 'hanuman'
+require_relative 'hanuman'
 
-require 'wukong/logger' 
-require 'wukong/processor'
-require 'wukong/dataflow'
-require 'wukong/widgets'
-require 'wukong/plugin'
-require 'wukong/driver'
-require 'wukong/runner'
-require 'wukong/local'
+require_relative 'wukong/logger' 
+require_relative 'wukong/processor'
+require_relative 'wukong/dataflow'
+require_relative 'wukong/widgets'
+require_relative 'wukong/plugin'
+require_relative 'wukong/driver'
+require_relative 'wukong/runner'
+
+require_relative 'wukong/local'
 
 # The Wukong module will contain all code for Wukong's core (like
 # Processors and Dataflows) as well as all plugins.
