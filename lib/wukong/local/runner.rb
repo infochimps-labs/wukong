@@ -1,4 +1,3 @@
-require_relative 'configuration'
 require_relative 'stdio_driver'
 require_relative 'tcp_driver'
 
@@ -6,7 +5,7 @@ module Wukong
   module Local
 
     # Implements the Runner for wu-local.
-    class Runner < Runner
+    class Runner < Wukong::Runner
       
       usage "PROCESSOR|FLOW"
       
@@ -53,29 +52,33 @@ EOF
       # * the name of an already registered processor
       # * a Ruby file
       def evaluate_args
-        arg = args.first
+        arg      = args.first
+        basename = File.basename(arg.to_s, '.rb')
         case
+        when settings.run
+          self.processor = settings.run
         when arg.nil?
           raise Error.new(settings.help)
         when Wukong.registry.registered?(arg.to_sym)
           self.processor = arg.to_sym
-        when File.exist?(arg)
-          self.processor = settings.run || File.basename(arg, '.rb')
+        when File.exist?(arg) && Wukong.registry.registered?(basename.to_sym)
+          self.processor = basename.to_sym
+        when File.exist?(arg) && (! Wukong.registry.registered?(basename.to_sym))
+          raise Error.new("File #{arg} does not register a processor named <#{basename}>")
+        when arg
+          raise Error.new("No processor named <#{arg}>")
         else
-          raise Error.new("First argument should be the name of a registered processor or the path to a Ruby file. Got <#{arg}>")
+          raise Error.new("Did not choose a processor to run via the first argument or an explicit --run param.")
         end     
       end
 
       # Runs either the StdioDriver or the TCPDriver, depending on
       # what settings were passed.
-      def run_driver
+      def run
         EM.run do 
-          settings.tcp_server ? Wukong::Local::TCPDriver.start(processor, settings) : Wukong::Local::StdioDriver.start(processor, settings)
+          (settings.tcp_server ? TCPDriver : StdioDriver).start(processor, settings)
         end
       end
     end
   end
 end
-
-
-  

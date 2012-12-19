@@ -1,6 +1,8 @@
 module Wukong
 
   # An array of loaded Plugins.
+  #
+  # FIXME -- should be leveraging Hanuman::Registry here?
   PLUGINS = []
 
   # Asks each loaded plugin to configure the given +settings+ for the
