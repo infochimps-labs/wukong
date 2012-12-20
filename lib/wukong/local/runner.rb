@@ -5,7 +5,9 @@ module Wukong
   module Local
 
     # Implements the Runner for wu-local.
-    class Runner < Wukong::Runner
+    class LocalRunner < Wukong::Runner
+
+      include Wukong::Logging
       
       usage "PROCESSOR|FLOW"
       
@@ -42,43 +44,49 @@ module Wukong
    clever
 EOF
 
-      # The processor we're going to run.
-      attr_accessor :processor
-
-      # Extracts the processor from the arguments.
+      # Returns the name of the processor we're going to run.
       #
-      # Will accept
-      #
-      # * the name of an already registered processor
-      # * a Ruby file
-      def evaluate_args
+      # @return [String]
+      def processor
         arg      = args.first
         basename = File.basename(arg.to_s, '.rb')
+
         case
-        when settings.run
-          self.processor = settings.run
-        when arg.nil?
-          raise Error.new(settings.help)
-        when Wukong.registry.registered?(arg.to_sym)
-          self.processor = arg.to_sym
-        when File.exist?(arg) && Wukong.registry.registered?(basename.to_sym)
-          self.processor = basename.to_sym
-        when File.exist?(arg) && (! Wukong.registry.registered?(basename.to_sym))
-          raise Error.new("File #{arg} does not register a processor named <#{basename}>")
-        when arg
-          raise Error.new("No processor named <#{arg}>")
-        else
-          raise Error.new("Did not choose a processor to run via the first argument or an explicit --run param.")
-        end     
+        when settings[:run]          then settings[:run]
+        when arg && File.exist?(arg) then basename
+        else arg
+        end
+      end
+
+      # Validates the chosen processor.
+      #
+      # @raise [Wukong::Error] if it finds a problem
+      def validate
+        raise Error.new("Must provide a processor to run, via either the --run option or as the first argument") unless processor
+        raise Error.new("Processor name is blank") if processor.empty?
+        raise Error.new("No such processor <#{processor}>") unless registered?(processor)
+        true
       end
 
       # Runs either the StdioDriver or the TCPDriver, depending on
       # what settings were passed.
       def run
         EM.run do 
-          (settings.tcp_server ? TCPDriver : StdioDriver).start(processor, settings)
+          driver.start(processor, settings)
         end
       end
+
+      # The driver this Runner will use.
+      #
+      # Defaults to the Wukong::Local::StdioDriver, but will use the
+      # TcpDriver if it has a :port setting defined.
+      #
+      # @return [Wukong::Local::TCPDriver, Wukong::Local::StdioDriver]
+      def driver
+        (settings[:port] ? TCPDriver : StdioDriver)
+      end
+
+      
     end
   end
 end

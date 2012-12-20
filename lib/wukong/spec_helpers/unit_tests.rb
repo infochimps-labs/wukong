@@ -1,6 +1,25 @@
+require_relative('unit_tests/unit_test_driver')
+require_relative('unit_tests/unit_test_runner')
+require_relative('unit_tests/unit_test_matchers')
+
 module Wukong
   module SpecHelpers
-    module ProcessorHelpers
+
+    module UnitTests
+
+      # Create a Runner class and take it through its lifecycle.
+      def runner *args, &block
+        klass = case
+        when args.first.is_a?(Class) then args.shift
+        when args.last.is_a?(Class)  then args.last
+        else Wukong::Runner
+        end
+        ARGV.replace(args.map(&:to_s))
+        r = klass.new
+        r.instance_eval(&block) if block_given?
+        r.perform_lifecycle
+        r
+      end
 
       # Creates a new processor in a variety of convenient ways.
       #
@@ -53,21 +72,35 @@ module Wukong
       #     let(:french_tokenizer)  { processor(:complex_tokenizer, stemming: true, language: 'fr')  }
       #     ...
       #   end
-      def flow *args, &block
-        options  = args.extract_options!
-        name     = args.first || self.class.description
-        create_dataflow(name, options, &block)
+      def unit_test_runner *args
+        settings = args.extract_options!
+        name     = (args.first || self.class.description)
+        runner   = UnitTestRunner.new(name, settings)
+        yield runner.driver.processor if block_given?
+        runner.driver
       end
-      alias_method :processor, :flow
+      alias_method :processor, :unit_test_runner
 
-      # :nodoc:
-      def create_dataflow name, options={}, &block
-        settings = Configliere::Param.new
-        settings.merge!(options)
-        dataflow = SpecDriver.new(name, settings).dataflow
-        dataflow.instance_eval(&block) if block_given?
-        dataflow
+      def emit *expected
+        UnitTestMatcher.new(*expected)
+      end
+
+      def emit_json *expected
+        JsonMatcher.new(*expected)
+      end
+
+      def emit_delimited delimiter, *expected
+        DelimiterMatcher.new(delimiter, *expected)
+      end
+
+      def emit_tsv *expected
+        TsvMatcher.new(*expected)
+      end
+
+      def emit_csv *expected
+        CsvMatcher.new(*expected)
       end
     end
+    
   end
 end

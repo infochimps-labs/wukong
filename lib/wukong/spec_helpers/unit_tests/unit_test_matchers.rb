@@ -1,37 +1,11 @@
-require_relative('spec_driver')
-
 module Wukong
   module SpecHelpers
-    
-    module SpecMatchers
-
-      def emit *expected
-        EmitMatcher.new(*expected)
-      end
-
-      def emit_json *expected
-        JsonMatcher.new(*expected)
-      end
-
-      def emit_delimited delimiter, *expected
-        DelimiterMatcher.new(delimiter, *expected)
-      end
-
-      def emit_tsv *expected
-        TsvMatcher.new(*expected)
-      end
-
-      def emit_csv *expected
-        CsvMatcher.new(*expected)
-      end
-    end
-
-    class EmitMatcher
+    class UnitTestMatcher
 
       attr_accessor :driver, :expected, :reason, :expected_record, :actual_record, :mismatched_index
 
-      def matches?(dataflow)
-        self.driver = SpecDriver.new(dataflow)
+      def matches?(driver)
+        self.driver = driver
         driver.run
         if actual_size != expected_size
           self.reason = :size
@@ -131,7 +105,7 @@ module Wukong
       end
     end
 
-    class JsonMatcher < EmitMatcher
+    class JsonMatcher < UnitTestMatcher
       def output
         driver.map do |record|
           begin
@@ -146,7 +120,7 @@ module Wukong
       end
     end
 
-    class DelimitedMatcher < EmitMatcher
+    class DelimitedMatcher < UnitTestMatcher
 
       attr_accessor :delimiter
       

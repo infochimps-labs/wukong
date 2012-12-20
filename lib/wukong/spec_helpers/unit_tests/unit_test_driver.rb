@@ -1,9 +1,42 @@
 module Wukong
   module SpecHelpers
-    # This module defines methods to be included into the
-    # Wukong::Processor class.
-    module ProcessorSpecMethods
-
+    class UnitTestDriver < Array
+      
+      include Wukong::DriverMethods
+      
+      def initialize label, settings
+        super()
+        @settings = settings
+        @dataflow = construct_dataflow(label, settings)
+        setup_dataflow
+      end
+      
+      def setup
+      end
+      
+      def finalize
+      end
+      
+      def stop
+      end
+      
+      def process output
+        self << output
+      end
+      
+      def run
+        return false unless dataflow
+        given_records.each do |input|
+          driver.send_through_dataflow(input)
+        end
+        finalize_and_stop_dataflow
+        self
+      end
+      
+      def processor
+        dataflow.first
+      end
+      
       # An array of accumulated records to process come match-time.
       attr_reader :given_records
 
@@ -55,13 +88,14 @@ module Wukong
       # Calling this method, like passing the processor to an `emit`
       # matcher, will trigger processing of all the given records.
       #
-      # Returns a SpecDriver, which is a subclass of array, so the
+      # Returns a UnitTestDriver, which is a subclass of array, so the
       # usual matchers like `include` and so on should work, as well
       # as explicitly indexing to introspect on particular records.
       #
-      # @return [SpecDriver]
+      # @return [UnitTestDriver]
       def output
-        SpecDriver.new(self).run
+        run
+        self
       end
 
       # Return the output of the processor on the given records,
@@ -102,7 +136,7 @@ module Wukong
       def json_output
         output.map { |record| MultiJson.load(record) }
       end
-
+      
     end
   end
 end

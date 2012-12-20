@@ -12,7 +12,7 @@ module Wukong
   # @param [String] program_name the name of the currently executing program
   def self.configure_plugins(settings, program_name)
     PLUGINS.each do |plugin|
-      plugin.configure(settings, program_name)
+      plugin.configure(settings, program_name) if plugin.respond_to?(:configure)
     end
   end
 
@@ -23,7 +23,7 @@ module Wukong
   # @param [String] root the root directory the plugins are booting in
   def self.boot_plugins(settings, root)
     PLUGINS.each do |plugin|
-      plugin.boot(settings, root)
+      plugin.boot(settings, root) if plugin.respond_to?(:boot)
     end
   end
 

@@ -8,7 +8,7 @@ describe 'wu-local' do
     subject { command('wu-local') }
     it {should exit_with(:non_zero) }
     it "displays help on STDERR" do
-      should have_stderr("usage: wu-local")
+      should have_stderr("provide a processor to run")
     end
   end
 
@@ -90,36 +90,4 @@ describe 'wu-local' do
       end
     end
   end
-  
-  # context "running within a deploy pack" do
-  #   context "at its root" do
-  #     let(:subject) { command('wu-local', :cwd => examples_dir('deploy_pack')) }
-  #   end
-  #   context "deep within it" do
-  #     let(:subject) { command('wu-local', :cwd => examples_dir('deploy_pack', 'a','b','c')) }
-  #   end
-  # end
-  
-  # context "in local mode" do
-  #   context "on a map-only job" do
-  #     let(:subject) { command('wu-hadoop', example_script('tokenizer.rb'), "--mode=local", "--input=#{example_script('sonnet_18.txt')}") }
-  #     it { should exit_with(0) }
-  #     it { should have_stdout('Shall', 'I', 'compare', 'thee', 'to', 'a', "summer's", 'day') }
-  #   end
-    
-  #   context "on a map-reduce job" do
-  #     let(:subject) { command('wu-hadoop', example_script('word_count.rb'), "--mode=local", "--input=#{example_script('sonnet_18.txt')}") }
-  #     it { should exit_with(0) }
-  #     it { should have_stdout(/complexion\s+1/, /Death\s+1/, /temperate\s+1/) }
-  #   end
-  # end
-
-  # context "in Hadoop mode" do
-  #   context "on a map-only job" do
-  #     let(:subject) { command('wu-hadoop', example_script('tokenizer.rb'), "--mode=hadoop", "--input=/data/in", "--output=/data/out", "--dry_run") }
-  #     it { should exit_with(0) }
-  #     it { should have_stdout(%r{jar.*hadoop.*streaming.*\.jar}, %r{-mapper.+tokenizer\.rb}, %r{-input.*/data/in}, %r{-output.*/data/out}) }
-  #   end
-  # end
-  
 end

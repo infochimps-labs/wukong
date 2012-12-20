@@ -1,48 +1,15 @@
 module Wukong
   module SpecHelpers
-
-    # Provides matchers for STDOUT, STDERR, and exit code when writing
-    # integration tests for Wukong's command-line APIs.
-    module IntegrationMatchers
-
-      # Checks that each `expectation` appears in the STDOUT of the
-      # command.  Order is irrelevant and each `expectation` can be
-      # either a String to check for inclusion or a Regexp to match
-      # with.
-      #
-      # @param [Array<String,Regexp>] expectations
-      def have_stdout *expectations
-        StdoutMatcher.new(*expectations)
-      end
-
-      # Checks that each `expectation` appears in the STDERR of the
-      # command.  Order is irrelevant and each `expectation` can be
-      # either a String to check for inclusion or a Regexp to match
-      # with.
-      #
-      # @param [Array<String,Regexp>] expectations
-      def have_stderr *expectations
-        StderrMatcher.new(*expectations)
-      end
-
-      # Checks that the command exits with the given `code`.
-      #
-      # @param [Integer] code
-      def exit_with code
-        ExitCodeMatcher.new(code)
-      end
-
-    end
-
+    
     # A class for running commands and capturing their STDOUT, STDERR,
     # and exit code.  This class is designed to work with the matchers
-    # defined in IntegrationMatchers.
-    class IntegrationMatcher
+    # defined in IntegrationTestMatchers.
+    class IntegrationTestMatcher
 
-      # The driver used to run the actual commands.
-      attr_accessor :driver
+      # The runner used to run the actual commands.
+      attr_accessor :runner
 
-      # An array of expectations about the output of the driver.
+      # An array of expectations about the output of the runner.
       attr_accessor :expectations
 
       # The expectation which caused failure.
@@ -54,11 +21,11 @@ module Wukong
       # If an expectation failes to match, the `failed_expectation`
       # attribute will be set accordingly.
       #
-      # @param [IntegrationDriver] driver
+      # @param [IntegrationTestRunner] runner
       # @return [true, false]
-      def matches?(driver)
-        self.driver = driver
-        driver.run!
+      def matches?(runner)
+        self.runner = runner
+        runner.run!
         expectations.each do |expectation|
           unless output.send(match_function(expectation), expectation)
             self.failed_expectation = expectation
@@ -85,7 +52,7 @@ module Wukong
 
       # :nodoc:
       def negative_failure_message
-        "Expected #{output_description} of #{driver.cmd}\n\n#{output}\n\nto NOT #{match_type}\n\n#{self.failed_expectation}."
+        "Expected #{output_description} of #{runner.cmd}\n\n#{output}\n\nto NOT #{match_type}\n\n#{self.failed_expectation}."
       end
 
       # :nodoc:
@@ -95,18 +62,18 @@ module Wukong
 
       # :nodoc:
       def formatted_error_output
-        output_description.to_s =~ /stderr/ ? "\n\nSTDOUT was\n\n#{driver.stdout}" : "\n\nSTDERR was\n\n#{driver.stderr}"
+        output_description.to_s =~ /stderr/ ? "\n\nSTDOUT was\n\n#{runner.stdout}" : "\n\nSTDERR was\n\n#{runner.stderr}"
       end
 
       # :nodoc:
       def formatted_command
-        "  $ #{driver.cmd}"
+        "  $ #{runner.cmd}"
       end
 
       # :nodoc:
       def formatted_env
         ['  {'].tap do |lines|
-          driver.env.each_pair do |key, value|
+          runner.env.each_pair do |key, value|
             if key =~ /^(BUNDLE_GEMFILE|PATH|RUBYLIB)$/
               lines << "    #{key} => #{value},"
             end
@@ -128,11 +95,11 @@ module Wukong
     end
 
     # A matcher for the STDOUT of a command.
-    class StdoutMatcher < IntegrationMatcher
+    class StdoutMatcher < IntegrationTestMatcher
 
       # Picks the STDOUT of the command.
       def output
-        driver.stdout
+        runner.stdout
       end
 
       # :nodoc:
@@ -147,11 +114,11 @@ module Wukong
     end
 
     # A matcher for the STDOUT of a command.
-    class StderrMatcher < IntegrationMatcher
+    class StderrMatcher < IntegrationTestMatcher
 
       # Picks the STDOUT of the command.
       def output
-        driver.stderr
+        runner.stderr
       end
 
       # :nodoc:
@@ -165,7 +132,7 @@ module Wukong
     end
 
     # A matcher for the exit code of a command.
-    class ExitCodeMatcher < IntegrationMatcher
+    class ExitCodeMatcher < IntegrationTestMatcher
 
       # Initialize this matcher with the given `code`.
       #
@@ -184,22 +151,22 @@ module Wukong
       # Return whether or not the given command's exit code matches
       # the expectation.
       #
-      # @param [IntegrationDriver] driver
+      # @param [IntegrationTestRunner] runner
       # @return [true, false]
-      def matches?(driver)
-        self.driver = driver
-        driver.run!
+      def matches?(runner)
+        self.runner = runner
+        runner.run!
         if non_zero_exit_code?
-          @failed = true if driver.exit_code == 0
+          @failed = true if runner.exit_code == 0
         else
-          @failed = true if driver.exit_code != expected_exit_code
+          @failed = true if runner.exit_code != expected_exit_code
         end
         @failed ? false : true
       end
 
       # :nodoc:
       def failure_message
-        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nexpecting #{expected_exit_code_description}  Got #{driver.exit_code} instead.#{formatted_error_output}"
+        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nexpecting #{expected_exit_code_description}  Got #{runner.exit_code} instead.#{formatted_error_output}"
       end
 
       # :nodoc:
@@ -235,7 +202,6 @@ module Wukong
       def output_description
         "STDOUT"
       end
-
     end
   end
 end
