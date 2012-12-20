@@ -55,10 +55,10 @@ describe Wukong::Processor do
     end
 
     it "can bin on the fly given min, max, and num_bins options" do
-      output = processor(min: -30, max: 30, num_bins: 3) do
+      output = processor(min: -30, max: 30, num_bins: 3) do |proc|
         # we can bin on the fly
-        values.should_not_receive(:<<)
-        should_not_receive(:bin!) 
+        proc.values.should_not_receive(:<<)
+        proc.should_not_receive(:bin!) 
       end.given(*nums).tsv_output
 
       output.size.should == 3
@@ -67,10 +67,10 @@ describe Wukong::Processor do
     end
 
     it "can bin on the fly given fixed bin edges" do
-      output = processor(edges: [0,1,5,10]) do
+      output = processor(edges: [0,1,5,10]) do |proc|
         # we can bin on the fly
-        values.should_not_receive(:<<)
-        should_not_receive(:bin!)
+        proc.values.should_not_receive(:<<)
+        proc.should_not_receive(:bin!)
       end.given(*nums).tsv_output
       output.size.should == 3
       output[0][0].to_f.should be_within(0.1).of(0.0)

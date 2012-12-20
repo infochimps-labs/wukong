@@ -16,8 +16,8 @@ module Wukong
     def self.configure settings, program
       case program
       when 'wu-local'
-        settings.define :run,        description: "Name of the processor or dataflow to use. Defaults to basename of the given path.", flag: 'r'
-        settings.define :tcp_server, description: "Run locally as a server using provided TCP port", default: false,                   flag: 't'
+        settings.define :run,  description: "Name of the processor or dataflow to use. Defaults to basename of the given path.", flag: 'r'
+        settings.define :port, description: "Consume TCP requests on the given port instead of lines over STDIN", type: Integer, flag: 'p'
       end
     end
 

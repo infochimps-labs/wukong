@@ -11,7 +11,11 @@ RSpec.configure do |config|
   
   include Wukong::SpecHelpers
   def root
-    @root ||= Pathname.new(File.join(File.dirname(__FILE__), '..'))
+    @root ||= Pathname.new(File.expand_path('../..', __FILE__))
+  end
+
+  def local_runner *args
+    runner(Wukong::Local::LocalRunner, *args)
   end
   
   config.treat_symbols_as_metadata_keys_with_true_values = true

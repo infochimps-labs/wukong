@@ -9,8 +9,8 @@ module Wukong
       include Logging
 
       def self.start(label, settings = {})
-        host = settings[:host] || Socket.gethostname
-        port = settings[:port] || 9000
+        host = (settings[:host] || Socket.gethostname) rescue 'localhost'
+        port = (settings[:port] || 9000).to_i          rescue 9000
         EM.start_server(host, port, self, label, settings)
         log.info "Server started on #{host} on port #{port}"
         add_signal_traps
@@ -38,6 +38,7 @@ module Wukong
       end
 
       def unbind
+        finalize_and_stop_dataflow
         EM.stop
       end
       

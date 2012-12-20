@@ -5,16 +5,13 @@ require 'eventmachine'
 require 'log4r'
 
 require_relative 'hanuman'
-
 require_relative 'wukong/logger' 
 require_relative 'wukong/processor'
 require_relative 'wukong/dataflow'
-require_relative 'wukong/widgets'
 require_relative 'wukong/plugin'
 require_relative 'wukong/driver'
 require_relative 'wukong/runner'
 
-require_relative 'wukong/local'
 
 # The Wukong module will contain all code for Wukong's core (like
 # Processors and Dataflows) as well as all plugins.
@@ -43,3 +40,8 @@ end
 
 # Alias module name for shorter namespaces
 Wu = Wukong
+
+require_relative 'wukong/widgets'
+require_relative 'wukong/local'
+
+

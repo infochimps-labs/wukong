@@ -18,9 +18,9 @@ describe Wukong::Logging do
       describe "have an instance method #log that" do
         let(:log) { loggable_instance.log }
         subject   { log                   }
-        
+
+        it { should respond_to(:debug) }
         it { should respond_to(:info)  }
-        it { should respond_to(:error) }
         it { should respond_to(:warn)  }
       end
     end

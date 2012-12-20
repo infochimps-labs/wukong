@@ -2,46 +2,131 @@ require 'spec_helper'
 
 describe Wukong::Runner do
 
-  context "with a specific runner class" do
+  context "has a lifecycle in which it" do
 
-    let(:runner) do
-      Class.new(Wukong::Runner) do |c|
-        c.class_eval do
-          attr_accessor :fails
-          def evaluate_args
-            self.fails = true if settings[:fails]
-          end
-          def run_driver
-            raise Wukong::Error.new("should get captured") if self.fails
+    describe "loading" do
+      it "loads files passed on the command-line" do
+        loadable = examples_dir('loadable.rb')
+        runner(loadable) do
+          should_receive(:load_ruby_file).with(loadable)
+        end
+      end
+      it "loads files when its in a deploy pack" do
+        runner { should_receive(:load_deploy_pack) }
+      end
+    end
+
+    describe "configuring" do
+      subject do
+        Class.new(Wukong::Runner).tap do |configured|
+          configured.class_eval do
+            usage       'a nice usage message'
+            description 'a lovely description'
           end
         end
       end
-    end
-    subject { runner.new }
+      
+      it "sets a usage message" do
+        runner(subject).settings.usage.should =~ /^usage: .* a nice usage message$/
+      end
 
-    it "will call the 'load_code_from_args' method" do
-      subject.should_receive(:args_to_load)
-      subject.run
-    end
+      it "sets a description" do
+        runner(subject).settings.description.should == 'a lovely description'
+      end
 
-    it "will call the 'evaulate_args' method" do
-      subject.should_receive(:evaluate_args)
-      subject.run
-    end
-
-    it "will call the 'run_driver' method" do
-      subject.should_receive(:run_driver)
-      subject.run
+      it "asks for configuration from plugins" do
+        runner { Wukong.should_receive(:configure_plugins) }
+      end
     end
 
-    it "captures errors from the runner subclasses" do
-      settings = Configliere::Param.new
-      settings.merge!(:fails => true)
-      r = runner.new(settings)
-      r.should_receive(:evaluate_args).and_raise(Wukong::Error, "hi there")
-      r.log.should_receive(:error).with("hi there")
-      lambda { r.run }.should raise_error(SystemExit)
+    describe "resolving" do
+      it "doesn't move on if resolve causes an error" do
+        runner do
+          settings.should_receive(:resolve!).and_raise(RuntimeError)
+          should_not_receive(:setup)
+          should_not_receive(:validate)
+          should_not_receive(:run)
+        end
+      end
+    end
+
+    describe "setting up" do
+      it "asks plugins to boot" do
+        runner do
+          Wukong.should_receive(:boot_plugins)
+        end
+      end
+    end
+
+    describe "validating" do
+      it "should run if validatation passes" do
+        runner do
+          should_receive(:validate).and_return(true)
+          should_receive(:run)
+        end
+      end
+      it "dies if validate fails" do
+        runner do
+          should_receive(:validate).and_return(false)
+          should_not_receive(:run)
+          should_receive(:die)
+        end
+      end
+    end
+  end
+
+  context "situating itself within a deploy pack" do
+    context "in an arbitrary directory" do
+      let(:dir) { examples_dir('empty') }
+      before    { FileUtils.cd(dir)     }
+      subject   { runner            }
+      its(:deploy_pack_dir)  { should == '/'                      }
+      its(:environment_file) { should == '/config/environment.rb' }
+      its(:in_deploy_pack?)  { should be_false                    }
+    end
+
+    context "when BUNDLE_GEMFILE points at a regular Ruby project" do
+      let(:dir)             { examples_dir('empty')       }
+      let(:deploy_pack_dir) { examples_dir('ruby_project') }
+      before do
+        FileUtils.cd(dir)
+        ENV.stub!(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
+      end
+      subject   { runner }
+      its(:deploy_pack_dir)  { should == '/'                      }
+      its(:environment_file) { should == '/config/environment.rb' }
+      its(:in_deploy_pack?)  { should be_false                    }
     end
     
+    context "when BUNDLE_GEMFILE points at a deploy pack" do
+      let(:dir)             { examples_dir('empty')       }
+      let(:deploy_pack_dir) { examples_dir('deploy_pack') }
+      before do
+        FileUtils.cd(dir)
+        ENV.stub!(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
+      end
+      subject   { runner }
+      its(:deploy_pack_dir)  { should == deploy_pack_dir.to_s                               }
+      its(:environment_file) { should == File.join(deploy_pack_dir, 'config/environment.rb')}
+      its(:in_deploy_pack?)  { should be_true                                               }
+    end
+    
+    context "in an arbitrary Ruby project with a Gemfile" do
+      let(:dir) { examples_dir('ruby_project') }
+      before    { FileUtils.cd(dir)            }
+      subject   { runner                   }
+      its(:deploy_pack_dir)  { should == '/'                      }
+      its(:environment_file) { should == '/config/environment.rb' }
+      its(:in_deploy_pack?)  { should be_false                    }
+    end
+
+    context "in a deploy pack with a Gemfile and a config/environment.rb" do
+      let(:dir) { examples_dir('deploy_pack')  }
+      before    { FileUtils.cd(dir)            }
+      subject   { runner                       }
+      its(:deploy_pack_dir)  { should == dir                                    }
+      its(:environment_file) { should == File.join(dir, 'config/environment.rb')}
+      its(:in_deploy_pack?)  { should be_true                                   }
+    end
   end
 end
