@@ -350,10 +350,10 @@ describe :tokenizer do
     processor.given("Hi there.\nMy name is Wukong!").should emit(6).records
   end
   it "eliminates all punctuation" do
-    processor.given("Never!").output.first.should_not include(',')
+    processor(:tokenizer).given("Never!").should emit('Never')
   end
-  it "downcases all input text" do
-    processor.given("Whatever").output.first.should match(/^w/)
+  it "will not emit tokens in a stop list" do
+    processor(:tokenizer, :stop_list => ['apples', 'bananas']).given("I like apples and bananas").should emit('I', 'like', 'and')
   end
 end
 ```
@@ -364,8 +364,13 @@ Let's look at each kind of helper:
   `it_behaves_like` helper) adds some tests that ensure that the
   processor conforms to the API of a Wukong::Processor.
 
-* The `processor` method instantiates a processor very similarly to
-  the way `wu-local` instantiates one on the command-line.  It accepts
+* The `processor` method is actually an alias for the more aptly named
+  (but less convenient) `unit_test_runner`.  This method accepts a
+  processor name and options (just like `wu-local` and other
+  command-line tools) and returns a Wukong::UnitTestRunner instance.
+  This runner handles the
+
+
   a (registered) processor name and options and creates a new
   processor.  If no name is given, the argument of the enclosing
   `describe` or `context` block is used.  The object returned by
@@ -386,17 +391,27 @@ Let's look at each kind of helper:
   complicated example:
 
 The same helpers can be used to test dataflows as well as
-processors. For complete details, see documentation for the
-Wukong::SpecHelpers module.
+processors.
+
+#### 
+
+#### Functions vs. Objects
+
+The above test helpers are designed to aid in testing processors
+functionally because:
+
+* they accept the 
 
 ### Integration Tests
 
-Sometimes unit tests aren't enough and you need to test your
-processors or flows as they will be run in production using
-`wu-local`.
+If you are implementing a new Wukong command (akin to `wu-local`) then
+you may also want to run integration tests.  Wukong comes with helpers
+for these, too.
 
-For these use cases, Wukong provides some integration helpers that
-make testing command line processes easier.
+You should almost always be able to test your processors without
+integration tests.  Your unit tests and the Wukong framework itself
+should ensure that your processors work correctly no matter what
+environment they are deployed in.
 
 ```ruby
 # spec/integration/tokenizer_spec.rb

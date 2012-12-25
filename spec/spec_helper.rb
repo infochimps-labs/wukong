@@ -17,12 +17,8 @@ RSpec.configure do |config|
   def local_runner *args
     runner(Wukong::Local::LocalRunner, *args)
   end
-  
+
+  # FIXME Why is this here?
   config.treat_symbols_as_metadata_keys_with_true_values = true
-  
-  config.before(:each) do
-    ARGV.replace([])
-    Wukong::Log.level = Log4r::OFF
-  end
   
 end
