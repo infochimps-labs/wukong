@@ -9,15 +9,19 @@ module Wukong
 
       # Create a Runner class and take it through its lifecycle.
       def runner *args, &block
+        settings = args.extract_options!
+        
         klass = case
         when args.first.is_a?(Class) then args.shift
         when args.last.is_a?(Class)  then args.last
         else Wukong::Runner
         end
+
         ARGV.replace(args.map(&:to_s))
+
         r = klass.new
         r.instance_eval(&block) if block_given?
-        r.perform_lifecycle
+        r.perform_lifecycle(settings)
         r
       end
 

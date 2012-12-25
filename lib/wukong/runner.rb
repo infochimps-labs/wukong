@@ -12,12 +12,6 @@ module Wukong
   # * having all plugins boot from now resolved settings
   # * parsing command-line arguments
   # * instantiating and handing over control to a driver which runs the actual code
-  #
-  # If you subclass this class, you'll likely want to implement the
-  #
-  # * `args_to_load` method to load any additional code or libraries given on the command-line
-  # * `evaluate_args` method to evaulate (resolved) arguments to decide what to do
-  # * `run_driver` method to instantiate the appropriate driver and hand over control
   class Runner
     
     include Logging
@@ -51,11 +45,21 @@ module Wukong
       end
     end
 
+    # Set or get the name of the command-line program this Runner
+    # implements.
+    #
+    # @param [String] name the program name to set
+    # @return [String] the program name
+    def self.program name=nil
+      @program_name = name if name
+      @program_name
+    end
+
     # The name of the currently running program.
     #
     # @return [String]
     def program_name
-      File.basename($0)
+      self.class.program || File.basename($0)
     end
 
     # The parsed command-line arguments.

@@ -25,11 +25,12 @@ module Wukong
       # * #setup
       # * #validate
       # * #run or #die
-      def perform_lifecycle
+      def perform_lifecycle(s=nil)
         load
         configure
         if resolve
           setup
+          settings.merge!(s) if s
           validate ? run : die("Invalid arguments")
         end
       end

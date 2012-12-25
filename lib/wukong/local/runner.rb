@@ -8,6 +8,8 @@ module Wukong
     class LocalRunner < Wukong::Runner
 
       include Wukong::Logging
+
+      program 'wu-local'
       
       usage "PROCESSOR|FLOW"
       

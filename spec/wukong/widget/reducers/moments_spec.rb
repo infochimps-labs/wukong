@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Wukong::Processor do
+describe "Reducers" do
   describe :moments do
     include_context "reducers"
     it_behaves_like 'a processor', :named => :moments
