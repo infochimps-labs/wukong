@@ -2,17 +2,17 @@ require 'spec_helper'
 
 describe Wukong::Runner do
 
-  context "has a lifecycle in which it" do
+  context "can boot itself by" do
 
     describe "loading" do
-      it "loads files passed on the command-line" do
+      it "files passed on the command-line" do
         loadable = examples_dir('loadable.rb')
-        runner(loadable) do
+        generic_runner(loadable) do
           should_receive(:load_ruby_file).with(loadable)
         end
       end
-      it "loads files when its in a deploy pack" do
-        runner { should_receive(:load_deploy_pack) }
+      it "files when its in a deploy pack" do
+        generic_runner { should_receive(:load_deploy_pack) }
       end
     end
 
@@ -26,22 +26,22 @@ describe Wukong::Runner do
         end
       end
       
-      it "sets a usage message" do
-        runner(subject).settings.usage.should =~ /^usage: .* a nice usage message$/
+      it "a usage message" do
+        runner(subject, 'wu-generic').settings.usage.should =~ /^usage: .* a nice usage message$/
       end
 
-      it "sets a description" do
-        runner(subject).settings.description.should == 'a lovely description'
+      it "a description" do
+        runner(subject, 'wu-generic').settings.description.should == 'a lovely description'
       end
 
-      it "asks for configuration from plugins" do
-        runner { Wukong.should_receive(:configure_plugins) }
+      it "plugins" do
+        generic_runner { Wukong.should_receive(:configure_plugins) }
       end
     end
 
     describe "resolving" do
       it "doesn't move on if resolve causes an error" do
-        runner do
+        generic_runner do
           settings.should_receive(:resolve!).and_raise(RuntimeError)
           should_not_receive(:setup)
           should_not_receive(:validate)
@@ -52,7 +52,7 @@ describe Wukong::Runner do
 
     describe "setting up" do
       it "asks plugins to boot" do
-        runner do
+        generic_runner do
           Wukong.should_receive(:boot_plugins)
         end
       end
@@ -60,13 +60,13 @@ describe Wukong::Runner do
 
     describe "validating" do
       it "should run if validatation passes" do
-        runner do
+        generic_runner do
           should_receive(:validate).and_return(true)
           should_receive(:run)
         end
       end
       it "dies if validate fails" do
-        runner do
+        generic_runner do
           should_receive(:validate).and_return(false)
           should_not_receive(:run)
           should_receive(:die)
@@ -79,7 +79,7 @@ describe Wukong::Runner do
     context "in an arbitrary directory" do
       let(:dir) { examples_dir('empty') }
       before    { FileUtils.cd(dir)     }
-      subject   { runner            }
+      subject   { generic_runner            }
       its(:deploy_pack_dir)  { should == '/'                      }
       its(:environment_file) { should == '/config/environment.rb' }
       its(:in_deploy_pack?)  { should be_false                    }
@@ -92,7 +92,7 @@ describe Wukong::Runner do
         FileUtils.cd(dir)
         ENV.stub!(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
       end
-      subject   { runner }
+      subject   { generic_runner }
       its(:deploy_pack_dir)  { should == '/'                      }
       its(:environment_file) { should == '/config/environment.rb' }
       its(:in_deploy_pack?)  { should be_false                    }
@@ -105,7 +105,7 @@ describe Wukong::Runner do
         FileUtils.cd(dir)
         ENV.stub!(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
       end
-      subject   { runner }
+      subject   { generic_runner }
       its(:deploy_pack_dir)  { should == deploy_pack_dir.to_s                               }
       its(:environment_file) { should == File.join(deploy_pack_dir, 'config/environment.rb')}
       its(:in_deploy_pack?)  { should be_true                                               }
@@ -114,7 +114,7 @@ describe Wukong::Runner do
     context "in an arbitrary Ruby project with a Gemfile" do
       let(:dir) { examples_dir('ruby_project') }
       before    { FileUtils.cd(dir)            }
-      subject   { runner                   }
+      subject   { generic_runner                   }
       its(:deploy_pack_dir)  { should == '/'                      }
       its(:environment_file) { should == '/config/environment.rb' }
       its(:in_deploy_pack?)  { should be_false                    }
@@ -123,7 +123,7 @@ describe Wukong::Runner do
     context "in a deploy pack with a Gemfile and a config/environment.rb" do
       let(:dir) { examples_dir('deploy_pack')  }
       before    { FileUtils.cd(dir)            }
-      subject   { runner                       }
+      subject   { generic_runner                       }
       its(:deploy_pack_dir)  { should == dir                                    }
       its(:environment_file) { should == File.join(dir, 'config/environment.rb')}
       its(:in_deploy_pack?)  { should be_true                                   }

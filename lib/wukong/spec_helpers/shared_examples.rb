@@ -13,10 +13,6 @@ shared_examples_for 'a plugin' do |options = {}|
   it "is registered as a Wukong plugin " do
     Wukong::PLUGINS.should include(subject)
   end
-  it "has a 'configure' method" do
-    should respond_to(:configure)
-  end
-  it "has a 'boot' method" do
-    should respond_to(:boot)
-  end
+  it { should respond_to(:configure) }
+  it { should respond_to(:boot)      }
 end

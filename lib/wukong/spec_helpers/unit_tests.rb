@@ -8,21 +8,16 @@ module Wukong
     module UnitTests
 
       # Create a Runner class and take it through its lifecycle.
-      def runner *args, &block
+      def runner klass, program_name, *args, &block
         settings = args.extract_options!
         
-        klass = case
-        when args.first.is_a?(Class) then args.shift
-        when args.last.is_a?(Class)  then args.last
-        else Wukong::Runner
-        end
-
         ARGV.replace(args.map(&:to_s))
 
-        r = klass.new
-        r.instance_eval(&block) if block_given?
-        r.perform_lifecycle(settings)
-        r
+        klass.new.tap do |the_runner|
+          the_runner.program_name = program_name
+          the_runner.instance_eval(&block) if block_given?
+          the_runner.boot!(settings)
+        end
       end
 
       # Creates a new processor in a variety of convenient ways.

@@ -1,6 +1,6 @@
 require_relative("runner/code_loader")
 require_relative("runner/deploy_pack_loader")
-require_relative("runner/lifecycle")
+require_relative("runner/boot_sequence")
 
 module Wukong
 
@@ -17,7 +17,7 @@ module Wukong
     include Logging
     include CodeLoader
     include DeployPackLoader
-    include Lifecycle
+    include BootSequence
 
     # The settings object that will be configured and booted from.
     # All plugins will configure this object.
@@ -33,33 +33,16 @@ module Wukong
       self.settings = settings
     end
     
-    # Instantiates a new Runner and take it thrugh its lifecycle.
+    # Instantiates a new Runner and boot it up.
     #
     # Will rescue any Wukong::Error with a logged error message and
     # exit.
     def self.run(settings=Configliere::Param.new)
       begin
-        new(settings).perform_lifecycle
+        new(settings).boot!
       rescue Wukong::Error => e
         die(e.message, 127)
       end
-    end
-
-    # Set or get the name of the command-line program this Runner
-    # implements.
-    #
-    # @param [String] name the program name to set
-    # @return [String] the program name
-    def self.program name=nil
-      @program_name = name if name
-      @program_name
-    end
-
-    # The name of the currently running program.
-    #
-    # @return [String]
-    def program_name
-      self.class.program || File.basename($0)
     end
 
     # The parsed command-line arguments.
@@ -108,6 +91,28 @@ module Wukong
     def self.die(message=nil, code=127)
       log.error(message) if message
       exit(code)
+    end
+
+    # Return the name of the program this Runner is running.
+    #
+    # This is passed to plugins which can configure settings
+    # appropriately.  Defaults to the name of the currently running
+    # process.
+    #
+    # @return [String]
+    def program_name
+      @program_name || File.basename($0)
+    end
+
+    # Explicitly set the name of the program this Runner is running.
+    #
+    # This is useful for unit tests in which the name of the currently
+    # running process may be different from the runner command being
+    # tested (`rspec` vs. `wu-local`).
+    #
+    # @param [String] name
+    def program_name= name
+      @program_name = name
     end
 
     # Return the usage message for this runner.
