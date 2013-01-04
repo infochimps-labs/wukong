@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Wukong::Processor do
+describe "Processors" do
 
   let(:hsh) { { "hi" => "there", "top" => { "lower" => { "lowest" => "value" } } } }
   let(:ary) { ['1', 2, 'three'] }
@@ -12,8 +12,8 @@ describe Wukong::Processor do
       log = mock("logger")
       log.should_receive(:info).with('hi there')
       log.should_receive(:info).with('buddy')
-      processor(:logger) do
-        stub!(:log).and_return(log)
+      processor(:logger) do |proc|
+        proc.stub!(:log).and_return(log)
       end.given('hi there', 'buddy').should emit(0).records
     end
 
@@ -21,8 +21,8 @@ describe Wukong::Processor do
       log = mock("logger")
       log.should_receive(:debug).with('hi there')
       log.should_receive(:debug).with('buddy')
-      processor(:logger, level: :debug) do
-        stub!(:log).and_return(log)
+      processor(:logger, level: :debug) do |proc|
+        proc.stub!(:log).and_return(log)
       end.given('hi there', 'buddy').should emit(0).records
     end
   end

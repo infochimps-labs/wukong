@@ -1,6 +1,10 @@
 module Wukong
   module DriverMethods
 
+    attr_accessor :dataflow
+    
+    attr_accessor :settings
+
     def driver
       @driver ||= Driver.new(dataflow)
     end

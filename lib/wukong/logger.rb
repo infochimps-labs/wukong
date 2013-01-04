@@ -1,10 +1,19 @@
-module Wukong  
+module Wukong
+
   class LogFactory
 
     attr_reader :created_log
 
-    def self.defaults
-      Log4r::StderrOutputter.new('console', formatter: Log4r::PatternFormatter.new(pattern: "%l %d [%-20c] -- %m"))
+    def self.default_outputter klass
+      Log4r::StderrOutputter.new('console', formatter: default_formatter(klass))
+    end
+
+    def self.default_formatter klass
+      Log4r::PatternFormatter.new(pattern: default_pattern(klass))
+    end
+
+    def self.default_pattern klass
+      "%l %d [%-20c] -- %m"
     end
 
     def self.configure(klass, options = {})
@@ -14,7 +23,7 @@ module Wukong
 
     def initialize(logger, config)
       @created_log = logger.is_a?(Log4r::Logger) ? logger : Log4r::Logger.new(logger.to_s)
-      outputter(LogFactory.defaults) unless ancestry_has_outputter?(@created_log)
+      outputter(LogFactory.default_outputter(logger)) unless ancestry_has_outputter?(@created_log)
       apply_options(config)
     end
 
@@ -33,7 +42,7 @@ module Wukong
         begin
           send(option, value)
         rescue
-          raise "invalid log option"
+          raise Error.new("Error setting option <#{option}> to value <#{value}>")
         end
       end
     end
@@ -51,7 +60,7 @@ module Wukong
         debug: Log4r::DEBUG,
         info:  Log4r::INFO,
         warn:  Log4r::WARN
-      }.fetch(lvl){ raise "invalid log level" }
+      }.fetch(lvl){ raise Error.new("Invalid log level: <#{lvl}>") }
     end
 
     def pattern ptrn

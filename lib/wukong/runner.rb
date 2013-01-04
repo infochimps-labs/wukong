@@ -1,144 +1,142 @@
+require_relative("runner/code_loader")
+require_relative("runner/deploy_pack_loader")
+require_relative("runner/boot_sequence")
+
 module Wukong
-  module CommandlineRunner
-            
-    def exit_with_status(status, options = {})
-      warn options[:msg] if options[:msg]
-      @env.dump_help     if options[:show_help]
-      exit(status)
-    end    
 
-    def env= settings
-      @env = settings
-    end
+  # A base class which handles
+  #
+  # * requiring any necessary code like deploy packs or code from command-line arguments
+  # * having all plugins configure settings as necessary
+  # * resolving settings
+  # * having all plugins boot from now resolved settings
+  # * parsing command-line arguments
+  # * instantiating and handing over control to a driver which runs the actual code
+  class Runner
+    
+    include Logging
+    include CodeLoader
+    include DeployPackLoader
+    include BootSequence
 
-    def self.included(base)
-      base.extend(ClassMethods)
+    # The settings object that will be configured and booted from.
+    # All plugins will configure this object.
+    attr_accessor :settings
+
+    # Create a new Runner with the given +settings+.
+    #
+    # Uses an empty Configliere::Param object if no +settings+ are
+    # given.
+    #
+    # @param [Configliere::Param] settings
+    def initialize settings=Configliere::Param.new
+      self.settings = settings
     end
     
-    module ClassMethods
-      
-      def usage(usg = nil)
-        return @usage if usg.nil?
-        @usage = usg
+    # Instantiates a new Runner and boot it up.
+    #
+    # Will rescue any Wukong::Error with a logged error message and
+    # exit.
+    def self.run(settings=Configliere::Param.new)
+      begin
+        new(settings).boot!
+      rescue Wukong::Error => e
+        die(e.message, 127)
       end
-
-      def desc(dsc = nil)
-        return @description if dsc.nil?
-        @decription = desc
-      end
-
-      def add_param(*args)
-        defined_params << args
-      end
-      
-      def defined_params
-        @defined_params ||= []
-      end
-
-      def base_config(conf = nil)
-        return @base_configuration if conf.nil?
-        @base_configuration = conf
-      end
-
-      def decorate_environment! env
-        usg = self.usage
-        env.define_singleton_method(:usage){ usg }
-        env.description = self.desc
-        defined_params.each{ |params| env.send(:define, *params) }
-      end
-
-      def in_deploy_pack?
-        return @in_deploy_pack unless @in_deploy_pack.nil?
-        @in_deploy_pack = (find_deploy_pack_dir != '/')
-      end
-
-      def find_deploy_pack_dir
-        return @deploy_pack_dir if @deploy_pack_dir
-        wd     = Dir.pwd
-        parent = File.dirname(wd)
-        until wd == parent
-          return wd if File.exist?(File.join(wd, 'Gemfile')) && File.exist?(File.join(wd, 'config', 'environment.rb'))
-          wd     = parent
-          parent = File.dirname(wd)
-        end
-        @deploy_pack_dir = wd
-      end
-
-      def run!(*run_params)
-        settings   = base_configuration || Configliere::Param.use(:commandline)
-        boot_environment(settings) if in_deploy_pack?
-        runner     = new(*run_params)
-        runner.env = settings.resolve!
-        runner.run(*settings.rest)
-      end
-      
-    end    
-  end
-  
-  class LocalRunner
-    include CommandlineRunner
-    base_configuration
-
-    usage 'usage: wu-local PROCESSOR|FLOW [ --param=value | -p value | --param | -p]'
-    desc  <<EOF
- wu-local is a tool for running Wukong processors and flows locally on
- the command-line.  Use wu-local by passing it a processor and feeding
- in some data:
-
-   $ echo 'UNIX is Clever and Fun...' | wu-local tokenizer.rb
-   UNIX
-   is
-   Clever
-   and
-   Fun
-
- If your processors have named fields you can pass them in as
- arguments:
-
-   $ echo 'UNIX is clever and fun...' | wu-local tokenizer.rb --min_length=4
-   UNIX
-   Clever
-
- You can chain processors and calls to wu-local together:
-
-   $ echo 'UNIX is clever and fun...' | wu-local tokenizer.rb --min_length=4 | wu-local downcaser.rb
-   unix
-   clever
-
- Which is a good way to develop a combined data flow which you can
- again test locally:
-
-   $ echo 'UNIX is clever and fun...' | wu-local tokenize_and_downcase_big_words.rb
-   unix
-   clever
-EOF
-    
-    add_param :run,        description: "Name of the processor or dataflow to use. Defaults to basename of the given path.", flag: 'r'
-    add_param :tcp_server, description: "Run locally as a server using provided TCP port", default: false,                   flag: 't'
-
-    def run *args
-      arg = args.first
-      case
-      when arg.nil?
-        exit_with_status(1, show_help: true, msg: "Must pass a processor name or path to a processor file. Got <#{arg}>")
-      when Wukong.registry.registered?(arg.to_sym)
-        processor = arg.to_sym
-      when File.exist?(arg)
-        load arg
-        processor = @env.run || File.basename(arg, '.rb')
-      else
-        exit_with_status(2, show_help: true, msg: "Must pass a processor name or path to a processor file. Got <#{arg}>")
-      end     
-      run_em_server(processor, @env)
-    end
-    
-    def run_em_server(processor, env)
-      EM.run do 
-        env.tcp_server ? Wu::TCPServer.start(processor, env) : Wu::StdioServer.start(processor, env)
-      end
-    rescue Wu::Error => e
-      exit_with_status(3, msg: e.backtrace.join("\n"))
     end
 
-  end
+    # The parsed command-line arguments.
+    #
+    # Will raise an error if +boot+ hasn't been called yet.
+    #
+    # @return [Array<String>]
+    def args
+      settings.rest
+    end
+
+    # The root directory we should consider ourselves to be running
+    # in.
+    #
+    # Defaults to the root directory of a deploy pack if we're running
+    # inside one, else just returns `Dir.pwd`.
+    #
+    # @return [String]
+    def root
+      in_deploy_pack? ? deploy_pack_dir : Dir.pwd
+    end
+
+    # Convenience method for setting the usage message of a Runner.
+    #
+    # @param [String, nil] msg set the usage message
+    # @return [String] the usage message
+    def self.usage msg=nil
+      return @usage unless msg
+      @usage = msg
+    end
+    
+    # Convenience method for setting the description message of a Runner.
+    #
+    # @param [String, nil] msg set the description message
+    # @return [String] the description message
+    def self.description msg=nil
+      return @description unless msg
+      @description = msg
+    end
+
+    # Kill this process with the given error `message` and exit
+    # `code`.
+    #
+    # @param [String] message
+    # @param [Integer] code.
+    def self.die(message=nil, code=127)
+      log.error(message) if message
+      exit(code)
+    end
+
+    # Return the name of the program this Runner is running.
+    #
+    # This is passed to plugins which can configure settings
+    # appropriately.  Defaults to the name of the currently running
+    # process.
+    #
+    # @return [String]
+    def program_name
+      @program_name || File.basename($0)
+    end
+
+    # Explicitly set the name of the program this Runner is running.
+    #
+    # This is useful for unit tests in which the name of the currently
+    # running process may be different from the runner command being
+    # tested (`rspec` vs. `wu-local`).
+    #
+    # @param [String] name
+    def program_name= name
+      @program_name = name
+    end
+
+    # Return the usage message for this runner.
+    #
+    # @return [String] the usage message
+    def usage
+      ["usage: #{program_name} [ --param=val | --param | -p val | -p ]", self.class.usage].compact.join(' ')
+    end
+
+    # Return the description text for this runner.
+    #
+    # @return [String] the description text
+    def description
+      self.class.description
+    end
+
+    # Is there a processor registered by the given `name`?
+    #
+    # @param [String] name
+    # @return [true, false]
+    def registered? name
+      return false unless name
+      Wukong.registry.registered?(name.to_sym)
+    end
+
+  end    
 end
