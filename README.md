@@ -504,9 +504,12 @@ module Cat
   # check the `program` name to decide whether to apply your settings.
   # This helps you not pollute other commands with your stuff.
   def self.configure settings, program
-	if program == 'wu-cat'
+	case program
+	when 'wu-cat'
 	  settings.define(:input,  :description => "The input file to use")
 	  settings.define(:number, :description => "Prepend each input record with a consecutive number", :type => :boolean)
+	else
+	  # configure other programs if you need to
 	end
   end
 
@@ -525,14 +528,14 @@ end
 If your plugin doesn't interact directly with the command-line
 (through a wu-tool like `wu-local` or `wu-hadoop`) and doesn't
 directly interface with passing records to processors then you can
-just require the rest of your plugin's code and stop.
+just require the rest of your plugin's code at this point and be done.
 
 ### Write a Runner to interact with the command-line
 
-A Runner is a class which interacts with the command-line.  It's used
-to implement Wukong programs like `wu-local` or `wu-hadoop`.  Here's
-what the actual program file would look like for our example plugin's
-`wu-cat` program.
+If you need to implement a new command line tool then you should write
+a Runner.  A Runner is used to implement Wukong programs like
+`wu-local` or `wu-hadoop`. Here's what the actual program file would
+look like for our example plugin's `wu-cat` program.
 
 ```ruby
 #!/usr/bin/env ruby
@@ -552,6 +555,7 @@ module Cat
   class Runner < Wukong::Runner
 
     usage "PROCESSOR|FLOW"
+	
 	description <<-EOF
 	
 	wu-cat lets you run a Wukong processor or dataflow on the
@@ -577,33 +581,27 @@ module Cat
 	3	FRIEND
     EOF
 
-    # The processor we're going to use.
-    attr_accessor :processor
+    # The name of the processor we're going to run.  The #args method
+    # is provided by the Runner class.
+	def processor_name
+	  args.first
+	end
 
-    # Evaluates the (parsed) command-line args to find the processor name.
-    def evaluate_args
-	  self.processor = (args.first or raise Wukong::Error.new("Must provide a processor as the first argument"))
+    # Validate that we were given the name of a registered processor
+	# to run.  Be careful to return true here or validation will fail.
+    def validate
+      raise Wukong::Error.new("Must provide a processor as the first argument") unless processor_name
+	  true
 	end
 
     # Delgates to a driver class to run the processor.
     def run
-	  Driver.new(processor, settings).start
+	  Driver.new(processor_name, settings).start
 	end
 	
   end
 end
 ```
-
-The Cat::Runner subclasses Wukong::Runner and only has to define the
-following methods:
-
-* `Cat::Runner#evaluate_args` which can evaluate the (already initialized) `args` Array and do argument checking, further initialization, and so on.
-* `Cat::Runner#run` which actually does the work
-
-Code in the file `upcaser.rb`, one of the elements of
-`Cat::Runner#args`, will automatically be loaded before
-`Cat::Runner#evaluate_args` is called.  You can customize this
-behavior with by overriding `Cat::Runner#args_to_load`.
 
 ### Write a Driver to interact with processors
 

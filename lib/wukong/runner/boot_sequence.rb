@@ -1,23 +1,21 @@
 module Wukong
   class Runner
 
-    # The lifecycle of a Runner consists of the following phases,
-    # executed in sequence:
+    # The boot sequence of a runner consists of the following phases,
+    # each corresponding to a method provided by this module.
     #
-    # * #load -- loads all code needed for operation
-    # * #configure -- configures settings from core Wukong and all plugins
+    # * #load -- loads all application code
+    # * #configure -- configures settings from core Wukong, any loaded plugins, and any application code
     # * #resolve -- resolves settings
-    # * #setup -- boots core Wukong and all plugins
+    # * #setup -- boots core Wukong and all loaded plugins
     # * #validate -- validates command-line args
     # * #run -- starts the runner running
     #
-    # This module implements methods which define each of these
-    # phases.  Each method can be separately overriden, allowing for a
-    # lot of customizability.
-    module Lifecycle
+    # Each method can be separately overriden, allowing for a lot of
+    # customizability for different kinds of runners.
+    module BootSequence
       
-      # Perform the lifecycle of this Runner, calling in order:,
-      # consisting of the
+      # Boot this Runner, calling in order:
       #
       # * #load
       # * #configure
@@ -25,12 +23,19 @@ module Wukong
       # * #setup
       # * #validate
       # * #run or #die
-      def perform_lifecycle(s=nil)
+      #
+      # If `override_settings` is passed then merge it over the
+      # Runner's usual settings (this is useful for unit tests where
+      # settings are injected in ways different from the usual
+      # workflow).
+      #
+      # @param [Configliere::Param] override_settings
+      def boot!(override_settings=nil)
         load
         configure
         if resolve
           setup
-          settings.merge!(s) if s
+          settings.merge!(override_settings) if override_settings
           validate ? run : die("Invalid arguments")
         end
       end
@@ -78,10 +83,11 @@ module Wukong
         Wukong.boot_plugins(settings, root)
       end
 
-      # Validates the command-line args.  Raise a Wukong::Error in this
-      # method to terminate execution.
+      # Validates the command-line args.  Raise a Wukong::Error in
+      # this method to terminate execution with a specific or custom
+      # error.
       #
-      # Return false-like to prevent the runner from running.
+      # Return false-like to terminate with a generic argument error.
       #
       # @return [true, false]
       def validate

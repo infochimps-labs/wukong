@@ -32,7 +32,7 @@ describe Wukong::Local::LocalRunner do
     end
 
     it "TCPDriver when given a --port argument" do
-      local_runner('identity','--port=6000').driver.should == Wukong::Local::TCPDriver
+      local_runner('identity','--tcp_port=6000').driver.should == Wukong::Local::TCPDriver
     end
     
   end
