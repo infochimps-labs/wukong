@@ -1,10 +1,6 @@
 require 'wukong'
-require 'wukong/boot'
-require_relative('spec_helpers/processor_helpers')
-require_relative('spec_helpers/processor_methods')
-require_relative('spec_helpers/spec_driver_matchers')
-require_relative('spec_helpers/integration_driver')
-require_relative('spec_helpers/integration_driver_matchers')
+require_relative('spec_helpers/unit_tests')
+require_relative('spec_helpers/integration_tests')
 require_relative('spec_helpers/shared_examples')
 
 module Wukong
@@ -71,12 +67,8 @@ module Wukong
   #     processor(:similar_tokenizer, :json => true).given("hi there").should emit(2).records
   #   end
   module SpecHelpers
-    include ProcessorHelpers
-    include SpecMatchers
-    include IntegrationRunner
-    include IntegrationMatchers
+    include UnitTests
+    include IntegrationTests
   end
-
-  Processor.class_eval { include SpecHelpers::ProcessorSpecMethods }
 end
 

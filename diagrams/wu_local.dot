@@ -1,0 +1,39 @@
+digraph WuLocalControlFlow {
+	size ="100,100";
+	stdin [label=<
+	       <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+	       <TR><TD><FONT FACE="BOLD" POINT-SIZE="20">STDIN</FONT></TD></TR>
+	       <TR><TD><FONT POINT-SIZE="10">The line of input text</FONT></TD></TR>
+	       <TR><TD><FONT FACE="MONOSPACE">Shall I compare thee to a summers day?<BR/>Thou art more lovely and more temperate<BR/>...</FONT></TD></TR>
+	       
+	       </TABLE>>];
+	command [shape=diamond,label=<
+		 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+		 <TR><TD><FONT FACE="BOLD" POINT-SIZE="20">Command</FONT></TD></TR>
+		 <TR><TD><FONT POINT-SIZE="10">A UNIX process launched on the command line</FONT></TD></TR>
+		 <TR><TD><FONT FACE="MONOSPACE">wu-local word_counter</FONT></TD></TR>
+		 </TABLE>>];
+	runner [shape=box,label=<
+		<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+		<TR><TD><FONT FACE="BOLD" POINT-SIZE="20">Runner</FONT></TD></TR>
+		<TR><TD><FONT POINT-SIZE="10">Loads plugins and code, configures and resolves settings, boots plugins, validates command line, then runs.</FONT></TD></TR>
+		<TR><TD><FONT FACE="MONOSPACE">Wukong::Local::LocalRunner</FONT></TD></TR>
+		</TABLE>>];
+	driver [shape=box,label=<
+		<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+		<TR><TD><FONT FACE="BOLD" POINT-SIZE="20">Driver</FONT></TD></TR>
+		<TR><TD><FONT POINT-SIZE="10">Passes input to processor, handles output</FONT></TD></TR>
+		<TR><TD><FONT FACE="MONOSPACE">Wukong::Local::StdioDriver</FONT></TD></TR>
+		</TABLE>>];
+	stdout [label=<
+		<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+		<TR><TD><FONT FACE="BOLD" POINT-SIZE="20">STDOUT</FONT></TD></TR>
+		<TR><TD><FONT POINT-SIZE="10">The resulting output lines</FONT></TD></TR>
+		<TR><TD><FONT FACE="MONOSPACE">8<BR/>7<BR/>...</FONT></TD></TR>
+		</TABLE>>];
+
+		command -> runner [label="Implemented By"];
+		runner -> driver [label="Instantiates"];
+		stdin -> driver [label="Reads 1 Line"];
+		driver -> stdout [label="Writes N Lines"];
+	}

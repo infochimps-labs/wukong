@@ -1,7 +1,7 @@
 module Wukong
   class Processor
 
-    SerializerError = Class.new(StandardError)
+    SerializerError = Class.new(Error)
 
     class Serializer < Processor
       field :on_error, String, default: 'log'

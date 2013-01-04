@@ -350,10 +350,10 @@ describe :tokenizer do
     processor.given("Hi there.\nMy name is Wukong!").should emit(6).records
   end
   it "eliminates all punctuation" do
-    processor.given("Never!").output.first.should_not include(',')
+    processor(:tokenizer).given("Never!").should emit('Never')
   end
-  it "downcases all input text" do
-    processor.given("Whatever").output.first.should match(/^w/)
+  it "will not emit tokens in a stop list" do
+    processor(:tokenizer, :stop_list => ['apples', 'bananas']).given("I like apples and bananas").should emit('I', 'like', 'and')
   end
 end
 ```
@@ -364,8 +364,13 @@ Let's look at each kind of helper:
   `it_behaves_like` helper) adds some tests that ensure that the
   processor conforms to the API of a Wukong::Processor.
 
-* The `processor` method instantiates a processor very similarly to
-  the way `wu-local` instantiates one on the command-line.  It accepts
+* The `processor` method is actually an alias for the more aptly named
+  (but less convenient) `unit_test_runner`.  This method accepts a
+  processor name and options (just like `wu-local` and other
+  command-line tools) and returns a Wukong::UnitTestRunner instance.
+  This runner handles the
+
+
   a (registered) processor name and options and creates a new
   processor.  If no name is given, the argument of the enclosing
   `describe` or `context` block is used.  The object returned by
@@ -386,17 +391,27 @@ Let's look at each kind of helper:
   complicated example:
 
 The same helpers can be used to test dataflows as well as
-processors. For complete details, see documentation for the
-Wukong::SpecHelpers module.
+processors.
+
+#### 
+
+#### Functions vs. Objects
+
+The above test helpers are designed to aid in testing processors
+functionally because:
+
+* they accept the 
 
 ### Integration Tests
 
-Sometimes unit tests aren't enough and you need to test your
-processors or flows as they will be run in production using
-`wu-local`.
+If you are implementing a new Wukong command (akin to `wu-local`) then
+you may also want to run integration tests.  Wukong comes with helpers
+for these, too.
 
-For these use cases, Wukong provides some integration helpers that
-make testing command line processes easier.
+You should almost always be able to test your processors without
+integration tests.  Your unit tests and the Wukong framework itself
+should ensure that your processors work correctly no matter what
+environment they are deployed in.
 
 ```ruby
 # spec/integration/tokenizer_spec.rb
@@ -415,7 +430,7 @@ context "interpreting its arguments" do
   end
   context "with a malformed --match argument" do
     # invalid b/c the regexp is broken...
-    subject { command("wu-local tokenizer --match='^[h'") < "hi there" }
+    subject { command("wu-local tokenizer --match='^(h'") < "hi there" }
 	it      { should exit_with(:non_zero)   }
 	it      { should have_stderr(/invalid/) }
   end
@@ -457,3 +472,193 @@ Let's go through the helpers:
 * The `have_stdout` and `have_stderr` matchers let you test the STDOUT or STDERR of the command for particular strings or regular expressions.
 
 * The `exit_with` matcher lets you test the exit code of the command.  You can pass the symbol `:non_zero` to set the expectation of _any_ non-zero exit code.
+
+## Plugins
+
+Wukong has a built-in plugin framework to make it easy to adapt Wukong
+processors to new backends or add other functionality.  The
+`Wukong::Local` module and the `wu-local` program it supports is
+itself a Wukong plugin.
+
+The following shows how you might build a simplified version of
+`Wukong::Local` as a new plugin.  We'll call this plugin `Cat` as it
+will implement a program `wu-cat` that is similar in function to
+`wu-local` (just simplified).
+
+The first thing to do is include the `Wukong::Plugin` module in your
+code:
+
+
+```Ruby
+# in lib/cat.rb
+#
+# This Wukong plugin works like wu-local but replicates some silly
+# features of cat like numbered lines.
+module Cat
+
+  # This registers Cat as a Wukong plugin.
+  include Wukong::Plugin
+
+  # Defines any settings specific to Cat.  Cat doesn't need to, but
+  # you can define global settings here if you want.  You can also
+  # check the `program` name to decide whether to apply your settings.
+  # This helps you not pollute other commands with your stuff.
+  def self.configure settings, program
+	case program
+	when 'wu-cat'
+	  settings.define(:input,  :description => "The input file to use")
+	  settings.define(:number, :description => "Prepend each input record with a consecutive number", :type => :boolean)
+	else
+	  # configure other programs if you need to
+	end
+  end
+
+  # Lets Cat boot up with settings that have already been resolved
+  # from the command-line or other sources like config files or remote
+  # servers added by other plugins.
+  #
+  # The `root` directory in which the program is executing is also
+  # provided.
+  def self.boot settings, root
+    puts "Cat booting up using resolved settings within directory #{root}"
+  end
+end
+```
+
+If your plugin doesn't interact directly with the command-line
+(through a wu-tool like `wu-local` or `wu-hadoop`) and doesn't
+directly interface with passing records to processors then you can
+just require the rest of your plugin's code at this point and be done.
+
+### Write a Runner to interact with the command-line
+
+If you need to implement a new command line tool then you should write
+a Runner.  A Runner is used to implement Wukong programs like
+`wu-local` or `wu-hadoop`. Here's what the actual program file would
+look like for our example plugin's `wu-cat` program.
+
+```ruby
+#!/usr/bin/env ruby
+# in bin/wu-cat
+require 'cat'
+Cat::Runner.run
+```
+
+The Cat::Runner class is implemented separately.
+
+```ruby
+# in lib/cat/runner.rb
+require_relative('driver')
+module Cat
+
+  # Implements the `wu-cat` command.
+  class Runner < Wukong::Runner
+
+    usage "PROCESSOR|FLOW"
+	
+	description <<-EOF
+	
+	wu-cat lets you run a Wukong processor or dataflow on the
+	command-line.  Try it like this.
+
+    $ wu-cat --input=data.txt
+	hello
+	my
+	friend
+
+    Connect the output to a processor in upcaser.rb
+	
+    $ wu-cat --input=data.txt upcaser.rb
+	HELLO
+	MY
+	FRIEND
+
+    You can also include add line numbers to the output.
+
+    $ wu-cat --number --input=data.txt upcaser.rb
+	1	HELLO
+	2	MY
+	3	FRIEND
+    EOF
+
+    # The name of the processor we're going to run.  The #args method
+    # is provided by the Runner class.
+	def processor_name
+	  args.first
+	end
+
+    # Validate that we were given the name of a registered processor
+	# to run.  Be careful to return true here or validation will fail.
+    def validate
+      raise Wukong::Error.new("Must provide a processor as the first argument") unless processor_name
+	  true
+	end
+
+    # Delgates to a driver class to run the processor.
+    def run
+	  Driver.new(processor_name, settings).start
+	end
+	
+  end
+end
+```
+
+### Write a Driver to interact with processors
+
+The `Cat::Runner#run` method delegates to the `Cat::Driver` class to
+handle instantiating and interacting with processors.
+
+```ruby
+# in lib/cat/driver.rb
+module Cat
+
+  # A class for driving a processor from `wu-cat`.
+  class Driver
+
+    # Lets us count the records.
+    attr_accessor :number
+
+    # Gives methods to construct and interact with dataflows.
+    include Wukong::DriverMethods
+
+    # Create a new Driver for a dataflow with the given `label` using
+    # the given `settings`.
+    #
+    # @param [String] label the name of the dataflow
+    # @param [Configliere::Param] settings the settings to use when creating the dataflow
+    def initialize label, settings
+      self.settings = settings
+      self.dataflow = construct_dataflow(label, settings)
+      self.number   = 1
+    end
+
+    # The file handle of the input file.
+    #
+    # @return [File]
+    def input_file
+      @input_file ||= File.new(settings[:input])
+    end
+
+    # Starts feeding records to the processor
+    def start
+      while line = input_file.readline rescue nil
+        driver.send_through_dataflow(line)
+      end
+    end
+
+    # Process each record that comes back from the dataflow.
+	#
+	# @param [Object] record the yielded record
+    def process record
+      if settings[:number]
+        puts [number, record].map(&:to_s).join("\t")
+      else
+        puts record.to_s
+      end
+	  self.number += 1
+    end
+
+  end
+end
+```
+

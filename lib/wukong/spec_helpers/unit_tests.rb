@@ -1,6 +1,24 @@
+require_relative('unit_tests/unit_test_driver')
+require_relative('unit_tests/unit_test_runner')
+require_relative('unit_tests/unit_test_matchers')
+
 module Wukong
   module SpecHelpers
-    module ProcessorHelpers
+
+    module UnitTests
+
+      # Create a Runner class and take it through its lifecycle.
+      def runner klass, program_name, *args, &block
+        settings = args.extract_options!
+        
+        ARGV.replace(args.map(&:to_s))
+
+        klass.new.tap do |the_runner|
+          the_runner.program_name = program_name
+          the_runner.instance_eval(&block) if block_given?
+          the_runner.boot!(settings)
+        end
+      end
 
       # Creates a new processor in a variety of convenient ways.
       #
@@ -48,44 +66,40 @@ module Wukong
       # You can even name the processor directly if you want to:
       #
       #   context "tokenizers" do
-      #     let(:default_tokenizer) { processor(:tokenizer)                          }
-      #     let(:complex_tokenizer) { processor(:complex_tokenizer, stemming: true)  }
-      #     let(:french_tokenizer)  { processor(:complex_tokenizer, stemming: true)  }
+      #     let(:default_tokenizer) { processor(:tokenizer)                                          }
+      #     let(:complex_tokenizer) { processor(:complex_tokenizer, stemming: true)                  }
+      #     let(:french_tokenizer)  { processor(:complex_tokenizer, stemming: true, language: 'fr')  }
       #     ...
       #   end
-      def processor *args, &block
-        options = args.extract_options!
-        name    = args.first || self.class.description
-        create_processor(name, options, &block)
+      def unit_test_runner *args
+        settings = args.extract_options!
+        name     = (args.first || self.class.description)
+        runner   = UnitTestRunner.new(name, settings)
+        yield runner.driver.processor if block_given?
+        runner.driver
       end
-      alias_method :flow, :processor
+      alias_method :processor, :unit_test_runner
 
-      # Is the given +klass+ a Wukong::Processor?
-      #
-      # @param [Class] klass
-      # @return [true, false]
-      def processor? klass
-        klass.build.is_a?(Processor)
+      def emit *expected
+        UnitTestMatcher.new(*expected)
       end
 
-      # :nodoc:
-      def create_processor name_or_klass, options={}, &block
-        if name_or_klass.is_a?(Class)
-          klass = name_or_klass
-        else
-          klass = Wukong.registry.retrieve(name_or_klass.to_s.to_sym)
-          raise Error.new("Could not find a Wukong::Processor class named '#{name_or_klass}'") if klass.nil?
-        end
-        raise Error.new("#{klass} is not a subclass of Wukong::Processor") unless processor?(klass)
-        settings = Configliere::Param.new
-        settings.use(:commandline)
-        ARGV.replace([])
-        Wukong.boot!(settings)
-        proc = klass.build(settings.merge(options))
-        proc.setup
-        proc.instance_eval(&block) if block_given?
-        proc
+      def emit_json *expected
+        JsonMatcher.new(*expected)
+      end
+
+      def emit_delimited delimiter, *expected
+        DelimiterMatcher.new(delimiter, *expected)
+      end
+
+      def emit_tsv *expected
+        TsvMatcher.new(*expected)
+      end
+
+      def emit_csv *expected
+        CsvMatcher.new(*expected)
       end
     end
+    
   end
 end
