@@ -49,8 +49,8 @@ Wukong.processor(:string_reverser) do
 end
 ```
 
-When you're developing your application, run your processors on the
-command line on flat input files using `wu-local`:
+You can run this processor on the command line using text files as
+input using the `wu-local` tool that comes with Wukong:
 
 ```
 $ cat novel.txt
@@ -61,7 +61,10 @@ $ cat novel.txt | wu-local string_reverser.rb
 .semit fo tsrow eht saw ti ,semit fo tseb eht saw tI
 ```
 
-You can use yield as often (or never) as you need.
+The `wu-local` program consumes one line at at time from STDIN and
+calls your processor's `process` method with that line as a Ruby
+String object.  Each object you `yield` within your process method
+will be printed back out on STDOUT.
 
 ### Multiple Processors, Multiple (Or No) Yields
 
@@ -134,14 +137,14 @@ It uses two *fields*, the mean or average of a distribution (`mean`)
 and its standard deviation (`std_dev`).  From this information, it
 will measure the percentile of all input values.
 
-```
+```ruby
 # in percentile.rb
 Wukong.processor(:percentile) do
 
   SQRT_1_HALF = Math.sqrt(0.5)
 
-  field :mean,    Float, :default => 0.0, :doc => "The mean of the assumed model"
-  field :std_dev, Float, :default => 1.0, :doc => "The standard deviation of the assumed model"
+  field :mean,    Float, :default => 0.0
+  field :std_dev, Float, :default => 1.0
 
   def process value
     observation = value.to_f
@@ -184,14 +187,14 @@ called:
 
 The above examples have already focused on the `process` method.
 
-The `setup` and `stop` methods are usually used together to handle
+The `setup` and `stop` methods are often used together to handle
 external connections
 
-```
-# in geoloactor.rb
+```ruby
+# in geolocator.rb
 Wukong.processor(:geolocator) do
 
-  field :host, String, :default => 'localhost', :doc => "Host for my database"
+  field :host, String, :default => 'localhost'
   
   attr_accessor :connection
 
@@ -218,7 +221,7 @@ within your own code.
 Here's an example of using the `finalize` method to implement a simple
 counter that counts all the input records:
 
-```
+```ruby
 # in counter.rb
 Wukong.processor(:counter) do
   attr_accessor :count
@@ -263,7 +266,7 @@ their `log` attribute.  This logger has the following priorities:
 
 and here's a processor which uses them all
 
-```
+```ruby
 # in logs.rb
 Wukong.processor(:logs) do
   def process line
@@ -316,20 +319,71 @@ Params:
    -t, --tcp_port=Integer       Consume TCP requests on the given port instead of lines over STDIN
 ```
 
-If you ask for --help but you've already passed the name of a
-processor then Wukong will generate a custom help message using the
-processor's description text and any defined fields:
+You can generate custom help messages for your own processors.  Here's
+the percentile processor from before but made more usable with good
+documentation:
+
+```ruby
+# in percentile.rb
+Wukong.processor(:percentile) do
+
+  description <<-EOF.gsub(/^ {2}/,'')
+  This processor calculates percentiles from input scores based on a
+  given mean score and a given standard deviation for the scores.
+
+  The mean and standard deviation are given at run time and processed
+  scores will be compared against the given mean and standard
+  deviation.
+
+  The input is expected to consist of float values, one per line.
+
+  Example:
+
+    $ cat input.dat
+    88
+    89
+    77
+    ...
+
+    $ cat input.dat | wu-local percentile.rb --mean=85 --std_dev=7
+    88.0	66.58824291023753
+    89.0	71.61454169013237
+    77.0	12.654895447355777
+  EOF
+	
+  SQRT_1_HALF = Math.sqrt(0.5)
+
+  field :mean,    Float, :default => 0.0, :doc => "The mean of the assumed distribution"
+  field :std_dev, Float, :default => 1.0, :doc => "The standard deviation of the assumed distribution"
+
+  def process value
+    observation = value.to_f
+    z_score     = (mean - observation) / std_dev
+    percentile  = 50 * Math.erfc(z_score * SQRT_1_HALF)
+    yield [observation, percentile].join("\t")
+  end
+end
+```
+
+If you call `wu-local` with the file to this processor as an argument
+in addition to the original `--help` argument, you'll get custom
+documentation.
 
 ```
-$ wu-local processors.rb --run=starts_with --help
+$ wu-local percentile.rb --help
 usage: wu-local [ --param=val | --param | -p val | -p ] PROCESSOR|FLOW
 
-A processor which matches any input that starts with the given letter.
+This processor calculates percentiles from input scores based on a
+given mean score and a given standard deviation for the scores.
+...
+
 
 Params:
-       --letter=String          letter [Default: a]
+       --mean=Float             The mean of the assumed distribution [Default: 0.0]
    -r, --run=String             Name of the processor or dataflow to use. Defaults to basename of the given path.
+       --std_dev=Float          The standard deviation of the assumed distribution [Default: 1.0]
    -t, --tcp_port=Integer       Consume TCP requests on the given port instead of lines over STDIN
+
 ```
 
 <a name="flows"></a>
