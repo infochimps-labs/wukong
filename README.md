@@ -19,6 +19,8 @@ Here is a list of various other projects which you may also want to
 peruse when trying to understand the full Wukong experience:
 
 * <a href="http://github.com/infochimps-labs/wukong-hadoop">wukong-hadoop</a>: Run Wukong processors as mappers and reducers within the Hadoop framework.  Model Hadoop jobs locally before you run them.
+* <a href="http://github.com/infochimps-labs/wukong-storm>wukong-storm</a>: Run Wukong processors within the Storm framework.  Model flows locally before you run them.
+* <a href="http://github.com/infochimps-labs/wukong-load>wukong-load</a>: Load the output data from your local Wukong jobs and flows into a variety of different data stores.
 * <a href="http://github.com/infochimps-labs/wonderdog">wonderdog</a>: Connect Wukong processors running within Hadoop to Elasticsearch as either a source or sink for data.
 * <a href="http://github.com/infochimps-labs/wukong-deploy">wukong-deploy</a>: Orchestrate Wukong and other wu-tools together to support an application running on the Infochimps Platform.
 
@@ -36,7 +38,7 @@ processor is Ruby class which
 * subclasses `Wukong::Processor` (use the `Wukong.processor` method as sugar for this)
 * defines a `process` method which takes an input record, does something, and calls `yield` on the output
 
-Here's a processor that reverses all each input record:
+Here's a processor that reverses each of its input records:
 
 ```ruby
 # in string_reverser.rb
@@ -61,39 +63,41 @@ $ cat novel.txt | wu-local string_reverser.rb
 
 You can use yield as often (or never) as you need.
 
-### Multiple Processors in a Single File
+### Multiple Processors, Multiple (Or No) Yields
 
-Here's a more complicated example which uses more than one processor
-in a single Ruby file and allows processors to accept options.
+Processors are intended to be combined so they can be stored in the
+same file like these two, related processors:
 
 ```ruby
 # in processors.rb
 
-Wukong.processor(:tokenizer) do
+Wukong.processor(:splitter) do
   def process line
     line.split.each { |token| yield token }
   end
 end
   
-Wukong.processor(:starts_with) do
-
-  description "A processor which matches any input that starts with the given letter."
-
-  field :letter, String, :default => 'a'
-  
-  def process word
-    yield word if word =~ Regexp.new("^#{letter}", true)
+Wukong.processor(:normalizer) do
+  def process token
+    stripped = token.downcase.gsub(/\W/,'')
+	yield stripped if stripped.size > 0
   end
 end
 ```
 
-Let's start by running the `tokenizer`.  We've defined two processors
-in the file `processors.rb` and neither one is named `processors` so
-we have to tell `wu-local` the name of the processor we want to run
-explicitly.
+Notice how the `splitter` yields multiple tokens for each of its input
+tokens and that the `normalizer` may sometimes never yield at all,
+depending on its input.  Processors are under no obligations by the
+framework to yield or return anything so they can easily act as
+filters or even sinks in data flows.
+
+There are two processors in this file and neither shares a name with
+the basename of the file ("processors") so `wu-local` can't
+automatically choose a processor to run.  We can specify one
+explicitly with the `--run` option:
 
 ```
-$ cat novel.txt | wu-local processors.rb --run=tokenizer
+$ cat novel.txt | wu-local processors.rb --run=splitter
 It
 was
 the
@@ -103,29 +107,196 @@ times,
 ...
 ```
 
-### Adding Configurable Options
-
-Let's add the `starts_with` filter and also pass in the *field*
-`letter`, defined in that processor:
+We can combine the two processors together
 
 ```
-$ cat novel.txt | wu-local processors.rb --run=tokenizer | wu-local processors.rb --run=starts_with --letter=t
+$ cat novel.txt | wu-local processors.rb --run=splitter | wu-local processors.rb --run=normalizer
+it
+was
 the
-times
-the
+best
+of
 times
 ...
 ```
 
-Wanting to match on a regular expression is such a common task that
-Wukong has a built-in "widget" called `regexp` that you can use
-directly:
+but there's an easier way of doing this with <a href="#flows">dataflows</a>.
+
+### Adding Configurable Options
+
+Processors can have options that can be set in Ruby code, from the
+command-line, a configuration file, or a variety of other places
+thanks to [Configliere](http://github.com/infochimps-labs/configliere).
+
+This processor calculates percentiles from observations assuming a
+normal distribution given a particular mean and standard deviation.
+It uses two *fields*, the mean or average of a distribution (`mean`)
+and its standard deviation (`std_dev`).  From this information, it
+will measure the percentile of all input values.
 
 ```
-$ cat novel.txt | wu-local processors.rb --run=tokenizer | wu-local regexp --match='^t'
+# in percentile.rb
+Wukong.processor(:percentile) do
+
+  SQRT_1_HALF = Math.sqrt(0.5)
+
+  field :mean,    Float, :default => 0.0, :doc => "The mean of the assumed model"
+  field :std_dev, Float, :default => 1.0, :doc => "The standard deviation of the assumed model"
+
+  def process value
+    observation = value.to_f
+    z_score     = (mean - observation) / std_dev
+    percentile  = 50 * Math.erfc(z_score * SQRT_1_HALF)
+    yield [observation, percentile].join("\t")
+  end
+end
 ```
 
-There are many more simple <a href="#widgets">widgets</a> like these.
+These fields have default values but you can overide them on the
+command line.  If you scored a 95 on an exam where the mean score was
+80 points and the standard deviation of the scores was 10 points, for
+example, then you'd be in the 93rd percentile:
+
+```
+$ echo 95 | wu-local /tmp/percentile.rb --mean=80 --std_dev=10
+95.0	93.3192798731142
+```
+
+If the exam were more difficult, with a mean of 75 points and a
+standard deviation of 8 points, you'd be in the 99th percentile!
+
+```
+$ echo 95 | wu-local /tmp/percentile.rb --mean=75 --std_dev=8
+95.0	99.37903346742239
+```
+
+### The Lifecycle of a Processor
+
+Processors have a lifecycle that they execute when they are run within
+the context of a Wukong runner like `wu-local` or `wu-hadoop`.  Each
+lifecycle phase corresponds to a method of the processor that is
+called:
+
+* `setup` called *after* the Processor is initialized but *before* the first record is processed.  You cannot yield from this method.
+* `process` called once for each input record, may yield once, many, or no times.
+* `finalize` called after the the *last* record has been processed but while the processor still has an opportunity to yield records.
+* `stop` called to signal to the processor that all work should stop, open connections should be closed, &c.  You cannot yield from this method.
+
+The above examples have already focused on the `process` method.
+
+The `setup` and `stop` methods are usually used together to handle
+external connections
+
+```
+# in geoloactor.rb
+Wukong.processor(:geolocator) do
+
+  field :host, String, :default => 'localhost', :doc => "Host for my database"
+  
+  attr_accessor :connection
+
+  def setup
+    self.connection = Database::Connection.new(host)
+  end
+  
+  def process record
+    record.added_value = connection.find("...some query...")
+  end
+  
+  def stop
+    self.connection.close
+  end
+end
+```
+
+The `finalize` method is most useful when writing a "reduce"-type
+operation that involves storing or aggregating information till some
+criterion is met.  It will always be called after the last record has
+been given (to `process`) but you can call it whenever you want to
+within your own code.
+
+Here's an example of using the `finalize` method to implement a simple
+counter that counts all the input records:
+
+```
+# in counter.rb
+Wukong.processor(:counter) do
+  attr_accessor :count
+  def setup
+    self.count = 0
+  end
+  def process thing
+    self.count += 1
+  end
+  def finalize
+    yield count
+  end
+end
+```
+
+It hinges on the fact that the last input record will be passed to
+`process` *first* and only then will `finalize` be called.  This
+allows the last input record to be counted/processed/aggregated and
+then the entire aggregate to be dealt with in finalize.
+
+Because of this emphasis on building and processing aggregates, the
+`finalize` method is often useful within processors meant to run as
+reducers in a Hadoop environment.
+
+Note:: Finalize is not guaranteed to be called by in every possible
+environment as it depends on the chosen runner.  In a local or Hadoop
+environment, the notion of "last record" makes sense and so the
+corresponding runners will call `finalize`.  In an environment like
+Storm, where the concept of last record is not (supposed to be)
+meaningful, the corresponding runner doesn't ever call it.
+
+### Logging and Notifications
+
+Wukong comes with a logger that all processors have access to via
+their `log` attribute.  This logger has the following priorities:
+
+* debug (can be set as a log level)
+* info (can be set as a log level)
+* warn (can be set as a log level)
+* error
+* fatal
+
+and here's a processor which uses them all
+
+```
+# in logs.rb
+Wukong.processor(:logs) do
+  def process line
+    log.debug line
+    log.info  line
+    log.warn  line
+    log.error line
+    log.fatal line
+  end
+end
+```
+
+The default log level is DEBUG.  
+
+```
+$ echo something | wu-local logs.rb
+DEBUG 2013-01-11 23:40:56 [Logs                ] -- event
+INFO 2013-01-11 23:40:56 [Logs                ] -- event
+WARN 2013-01-11 23:40:56 [Logs                ] -- event
+ERROR 2013-01-11 23:40:56 [Logs                ] -- event
+FATAL 2013-01-11 23:40:56 [Logs                ] -- event
+```
+
+though you can set it to something else globally
+
+```
+$ echo something | wu-local logs.rb --log.level=warn
+WARN 2013-01-11 23:40:56 [Logs                ] -- event
+ERROR 2013-01-11 23:40:56 [Logs                ] -- event
+FATAL 2013-01-11 23:40:56 [Logs                ] -- event
+```
+
+or on a per-class basis.
 
 ### Creating Documentation
 
