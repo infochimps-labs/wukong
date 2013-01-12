@@ -8,7 +8,7 @@ module Wukong
 
       def handle_error(record, err)
         case on_error
-        when 'log'    then log.warn "Bad record: #{record}"
+        when 'log'    then log.warn "#{err.class}: #{err.message}"
         when 'notify' then notify('error', record: record, error: err)
         end          
       end
@@ -277,18 +277,26 @@ EOF
       end
       register
     end
-    
+
+    # A widget for turning a record into an instance of some class.
+    # The class must provide a "class method" `receive` which accepts
+    # a Hash argument.
     class Recordize < Serializer
       field :model, Whatever, :doc => "Model class to turn records into"
 
+      # Turn the given `record` into an instance of the class named
+      # with the `model` field.
+      #
+      # @param [Hash, #to_wire] record
+      # @return [Object]
       def process(record)
         wire_format = record.try(:to_wire) || record
-        raise SerializerError.new("Record must be in hash format to be recordized") unless wire_format.is_a?(Hash)
+        raise SerializerError.new("Can only recordize a Hash-like record") unless wire_format.is_a?(Hash)
         yield model.receive(wire_format)
-      rescue => e        
-        handle_error(record, e)  
+      rescue => e
+        handle_error(record, e)
       end
       register
-    end    
+    end
   end
 end

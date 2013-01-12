@@ -193,19 +193,15 @@ external connections
 ```ruby
 # in geolocator.rb
 Wukong.processor(:geolocator) do
-
   field :host, String, :default => 'localhost'
-  
   attr_accessor :connection
-
+  
   def setup
     self.connection = Database::Connection.new(host)
   end
-  
   def process record
     record.added_value = connection.find("...some query...")
   end
-  
   def stop
     self.connection.close
   end
@@ -252,6 +248,163 @@ environment, the notion of "last record" makes sense and so the
 corresponding runners will call `finalize`.  In an environment like
 Storm, where the concept of last record is not (supposed to be)
 meaningful, the corresponding runner doesn't ever call it.
+
+### Serialization
+
+`wu-local` (and many similar tools) deal with inputs and outputs as
+strings.
+
+Processors want to process objects as close to their domain as is
+possible.  A processor which decorates address book entries with
+Twitter handles doesn't want to think of its inputs as Strings but
+Hashes or, better yet, Persons.
+
+Wukong makes it easy to wrap a processor with other processors
+dedicated to handling the common tasks of parsing records into or out
+of formats like JSON and turning them into Ruby model instances.
+
+#### De-serializing data formats like JSON or TSV
+
+Wukong can parse and emit common data formats like JSON and delimited
+formats like TSV or CSV so that you don't pollute or tie down your own
+processors with protocol logic.
+
+Here's an example of a processor that wants to deal with Hashes as
+input.
+
+```ruby
+# in extractor.rb
+Wukong.processor(:extractor) do
+  def process hsh
+    yield hsh["first_name"]
+  end
+end
+```
+
+Given JSON data,
+
+```
+$ cat input.json
+{"first_name": "John", "last_name":, "Smith"}
+{"first_name": "Sally", "last_name":, "Johnson"}
+...
+```
+
+you can feed it directly to a processor
+
+```
+$ cat input.json | wu-local --from=json extractor
+John
+Sally
+...
+```
+
+Other processors really like Arrays:
+
+```ruby
+Wukong.processor(:summer) do
+  def process values
+    yield values.map(&:to_f).inject(0.0) { |sum, summand| sum += summand }
+  end
+end
+```
+
+so you can feed them TSV data
+```
+$ cat data.tsv
+1	2	3
+4	5	6
+7	8	9
+...
+$ cat data.tsv | wu-local --from=tsv summer
+6
+15
+24
+...
+```
+
+but you can just as easily use the same code with CSV data
+
+```
+$ cat data.tsv | wu-local --from=tsv summer
+```
+
+or a more general delimited format.
+
+```
+$ cat data.tsv | wu-local --from=delimited --delimiter='--' summer
+```
+
+#### Recordizing data structures into domain models
+
+Here's a contact validator that relies on a Person model to decide
+whether a contact entry should be yielded:
+
+```ruby
+# in contact_validator.rb
+require 'person'
+
+Wukong.processor(:contact_validator) do
+  def process person
+    yield person if person.valid?
+  end
+end
+```
+
+Relying on the (elsewhere-defined) Person model to define `valid?`
+means the processor can stay skinny and readable.  Wukong can, in
+combination with the deserializing features above, turn input text
+into instances of Person:
+
+```
+$ cat input.json | wu-local --consumes=Person --from=json contact_validator
+#<Person:0x000000020e6120>
+#<Person:0x000000020e6120>
+#<Person:0x000000020e6120>
+```
+
+`wu-local` can also serialize records from the `contact_validator`
+processor:
+
+```
+$ cat input.json | wu-local --consumes=Person --from=json contact_validator --as=json
+{"first_name": "John", "last_name":, "Smith", "valid": "true"}
+{"first_name": "Sally", "last_name":, "Johnson", "valid": "true"}
+...
+```
+
+Serialization formats work just like deserialization formats, with
+JSON as well as delimited formats available.
+
+In order to support the `--consumes` and `--as` features, the `Person`
+model must implement the following methods:
+
+```ruby
+# in person.rb
+class Person
+  # Create a new Person from the given attributes.
+  # 
+  # @param [Hash] attrs
+  # @return [Person]
+  def self.receive attrs
+    new(attrs)
+  end
+  
+  # Turn this Person into a basic data structure.
+  # 
+  # @return [Hash]
+  def to_wire
+    to_hash
+  end
+end
+```
+
+To support the `--consumes=Person` syntax, the `receive` class method
+must take a Hash produced from the operation of the `--from` argument
+and return a `Person` instance.
+
+To support the `--as=json` syntax, the `Person` class must implement
+the `to_wire` instance method.
 
 ### Logging and Notifications
 
@@ -434,7 +587,14 @@ yield a String argument (or something that will `to_s` appropriately).
 ## Widgets
 
 Wukong has a number of built-in widgets that are useful for
-scaffolding your dataflows.
+scaffolding your dataflows or using as starting off points for your
+own processors.
+
+For any of these widgets you can get customized help, say
+
+```
+$ wu-local group --help
+```
 
 ### Serializers
 
