@@ -34,7 +34,7 @@ module Wukong
     #   {"id": 2, "word": "cat"   }
     #   {"id": 3, "word": "banana"}
     #   ...
-    #   $ cat input | wu-local sort --on==word | wu-local group --by=word
+    #   $ cat input | wu-local sort --on=word | wu-local group --by=word
     #   apple	4
     #   banana	2
     #   cat	5
