@@ -10,7 +10,7 @@ module Wukong
     end
 
     def lookup(label)
-      raise Wukong::Error.new("could not find definition for #{label}") unless Wukong.registry.registered?(label.to_sym)
+      raise Wukong::Error.new("could not find definition for <#{label}>") unless Wukong.registry.registered?(label.to_sym)
       Wukong.registry.retrieve(label.to_sym)
     end
     

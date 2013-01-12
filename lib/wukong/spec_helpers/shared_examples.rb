@@ -16,3 +16,8 @@ shared_examples_for 'a plugin' do |options = {}|
   it { should respond_to(:configure) }
   it { should respond_to(:boot)      }
 end
+
+shared_examples_for 'a model class' do |options = {}|
+  it        { should respond_to(:receive) }
+  its(:new) { should respond_to(:to_wire) }
+end
