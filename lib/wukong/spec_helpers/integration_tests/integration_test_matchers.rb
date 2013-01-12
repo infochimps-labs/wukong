@@ -47,7 +47,7 @@ module Wukong
 
       # :nodoc:
       def failure_message
-        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nand expected #{output_description}\n\n#{formatted_output}\n\nto #{match_type}\n\n  #{failed_expectation}#{formatted_error_output}"
+        "From within #{runner.cwd} ran\n\n#{formatted_env}\n#{formatted_command}\n\nand expected #{output_description}\n\n#{formatted_output}\n\nto #{match_type}\n\n  #{failed_expectation}#{formatted_error_output}"
       end
 
       # :nodoc:
@@ -166,12 +166,12 @@ module Wukong
 
       # :nodoc:
       def failure_message
-        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nexpecting #{expected_exit_code_description}  Got #{runner.exit_code} instead.#{formatted_error_output}"
+        "From within #{runner.cwd} ran\n\n#{formatted_env}\n#{formatted_command}\n\nexpecting #{expected_exit_code_description}  Got #{runner.exit_code} instead.#{formatted_error_output}"
       end
 
       # :nodoc:
       def negative_failure_message
-        "Ran\n\n#{formatted_env}\n#{formatted_command}\n\nNOT expecting #{expected_exit_code_description}.#{formatted_error_output}"
+        "From within #{runner.cwd} ran\n\n#{formatted_env}\n#{formatted_command}\n\nNOT expecting #{expected_exit_code_description}.#{formatted_error_output}"
       end
 
       # :nodoc:

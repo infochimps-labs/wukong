@@ -1,11 +1,8 @@
 module Wukong
   class DataflowBuilder < Hanuman::GraphBuilder
 
-    def describe desc
-      @description = desc
-    end
-
-    def description
+    def description desc=nil
+      @description = desc if desc
       @description
     end
     

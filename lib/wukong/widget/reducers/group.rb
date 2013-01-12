@@ -52,8 +52,51 @@ module Wukong
     # @see Sort
     class Group < Count
 
+      description <<EOF
+This processor groups consecutive input records that share the same
+"group key".  There are several ways to extract this group key from a
+record.
+
+NOTE: The input records must be previously sorted by the
+same key used for grouping in order to ensure that groups are
+not split up.
+
+By default the input records themselves are used as their own group
+keys, allowing to count identical values, a la `uniq -c`:
+
+  $ cat input
+  apple
+  cat
+  banana
+  apple
+  ...
+
+  $ cat input | wu-local sort | wu-local group
+  apple	4
+  banana	2
+  cat	5
+  ...
+
+You can also group by some part of in input record:
+
+  $ cat input
+  {"id": 1, "word": "apple" }
+  {"id": 2, "word": "cat"   }
+  {"id": 3, "word": "banana"}
+  ...
+
+  $ cat input | wu-local sort --on==word | wu-local group --by=word
+  apple	4
+  banana	2
+  cat	5
+  ...
+
+This processor will not produce any output for a given group until it
+sees the last record of that group.
+EOF
+
       include DynamicGet
-      field :by, Whatever
+      field :by, Whatever, :doc => "Part of the record to group by"
 
       # Get the key which defines the group for this `record`.
       #

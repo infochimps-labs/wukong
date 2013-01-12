@@ -1,3 +1,4 @@
+require_relative('help_message')
 module Wukong
   class Runner
 
@@ -14,6 +15,8 @@ module Wukong
     # Each method can be separately overriden, allowing for a lot of
     # customizability for different kinds of runners.
     module BootSequence
+
+      include HelpMessage
       
       # Boot this Runner, calling in order:
       #
@@ -33,10 +36,15 @@ module Wukong
       def boot!(override_settings=nil)
         load
         configure
-        if resolve
-          setup
-          settings.merge!(override_settings) if override_settings
-          validate ? run : die("Invalid arguments")
+        resolve
+        setup
+        settings.merge!(override_settings) if override_settings
+        
+        case
+        when help_given? then dump_help_and_exit!
+        when validate    then run
+        else
+          die("Invalid arguments")
         end
       end
 
@@ -68,10 +76,11 @@ module Wukong
       # Configliere...
       def resolve
         begin
+          strip_help_param!
           settings.resolve!
           true
         rescue RuntimeError, SystemExit => e
-          false
+          raise Error.new(e)
         end
       end
       
@@ -104,7 +113,7 @@ module Wukong
       # `code`.
       #
       # @param [String] message
-      # @param [Integer] code.
+      # @param [Integer] code
       def die message=nil, code=126
         self.class.die(message, code)
       end

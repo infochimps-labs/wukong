@@ -4,7 +4,7 @@ module Wukong
     SerializerError = Class.new(Error)
 
     class Serializer < Processor
-      field :on_error, String, default: 'log'
+      field :on_error, String, default: 'log', :doc => "Action to take upon an error, either 'log' or 'notify'"
 
       def handle_error(record, err)
         case on_error
@@ -25,7 +25,14 @@ module Wukong
     #
     # @see FromJson
     class ToJson < Serializer
-      field :pretty, :boolean, default: false
+
+      description <<EOF
+Turns input records into JSON strings.
+
+Pretty print input with the --pretty flag.
+EOF
+      
+      field :pretty, :boolean, default: false, :doc => "Pretty-print output"
 
       # Yields the input `record` serialized as JSON.
       #
@@ -56,6 +63,16 @@ module Wukong
     #
     # @see ToJson
     class FromJson < Serializer
+
+      description <<EOF
+Parse JSON input records into native Ruby objects.
+
+  $ cat input.json
+  {"hi": "there"}
+  $ cat input.json | wu-local from_json
+  {"hi"=>"there"}
+EOF
+      
       # Yields the input `record` deserialized from JSON.
       #
       # @param [String] json
@@ -196,7 +213,7 @@ module Wukong
     #
     # @see FromDelimited
     class ToDelimited < Serializer
-      field :delimiter, String, :default => "\t"
+      field :delimiter, String, :default => "\t", :doc => "Delimiter to use between fields in a record"
       # Yields the input `record` serialized in a delimited format..
       #
       # @param [Object] record
@@ -224,7 +241,7 @@ module Wukong
     #
     # @see ToDelimited
     class FromDelimited < Serializer
-      field :delimiter, String, :default => "\t"
+      field :delimiter, String, :default => "\t", :doc => "Delimiter to use between fields in a record"
       # Yields the input `record` deserialized from a delimited format.
       #
       # @param [String] delimited
@@ -262,7 +279,7 @@ module Wukong
     end
     
     class Recordize < Serializer
-      field :model, Whatever
+      field :model, Whatever, :doc => "Model class to turn records into"
 
       def process(record)
         wire_format = record.try(:to_wire) || record

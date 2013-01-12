@@ -4,12 +4,12 @@ module Wukong
   class Processor
     class Moments < Group
 
-      field :group_by, Whatever
+      field :group_by, Whatever, :doc => "Part of the record to group by"
 
       attr_accessor :measurements
 
-      field :of,      Array,    :default => []
-      field :std_dev, :boolean, :default => true
+      field :of,         Array,    :default => [],   :doc => "Parts of the record to measure moments of"
+      field :no_std_dev, :boolean, :doc => "Don't compute standard deviations"
 
       def get_key record
         super(record) unless (self.group_by || self.by)
@@ -52,7 +52,7 @@ module Wukong
             
             mean               = values.inject(0.0) { |sum, value| sum += value } / count
             r[property][:mean] = mean
-            if std_dev
+            unless no_std_dev
               variance    = values.inject(0.0) { |sum, value| diff = (value - mean) ; sum += diff * diff } / count
               std         = Math.sqrt(variance)
               r[property][:std_dev] = std

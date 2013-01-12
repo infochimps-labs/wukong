@@ -17,6 +17,18 @@ module Wukong
     #   283
     class Count < Accumulator
 
+      description <<EOF
+This processor counts the number of input records it receives.
+
+  $ wc -l input
+  283 input
+  $ cat input | wu-local count
+  283
+
+This processor will not output any records until it receives its final
+input record.
+EOF
+
       # The total size of the input recors.
       attr_accessor :size
 

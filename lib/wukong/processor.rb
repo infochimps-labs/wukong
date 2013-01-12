@@ -15,15 +15,12 @@ module Wukong
     include Logging
     include Vayacondios::Notifications
     
-    field :action,   Whatever
+    field :action, Whatever, :doc => false
 
     class << self
 
-      def describe desc
-        @description = desc
-      end
-      
-      def description
+      def description desc=nil
+        @description = desc if desc
         @description
       end
       
@@ -48,12 +45,19 @@ module Wukong
       end
 
       def configure(settings)
+        settings.description = description if description
         fields.each_pair do |name, field|
+          next if field.doc == false || field.doc.to_s == 'false'
+          next if [:log, :notifier].include?(name)
           field_props = {}.tap do |props|
             props[:description] = field.doc unless field.doc == "#{name} field"
-            props[:type]        = field.type.product
+            field_type = (field.type.respond_to?(:product) ? field.type.product : field.type)
+            props[:type]        = field_type == [TrueClass, FalseClass] ? :boolean : field_type
+            props[:default]     = field.default if field.default
           end
+          existing_value = settings[name]
           settings.define(name, field_props)
+          settings[name] = existing_value unless existing_value.nil?
         end
       end
 

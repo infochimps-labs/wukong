@@ -129,13 +129,38 @@ module Wukong
       self.class.description
     end
 
-    # Is there a processor registered by the given `name`?
+    # Is there a processor or dataflow registered with the given
+    # `name`?
     #
     # @param [String] name
     # @return [true, false]
     def registered? name
-      return false unless name
-      Wukong.registry.registered?(name.to_sym)
+      name && Wukong.registry.registered?(name.to_sym)
+    end
+
+    # Retrieve the dataflow registered under a given `name`.
+    #
+    # @param [String,Symbol] name
+    # @return [Wukong::Processor, Wukong::Dataflow, nil]
+    def dataflow_class_for(name)
+      builder = (Wukong.registry.retrieve(name.to_sym) or return)
+      builder.for_class
+    end
+
+    # Is the given `name` a registered as a processor?
+    #
+    # @param [String,Symbol] name
+    # @return [true, false]
+    def processor?(name)
+      registered?(name) && dataflow_class_for(name).ancestors.include?(Wukong::Processor)
+    end
+
+    # Is the given `name` a registered as a dataflow?
+    #
+    # @param [String,Symbol] name
+    # @return [true, false]
+    def dataflow?(name)
+      registered?(name) && dataflow_class_for(name).ancestors.include?(Wukong::Dataflow)
     end
 
   end    

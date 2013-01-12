@@ -59,8 +59,12 @@ $ cat novel.txt | wu-local string_reverser.rb
 .semit fo tsrow eht saw ti ,semit fo tseb eht saw tI
 ```
 
-You can use yield as often (or never) as you need.  Here's a more
-complicated example to illustrate:
+You can use yield as often (or never) as you need.
+
+### Multiple Processors in a Single File
+
+Here's a more complicated example which uses more than one processor
+in a single Ruby file and allows processors to accept options.
 
 ```ruby
 # in processors.rb
@@ -72,6 +76,8 @@ Wukong.processor(:tokenizer) do
 end
   
 Wukong.processor(:starts_with) do
+
+  description "A processor which matches any input that starts with the given letter."
 
   field :letter, String, :default => 'a'
   
@@ -97,9 +103,10 @@ times,
 ...
 ```
 
-You can combine the output of one processor with another right in the
-shell.  Let's add the `starts_with` filter and also pass in the
-*field* `letter`, defined in that processor:
+### Adding Configurable Options
+
+Let's add the `starts_with` filter and also pass in the *field*
+`letter`, defined in that processor:
 
 ```
 $ cat novel.txt | wu-local processors.rb --run=tokenizer | wu-local processors.rb --run=starts_with --letter=t
@@ -120,16 +127,54 @@ $ cat novel.txt | wu-local processors.rb --run=tokenizer | wu-local regexp --mat
 
 There are many more simple <a href="#widgets">widgets</a> like these.
 
+### Creating Documentation
+
+`wu-local` includes a help message:
+
+```
+$ wu-local --help
+usage: wu-local [ --param=val | --param | -p val | -p ] PROCESSOR|FLOW
+
+wu-local is a tool for running Wukong processors and flows locally on
+the command-line.  Use wu-local by passing it a processor and feeding
+...
+
+
+Params:
+   -r, --run=String             Name of the processor or dataflow to use. Defaults to basename of the given path.
+   -t, --tcp_port=Integer       Consume TCP requests on the given port instead of lines over STDIN
+```
+
+If you ask for --help but you've already passed the name of a
+processor then Wukong will generate a custom help message using the
+processor's description text and any defined fields:
+
+```
+$ wu-local processors.rb --run=starts_with --help
+usage: wu-local [ --param=val | --param | -p val | -p ] PROCESSOR|FLOW
+
+A processor which matches any input that starts with the given letter.
+
+Params:
+       --letter=String          letter [Default: a]
+   -r, --run=String             Name of the processor or dataflow to use. Defaults to basename of the given path.
+   -t, --tcp_port=Integer       Consume TCP requests on the given port instead of lines over STDIN
+```
+
 <a name="flows"></a>
 ## Combining Processors into Dataflows
 
 Combining processors which each do one thing well together in a chain
 is mimicing the tried and true UNIX pipeline.  Wukong lets you define
-these pipelines more formally as a dataflow.  Here's the dataflow for
+these pipelines more formally as a dataflow.
+
+Having written the `tokenizer` processor, we can use it in a dataflow
+along with the built-in `regexp` processor to replicate what we did in
 the last example:
 
 ```
 # in find_t_words.rb
+require_relative('processors')
 Wukong.dataflow(:find_t_words) do
   tokenizer | regexp(match: /^t/)
 end
@@ -148,7 +193,8 @@ times
 ...
 ```
 
-and it works exactly like before.
+and it works exactly like manually chaining the two processors
+together.
 
 <a name="serialization></a>
 ## Serialization
@@ -379,16 +425,15 @@ Let's look at each kind of helper:
   behavior.
 
 * The `given` method (and other helpers like `given_json`,
-  `given_tsv`, &c.) is added to the Processor class when
-  Wukong::SpecHelpers is required. It's a way of lazily feeding
-  records to a processor, without having to go through the `process`
-  method directly and having to handle the block or the processor's
-  lifecycle as in the prior example.
+  `given_tsv`, &c.) is a method on the runner. It's a way of lazily
+  feeding records to a processor, without having to go through the
+  `process` method directly and having to handle the block or the
+  processor's lifecycle as in the prior example.
 
 * The `output` and `emit` matchers will `process` all previously
   `given` records when they are called. This lets you separate
   instantiation, input, expectations, and output. Here's a more
-  complicated example:
+  complicated example.
 
 The same helpers can be used to test dataflows as well as
 processors.
@@ -661,4 +706,3 @@ module Cat
   end
 end
 ```
-
