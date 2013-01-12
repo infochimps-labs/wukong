@@ -20,6 +20,10 @@ RSpec.configure do |config|
   def generic_runner *args
     runner(Wukong::Runner, 'wu-generic', *args)
   end
+
+  def wu_local *args
+    command('wu-local', *args)
+  end
   
   # FIXME Why is this here?
   config.treat_symbols_as_metadata_keys_with_true_values = true

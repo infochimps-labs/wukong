@@ -25,7 +25,7 @@ module Hanuman
     include Gorillib::Model
     extend  StageClassMethods
 
-    field :label, Symbol
+    field :label, Symbol, :doc => false
   end  
 
   class StageBuilder

@@ -62,11 +62,61 @@ module Wukong
     #     group
     #   end
     class Sort < Accumulator
+
+      description <<EOF
+This processor sorts input records alphabetically or numerically based
+on their value or the value of one of their parts.
+
+NOTE: For many use cases you're better off using native tools like
+`/bin/sort` because they are faster and already do what you
+need.
+
+You can sort simple inputs
+
+  $ cat input
+  1	apple
+  2	banana
+  3	cat
+  4	banana
+  ...
+
+  $ cat input | wu-local sort --on=2
+  1	apple
+  2	banana
+  4	banana
+  3	cat
+  ...
+
+as well as complicated ones
+
+  $ cat input
+  {"id": 1, "word": "apple" }
+  {"id": 2, "word": "cat"   }
+  {"id": 3, "word": "banana"}
+  ...
+
+  $ cat input | wu-local sort --on=word
+  {"id": 1, "word": "apple" }
+  {"id": 3, "word": "banana"}    
+  {"id": 2, "word": "cat"   }
+  ...
+
+You can also sort in --reverse or using --numeric order instead of
+lexical.
+
+The sort widget is useful for modeling Hadoop jobs, but don't
+forget that [Hadoop does its own
+sorting](http://hadoop.apache.org/docs/r0.20.2/mapred_tutorial.html#Sort),
+so the sort widget doesn't belong in your map/reduce jobs.
+
+This processor will not produce any output till it has received all
+its input records.
+EOF
       
       include DynamicGet
-      field :on,        Whatever
-      field :reverse,   :boolean, :default => false
-      field :numeric,   :boolean, :default => false
+      field :on,        Whatever, :doc => "Part of the record to sort on"
+      field :reverse,   :boolean, :default => false, :doc => "Sort in reverse order"
+      field :numeric,   :boolean, :default => false, :doc => "Sort numerically instead of lexically"
 
       # Intializes the array of records that will hold all the values.
       def setup

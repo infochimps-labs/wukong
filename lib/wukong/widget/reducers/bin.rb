@@ -54,23 +54,73 @@ module Wukong
     # @see Accumulator
     # @see Extract
     class Bin < Accumulator
-      
-      field :num_bins,    Integer
-      field :edges,       Array
-      field :min,         Float
-      field :max,         Float
 
-      field :format_string, String
-      field :precision,     Integer, :default => 3
+      description <<EOF
+This processor can be used to create a set of bins defining the
+frequency distribution of the input records (or some part of each
+input record).
+
+Here's a simple example:
+
+  $ cat input.dat
+  1
+  2
+  3
+  ...
+  100
+
+  $ cat input.dat | wu-local bin
+  1.000	10.900	10.000
+  10.900	20.800	10.000
+  20.800	30.700	10.000
+  30.700	40.600	10.000
+  ...
+  90.100	100.000	10.000
+
+By default, all the input values are included and the number of bins
+used corresponds to the square root of the number of input values.
+You can customize the domain for the distribution, the number of bins,
+or the explicit bin edges themselves, via the --min, --max,
+--num_bins, and --edges flags.
+
+You can control the display of numbers with the --format_string and
+--precision options.
+
+  $ cat input.dat | wu-local bin --num_bins=4 --min=0 --max=100 --precision=0
+  0.0	25	24
+  25	50	25
+  50	75	25
+  75	100	26
+
+You can use the --log_bins, --log_counts, and --base options to use
+logarithmically spaced bins or logarithmic counts within each bin to
+the given base.
+
+You can also normalize the distribution using the --normalize option.
+
+  $ cat input.dat | wu-local bin --num_bins=4 --log_bins --normalize
+  1.000	3.162	3.000	0.030
+  3.162	10.000	7.000	0.070
+  10.000	31.623	21.000	0.210
+  31.623	100.000	69.000	0.690
+EOF
+      
+      field :num_bins,    Integer, :doc => "Number of bins to use"
+      field :edges,       Array,   :doc => "Number of edges to use"
+      field :min,         Float,   :doc => "Smallest bin starting point"
+      field :max,         Float,   :doc => "Largest bin ending point"
+
+      field :format_string, String,  :doc => "Format string used when printing numerical values"
+      field :precision,     Integer, :doc => "Precision used when printing numerical values", :default => 3
 
       include DynamicGet
-      field :by,          Whatever
+      field :by,          Whatever, :doc => "Bin the values extracted by this label"
 
-      field :log_bins,    :boolean, :default => false
-      field :log_counts,  :boolean, :default => false
-      field :base,        Float,    :default => Math::E
+      field :log_bins,    :boolean, :default => false,   :doc => "Use logarithmically spaced bins"
+      field :log_counts,  :boolean, :default => false,   :doc => "Use logarithmic bin counts"
+      field :base,        Float,    :default => Math::E, :doc => "Base for logarithms"
       
-      field :normalize,   :boolean, :default => false
+      field :normalize,   :boolean, :default => false, :doc => "Normalize bin counts so they sum to 1.0"
 
       # The accumulated values
       attr_accessor :values

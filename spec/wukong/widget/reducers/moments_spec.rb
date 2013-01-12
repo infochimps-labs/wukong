@@ -23,7 +23,7 @@ describe "Reducers" do
     end
 
     it "will leave off the standard deviation if desired" do
-      processor(:moments, group_by: 'outer', of: 'data.n', std_dev: false).given(*json_sorted_outer).should emit(
+      processor(:moments, group_by: 'outer', of: 'data.n', no_std_dev: true).given(*json_sorted_outer).should emit(
         {group: nil,      count: 2, results: {"data.n" => {}}},
         {group: 'apple',  count: 2, results: {"data.n"=>{:count=>2, :mean=>3.0   }}},
         {group: 'banana', count: 1, results: {"data.n"=>{:count=>1, :mean=>100.0 }}},

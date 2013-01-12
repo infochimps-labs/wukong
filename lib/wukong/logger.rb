@@ -84,7 +84,7 @@ module Wukong
     def self.included klass
       if klass.ancestors.include?(Gorillib::Model)
         klass.class_eval do
-          field(:log, Whatever, :default => ->{ Wukong::LogFactory.configure(self.class) }) 
+          field(:log, Whatever, :default => ->{ Wukong::LogFactory.configure(self.class) }, :doc => "Shared Wukong logger")
 
           def receive_log params
             @log = LogFactory.configure(self.class, params)

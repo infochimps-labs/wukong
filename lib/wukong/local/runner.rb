@@ -63,10 +63,16 @@ module Wukong
       # @raise [Wukong::Error] if it finds a problem
       # @return [true]
       def validate
-        raise Error.new("Must provide a processor to run, via either the --run option or as the first argument") unless processor
-        raise Error.new("Processor name is blank") if processor.empty?
-        raise Error.new("No such processor <#{processor}>") unless registered?(processor)
+        raise Error.new("Must provide a processor or dataflow to run, via either the --run option or as the first argument") if processor.nil? || processor.empty?
+        raise Error.new("No such processor or dataflow <#{processor}>") unless registered?(processor)
         true
+      end
+
+      # Adds a customized help message built from the Processor
+      # # itself.
+      def setup
+        super()
+        dataflow_class_for(processor).configure(settings) if processor?(processor)
       end
 
       # Runs either the StdioDriver or the TCPDriver, depending on

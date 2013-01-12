@@ -7,7 +7,7 @@ module Wukong
 
     # :nodoc:
     def self.included klass
-      klass.send(:field, :separator, String,   :default => "\t")
+      klass.send(:field, :separator, String, :default => "\t", :doc => "The default separator between fields on a single line")
     end
 
     # :nodoc:

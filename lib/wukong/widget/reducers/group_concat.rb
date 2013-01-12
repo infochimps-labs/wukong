@@ -23,6 +23,34 @@ module Wukong
     # @see Group
     class GroupConcat < Group
 
+      description <<EOF
+This processor concatenates records of a consecutive group of records
+into a single record.
+
+  $ cat input
+  {"id": 1, "parent_id": 4}
+  {"id": 2, "parent_id": 3}
+  {"id": 3, "parent_id": 3}
+  ...
+
+  $ cat input | wu-local group_concat --by=parent_id
+  4	1	{"id": 1, "parent_id": 4}
+  3	2	{"id": 2, "parent_id": 3}	{"id": 3, "parent_id": 3}
+  ...
+
+Each output record consists of tab-separated fields in the following
+order:
+
+  1) The key defining the group of input records in this output record
+  2) The number of input records in the group
+  3) Each input record in the group
+  ...
+
+This processor will not produce any output for a given group until it
+sees the last record of that group. See the documentation for the
+'group' processor for more information.
+EOF
+
       # The members of the current group.
       attr_accessor :members
 

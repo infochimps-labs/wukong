@@ -22,8 +22,29 @@ module Wukong
     #     ... | logger
     #   end
     class Logger < Processor
-      # The level to use for logging.
-      field :level, Symbol, :default => :info
+      field :level, Symbol, :default => :info, :doc => "Log level priority"
+
+      description <<EOF
+This processor passes all input records unmodified, making a log
+statement on each one.
+
+  $ cat input
+  1
+  2
+  3
+  $ cat input | wu-local logger
+  INFO 2013-01-04 17:10:59 [Logger              ] -- 1
+  INFO 2013-01-04 17:10:59 [Logger              ] -- 2
+  INFO 2013-01-04 17:10:59 [Logger              ] -- 3
+
+You can set the priority level of the log messages with the --level
+flag.
+
+  $ cat input | wu-local logger --level=debug
+  DEBUG 2013-01-04 17:10:59 [Logger              ] -- 1
+  DEBUG 2013-01-04 17:10:59 [Logger              ] -- 2
+  DEBUG 2013-01-04 17:10:59 [Logger              ] -- 3
+EOF
 
       # Process a given `record` by logging it.
       #
@@ -100,8 +121,44 @@ module Wukong
     class Extract < Processor
       include DynamicGet
 
-      # The part to extract.
-      field :part, Whatever, :default => nil
+      description <<EOF
+This processor will pass extracted parts of input records.
+
+It can be used to extract a field from a delimited input
+
+  $ cat input
+  snap	crackle	pop
+  a	b	c
+  $ cat input | wu-local extract --part=2
+  crackle
+  b
+
+The default separator is a tab character but you can specify this as
+well
+
+  $ cat input
+  snap,crackle,pop
+  a,b,c
+  $ cat input | wu-local extract --part=2 --separator=,
+  crackle
+  b
+
+It can also be used on JSON records, even those with nested fields
+
+  $ cat input
+  {"id": 1, {"data": {"text": "hi there"}}
+  {"id": 2, {"data": {"text": "goodbye"}}
+  $ cat input | wu-local extract --part=id
+  1
+  2
+  $ cat input | wu-local extract --part=data.text
+  hi there
+  goodbye
+
+If no --part argument is given, the original record will be yielded.
+EOF
+
+      field :part, Whatever, :default => nil, :doc => "Part of the record to extract"
 
       # Extract a `part` of a `record`.
       #
@@ -115,7 +172,9 @@ module Wukong
     end
     
     class Topic < Processor
-      field :topic, Symbol
+      
+      field :topic, Symbol, :doc => "Topic to label the record with"
+      
       def process(record)
         yield perform_action(record)
       end

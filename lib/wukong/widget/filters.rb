@@ -5,6 +5,10 @@ module Wukong
     # criterion.
     class Filter < Processor
 
+      description <<EOF
+A processor which filters input records according to some criterion.
+EOF
+
       # Process a `record` by yielding it only if it should be
       # selected by this filter.
       #
@@ -61,6 +65,7 @@ module Wukong
     # @see Filter
     # @see Null
     class Identity < Filter
+      description "This processor passes all records unmodified."
       register
     end
     
@@ -84,6 +89,9 @@ module Wukong
     # @see Filter
     # @see All
     class Null < Filter
+
+      description "This processor acts as a filter which passes no records at all."
+      
       # Prevents any records from passing because it always returns
       # `false`.
       #
@@ -117,8 +125,21 @@ module Wukong
     # @see NotRegexpFilter
     class RegexpFilter < Filter
 
-      # The regular expression to use to match records.
-      field :match, Regexp
+      description <<EOF
+This processor only passes records which match against a given regular
+expression.
+
+  $ cat input
+  apple
+  banana
+  cat
+  $ cat input | wu-local regexp --match='^a'
+  apple
+
+If no --match argument is given, all records will be passed.
+EOF
+
+      field :match, Regexp, :doc => "Regular expression to match against"
       
       # Selects a `record` only if it matches this widget's `match`
       # field.
@@ -154,6 +175,22 @@ module Wukong
     # @see Filter
     # @see NotRegexpFilter
     class NotRegexpFilter < RegexpFilter
+
+      description <<EOF
+This processor only passes records which fail to match against a given
+regular expression.
+
+  $ cat input
+  apple
+  banana
+  cat
+  $ cat input | wu-local not_regexp --match='^a'
+  banana
+  cat
+
+If no --match argument is given, all records will be passed.
+EOF
+      
       # Select a `record` only if it <b>doesn't</b> match this
       # widget's `match` field.
       #
@@ -189,8 +226,22 @@ module Wukong
     # @see Filter
     class Limit < Filter
 
-      # The maximum number of records to let pass.
-      field :max, Integer, :default => Float::INFINITY
+      description <<EOF
+This processor passes a certain number of records and then stops
+passing any, acting as a limit.
+
+  $ cat input
+  1
+  2
+  3
+  $ cat input | wu-local limit --max=2
+  1
+  2
+
+If no --max argument is given, all records will be passed.
+EOF
+
+      field :max, Integer, :default => Float::INFINITY, :doc => "Maximum number of records to let pass"
 
       # The current record count.
       attr_accessor :count
@@ -236,9 +287,23 @@ module Wukong
     # @see Limit
     class Sample < Filter
 
-      # The fraction of records to let pass.  Must be between 0.0 and
-      # 10.0
-      field :fraction, Float, :default => 1.0
+      description <<EOF
+This processor will pass input records with a certain frequency,
+acting as a random sampler.
+
+  $ cat input
+  1
+  2
+  3
+  4
+  $ cat input | wu-local sample --fraction=0.5
+  1
+  4
+
+If no --fraction is given, all records will be passed.
+EOF
+
+      field :fraction, Float, :default => 1.0, :doc => "Fraction of records to let pass.  Must be between 0 and 1.0"
 
       # Selects a `record` randomly, with a probability given the the
       # `fraction` for this widget.
