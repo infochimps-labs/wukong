@@ -326,7 +326,7 @@ $ cat data.tsv | wu-local --from=tsv summer
 but you can just as easily use the same code with CSV data
 
 ```
-$ cat data.tsv | wu-local --from=tsv summer
+$ cat data.tsv | wu-local --from=csv summer
 ```
 
 or a more general delimited format.
