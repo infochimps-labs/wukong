@@ -25,7 +25,7 @@ EOF
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  gem.add_dependency('configliere',             '>= 0.4.19')
+  gem.add_dependency('configliere',             '>= 0.4.18')
   gem.add_dependency('multi_json',              '>= 1.3.6')
   gem.add_dependency('vayacondios-client',      '>= 0.1.2')
   gem.add_dependency('gorillib',                '>= 0.4.2')
