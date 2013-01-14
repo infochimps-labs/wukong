@@ -367,7 +367,7 @@ $ cat input.json | wu-local --consumes=Person --from=json contact_validator
 processor:
 
 ```
-$ cat input.json | wu-local --consumes=Person --from=json contact_validator --as=json
+$ cat input.json | wu-local --consumes=Person --from=json contact_validator --to=json
 {"first_name": "John", "last_name":, "Smith", "valid": "true"}
 {"first_name": "Sally", "last_name":, "Johnson", "valid": "true"}
 ...
@@ -376,13 +376,17 @@ $ cat input.json | wu-local --consumes=Person --from=json contact_validator --as
 Serialization formats work just like deserialization formats, with
 JSON as well as delimited formats available.
 
-In order to support the `--consumes` and `--as` features, the `Person`
-model must implement the following methods:
+Parsing records into model instances and serializing them out again
+puts constraints on the model class providing these instances.  Here's
+what the `Person` class needs to look like:
+
 
 ```ruby
 # in person.rb
 class Person
-  # Create a new Person from the given attributes.
+
+  # Create a new Person from the given attributes.  Supports usage of
+  # the `--consumes` flag on the command-line
   # 
   # @param [Hash] attrs
   # @return [Person]
@@ -390,7 +394,8 @@ class Person
     new(attrs)
   end
   
-  # Turn this Person into a basic data structure.
+  # Turn this Person into a basic data structure.  Supports the usage
+  # of the `--to` flag on the command-line.
   # 
   # @return [Hash]
   def to_wire
@@ -403,7 +408,7 @@ To support the `--consumes=Person` syntax, the `receive` class method
 must take a Hash produced from the operation of the `--from` argument
 and return a `Person` instance.
 
-To support the `--as=json` syntax, the `Person` class must implement
+To support the `--to=json` syntax, the `Person` class must implement
 the `to_wire` instance method.
 
 ### Logging and Notifications
