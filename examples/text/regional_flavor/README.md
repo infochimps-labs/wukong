@@ -5,6 +5,9 @@
 1. article -> wordbag
 2. join on page data to get geolocation
 3. use pagelinks to get larger pool of implied geolocations
+  - create mapping from wiki id -> lat/long
+  - n1 neighborhood of each article generates id list
+  - map each id
 4. turn geolocations into quadtile keys
 5. aggregate topics by quadtile
 6. take summary statistics aggregated over term and quadkey
