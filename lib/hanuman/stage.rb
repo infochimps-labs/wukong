@@ -43,7 +43,7 @@ module Hanuman
     end
 
     def build(options = {})      
-      for_class.receive self.serialize.merge(options)
+      for_class.receive self.serialize.merge(options).merge(options[label] || {})
     end
     
     def handle_extra_attributes(attrs)
