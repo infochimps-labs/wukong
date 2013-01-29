@@ -426,7 +426,7 @@ EOF
       # @param [Object]
       # @return [true, false]
       def select?(record)
-        keep = @count >= n
+        keep = (@count >= n)
         @count += 1
         keep
       end
