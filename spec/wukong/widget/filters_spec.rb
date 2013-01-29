@@ -56,4 +56,24 @@ describe "Filters" do
     end
   end
 
+  describe :head do
+    it_behaves_like 'a processor', :named => :head
+    it "should pass the first 10 records given no argument" do
+      processor.given(*(1..100).to_a).should emit(10).records
+    end
+    it "should pass the first n records" do
+      processor(:n => 5).given(*(1..100).to_a).should emit(5).records
+    end
+  end
+
+  describe :tail do
+    it_behaves_like 'a processor', :named => :tail
+    it "should pass all records given no argument" do
+      processor.given(*(1..100).to_a).should emit(100).records
+    end
+    it "should skip the first n records" do
+      processor(:n => 5).given(*(1..100).to_a).should emit(95).records
+    end
+  end
+  
 end
