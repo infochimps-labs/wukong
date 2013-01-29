@@ -52,7 +52,13 @@ module Wukong
           field_props = {}.tap do |props|
             props[:description] = field.doc unless field.doc == "#{name} field"
             field_type = (field.type.respond_to?(:product) ? field.type.product : field.type)
-            props[:type]        = field_type == [TrueClass, FalseClass] ? :boolean : field_type
+            configliere_type = case field_type
+            when String                then nil
+            when TrueClass, FalseClass then :boolean
+            else field_type
+            end
+            
+            props[:type]        = configliere_type if configliere_type
             props[:default]     = field.default if field.default
           end
           existing_value = settings[name]
