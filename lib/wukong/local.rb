@@ -19,8 +19,8 @@ module Wukong
         settings.define :run,      description: "Name of the processor or dataflow to use. Defaults to basename of the given path.", flag: 'r'
         settings.define :tcp_port, description: "Consume TCP requests on the given port instead of lines over STDIN", type: Integer, flag: 't'
         
-        settings.define :from, description: "Parse input from given data format (json, tsv, &c.) before processing", type: String
-        settings.define :to,   description: "Convert input to given data format (json, tsv, &c.) before emitting", type: String
+        settings.define :from, description: "Parse input from given data format (json, tsv, &c.) before processing"
+        settings.define :to,   description: "Convert input to given data format (json, tsv, &c.) before emitting"
 
         settings.define :consumes, description: "Parse input as instances of given model class before processing", type: Class
       end
