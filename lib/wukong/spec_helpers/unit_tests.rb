@@ -76,6 +76,7 @@ module Wukong
         name     = (args.first || self.class.description)
         runner   = UnitTestRunner.new(name, settings)
         yield runner.driver.processor if block_given?
+        runner.boot!
         runner.driver
       end
       alias_method :processor, :unit_test_runner
