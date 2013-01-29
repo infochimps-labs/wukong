@@ -372,5 +372,66 @@ EOF
       register
     end
 
+    # Emit only the first `n` records.
+    #
+    # @see Filter
+    class Head < Filter
+
+      field :n, Integer, :default => 10, :doc => "Number of records to let pass"
+
+      # The current record count.
+      attr_accessor :count
+
+      # Initializes the record count to zero.
+      def setup
+        self.count = 0
+      end
+
+      # Select a record only if we're below the maximum number of
+      # records.
+      #
+      # @param [Object] record
+      # @return [true, false]
+      def select?(record)
+        keep = @count < n
+        @count += 1
+        keep
+      end
+      register
+    end
+
+    # Skip the first `n` records.
+    #
+    # Works slightly differently than the UNIX `tail` command which
+    # prints the last `n` records.  This notion is less useful in a
+    # streaming context, so think of this filter as the equivalent of
+    # `tail -n+`.
+    #
+    # @see Filter
+    class Tail < Filter
+      
+      field :n, Integer, :default => 0, :doc => "Number of records to skip before letting records pass"
+
+      # The current record count
+      attr_accessor :count
+
+      # Initializes the record count to zero.
+      def setup
+        self.count = 0
+      end
+
+      # Select a record only if we've already skipped the first `n`
+      # records.
+      #
+      # @param [Object]
+      # @return [true, false]
+      def select?(record)
+        keep = @count >= n
+        @count += 1
+        keep
+      end
+      register
+    end
+    
   end
 end
