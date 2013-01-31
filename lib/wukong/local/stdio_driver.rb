@@ -20,8 +20,19 @@ module Wukong
       def receive_line line
         driver.send_through_dataflow(line)
       rescue => e
+        error = Wukong::Error.new(e)
         EM.stop
-        raise Wukong::Error.new(e)
+        
+        # We'd to *raise* `error` here and have it be handled by
+        # Wukong::Runner.run but we are fighting with EventMachine.
+        # It seems no matter what we do, EventMachine will swallow any
+        # Exception raised here (including SystemExit) and exit the
+        # Ruby process with a return code of 0.
+        #
+        # Instead we just log the message that *would* have gotten
+        # logged by Wukong::Runner.run and leave it to EventMachine to
+        # exit very unnaturally.
+        log.error(error.message)
       end
 
       def unbind
