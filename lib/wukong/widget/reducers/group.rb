@@ -119,7 +119,7 @@ EOF
       # @yieldparam [Object] key the key defining the group
       # @yieldparam [Integer] size the size of the group
       def finalize
-        yield [key, size].map(&:to_s).join("\t")
+        yield [key, size]
       end
 
       register

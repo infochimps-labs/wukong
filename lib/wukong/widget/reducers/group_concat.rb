@@ -86,7 +86,7 @@ EOF
       def finalize
         group = [key, size]
         group.concat(members)
-        yield group.map(&:to_s).join("\t")
+        yield group
       end
 
       register
