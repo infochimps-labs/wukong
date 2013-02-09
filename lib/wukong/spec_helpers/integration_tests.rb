@@ -1,4 +1,3 @@
-require 'open3'
 require_relative('integration_tests/integration_test_runner')
 require_relative('integration_tests/integration_test_matchers')
 
@@ -9,21 +8,50 @@ module Wukong
     # integration tests which require reading files from the local
     # repository.
     #
-    # 
+    # Integration tests will spawn new system processes with their own
+    # environments.  This module provides methods and hooks for
+    # customizing that environment.
     module IntegrationTests
 
+      # The directory to add to the `RUBYLIB` environment variable for
+      # the spawned processes.
+      #
+      # If `args` are given, return a path within this directory.
+      #
+      # @param [Array<String>] args
+      # @return [String]
       def lib_dir *args
         root.join('lib', *args).to_s
       end
 
+      # The directory to add to the `PATH` environment variable for
+      # the spawned processes.
+      #
+      # If `args` are given, return a path within this directory.
+      #
+      # @param [Array<String>] args
+      # @return [String]
       def bin_dir *args
         root.join('bin', *args).to_s
       end
-      
+
+      # The directory to use for examples for the spawned process.
+      #
+      # If `args` are given, return a path within this directory.
+      #
+      # @param [Array<String>] args
+      # @return [String]
       def examples_dir *args
         root.join('examples', *args).to_s
       end
 
+      # A Hash of environment variables to use for the spawned
+      # process.
+      #
+      # By default, will put the IntegrationHelper#lib_dir on the
+      # `RUBYLIB` and the IntegrationHelper#bin_dir on the `PATH`.
+      #
+      # @return [Hash]
       def integration_env
         {
           "PATH"    => [bin_dir.to_s, ENV["PATH"]].compact.join(':'),
@@ -31,6 +59,9 @@ module Wukong
         }
       end
 
+      # The directory to spawn new processes in.
+      #
+      # @return [String]
       def integration_cwd
         root.to_s
       end
