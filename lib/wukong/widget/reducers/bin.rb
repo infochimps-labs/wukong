@@ -12,7 +12,7 @@ module Wukong
     #   0.03480
     #   0.74418
     #   ...
-    #   $ cat input | wu-local bin
+    #   $ cat input | wu-local bin --to=tsv
     #
     #   0.02935	0.12638500000000003	7
     #   0.12638500000000003	0.22342000000000004	11
@@ -20,7 +20,7 @@ module Wukong
     #
     # @example Control how the bins are defined and displayed
     #
-    #   $ cat input | wu-local bin --min=0.0 --max=1.0 --num_bins=10 --precision=1
+    #   $ cat input | wu-local bin --min=0.0 --max=1.0 --num_bins=10 --precision=1 --to=tsv
     #   0.0	0.1	10.0
     #   0.1	0.2	12.0
     #   0.2	0.3	8.0
@@ -28,7 +28,7 @@ module Wukong
     #
     # @example Include an additional column of normalized (fractional) counts
     # 
-    #   $ cat input | wu-local bin --min=0.0 --max=1.0 --num_bins=10 --precision=1 --normalize
+    #   $ cat input | wu-local bin --min=0.0 --max=1.0 --num_bins=10 --precision=1 --normalize --to=tsv
     #   0.0	0.1	10.0	0.3
     #   0.1	0.2	12.0	0.36
     #   0.2	0.3	8.0	0.24
@@ -36,7 +36,7 @@ module Wukong
     #
     # @example Make a log-log histogram
     #
-    #   $ cat input | wu-local bin --log_bins --log_counts
+    #   $ cat input | wu-local bin --log_bins --log_counts --to=tsv
     #   1.000	3.162	1.099
     #   3.162	10.000	1.946
     #   10.000	31.623	3.045
@@ -48,7 +48,7 @@ module Wukong
     # @example Use the bin at the end of a dataflow
     #
     #   Wukong.processor(:bins_at_end) do
-    #     ... | extract(part: 'age') | bin(num_bins: 10)
+    #     ... | extract(part: 'age') | bin(num_bins: 10) | to_tsv
     #   end
     #
     # @see Accumulator
@@ -69,7 +69,7 @@ Here's a simple example:
   ...
   100
 
-  $ cat input.dat | wu-local bin
+  $ cat input.dat | wu-local bin --to=tsv
   1.000	10.900	10.000
   10.900	20.800	10.000
   20.800	30.700	10.000
@@ -86,7 +86,7 @@ or the explicit bin edges themselves, via the --min, --max,
 You can control the display of numbers with the --format_string and
 --precision options.
 
-  $ cat input.dat | wu-local bin --num_bins=4 --min=0 --max=100 --precision=0
+  $ cat input.dat | wu-local bin --num_bins=4 --min=0 --max=100 --precision=0 --to=tsv
   0.0	25	24
   25	50	25
   50	75	25
@@ -98,7 +98,7 @@ the given base.
 
 You can also normalize the distribution using the --normalize option.
 
-  $ cat input.dat | wu-local bin --num_bins=4 --log_bins --normalize
+  $ cat input.dat | wu-local bin --num_bins=4 --log_bins --normalize --to=tsv
   1.000	3.162	3.000	0.030
   3.162	10.000	7.000	0.070
   10.000	31.623	21.000	0.210
@@ -198,7 +198,7 @@ EOF
           if normalize && total_count > 0
             bin << log_count_if_necessary((count.to_f / total_count.to_f))
           end
-          yield bin.map { |n| format(n) }.join("\t")
+          yield bin.map { |n| format(n) }
         end
       end
 
@@ -219,7 +219,7 @@ EOF
         when format_string
           format_string % n
         when n == 0.0
-          0.0
+          '0.0'
         when n.abs > 1000 || n.abs < 0.001
           "%#{precision}.#{precision}E" % n
         else

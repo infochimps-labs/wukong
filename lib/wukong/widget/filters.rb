@@ -241,7 +241,7 @@ passing any, acting as a limit.
 If no --max argument is given, all records will be passed.
 EOF
 
-      field :max, Integer, :default => Float::INFINITY, :doc => "Maximum number of records to let pass"
+      field :max, Integer, :doc => "Maximum number of records to let pass"
 
       # The current record count.
       attr_accessor :count
@@ -257,7 +257,7 @@ EOF
       # @param [Object] record
       # @return [true, false]
       def select?(record)
-        keep = @count < max
+        keep = (max ? @count < max : true)
         @count += 1
         keep
       end
