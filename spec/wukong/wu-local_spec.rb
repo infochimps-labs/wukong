@@ -90,4 +90,20 @@ describe 'wu-local' do
       end
     end
   end
+
+  context "parsing records with the --from argument" do
+    subject { wu_local('identity --from=tsv') < "1\t2\t3" }
+    it { should exit_with(0) }
+    it "should emit a row for each input column" do
+      should have_stdout("1\n2\n3")
+    end
+  end
+
+  context "formatting records with the --to argument" do
+    subject { wu_local('identity --from=tsv --to=json') < "1\t2\t3" }
+    it { should exit_with(0) }
+    it "should emit a single JSON array for the input record" do
+      should have_stdout('["1","2","3"]')
+    end
+  end
 end
