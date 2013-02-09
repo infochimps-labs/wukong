@@ -21,7 +21,7 @@ module Wukong
     #   banana
     #   apple
     #   ...
-    #   $ cat input | wu-local sort | wu-local group
+    #   $ cat input | wu-local sort | wu-local group --to=tsv
     #   apple	4
     #   banana	2
     #   cat	5
@@ -34,7 +34,7 @@ module Wukong
     #   {"id": 2, "word": "cat"   }
     #   {"id": 3, "word": "banana"}
     #   ...
-    #   $ cat input | wu-local sort --on=word | wu-local group --by=word
+    #   $ cat input | wu-local sort --on=word | wu-local group --by=word --to=tsv
     #   apple	4
     #   banana	2
     #   cat	5
@@ -46,7 +46,7 @@ module Wukong
     # @example Using a group at the end of a dataflow
     #
     #   Wukong.dataflow(:makes_groups) do
-    #     ... | sort(on: 'field') | group(by: 'field')
+    #     ... | sort(on: 'field') | group(by: 'field') | to_tsv
     #   end
     #
     # @see Sort
@@ -71,7 +71,7 @@ keys, allowing to count identical values, a la `uniq -c`:
   apple
   ...
 
-  $ cat input | wu-local sort | wu-local group
+  $ cat input | wu-local sort | wu-local group --to=tsv
   apple	4
   banana	2
   cat	5
@@ -85,7 +85,7 @@ You can also group by some part of in input record:
   {"id": 3, "word": "banana"}
   ...
 
-  $ cat input | wu-local sort --on==word | wu-local group --by=word
+  $ cat input | wu-local sort --on==word | wu-local group --by=word --to=tsv
   apple	4
   banana	2
   cat	5

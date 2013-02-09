@@ -13,7 +13,7 @@ module Wukong
     #   {"id": 2, "parent_id": 3}
     #   {"id": 3, "parent_id": 3}
     #   ...
-    #   $ cat input | wu-local group_concat --by=parent_id
+    #   $ cat input | wu-local group_concat --by=parent_id --to=tsv
     #   4	1	{"id": 1, "parent_id": 4}
     #   3	2	{"id": 2, "parent_id": 3}	{"id": 3, "parent_id": 3}
     #   ...
@@ -33,7 +33,7 @@ into a single record.
   {"id": 3, "parent_id": 3}
   ...
 
-  $ cat input | wu-local group_concat --by=parent_id
+  $ cat input | wu-local group_concat --by=parent_id --to=tsv
   4	1	{"id": 1, "parent_id": 4}
   3	2	{"id": 2, "parent_id": 3}	{"id": 3, "parent_id": 3}
   ...
