@@ -18,11 +18,7 @@
 # cat data/swk-hist-map.tsv | ./histograms.rb --reduce
 # ./histograms.rb --run data/star_wars_kid.tsv data/star_wars_kid-pages_by_hour.tsv
 
-class MatchData
-  def captures_hash
-    Hash[names.map{|nn| [nn, self[nn]] }]
-  end
-end
+require 'wu/munging'
 
 class Logline
   include Gorillib::Model
@@ -43,9 +39,15 @@ class Logline
   field :referer,       String
   field :user_agent,    String
 
-  def day_hr
-    [visit_time.year, visit_time.month, visit_time.day, visit_time.hour].join
+  # Use the regex to break line into fields
+  # Emit each record as flat line
+  def self.parse(line)
+    mm = raw_regex.match(line.chomp) or return BadRecord.new('no match', line)
+    new(mm.captures_hash)
   end
+
+  # Map of abbreviated months to date number.
+  MONTHS = { 'Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12, }
 
   def receive_requested_at(val)
     if %r{(\d+)/(\w+)/(\d+):(\d+):(\d+):(\d+)\s([\+\-]\d\d)(\d\d)} === val
@@ -56,32 +58,9 @@ class Logline
     super(val)
   end
 
-  # Use the regex to break line into fields
-  # Emit each record as flat line
-  def self.parse(line)
-    mm = raw_regex.match(line.chomp) or return BadRecord.new('no match', line)
-    new(mm.captures_hash)
+  def day_hr
+    [visit_time.year, visit_time.month, visit_time.day, visit_time.hour].join
   end
-
-  def page_type
-    file_ext = path[FILE_EXT_RE]
-    case file_ext
-    when nil                        then 'page'
-    when '.wmv'                     then 'video'
-    when '.html','.shtml'           then 'page'
-    when '.css', '.js'              then 'asset'
-    when '.png', '.gif', '.ico'     then 'image'
-    when '.wmv'                     then 'image'
-    when '.pl','.asp','.jsp','.cgi' then 'page'
-    else                                 'other'
-    end
-  end
-
-  # Matches a file extension
-  FILE_EXT_RE = %r{\.[^/]+\z}
-
-  # Map of abbreviated months to date number.
-  MONTHS = { 'Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12, }
 
   #
   # Regular expression to parse an apache log line.
@@ -107,5 +86,22 @@ class Logline
            \s\"(?<referer>      [^\"]*)\"          # referer        "http://infochimps.org/search?query=CAC"
            \s\"(?<user_agent>   [^\"]*)\"          # user_agent     "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
           \z}x)
+
+  # Matches a file extension
+  FILE_EXT_RE = %r{\.[^/]+\z}
+
+  def page_type
+    file_ext = path[FILE_EXT_RE]
+    case file_ext
+    when nil                        then 'page'
+    when '.wmv'                     then 'video'
+    when '.html','.shtml'           then 'page'
+    when '.css', '.js'              then 'asset'
+    when '.png', '.gif', '.ico'     then 'image'
+    when '.wmv'                     then 'image'
+    when '.pl','.asp','.jsp','.cgi' then 'page'
+    else                                 'other'
+    end
+  end
 
 end

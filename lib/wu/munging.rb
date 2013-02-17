@@ -7,7 +7,7 @@ Time.class_eval do
 end
 
 MatchData.class_eval do
-  def as_hash
+  def captures_hash
     Hash[ names.map{|name| [name.to_sym, self[name]] } ]
   end
 end

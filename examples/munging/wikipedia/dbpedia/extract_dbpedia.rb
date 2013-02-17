@@ -311,7 +311,7 @@ module Dbpedia
       return if line =~ /\A(?:\#|$|==>.*<==)/
       MAPPING_INFO.each do |flavor, info|
         next unless mm = info[:re].match(line)
-        yield record_for_flavor(info[:kind], info[:fields], flavor, mm.as_hash)
+        yield record_for_flavor(info[:kind], info[:fields], flavor, mm.captures_hash)
         return
       end
       line =~ %r{<http://dbpedia.org/resource/(.)}
