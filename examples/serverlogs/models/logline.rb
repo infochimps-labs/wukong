@@ -18,9 +18,17 @@
 # cat data/swk-hist-map.tsv | ./histograms.rb --reduce
 # ./histograms.rb --run data/star_wars_kid.tsv data/star_wars_kid-pages_by_hour.tsv
 
+class MatchData
+  def captures_hash
+    Hash[names.map{|nn| [nn, self[nn]] }]
+  end
+end
+
 class Logline
   include Gorillib::Model
   include Gorillib::Model::PositionalFields
+
+  class_attribute :raw_regex
 
   field :ip_address,    String
   field :rfc_1413,      String
@@ -51,8 +59,8 @@ class Logline
   # Use the regex to break line into fields
   # Emit each record as flat line
   def self.parse(line)
-    mm = LOG_RE.match(line.chomp) or return BadRecord.new('no match', line)
-    new(* mm.captures)
+    mm = raw_regex.match(line.chomp) or return BadRecord.new('no match', line)
+    new(mm.captures_hash)
   end
 
   def page_type
@@ -80,23 +88,24 @@ class Logline
   #
   # 83.240.154.3 - - [07/Jun/2008:20:37:11 +0000] "GET /faq HTTP/1.1" 200 569 "http://infochimps.org/search?query=your_mom" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
   #
-  LOG_RE = Regexp.compile(%r{\A
-               (\S+)           # ip_address     83.240.154.3
-             \s(\S+)           # rfc_1413       -
-             \s(\S+)           # userid         -
-
-           \s\[(\d+/\w+/\d+    # date part      [07/Jun/2008
-               :\d+:\d+:\d+    # time part      :20:37:11
-             \s[\+\-]\S*)\]    # timezone       +0000]
-
-        \s\"(?:(\S+)           # http_method    "GET
-             \s(\S+)           # path           /faq
-    \s(HTTP/[\d\.]+)|-)\"      # protocol       HTTP/1.1"
-
-             \s(\d+)           # response_code  200
-             \s(\d+|-)         # bytesize       569
-           \s\"([^\"]*)\"      # referer        "http://infochimps.org/search?query=CAC"
-           \s\"([^\"]*)\"      # user_agent     "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
+  self.raw_regex = Regexp.compile(%r{\A
+               (?<ip_address>   \S+)               # ip_address     83.240.154.3
+             \s(?<rfc_1413>     \S+)               # rfc_1413       -
+             \s(?<userid>       \S+)               # userid         -
+                                                   #
+           \s\[(?<requested_at>                    #
+                                \d+/\w+/\d+        # date part      [07/Jun/2008
+                               :\d+:\d+:\d+        # time part      :20:37:11
+                              \s[\+\-]\S*)\]       # timezone       +0000]
+                                                   #
+        \s\"(?:(?<http_method>  \S+)               # http_method    "GET
+             \s(?<path>         \S+)               # path           /faq
+             \s(?<protocol>     HTTP/[\d\.]+)|-)\" # protocol       HTTP/1.1"
+                                                   #
+             \s(?<response_code>\d+)               # response_code  200
+             \s(?<bytesize>     \d+|-)             # bytesize       569
+           \s\"(?<referer>      [^\"]*)\"          # referer        "http://infochimps.org/search?query=CAC"
+           \s\"(?<user_agent>   [^\"]*)\"          # user_agent     "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
           \z}x)
 
 end
