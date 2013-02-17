@@ -64,9 +64,8 @@ module Wu
 
       # Returns a JSON encoded string, with all non-ASCII characters escaped
       def safe_json_encode(obj, options={})
-        regexp = options[:pretty] ? /[^\n\x20-\x7e]/m : NON_PLAIN_ASCII_RE
         jsonized = MultiJson.encode(obj, options.to_hash)
-        jsonized.gsub!(regexp){|ch| "\\u%04x" % ch.ord }
+        jsonized.gsub!(NON_PLAIN_ASCII_RE){|ch| "\\u%04x" % ch.ord }
         jsonized
       end
 
