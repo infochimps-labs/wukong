@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+Settings.use :commandline
+Settings.define :recursive, flag: 'r', description: 'List directories recursively'
+Settings.resolve!
+
+Wukong::Script::HadoopRunner.run('fs','-ls' + (Settings.recursive? ? 'r' : ''), Settings.rest)
