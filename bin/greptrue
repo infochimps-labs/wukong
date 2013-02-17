@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-# runs grep but always returns a true exit status. (Otherwise hadoop vomits)
-# You can set a command line var in hadoop instead, but we'll leave this around
-grep "$@"
-true

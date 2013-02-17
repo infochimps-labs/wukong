@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# insert a tab char from the command line:
-# echo "hi$(tabchar)there"
-# # => "hi	there"
-exec echo -n -e '\t'
