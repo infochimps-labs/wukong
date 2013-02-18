@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require_relative '../lib/wukong/script/hadoop_runner'
+
+Settings.resolve!
+
+cmd = ['fs','-mkdir'] + Settings.rest
+
+Wukong::Script::HadoopRunner.run(cmd)
