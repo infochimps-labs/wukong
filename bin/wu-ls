@@ -9,4 +9,4 @@ cmd = ['fs']
 cmd << (Settings.recursive ? '-lsr' : '-ls')
 cmd += Settings.rest
 
-Wukong::Script::HadoopRunner.run(cmd)
+Wukong::Script::HadoopRunner.run(cmd, mirror_io: true)
