@@ -10,4 +10,5 @@ cmd << (Settings.recursive ? '-rmr' : '-rm')
 cmd << '-skipTrash' if Settings.skip_trash
 cmd += Settings.rest
 
-Wukong::Script::HadoopRunner.run(cmd,mirror_io: true)
+_, _, exit_status = Wukong::Script::HadoopRunner.run(cmd,mirror_io: true)
+exit exit_status
