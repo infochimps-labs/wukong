@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+require_relative '../lib/wukong/script/hadoop_runner'
+
+Settings.define :recursive, flag: 'r', description: 'Removes a directory and its contents recursively', type: :boolean
+Settings.define :skip_trash, description: 'Do not pass .trash, immediately collect your HDFS space', type: :boolean
+Settings.resolve!
+
+cmd = ['fs']
+cmd << (Settings.recursive ? '-rmr' : '-rm')
+cmd << '-skipTrash' if Settings.skip_trash
+cmd += Settings.rest
+
+Wukong::Script::HadoopRunner.run(cmd)

@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 require_relative '../lib/wukong/script/hadoop_runner'
 
-Settings.define :recursive, flag: 'r', description: 'List directories recursively'
+Settings.description = 'list directory contents'
+Settings.define :recursive, flag: 'r', description: 'List subdirectories recursively', type: :boolean
 Settings.resolve!
 
-Wukong::Script::HadoopRunner.run('fs','-ls' + (Settings.recursive ? 'r' : ''), *Settings.rest)
+cmd = ['fs']
+cmd << (Settings.recursive ? '-lsr' : '-ls')
+cmd += Settings.rest
+
+Wukong::Script::HadoopRunner.run(cmd)
