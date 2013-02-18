@@ -78,7 +78,7 @@ class Logline
   #
   self.raw_regexp = %r{\A
                (?<ip_address>   [\w\.]+)           # ip_address     83.240.154.3
-             \ (?<identd>     \S+)                 # identd       -  (rarely used)
+             \ (?<identd>       \S+)               # identd         -  (rarely used)
              \ (?<authuser>     \S+)               # authuser       -  (rarely used)
                                                    #
            \ \[(?<requested_at>                    #
