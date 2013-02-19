@@ -33,6 +33,12 @@ module Wukong
       dataflow.each(&:setup)
     end
 
+    def finalize_dataflow
+      dataflow.each do |stage|
+        stage.finalize(&driver.advance(stage)) if stage.respond_to?(:finalize)
+      end
+    end
+
     def finalize_and_stop_dataflow
       dataflow.each do |stage|
         stage.finalize(&driver.advance(stage)) if stage.respond_to?(:finalize)
