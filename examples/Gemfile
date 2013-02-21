@@ -17,6 +17,7 @@ group :examples do
   gem "crack"
   gem "oj"
   gem "activesupport"
+  gem "geocoder"
 end
 
 group :development do

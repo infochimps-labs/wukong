@@ -1,0 +1,31 @@
+
+#    1  changed
+#    1  dome
+#    1  flare
+#    1  hexagon
+#    1  pyramid
+#    2  crescent
+#    2  round
+#    8  delta
+#  177  cross
+#  265  cone
+#  595  teardrop
+#  664  egg
+#  760  chevron
+#  915  diamond
+#  966  rectangle
+#  982  cylinder
+#  990  flash
+# 1546  changing
+# 1782  cigar
+# 1788  formation
+# 2525
+# 2869  oval
+# 3452  fireball
+# 3637  sphere
+# 4490  unknown
+# 4593  other
+# 4825  disk
+# 5271  circle
+# 6082  triangle
+# 12202  light

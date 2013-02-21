@@ -64,7 +64,7 @@ class Logline
   end
   ### @/export
 
-  def day_hr
+  def date_hr
     [visit_time.year, visit_time.month, visit_time.day, visit_time.hour].join
   end
 
