@@ -6,7 +6,7 @@ TEAM_ASSIGNMENTS = {
   :angular  => [ :Dasher ],
   :coneish  => [ :Dancer, :Prancer ],
   :ethereal => [ :Vixen, :Comet ],
-  :multiple => [ :Cupid, :Donner, ],
-  :roundish => [ :Blitzen ],
+  :multiple => [ :Cupid, ],
+  :roundish => [ :Donner, :Blitzen ],
   :unknown  => [ :Rudolph ],
 }

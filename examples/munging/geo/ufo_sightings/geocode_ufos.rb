@@ -11,7 +11,7 @@ Settings.resolve!
 Geocoder.configure(cache: Redis.new, timeout: 8)
 
 Pathname.of(:ufo_rawd, 'locations.tsv').open do |locations_file|
-  locations_file.readlines[17_000..-1].each do |location|
+  locations_file.readlines[0..-1].each do |location|
     begin
       location.chomp!
       if location =~ /^(.*)\s+\((.*)\),(.*)$/
