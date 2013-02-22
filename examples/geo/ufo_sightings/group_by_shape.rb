@@ -1,31 +1,43 @@
+#       a           1  hexagon
+#       a           1  pyramid
+#       a           8  delta
+#       a         177  cross
+#       a         915  diamond
+#       a         966  rectangle
+#       a        6082  triangle
 
-#    1  changed
-#    1  dome
-#    1  flare
-#    1  hexagon
-#    1  pyramid
-#    2  crescent
-#    2  round
-#    8  delta
-#  177  cross
-#  265  cone
-#  595  teardrop
-#  664  egg
-#  760  chevron
-#  915  diamond
-#  966  rectangle
-#  982  cylinder
-#  990  flash
-# 1546  changing
-# 1782  cigar
-# 1788  formation
-# 2525
-# 2869  oval
-# 3452  fireball
-# 3637  sphere
-# 4490  unknown
-# 4593  other
-# 4825  disk
-# 5271  circle
-# 6082  triangle
-# 12202  light
+#       r           1  dome
+#       r           2  crescent
+#       r           2  round
+#       r         664  egg
+#       r         265  cone
+#       r         595  teardrop
+#       r         982  cylinder
+#       r        1782  cigar
+#       r        2869  oval
+#       r        3637  sphere
+#       r        4825  disk
+#       r        5271  circle
+
+#       f         760  chevron
+#       f        1788  formation
+
+#       l           1  flare
+#       l         990  flash
+#       l        1546  changing
+#       l        3452  fireball
+#       l       12202  light
+
+#       u           1  changed
+#       u        2525
+#       u        4490  unknown
+#       u        4593  other
+
+
+{
+  :angular  => %w[ hexagon pyramid delta cross diamond rectangle triangle ],
+  :roundish => %w[ dome crescent round egg cone teardrop cylinder cigar oval sphere disk circle ],
+  :multiple => %w[ chevron formation ],
+  :ethereal => %w[ flare flash changing fireball light changed ],
+  :unknown  => %w[ unknown other ],
+  }

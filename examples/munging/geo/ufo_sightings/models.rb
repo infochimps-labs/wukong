@@ -1,3 +1,33 @@
+require 'wu/geo/models'
+
+class UfoSighting
+  include Wu::Model
+  field :sighted_at,   Time
+  field :reported_at,  Time
+  field :shape,        Symbol
+  field :duration_str, String
+  field :location_str, String
+  field :place,        Wu::Geo::Place
+  field :description,  String
+
+  def shape_category
+    case shape
+    when :round, :egg, :oval, :sphere, :disk, :circle              then [:roundish ]
+    when :triangle, :delta, :rectangle, :diamond, :cross, :hexagon then [:angular  ]
+    when :cone, :teardrop, :cylinder, :cigar                       then [:coneish  ]
+    when :chevron, :formation                                      then [:multiple ]
+    when :flare, :flash, :changing, :fireball, :light, :changed    then [:ethereal ]
+    when :unknown, :other                                          then [:unknown  ]
+    when :pyramid                                                  then [:coneish,  :angular]
+    when :crescent                                                 then [:roundish, :angular]
+    when :dome                                                     then [:coneish, :roundish]
+    else
+      :unknown
+    end
+    SHAPE_CATEGORIES[shape] || :unknown
+  end
+end
+
 class RawUfoSighting
   include Gorillib::Model
   include Gorillib::Model::LoadFromTsv

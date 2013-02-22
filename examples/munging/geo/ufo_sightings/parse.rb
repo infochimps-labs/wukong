@@ -8,9 +8,11 @@ class RawUfoSighting
   end
 
   def receive_location_str(val)
-    if val.is_a?(String)
-      val = @@html_encoder.decode(val.strip)
-    end
+    val = @@html_encoder.decode(val.strip) if val.is_a?(String)
+    super(val)
+  end
+  def receive_shape(val)
+    val = val.strip if val.respond_to?(:strip)
     super(val)
   end
 

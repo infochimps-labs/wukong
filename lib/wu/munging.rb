@@ -1,4 +1,14 @@
 # encoding:UTF-8
+require          'configliere'
+require          'multi_json'
+require          'gorillib/model'
+require          'gorillib/pathname'
+require          'gorillib/model/serialization'
+require_relative './model'
+require          'wukong/script'
+require          'wukong/streamer/encoding_cleaner'
+
+$LOAD_PATH.push(File.expand_path('..', File.dirname(__FILE__)))
 
 Time.class_eval do
   def to_flat
