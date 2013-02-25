@@ -19,8 +19,8 @@ Here is a list of various other projects which you may also want to
 peruse when trying to understand the full Wukong experience:
 
 * <a href="http://github.com/infochimps-labs/wukong-hadoop">wukong-hadoop</a>: Run Wukong processors as mappers and reducers within the Hadoop framework.  Model Hadoop jobs locally before you run them.
-* <a href="http://github.com/infochimps-labs/wukong-storm>wukong-storm</a>: Run Wukong processors within the Storm framework.  Model flows locally before you run them.
-* <a href="http://github.com/infochimps-labs/wukong-load>wukong-load</a>: Load the output data from your local Wukong jobs and flows into a variety of different data stores.
+* <a href="http://github.com/infochimps-labs/wukong-storm">wukong-storm</a>: Run Wukong processors within the Storm framework.  Model flows locally before you run them.
+* <a href="http://github.com/infochimps-labs/wukong-load">wukong-load</a>: Load the output data from your local Wukong jobs and flows into a variety of different data stores.
 * <a href="http://github.com/infochimps-labs/wonderdog">wonderdog</a>: Connect Wukong processors running within Hadoop to Elasticsearch as either a source or sink for data.
 * <a href="http://github.com/infochimps-labs/wukong-deploy">wukong-deploy</a>: Orchestrate Wukong and other wu-tools together to support an application running on the Infochimps Platform.
 
