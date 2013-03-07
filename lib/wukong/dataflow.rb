@@ -33,6 +33,11 @@ module Wukong
   
   class Dataflow < Hanuman::Graph
 
+    def self.description desc=nil
+      @description = desc if desc
+      @description
+    end
+    
     def has_input?(stage)
       links.any?{ |link| link.into == stage }
     end
