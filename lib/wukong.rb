@@ -35,7 +35,7 @@ module Wukong
   
   add_shortcut_method_for(:processor, ProcessorBuilder)
   add_shortcut_method_for(:dataflow,  DataflowBuilder)
-
+  
 end
 
 # Alias module name for shorter namespaces
@@ -44,4 +44,6 @@ Wu = Wukong
 require_relative 'wukong/widgets'
 require_relative 'wukong/local'
 
-
+module Wukong
+  BUILTINS = Set.new(Wukong.registry.show.keys)
+end
