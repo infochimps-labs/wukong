@@ -44,6 +44,13 @@ module Wukong
         @driver ||= UnitTestDriver.new(processor, settings)
       end
 
+      # No need to load commandline arguments when we are testing
+      # There are other mechanisms for passing them in, plus
+      # RSpec goes into an infinite loop if you load a spec file
+      # from within a spec file
+      def load_args
+      end
+
       # Do nothing.  This prevents control flow within the Ruby
       # interpreter from staying within this runner, as it would
       # ordinarly do for `wu-local`.
