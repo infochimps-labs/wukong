@@ -9,8 +9,10 @@ module Wukong
       def handle_error(record, err)
         return if err.class == Errno::EPIPE
         case on_error
-        when 'log'    then log.warn "#{err.class}: #{err.message}"
-        when 'notify' then notify('error', record: record, error: err)
+        when 'log'    then
+          log.error "#{err.class}: #{err.message}"
+          err.backtrace.each { |line| log.debug(line) }
+        when 'notify' then notify('error', record: record, error: err.message, backtrace: err.backtrace)
         end          
       end
 
