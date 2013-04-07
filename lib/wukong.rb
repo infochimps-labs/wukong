@@ -1,5 +1,4 @@
 require 'configliere'
-require 'vayacondios-client'
 require 'multi_json'
 require 'eventmachine'
 require 'log4r'
