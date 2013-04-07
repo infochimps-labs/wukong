@@ -2,7 +2,6 @@ source :rubygems
 
 gem "configliere",        '~> 0.4'
 gem "multi_json",         '>= 1.3.6'
-gem "vayacondios-client", '>= 0.0.3'
 gem "gorillib",           '>= 0.4.2'
 gem "uuidtools"
 gem "eventmachine"

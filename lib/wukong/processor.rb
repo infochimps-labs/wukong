@@ -13,7 +13,6 @@ module Wukong
   # local machine.  You can glue processors together
   class Processor < Hanuman::Stage
     include Logging
-    include Vayacondios::Notifications
     
     field :action, Whatever, :doc => false
 
