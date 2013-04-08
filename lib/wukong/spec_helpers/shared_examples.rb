@@ -6,7 +6,6 @@ shared_examples_for 'a processor' do |options = {}|
   it{ processor(options[:named]).processor.should respond_to(:process)  }
   it{ processor(options[:named]).processor.should respond_to(:finalize) }
   it{ processor(options[:named]).processor.should respond_to(:stop)     }
-  it{ processor(options[:named]).processor.should respond_to(:notify)   }
 end
 
 shared_examples_for 'a plugin' do |options = {}|
