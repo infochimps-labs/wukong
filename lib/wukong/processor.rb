@@ -47,7 +47,7 @@ module Wukong
         settings.description = description if description
         fields.each_pair do |name, field|
           next if field.doc == false || field.doc.to_s == 'false'
-          next if [:log, :notifier].include?(name)
+          next if [:log].include?(name)
           field_props = {}.tap do |props|
             props[:description] = field.doc unless field.doc == "#{name} field"
             field_type = (field.type.respond_to?(:product) ? field.type.product : field.type)

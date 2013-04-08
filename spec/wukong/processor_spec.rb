@@ -9,7 +9,6 @@ describe Wukong::Processor do
     it{ should respond_to(:process)  }
     it{ should respond_to(:finalize) }
     it{ should respond_to(:stop)     }
-    it{ should respond_to(:notify)   }
   end
 
   describe "default process method" do
