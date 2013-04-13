@@ -1,5 +1,4 @@
 require_relative 'stdio_driver'
-require_relative 'tcp_driver'
 
 module Wukong
   module Local
@@ -78,19 +77,9 @@ module Wukong
       # Runs either the StdioDriver or the TCPDriver, depending on
       # what settings were passed.
       def run
-        EM.run do 
-          driver.start(processor, settings)
+        EM.run do
+          StdioDriver.start(processor, settings)
         end
-      end
-
-      # The driver this Runner will use.
-      #
-      # Defaults to the Wukong::Local::StdioDriver, but will use the
-      # TcpDriver if it has a :port setting defined.
-      #
-      # @return [Wukong::Local::TCPDriver, Wukong::Local::StdioDriver]
-      def driver
-        (settings[:tcp_port] ? TCPDriver : StdioDriver)
       end
       
     end

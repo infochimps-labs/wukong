@@ -1,24 +1,48 @@
 module Hanuman
-  class Graph < Stage
-    include TSort
 
+  module GraphInstanceMethods
+    def each_stage &block
+      stages.values.each(&block)
+    end
+
+    def descendents stage=nil
+      links.find_all do |link|
+        stage ? link.from == stage.label : true
+      end.map(&:into).uniq.map { |label| stages[label] }.compact
+    end
+
+    def ancestors stage=nil
+      links.find_all do |link|
+        stage ? link.into == stage.label : true
+      end.map(&:from).uniq.map { |label| stages[label] }.compact
+    end
+
+    def add_stage stage
+      stages[stage.label] = stage
+    end
+
+    def has_link? from, into
+      links.detect { |link| link.from == from.label && link.into == into.label } ? true : false
+    end
+
+    def add_link type, from, into
+      add_stage(from)
+      add_stage(into)
+      self.links << Hanuman::LinkFactory.connect(type, from.linkable_name(:in), into.linkable_name(:out))
+    end
+  end
+
+  class Graph < Stage
+    include GraphInstanceMethods
+    
     field :stages, Hash,  :default => {}
     field :links,  Array, :default => []
-    
-    def tsort_each_node(&blk)
-      stages.keys.each(&blk)
-    end
-
-    def tsort_each_child(node, &blk)
-      links.select{ |link| link.into == node }.map(&:from).each(&blk)
-    end
-
-    def directed_sort() self.tsort ; end
   end
 
   class GraphBuilder < StageBuilder
-    include TSort
 
+    include GraphInstanceMethods
+    
     field :stages, Hash,  :default => {}
     field :links,  Array, :default => []
 
@@ -49,6 +73,7 @@ module Hanuman
     end
 
     def extract_links!
+      self.links.replace([])
       stages.each_pair{ |name, builder| links << builder.links }
       links.flatten!
     end
@@ -60,21 +85,13 @@ module Hanuman
       attrs.merge(args)      
     end
 
-    def tsort_each_node(&blk)
-      stages.keys.each(&blk)
-    end
-
-    def tsort_each_child(node, &blk)
-      links.select{ |link| link.into == node }.map(&:from).each(&blk)
-    end
-
-    def directed_sort() self.tsort ; end
-
     def clone
       cloned_attrs  = Hash[ serialize.select{ |key, val| key != :stages }.map{ |key, val| dup_key = key.dup rescue key ; dup_val = val.dup rescue val ; [ dup_key, dup_val ] } ]
       cloned_links  = links.map{ |link| link.dup }
       cloned_stages = Hash[ stages.map{ |stage| stage.clone } ]
       self.class.receive(cloned_attrs.merge(links: cloned_links).merge(stages: cloned_stages).merge(for_class: for_class))
     end
+
   end
+    
 end

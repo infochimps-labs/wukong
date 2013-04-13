@@ -1,12 +1,23 @@
-require_relative('event_machine_driver')
 module Wukong
   module Local
 
     # A class for driving processors over the STDIN/STDOUT protocol.
     class StdioDriver < EM::P::LineAndTextProtocol
-      include EventMachineDriver
+      
+      include DriverMethods
       include Processor::StdoutProcessor
       include Logging
+
+      # :nodoc:
+      def initialize(label, settings)
+        super
+        construct_dataflow(label, settings)
+      end
+      
+      def self.add_signal_traps
+        Signal.trap('INT')  { log.info 'Received SIGINT. Stopping.'  ; EM.stop }
+        Signal.trap('TERM') { log.info 'Received SIGTERM. Stopping.' ; EM.stop }                  
+      end
       
       def self.start(label, settings = {})
         EM.attach($stdin, self, label, settings)
@@ -18,7 +29,7 @@ module Wukong
       end
 
       def receive_line line
-        driver.send_through_dataflow(line)
+        send_through_dataflow(line)
       rescue => e
         error = Wukong::Error.new(e)
         EM.stop
