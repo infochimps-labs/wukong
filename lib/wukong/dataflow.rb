@@ -18,7 +18,6 @@ module Wukong
     def namespace() Wukong::Dataflow ; end
 
     def handle_dsl_arguments_for(stage, *args, &action)
-      puts "DSL: #{stage.label}"
       options = args.extract_options!
       stage.merge!(options.merge(action: action).compact)
       stage.graph = self
