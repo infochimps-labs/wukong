@@ -4,20 +4,10 @@ module Wukong
       
       include Wukong::DriverMethods
       
-      def initialize label, settings
+      def initialize label, settings={}
         super()
-        @settings = settings
-        @dataflow = construct_dataflow(label, settings)
+        construct_dataflow(label, settings)
         setup_dataflow
-      end
-      
-      def setup
-      end
-      
-      def finalize
-      end
-      
-      def stop
       end
       
       def process output
@@ -27,14 +17,14 @@ module Wukong
       def run
         return false unless dataflow
         given_records.each do |input|
-          driver.send_through_dataflow(input)
+          send_through_dataflow(input)
         end
         finalize_and_stop_dataflow
         self
       end
       
       def processor
-        dataflow.first
+        dataflow.root
       end
       
       # An array of accumulated records to process come match-time.

@@ -22,27 +22,7 @@ module Wukong
         @description = desc if desc
         @description
       end
-      
-      def consumes(*args)
-        options   = args.extract_options!
-        @consumes = options[:as]
-        validate_and_set_serialization(:from, args.first)
-      end
-
-      def produces(*args)
-        options   = args.extract_options!
-        @produces = options[:as]
-        validate_and_set_serialization(:to, args.first)      
-      end
             
-      def valid_serializer? label
-        label
-      end
-
-      def validate_and_set_serialization(direction, label)
-        instance_variable_set("@serialization_#{direction}", label) if %w[ tsv json xml ].include?(label.to_s)
-      end
-
       def configure(settings)
         settings.description = description if description
         fields.each_pair do |name, field|
@@ -68,14 +48,6 @@ module Wukong
 
     end
         
-    def expected_record_type(type)
-      self.class.instance_variable_get("@#{type}")
-    end
-    
-    def expected_serialization(direction)
-      self.class.instance_variable_get("@serialization_#{direction.to_s}")
-    end
-    
     # When instantiated with a block, the block will replace this
     # method.
     #

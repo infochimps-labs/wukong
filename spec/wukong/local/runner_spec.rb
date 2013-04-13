@@ -25,16 +25,5 @@ describe Wukong::Local::LocalRunner do
       local_runner(examples_dir('string_reverser.rb')).processor.should == 'string_reverser'
     end
   end
-
-  describe "uses a" do
-    it "StdioDriver by default" do
-      local_runner('identity').driver.should == Wukong::Local::StdioDriver
-    end
-
-    it "TCPDriver when given a --port argument" do
-      local_runner('identity','--tcp_port=6000').driver.should == Wukong::Local::TCPDriver
-    end
-    
-  end
   
 end

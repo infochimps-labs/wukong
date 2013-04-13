@@ -16,13 +16,11 @@ module Wukong
     def self.configure settings, program
       case program
       when 'wu-local'
-        settings.define :run,      description: "Name of the processor or dataflow to use. Defaults to basename of the given path.", flag: 'r'
-        settings.define :tcp_port, description: "Consume TCP requests on the given port instead of lines over STDIN", type: Integer, flag: 't'
+        settings.define :run,  description: "Name of the processor or dataflow to use. Defaults to basename of first argument", flag: 'r'
         
         settings.define :from, description: "Parse input from given data format (json, tsv, &c.) before processing"
         settings.define :to,   description: "Convert input to given data format (json, tsv, &c.) before emitting"
-
-        settings.define :consumes, description: "Parse input as instances of given model class before processing", type: Class
+        settings.define :as,   description: "Call Class.receive on each input (will run after --from)", type: Class
       end
     end
 

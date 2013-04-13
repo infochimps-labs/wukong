@@ -1,11 +1,11 @@
 require 'gorillib/some'
 require 'gorillib/model'
-require 'tsort'
 
 require 'hanuman/registry'
 require 'hanuman/link'
 require 'hanuman/stage'              
 require 'hanuman/graph'
+require 'hanuman/tree'
 
 module Hanuman
   module Shortcuts

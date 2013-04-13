@@ -44,5 +44,7 @@ require_relative 'wukong/widgets'
 require_relative 'wukong/local'
 
 module Wukong
+
+  # Built-in Wukong processors and dataflows.
   BUILTINS = Set.new(Wukong.registry.show.keys)
 end

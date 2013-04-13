@@ -1,5 +1,14 @@
 module Wukong
-  class DataflowBuilder < Hanuman::GraphBuilder
+
+  class Dataflow < Hanuman::Tree
+
+    def self.description desc=nil
+      @description = desc if desc
+      @description
+    end
+  end
+  
+  class DataflowBuilder < Hanuman::TreeBuilder
 
     def description desc=nil
       @description = desc if desc
@@ -9,18 +18,13 @@ module Wukong
     def namespace() Wukong::Dataflow ; end
 
     def handle_dsl_arguments_for(stage, *args, &action)
+      puts "DSL: #{stage.label}"
       options = args.extract_options!
       stage.merge!(options.merge(action: action).compact)
-      stage      
+      stage.graph = self
+      stage
     end
   
-    def linkable_name(direction) 
-      case direction
-      when :in  then directed_sort.first
-      when :out then directed_sort.last
-      end
-    end
-
     def method_missing(name, *args, &blk)
       if stages[name]
         handle_dsl_arguments_for(stages[name], *args, &blk)
@@ -29,44 +33,5 @@ module Wukong
       end
     end
     
-  end
-  
-  class Dataflow < Hanuman::Graph
-
-    def self.description desc=nil
-      @description = desc if desc
-      @description
-    end
-    
-    def has_input?(stage)
-      links.any?{ |link| link.into == stage }
-    end
-    
-    def has_output?(stage)
-      links.any?{ |link| link.from == stage }
-    end
-
-    def connected?(stage)
-      input  = has_input?(stage)  || stages[stage].is_a?(Wukong::Source)
-      output = has_output?(stage) || stages[stage].is_a?(Wukong::Sink)
-      input && output
-    end
-
-    def complete?
-      stages.all?{ |(name, stage)| connected? name }
-    end
-
-    def setup
-      directed_sort.each{ |name| stages[name].setup }
-    end
-
-    def run
-      stages[directed_sort.first].run
-    end
-
-    def stop
-      directed_sort.each{ |name| stages[name].stop }
-    end
-
   end
 end
