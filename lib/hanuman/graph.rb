@@ -47,7 +47,7 @@ module Hanuman
     field :links,  Array, :default => []
 
     def define(&blk)     
-      graph = for_class || define_class(label) 
+      graph = for_class || define_class(label)
       self.instance_eval(&blk) if block_given?
       extract_links!
       graph.register

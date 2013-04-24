@@ -78,8 +78,13 @@ module Wukong
       # what settings were passed.
       def run
         EM.run do
-          StdioDriver.start(processor, settings)
+          driver.start(processor, settings)
         end
+      end
+
+      # :nodoc:
+      def driver
+        StdioDriver
       end
       
     end
