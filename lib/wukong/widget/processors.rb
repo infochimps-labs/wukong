@@ -171,25 +171,6 @@ EOF
       register
     end
     
-    class Topic < Processor
-      
-      field :topic, Symbol, :doc => "Topic to label the record with"
-      
-      def process(record)
-        yield perform_action(record)
-      end
-
-      def perform_action(record)
-        assign_topic(record, topic)
-      end      
-
-      def assign_topic(record, topic_name)
-        record.define_singleton_method(:topic){ topic_name }
-        record
-      end
-      register
-    end
-    
     # Until further notice, this processor is unusable due to the invocation of yield
     # class Foreach < Processor
     #   def process(record, &blk)

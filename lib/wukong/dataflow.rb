@@ -19,6 +19,15 @@ module Wukong
 
     def handle_dsl_arguments_for(stage, *args, &action)
       options = args.extract_options!
+      while stages.include?(stage.label)
+        parts = stage.label.to_s.split('_')
+        if parts.last.to_i > 0
+          parts[-1] = parts.last.to_i + 1
+        else
+          parts.push(1)
+        end
+        stage.label = parts.map(&:to_s).join('_').to_sym
+      end
       stage.merge!(options.merge(action: action).compact)
       stage.graph = self
       stage
