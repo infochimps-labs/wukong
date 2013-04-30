@@ -45,7 +45,11 @@ module Wukong
   #     last batch of records and to trigger the Processor#stop method
   #     on each processor in the dataflow
   #
-  # @see Wukong::Local::StdioDriver for a more complete example
+  # Driver instances are started by Runners which should delegate to
+  # the `start` method driver class itself.
+  # 
+  # @see Wukong::Local::StdioDriver for a complete example of a driver.
+  # @see Wukong::Local::Runner for an example of how runners call drivers.
   module DriverMethods
 
     attr_accessor :label
@@ -86,10 +90,15 @@ module Wukong
       build_dataflow
     end
 
+    # Set up this driver.  Called before setting up any of the
+    # dataflow stages.
+    def setup
+    end
+
     # Walks the dataflow and calls Processor#setup on each of the
     # processors.
     def setup_dataflow
-      setup if respond_to?(:setup)
+      setup
       dataflow.each_stage do |stage|
         stage.setup
       end
@@ -100,6 +109,11 @@ module Wukong
     # @param [Object] record
     def send_through_dataflow(record)
       wiring.start_with(dataflow.root).call(record)
+    end
+
+    # Perform finalization code for this driver.  Runs after #setup
+    # and before #stop.
+    def finalize
     end
 
     # Indicate a full batch of records has already been sent through
@@ -113,7 +127,7 @@ module Wukong
     #
     # @see #finalize_and_stop_dataflow
     def finalize_dataflow
-      finalize if respond_to?(:finalize)
+      finalize
       dataflow.each_stage do |stage|
         stage.finalize(&wiring.advance(stage))
       end
@@ -122,12 +136,17 @@ module Wukong
     # Works similar to #finalize_dataflow but calls Processor#stop
     # after calling Processor#finalize on each processor.
     def finalize_and_stop_dataflow
-      finalize if respond_to?(:finalize)
+      finalize
       dataflow.each_stage do |stage|
         stage.finalize(&wiring.advance(stage))
         stage.stop
       end
-      stop if respond_to?(:stop)
+      stop
+    end
+
+    # Perform shutdown code for this driver.  Called after #finalize
+    # and after all stages have been finalized and stopped.
+    def stop
     end
 
     protected

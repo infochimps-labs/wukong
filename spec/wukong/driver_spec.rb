@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Wukong::DriverMethods do
-
+  
   describe "#construct_dataflow" do
     
     context "given a label registered to a processor" do
@@ -101,4 +101,54 @@ describe Wukong::DriverMethods do
       
     end
   end
+
+  describe "#setup_dataflow" do
+    let(:driver)   { Wukong::SpecHelpers::UnitTestDriver.new(:regexp, match: /hi/) }
+    
+    it "calls the driver's #setup method" do
+      driver.should_receive(:setup)
+      driver.setup_dataflow
+    end
+
+    it "calls setup on each stage of the dataflow" do
+      driver.dataflow.each_stage do |stage|
+        stage.should_receive(:setup)
+      end
+      driver.setup_dataflow
+    end
+  end
+
+  describe "#finalize_dataflow" do
+    let(:driver)   { Wukong::SpecHelpers::UnitTestDriver.new(:regexp, match: /hi/) }
+    it "calls the driver's #finalize method" do
+      driver.should_receive(:finalize)
+      driver.finalize_dataflow
+    end
+
+    it "calls finalize on each stage of the dataflow" do
+      driver.dataflow.each_stage do |stage|
+        stage.should_receive(:finalize)
+      end
+      driver.finalize_dataflow
+    end
+  end
+
+  describe "#finalize_and_stop_dataflow" do
+    let(:driver)   { Wukong::SpecHelpers::UnitTestDriver.new(:regexp, match: /hi/) }
+    it "calls the driver's #finalize and #stop methods" do
+      driver.should_receive(:finalize)
+      driver.should_receive(:stop)
+      driver.finalize_and_stop_dataflow
+    end
+
+    it "calls finalize and stop on each stage of the dataflow" do
+      driver.dataflow.each_stage do |stage|
+        stage.should_receive(:finalize)
+        stage.should_receive(:stop)
+      end
+      driver.finalize_and_stop_dataflow
+    end
+    
+  end
+  
 end
