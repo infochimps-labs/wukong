@@ -432,6 +432,21 @@ EOF
       end
       register
     end
+
+    # Select a record only if it is non-nil.
+    #
+    # @see Filter
+    class Compact < Filter
+
+      # Select a record only if it is non-nil.
+      #
+      # @param [Object] record
+      # @return [true, false]
+      def select?(record)
+        ! record.nil?
+      end
+      register
+    end
     
   end
 end

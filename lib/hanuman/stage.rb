@@ -45,7 +45,7 @@ module Hanuman
     extend  StageClassMethods
 
     field :label, Symbol, :doc => false
-    field :links, Array, :default => []
+    field :links, Array, :default => [], doc: false
 
     def clone
       cloned_attrs = Hash[ attributes.map{ |key, val| dup_key = key.dup rescue key ; dup_val = val.dup rescue val ; [ dup_key, dup_val ] } ]

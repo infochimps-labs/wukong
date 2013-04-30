@@ -43,10 +43,10 @@ module Wukong
           clever
       EOF
 
-      # Returns the name of the processor we're going to run.
+      # Returns the name of the dataflow we're going to run.
       #
       # @return [String]
-      def processor
+      def dataflow
         arg      = args.first
         basename = File.basename(arg.to_s, '.rb')
 
@@ -56,14 +56,15 @@ module Wukong
         else arg
         end
       end
+      alias_method :processor, :dataflow
 
       # Validates the chosen processor.
       #
       # @raise [Wukong::Error] if it finds a problem
       # @return [true]
       def validate
-        raise Error.new("Must provide a processor or dataflow to run, via either the --run option or as the first argument") if processor.nil? || processor.empty?
-        raise Error.new("No such processor or dataflow <#{processor}>") unless registered?(processor)
+        raise Error.new("Must provide a processor or dataflow to run, via either the --run option or as the first argument") if dataflow.nil? || dataflow.empty?
+        raise Error.new("No such processor or dataflow <#{dataflow}>") unless registered?(dataflow)
         true
       end
 
@@ -71,18 +72,21 @@ module Wukong
       # # itself.
       def setup
         super()
-        dataflow_class_for(processor).configure(settings) if processor?(processor)
+        dataflow_class_for(dataflow).configure(settings) if processor?(dataflow)
       end
 
-      # Runs either the StdioDriver or the TCPDriver, depending on
-      # what settings were passed.
+      # Starts up the driver with the right dataflow and settings.
+      #
+      # Starts the EventMachine reactor before starting the driver.
       def run
         EM.run do
-          driver.start(processor, settings)
+          driver.start(dataflow, settings)
         end
       end
 
-      # :nodoc:
+      # The class used 
+      #
+      # @return [Class, #start]
       def driver
         StdioDriver
       end
