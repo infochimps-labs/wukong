@@ -1,6 +1,7 @@
 require_relative("runner/code_loader")
 require_relative("runner/deploy_pack_loader")
 require_relative("runner/boot_sequence")
+require_relative("runner/command_runner")
 
 module Wukong
 
@@ -18,6 +19,7 @@ module Wukong
     include CodeLoader
     include DeployPackLoader
     include BootSequence
+    include CommandRunner
 
     # The settings object that will be configured and booted from.
     # All plugins will configure this object.
