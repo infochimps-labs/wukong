@@ -20,7 +20,8 @@ module Wukong
           log.info("Dry run:")
           puts command
         else
-          puts `#{command}`
+          output = `#{command}`
+          puts output unless output.empty?
         end
       end
 
