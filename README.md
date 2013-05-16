@@ -293,7 +293,7 @@ $ cat input.json
 you can feed it directly to a processor
 
 ```
-$ cat input.json | wu-local --from=json extractor
+$ cat input.json | wu-local --from=json extractor.rb
 John
 Sally
 ...
@@ -302,9 +302,10 @@ Sally
 Other processors really like Arrays:
 
 ```ruby
+# in summer.rb
 Wukong.processor(:summer) do
   def process values
-    yield values.map(&:to_f).inject(0.0) { |sum, summand| sum += summand }
+    yield values.map(&:to_f).inject(&:+)
   end
 end
 ```
@@ -316,7 +317,7 @@ $ cat data.tsv
 4	5	6
 7	8	9
 ...
-$ cat data.tsv | wu-local --from=tsv summer
+$ cat data.tsv | wu-local --from=tsv summer.rb
 6
 15
 24
@@ -326,13 +327,13 @@ $ cat data.tsv | wu-local --from=tsv summer
 but you can just as easily use the same code with CSV data
 
 ```
-$ cat data.tsv | wu-local --from=csv summer
+$ cat data.tsv | wu-local --from=csv summer.rb
 ```
 
 or a more general delimited format.
 
 ```
-$ cat data.tsv | wu-local --from=delimited --delimiter='--' summer
+$ cat data.tsv | wu-local --from=delimited --delimiter='--' summer.rb
 ```
 
 #### Recordizing data structures into domain models
@@ -357,7 +358,7 @@ combination with the deserializing features above, turn input text
 into instances of Person:
 
 ```
-$ cat input.json | wu-local --consumes=Person --from=json contact_validator
+$ cat input.json | wu-local --consumes=Person --from=json contact_validator.rb
 #<Person:0x000000020e6120>
 #<Person:0x000000020e6120>
 #<Person:0x000000020e6120>
@@ -367,7 +368,7 @@ $ cat input.json | wu-local --consumes=Person --from=json contact_validator
 processor:
 
 ```
-$ cat input.json | wu-local --consumes=Person --from=json contact_validator --to=json
+$ cat input.json | wu-local --consumes=Person --from=json contact_validator.rb --to=json
 {"first_name": "John", "last_name":, "Smith", "valid": "true"}
 {"first_name": "Sally", "last_name":, "Johnson", "valid": "true"}
 ...
@@ -441,20 +442,20 @@ The default log level is DEBUG.
 
 ```
 $ echo something | wu-local logs.rb
-DEBUG 2013-01-11 23:40:56 [Logs                ] -- event
-INFO 2013-01-11 23:40:56 [Logs                ] -- event
-WARN 2013-01-11 23:40:56 [Logs                ] -- event
-ERROR 2013-01-11 23:40:56 [Logs                ] -- event
-FATAL 2013-01-11 23:40:56 [Logs                ] -- event
+DEBUG 2013-01-11 23:40:56 [Logs                ] -- something
+INFO 2013-01-11 23:40:56 [Logs                ] -- something
+WARN 2013-01-11 23:40:56 [Logs                ] -- something
+ERROR 2013-01-11 23:40:56 [Logs                ] -- something
+FATAL 2013-01-11 23:40:56 [Logs                ] -- something
 ```
 
 though you can set it to something else globally
 
 ```
 $ echo something | wu-local logs.rb --log.level=warn
-WARN 2013-01-11 23:40:56 [Logs                ] -- event
-ERROR 2013-01-11 23:40:56 [Logs                ] -- event
-FATAL 2013-01-11 23:40:56 [Logs                ] -- event
+WARN 2013-01-11 23:40:56 [Logs                ] -- something
+ERROR 2013-01-11 23:40:56 [Logs                ] -- something
+FATAL 2013-01-11 23:40:56 [Logs                ] -- something
 ```
 
 or on a per-class basis.
@@ -474,7 +475,6 @@ the command-line.  Use wu-local by passing it a processor and feeding
 
 Params:
    -r, --run=String             Name of the processor or dataflow to use. Defaults to basename of the given path.
-   -t, --tcp_port=Integer       Consume TCP requests on the given port instead of lines over STDIN
 ```
 
 You can generate custom help messages for your own processors.  Here's
@@ -540,7 +540,6 @@ Params:
        --mean=Float             The mean of the assumed distribution [Default: 0.0]
    -r, --run=String             Name of the processor or dataflow to use. Defaults to basename of the given path.
        --std_dev=Float          The standard deviation of the assumed distribution [Default: 1.0]
-   -t, --tcp_port=Integer       Consume TCP requests on the given port instead of lines over STDIN
 
 ```
 
@@ -612,19 +611,9 @@ record, merely its representation.  Here's a list:
 
 When you're writing processors that are capable of running in
 isolation you'll want to ensure that you deserialize and serialize
-records on the way in and out, like this
-
-```ruby
-Wukong.processor(:on_my_own) do
-  def process json
-    obj = MultiJson.load(json)
-    
-    # do something with obj...
-    
-    yield MultiJson.dump(obj)
-  end
-end
-```
+records on the way in and out, using the serialization/deserialization
+options `--to` and `--from` on the command-line, as <a
+href="#serialization">defined above</a>.
 
 For processors which will only run inside a data flow, you can
 optimize by not doing any (de)serialization until except at the very
@@ -636,7 +625,12 @@ Wukong.dataflow(:complicated) do
 end
 ```
 
-in this approach, no serialization will be done between processors.
+in this approach, no serialization will be done between processors,
+only at the beginning and end.
+
+(This is actually the implementation behind the serialization options
+themselves -- they dynamically prepend/append the appropriate
+deserializers/serializers.)
 
 ### General Purpose
 
