@@ -108,6 +108,7 @@ module Hanuman
     end
 
     def into(stage_or_stages)
+      return stage_or_stages if stage_or_stages.nil?
       if stage_or_stages.is_a?(Array)
         stage_or_stages.each do |other_stage_or_stages|
           while other_stage_or_stages.is_a?(Array)
