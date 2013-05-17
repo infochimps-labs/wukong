@@ -24,10 +24,8 @@ peruse when trying to understand the full Wukong experience:
 * <a href="http://github.com/infochimps-labs/wonderdog">wonderdog</a>: Connect Wukong processors running within Hadoop to Elasticsearch as either a source or sink for data.
 * <a href="http://github.com/infochimps-labs/wukong-deploy">wukong-deploy</a>: Orchestrate Wukong and other wu-tools together to support an application running on the Infochimps Platform.
 
-For a more holistic perspective also see the Infochimps Platform
-Community Edition (**FIXME: link to this**) which combines all the
-Wukong tools together into a jetpack which fits comfortably over the
-shoulders of developers.
+For a more holistic perspective also see the [Big Data Starter Kit](http://infochimps.com/community)
+which combines all the Wukong tools together into a jetpack which fits comfortably over the shoulders of developers.
 
 <a name="processors"></a>
 ## Writing Simple Processors
