@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 # Developers may want to run the following (fixing the paths):
 #

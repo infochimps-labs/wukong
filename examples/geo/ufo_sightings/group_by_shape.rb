@@ -32,12 +32,3 @@
 #       u        2525
 #       u        4490  unknown
 #       u        4593  other
-
-
-{
-  :angular  => %w[ hexagon pyramid delta cross diamond rectangle triangle ],
-  :roundish => %w[ dome crescent round egg cone teardrop cylinder cigar oval sphere disk circle ],
-  :multiple => %w[ chevron formation ],
-  :ethereal => %w[ flare flash changing fireball light changed ],
-  :unknown  => %w[ unknown other ],
-  }

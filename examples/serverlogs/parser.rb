@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+d#!/usr/bin/env ruby
 
 require_relative '../common'
 require_relative 'models/logline'

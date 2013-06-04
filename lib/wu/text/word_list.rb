@@ -1,6 +1,68 @@
-module Wukong
-  module Corpus
-    STOPWORDS = %w[
+module Wu
+  module Text
+    class WordList
+      attr_reader :list
+      def initialize(list)
+        @list = list.freeze
+      end
+
+      # Remove all words that are in this list
+      # @param words [Array] list of words to filter
+      # @return the given array, modified in-place
+      def remove!(words)
+        words.delete_if{|word| include?(word) }
+      end
+      # Remove all words that are in this list
+      # @param words [Array] list of words to filter
+      # @return a new array, having no words from this list
+      def remove(words) ; remove!(words.dup) ; end
+
+      # Retain only words that are in this list, modifying the given array
+      # @param words [Array] list of words to filter
+      # @return the given array, modified in-place
+      def retain!(words)
+        words.delete_if{|word| not include?(word) }
+      end
+      # Retain only words that are in this list, modifying the given arry
+      # @param words [Array] list of words to filter
+      # @return a new array, with only words from this list
+      def retain(words) ; retain!(words.dup) ; end
+
+      # @return [Boolean] true if the given word is in this list
+      def include?(word) list.include?(word) ; end
+
+      def index(word)
+        list.index(word)
+      end
+
+      # possible paths to the BSD 'words' list
+      WORD_LIST_PATHS = {
+        twl:       File.expand_path('../../../data/text/words/twl_06.tsv', File.dirname(__FILE__)),
+        osx_words: '/usr/share/dict/words', # OSX
+      }
+      def self.word_list_path(sym)
+        WORD_LIST_PATHS[sym]
+      end
+
+      def self.from_file(filename)
+        filename = word_list_path(filename) if filename.is_a?(Symbol)
+        list = File.readlines(filename)
+          .each(&:strip!)
+          .each(&:downcase!)
+        new(list)
+      end
+    end
+
+    class Stopwords < WordList
+      def initialize(options={})
+        options = options.reverse_merge(min_length: 0, remove_apos: false)
+        list = STOPWORDS
+        list = list.map{|str|    str.gsub(/\'/, "") }                if options[:remove_apos]
+        list = list.reject{|str| str.length < options[:min_length] } if (options[:min_length] > 0)
+        super(list.to_set)
+      end
+
+      STOPWORDS = %w[
         the
         of
         and
@@ -10,7 +72,7 @@ module Wukong
         it
         is
         was
-        I
+        i
         for
         that
         you
@@ -188,8 +250,8 @@ module Wukong
         you've
         yours
 
-    ].to_set
-    STOPWORDS_3 = STOPWORDS.reject{|w| w.length < 3 }.to_set
+      ].to_set.freeze
 
+    end
   end
 end

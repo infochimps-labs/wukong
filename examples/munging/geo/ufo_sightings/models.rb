@@ -4,11 +4,11 @@ class UfoSighting
   include Wu::Model
   field :sighted_at,   Time
   field :reported_at,  Time
-  field :shape,        Symbol
-  field :duration_str, String
   field :location_str, String
-  field :place,        Wu::Geo::Place
+  field :shape,        Symbol
+  field :duration,     String
   field :description,  String
+  field :location,     Wu::Geo::Place
 
   def shape_category
     case shape
@@ -36,7 +36,7 @@ class RawUfoSighting
   field :reported_at,  Time
   field :location_str, String
   field :shape,        String
-  field :raw_duration, String
+  field :duration_str, String
   field :description,  String
 end
 
@@ -47,6 +47,7 @@ class RawGeocoderPlace
   field :place_class,   String
   field :place_type,    String
   field :place_id,      String
+  field :osm_id,        Integer
   #
   field :coordinates,   String
   field :latitude,      Float
@@ -65,7 +66,6 @@ class RawGeocoderPlace
   field :house_number,  String
   field :timezone,      String
   #
-  field :osm_id,        Integer
   field :osm_type,      String
   field :poi,           String
   field :importance,    Float
@@ -76,8 +76,16 @@ class RawGeocoderPlace
     bbox.map{|cc| "%7.2f" % cc }.join(',')
   end
 
-  def to_wire
+  def to_dumpable
     super.values_at(:country, :state, :county, :city, :confidence) + [bbox_str]
+  end
+
+  def to_wire
+    super.slice(
+      :name, :place_type, :place_id, :osm_id,
+      :latitude, :longitude,
+      :city, :county, :state, :country, :confidence, :bbox,
+      )
   end
 
   def self.receive_result(obj)

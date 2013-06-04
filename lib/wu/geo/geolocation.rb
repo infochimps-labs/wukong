@@ -5,6 +5,12 @@ Numeric.class_eval do
   def to_degrees() self.to_f * 180.0 / Math::PI ; end
 end
 
+# TODO:
+#
+# * [Maidenhead Locator](http://en.wikipedia.org/wiki/Maidenhead_Locator_System)
+# * [Geohash code](http://en.wikipedia.org/wiki/Geohash) -- see this [c-written rubygem](https://github.com/davetroy/geohash)
+# * [Georef](http://en.wikipedia.org/wiki/Georef)
+
 module Wu
   module Geo
 
