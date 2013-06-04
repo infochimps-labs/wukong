@@ -72,7 +72,7 @@ module Wukong
       # # itself.
       def setup
         super()
-        dataflow_class_for(dataflow).configure(settings) if processor?(dataflow)
+        dataflow_class_for(dataflow).configure(settings) if registered?(dataflow)
       end
 
       # Starts up the driver with the right dataflow and settings.
