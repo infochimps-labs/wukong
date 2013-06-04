@@ -34,6 +34,10 @@ module Wukong
   
   add_shortcut_method_for(:processor, ProcessorBuilder)
   add_shortcut_method_for(:dataflow,  DataflowBuilder)
+
+  def self.doc_helpers_path
+    File.expand_path('../wukong/doc_helpers.rb', __FILE__)
+  end
   
 end
 
