@@ -1,10 +1,8 @@
 module Wukong
 
   class Dataflow < Hanuman::Tree
-
-    def self.description desc=nil
-      @description = desc if desc
-      @description
+    def self.configure(settings)
+      settings.description = builder.description if builder.description
     end
   end
   
