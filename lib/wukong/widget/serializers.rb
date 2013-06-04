@@ -290,10 +290,27 @@ EOF
       def process(record)
         wire_format = record.try(:to_wire) || record
         raise SerializerError.new("Can only recordize a Hash-like record") unless wire_format.is_a?(Hash)
-        yield model.receive(wire_format)
+        klass = model_class_for(wire_format)
+        if klass
+          yield klass.receive(wire_format)
+        else
+          log.error("No default model class and no explicit model for: #{wire_format.inspect}")
+        end
       rescue => e
         handle_error(record, e)
       end
+
+      def model_class_for(record)
+        if explicit_type = (record[:_type] || record["_type"])
+          begin
+            return explicit_type.constantize
+          rescue NameError => e
+            log.warn("Could not find a class for <#{explicit_type}>")
+          end
+        end
+        return model if model
+      end
+      
       register
     end
   end
