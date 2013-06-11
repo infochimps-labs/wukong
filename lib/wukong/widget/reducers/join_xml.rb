@@ -11,22 +11,27 @@ module Wukong
       end
 
       def process line
-        @lines << line
-        if terminates_document?(line)
+        if match = terminator.match(line)
+          if match.end(0) == line.size
+            @lines << line
+          else
+            @lines << line[0...match.end(0)]
+          end
           yield @lines.join("\n")
           @lines = []
+          @lines << line[match.end(0)..-1] unless match.end(0) == line.size
+        else
+          @lines << line
         end
       end
-      
-      def terminates_document?(line)
-        line =~ %r{<\s*/\s*#{root}\s*>}i
+    
+      def terminator
+        %r{<\s*/\s*#{root}\s*>}i
       end
       
-      def starts_document?(line)
-        line =~ %r{<\s*#{root}\s*>}i
-      end
-
       register :join_xml
     end
   end
 end
+
+
