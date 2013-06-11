@@ -63,4 +63,19 @@ describe Hanuman::StageBuilder, :hanuman => true do
       subject.serialize.should_not include(:links)
     end
   end
+
+  context '#into' do
+    subject          { described_class.receive(label: :pyro)   }
+    let(:other_stage){ described_class.receive(label: :iceman) }
+    
+    it 'returns the linked into stage for chaining' do
+      subject.into(other_stage).should be(other_stage)
+    end
+    
+    it 'links two stages together with a simple link' do
+      subject.into(other_stage)
+      subject.links.should be_any{ |link| link.from == :pyro and link.into == :iceman }
+    end
+  end
+  
 end

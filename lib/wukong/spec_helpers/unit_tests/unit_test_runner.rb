@@ -19,21 +19,20 @@ module Wukong
     #   of the unit test back into the test suite
     class UnitTestRunner < Wukong::Local::LocalRunner
 
-      # The processor this runner will create in the same way as
-      # `wu-local`.
-      attr_accessor :processor
-
       # Initialize a new UnitTestRunner for the processor with the
       # given `label` and `settings`.
       #
       # @param [Symbol] label
       # @param [Hash] settings
-      def initialize label, settings
-        self.processor = label
+      def initialize label, settings={}
+        @dataflow = label
         params = Configliere::Param.new
-        params.use(:commandline)
         params.merge!(settings)
         super(params)
+      end
+
+      def dataflow
+        @dataflow
       end
 
       # Override the LocalDriver with the UnitTestDriver so we can
@@ -41,7 +40,7 @@ module Wukong
       #
       # @return [UnitTestDriver]
       def driver
-        @driver ||= UnitTestDriver.new(processor, settings)
+        @driver ||= UnitTestDriver.new(dataflow, settings)
       end
 
       # No need to load commandline arguments when we are testing

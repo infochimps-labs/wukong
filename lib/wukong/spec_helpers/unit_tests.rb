@@ -99,13 +99,14 @@ module Wukong
       #     let(:french_tokenizer)  { processor(:complex_tokenizer, stemming: true, language: 'fr')  }
       #     ...
       #   end
-      def unit_test_runner *args
+      def unit_test_runner *args, &block
         settings = args.extract_options!
         name     = (args.first || self.class.description)
-        runner   = UnitTestRunner.new(name, settings)
-        yield runner.driver.processor if block_given?
-        runner.boot!
-        runner.driver
+        UnitTestRunner.new(name, settings).tap do |the_runner|
+          the_runner.program_name = 'wu-local'
+          yield the_runner.driver.processor if block_given?
+          the_runner.boot!(settings)
+        end.driver
       end
       alias_method :processor, :unit_test_runner
 
