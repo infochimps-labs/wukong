@@ -546,15 +546,17 @@ Params:
 <a name="flows"></a>
 ## Combining Processors into Dataflows
 
-Combining processors which each do one thing well together in a chain
-is mimicing the tried and true UNIX pipeline.  Wukong lets you define
-these pipelines more formally as a dataflow.
+Wukong provides a DSL for combining processors together into
+dataflows.  This DSL is designed to make it easy to replicate the
+tried and true UNIX philosophy of building simple tools which do one
+thing well and then combining them together to create more complicated
+flows.
 
-Having written the `tokenizer` processor, we can use it in a dataflow
-along with the built-in `regexp` processor to replicate what we did in
-the last example:
+For example, having written the `tokenizer` processor, we can use it
+in a dataflow along with the built-in `regexp` processor to replicate
+what we did in the last example:
 
-```
+```ruby
 # in find_t_words.rb
 require_relative('processors')
 Wukong.dataflow(:find_t_words) do
@@ -562,9 +564,13 @@ Wukong.dataflow(:find_t_words) do
 end
 ```
 
-The DSL Wukong provides for combining processors is designed to
-similar to the processing of developing them on the command line.  You
-can run this dataflow directly
+The `|` operator connects the output of one processor (what it
+`yield`s) with the input of another (its `process` method).  In this
+example, every record emitted by `tokenizer` will be subsequently
+processed by `regexp`.
+
+You can run this dataflow directly (mimicing what we did above with
+single processors chained together on the command-line):
 
 ```
 $ cat novel.txt | wu-local find_t_words.rb
@@ -575,8 +581,56 @@ times
 ...
 ```
 
-and it works exactly like manually chaining the two processors
-together.
+### More complicated dataflow topologies
+
+The Wukong dataflow DSL allows for more complicated topologies than
+just chaining processors together in a linear pipeline.
+
+The `|` operator, used in the above examples to connect two processors
+together into a chain, can also be used to connect a single processor
+to *multiple* processors, creating a branch-point in the dataflow.
+Each branch of the flow will receive the same records.
+
+This can be used to perform multiple actions with the same record, as
+in the following example:
+
+```ruby
+# in book_reviews.rb
+Wukong.dataflow(:complicated) do
+  from_json | recordize(model: BookReview) | 
+  [
+    map(&:author) | do_author_stuff | ... | to_json,
+	map(&:book)   | do_book_stuff   | ... | to_json,
+  ]
+end
+```
+
+Each `BookReview` record yielded by the `recordize` processor will be
+passed to both subsequent branches of the flow, with each branch doing
+a different kind of processing.  Output records from both branches
+(which are here turned `to_json` first) will be interspersed in the
+final output when run.
+
+A processor like `select`, which filters its inputs, can be used to
+split a flow into records of two types:
+
+```ruby
+# in complicated.rb
+Wukong.dataflow(:complicated) do
+  from_json | parser | 
+  [
+    select(&:valid?)   | further_processing | ... | to_json,
+	select(&:invalid?) | track_errors | null
+  ]
+end
+```
+
+Here, only records which respond true to the method `valid?` will pass
+through the first flow (applying `further_processing` and so on) while
+only records which respond true to `invalid?` will pass through the
+second flow (with `track_errors`).  The `null` processor at the end of
+this second branch ensures that only records from the first branch
+will be emitted in the final output.
 
 <a name="serialization></a>
 ## Serialization
