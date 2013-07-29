@@ -632,6 +632,35 @@ second flow (with `track_errors`).  The `null` processor at the end of
 this second branch ensures that only records from the first branch
 will be emitted in the final output.
 
+Flows can be split over and over again, allowing for rich semantics
+when processing an input source:
+
+```ruby
+# in many_splits.rb
+Wukong.dataflow(:many_splits) do
+  from_json | parser | recordize(model: BookReview) |
+  [ 
+    map(&:author) | ... | to_json,
+	map(&:publisher) |
+	[
+	  select(&:domestic?) | ... | to_json,
+	  select(&:international?) | 
+	  [
+	    select(&:north_american?) | ... | 
+		[
+		  select(&:american?) | ... | to_json,
+		  select(&:canadian?) | ... | to_json,
+		  select(&:mexican?)  | ... | to_json,
+		],
+		select(&:asian?)    | ... | to_json,
+		select(&:european?) | ... | to_json,
+	  ],
+	],
+	map(&:title) | ... | to_json
+  ]
+end
+```
+
 <a name="serialization></a>
 ## Serialization
 
