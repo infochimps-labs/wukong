@@ -60,7 +60,7 @@ module Wukong
         send_through_dataflow(line)
       rescue => e
         error = Wukong::Error.new(e)
-        EM.stop
+        # EM.stop
         
         # We'd like to *raise* `error` here and have it be handled by
         # Wukong::Runner.run but we are fighting with EventMachine.run
