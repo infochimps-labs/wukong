@@ -1,4 +1,5 @@
 require_relative("reducers/accumulator")
+require_relative("reducers/improver")
 require_relative("reducers/sort")
 require_relative("reducers/count")
 require_relative("reducers/group")

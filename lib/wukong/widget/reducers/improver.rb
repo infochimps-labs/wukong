@@ -39,11 +39,12 @@ module Wukong
         when 'accumulate' then
           accumulate(fields[1..-1])
         when 'improve' then
-          yield improve(fields.first, self.group)
+          yield improve(fields[1], self.group)
           self.group = []
         else
           raise NoMethodError, "undefined method #{func} for Improver"
         end
+        STDOUT.flush # WHY? Because.
       end
 
       # Starts accumulation for a new key. Return what you would
@@ -58,6 +59,13 @@ module Wukong
       def accumulate record
         self.group << record
       end
+
+      # Improve prev with group
+      #
+      #
+      def improve prev, group
+      end
+      
     end
   end
 end
