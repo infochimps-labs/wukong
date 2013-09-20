@@ -5,8 +5,8 @@ at any scale.
 
 The core concept in Wukong is a **Processor**.  Wukong processors are
 simple Ruby classes that do one thing and do it well.  This codebase
-implements processors and other core Wukong classes and provides a
-tool, `wu-local`, to run and combine processors on the command-line.
+implements processors and other core Wukong classes and provides a way
+to run and combine processors on the command-line.
 
 Wukong's larger theme is *powerful black boxes, beautiful glue*. The
 Wukong ecosystem consists of other tools which run Wukong processors
@@ -794,6 +794,137 @@ Wukong.dataflow(:word_count) do
   tokenize | remove_stopwords | sort | group
 end
 ```
+
+## Commands
+
+Wukong comes with a few commands built-in.
+
+### wu-local
+
+You've seen one already, `wu-local`, in many of the examples above.
+`wu-local` is used to model dataflows locally, using `STDIN` and
+`STDOUT` for input and output.
+
+`wu-local` is a "core" Wukong command in the sense that more
+complicated commands like `wu-hadoop` and `wu-storm`, implemented by
+Wukong plugins, ultimately invoke some `wu-local` process.
+
+### wu-source
+
+Wukong also comes with another basic command `wu-source`.  This
+command works very similarly to `wu-local` except that it doesn't read
+any input from `STDIN`.  Instead it generates its *own* input records
+in an easy to configure, periodic way.  It thus acts as a *source* of
+data for other processes in a UNIX pipeline.
+
+Here's an example using the `identity` processor which will have the
+effect of printing to `STDOUT` the exact input received:
+
+```
+$ wu-source identity
+1
+2
+3
+...
+```
+
+From this example it's clear that the records produced by `wu-source`
+are consecutive integers starting at 1 and that they are produced at a
+rate of one record per second.
+
+`wu-source` can thus be used to turn any processor (or dataflow) into
+a source of data:
+
+```ruby
+# in random_numbers.rb
+Wukong.processor(:random_numbers) do
+  def process index
+    yield rand() * index.to_i
+  end
+end
+```
+
+Run `random_numbers` like this:
+
+```
+$ wu-source random_numbers.rb
+0.7671364694830113
+0.5958089791553307
+1.8284806932633886
+3.707189931235327
+4.106618048255548
+...
+```
+
+Which produces random numbers with an ever greater ceiling.
+
+You can also completely ignore the input record from `wu-source` in
+your processor:
+
+```ruby
+# in generator.rb
+Wukong.processor(:generator) do
+  def process _
+    yield new_record
+  end
+  def new_record
+    MyRecord.new(...)
+  end
+end
+```
+
+which can produce `MyRecord` instances as it's driven by `wu-source`.
+
+It's easy to generate several thousand events per second using
+`wu-source` this way:
+
+```
+$ wu-source generator.rb --per_sec=2000
+```
+
+or use the `--period` (which is the inverse of `--per_sec`) to spit
+out records at a regular interval (every 5 minutes in this example):
+
+```
+$ wu-source generator.rb --period=300
+```
+
+`wu-source` can naturally combine with other dataflows or programs you
+might write:
+
+```
+$ wu-source generator.rb --per_sec=200 | wu-local my_flow
+```
+### wu
+
+The `wu` command is a convenience command useful when using any of the
+other `wu-` commands in the context of a Ruby project with a
+[`Gemfile`](http://bundler.io/v1.3/gemfile.html).
+
+Instead of typing
+
+```
+$ bundle exec wu-local my_flow --option=value ...
+```
+
+which would run `wu-local` using the exact version of `wukong` (and
+any other dependencies) as declared in your project's `Gemfile` and
+`Gemfile.lock`, the `wu` command lets you type
+
+```
+$ wu local my_flow --option=value ...
+```
+
+essentially adding the `bundle exec` prefix and munging `wu local` to
+`wu-local` for you.  This can be very helpful when doing lots of work
+with Wukong.
+
+**Note:** If `bundle exec wu-whatever` works in your project but `wu
+  whatever` fails it is probably because Bundler is resolving `wu-`
+  commands to some installation that is not on your `$PATH` (often the
+  case if you ran `bundle install --standalone`).  Ensure that the
+  `wukong` gem is installed on your system and that it's binaries are
+  your `$PATH` to use the `wu` command.
 
 ## Testing
 

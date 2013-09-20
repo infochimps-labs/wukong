@@ -1,5 +1,6 @@
 require 'wukong'
 require 'wukong/spec_helpers'
+require 'wukong/source'
 require_relative './support/shared_context_for_graphs'
 require_relative './support/shared_examples_for_shortcuts'
 require_relative './support/shared_examples_for_builders'
@@ -19,11 +20,21 @@ RSpec.configure do |config|
   end
 
   def generic_runner *args
-    runner(Wukong::Runner, 'wu-generic', *args)
+    # the wu-generic program doesn't have to exist for this Runner to
+    # work if it's called from Ruby code
+    runner(Wukong::Runner, 'wu-generic', *args) 
   end
 
   def wu_local *args
     command('wu-local', *args)
+  end
+  
+  def wu_source *args
+    command('wu-source', *args)
+  end
+  
+  def wu *args
+    command('wu', *args)
   end
   
   # FIXME Why is this here?

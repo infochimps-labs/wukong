@@ -49,12 +49,8 @@ describe Wukong::Local::StdioDriver do
           driver.log.stub!(:error)
         end
         
-        
         it "logs an error message" do
           driver.log.should_receive(:error).with(kind_of(String))
-        end
-        it "stops the EventMachine reactor" do
-          EM.should_receive(:stop)
         end
       end
     end
