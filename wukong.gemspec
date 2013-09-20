@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
 EOF
 
   gem.files         = `git ls-files`.split("\n").reject { |path| path =~ /^(data|docpages|notes|old)/ }
-  gem.executables   = ['wu-local']
+  gem.executables   = ['wu-local', 'wu-source', 'wu']
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 

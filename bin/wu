@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+require 'shellwords'
+now=Time.now.strftime("%Y-%m-%d %H:%M:%S")
+if ARGV.empty?
+    abort "ERROR #{now} [wu                  ] -- Must provide a Wukong command to run. Try the --help option."
+else
+    if ARGV.size == 1 && ARGV.first == '--help'
+	abort <<EOF
+usage: wu COMMAND [OPTIONS] [ARG] ...
+
+wu is a wrapper for easy use of Wukong's command-line tools.  It takes
+your arguments, constructs the name of the proper wu-tool to call, and
+prepends a call to bundle exec.
+
+  $ wu local ...
+
+is equivalent to
+
+  $ bundle exec wu-local ...
+
+You can run any of the wu-tools this way:
+	
+  wu-local    wu-source
+  wu-hadoop   wu-storm
+  wu-deploy   wu-load
+EOF
+    else
+      if ARGV.first =~ /^-/
+        abort "ERROR ${now} [wu                  ] -- First argument must be the name of a wu tool to run, got <${1}>"
+      else
+        Kernel.exec "bundle exec wu-#{Shellwords.join(ARGV)}"
+      end
+    end
+end
