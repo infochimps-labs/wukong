@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'wukong'
+require 'wukong/source'
+Wukong::Source::SourceRunner.run
