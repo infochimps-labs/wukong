@@ -40,7 +40,3 @@ pkg
 ## PROJECT::SPECIFIC
 
 *.rdb
-
-.rbx
-
-Gemfile.lock

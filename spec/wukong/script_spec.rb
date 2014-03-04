@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Wukong::Script" do
   before do
-    ARGV.replace ['in', 'out']
+    ARGV.replace []
     @script = Wukong::Script.new 'mapper', 'reducer'
   end
 

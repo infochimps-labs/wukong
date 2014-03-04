@@ -7,9 +7,6 @@ Treat your dataset like a
 * stream of field arrays when it's efficient to deal directly with fields
 * stream of lightweight objects when it's efficient to deal with objects
 
-"RDocs for wukong available at rdoc.info":http://rdoc.info/gems/wukong/frames
-
-
 Wukong is friends with "Hadoop":http://hadoop.apache.org/core the elephant, "Pig":http://hadoop.apache.org/pig/ the query language, and the @cat@ on your command line. 
 
 The **main documentation** lives on the "Wukong Pages.":http://mrflip.github.com/wukong Please feel free to add supplemental information to the "wukong wiki.":http://wiki.github.com/mrflip/wukong
@@ -272,8 +269,6 @@ Thanks to:
 
 h3. Help!
 
-Send monkeyshines questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code, to info@infochimps.com or call 855-DATA-FUN
-
-You're invited to talk with author Philip (flip) Kromer in a "private consultation":http://www.infochimps.com/free-big-data-consultation?utm_source=git&utm_medium=referral&utm_campaign=consult about your big data project.
+Send monkeyshines questions to the "Infinite Monkeywrench mailing list":http://groups.google.com/group/infochimps-code
 
 <notextile></div></notextile>

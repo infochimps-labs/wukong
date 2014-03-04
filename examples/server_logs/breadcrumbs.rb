@@ -1,9 +1,27 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', File.dirname(__FILE__))
-require          'configliere'
-Settings.define :page_types, type: Array, default: ['page', 'video'], description: "Acceptable page types"
-require          'wukong/script'
-require_relative './logline'
+require 'rubygems'
+require 'wukong/script'
+
+class Logline < Struct.new(
+  :ip, :date, :time, :http_method, :protocol, :path, :response_code, :duration, :referer, :ua, :tz)
+
+  def page_type
+    case
+    when path =~ /\.(css|js)$/                  then :asset
+    when path =~ /\.(png|gif|ico)$/             then :image
+    when path =~ /\.(pl|s?html?|asp|jsp|cgi)$/  then :page
+    else                                             :other
+    end
+  end
+
+  def is_page?
+    page_type == :page
+  end
+
+  def day_hr
+    visit.date + visit.time[0..1]
+  end
+end
 
 
 #
@@ -20,11 +38,9 @@ require_relative './logline'
 #
 # where the partition key is visitor_id, and we sort by visitor_id and datetime.
 #
-class BreadcrumbsMapper < Wukong::Streamer::ModelStreamer
-  self.model_klass = Logline
+class VisitorDatePath < Wukong::Streamer::StructStreamer
   def process visit, *args
-    # return unless Settings.page_types.include?(visit.page_type)
-    yield [visit.ip, visit.day_hr, visit.visit_time.to_i, visit.path]
+    yield [visit.ip, visit.day_hr, visit.path]
   end
 end
 
@@ -49,23 +65,11 @@ end
 #     page_trails  <pagen>      <n_pages_in_visit> <duration> <timestamp> < page1,page2,... >
 #
 # to discover all trails passing through a given page.
-class BreadcrumbsReducer < Wukong::Streamer::Reducer
-  def get_key ip, day_hr, itime, path, *args
-    [ip]
+class VisitorDatePath < Wukong::Streamer::Reducer
+  def get_key ip, day_hr, path, *args
+    [ip, day_hr]
   end
-  def start!(*args)
-    @path_times = []
-    super
-  end
-  def accumulate ip, day_hr, itime, path, *args
-    # @path_times << "(#{itime},#{path})"
-    @path_times << "#{itime}:#{path}"
-  end
-  def finalize
-    # yield [key, "{" << @path_times.join(",") << "}"]
-    yield [key, @path_times.join("|")]
+  def process_group visit, *args
+    yield [visit.ip, visit.day_hr, visit.path]
   end
 end
-
-
-Wukong.run( BreadcrumbsMapper, BreadcrumbsReducer, :sort_fields => 2 )

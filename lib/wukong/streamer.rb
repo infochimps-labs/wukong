@@ -3,16 +3,12 @@ module Wukong
     autoload :Base,                    'wukong/streamer/base'
     autoload :LineStreamer,            'wukong/streamer/line_streamer'
     autoload :RecordStreamer,          'wukong/streamer/record_streamer'
-    autoload :ModelStreamer,           'wukong/streamer/model_streamer'
     autoload :JsonStreamer,            'wukong/streamer/json_streamer'
     autoload :StructStreamer,          'wukong/streamer/struct_streamer'
     autoload :StructRecordizer,        'wukong/streamer/struct_streamer'
     autoload :InstanceStreamer,        'wukong/streamer/instance_streamer'
-    autoload :FlatPackStreamer,        'wukong/streamer/flatpack_streamer'
-    autoload :SQLStreamer,             'wukong/streamer/sql_streamer'
     #
     autoload :Filter,                  'wukong/streamer/filter'
-    autoload :EncodingCleaner,         'wukong/streamer/encoding_cleaner'
     #
     autoload :Reducer,                 'wukong/streamer/reducer'
     autoload :AccumulatingReducer,     'wukong/streamer/accumulating_reducer'

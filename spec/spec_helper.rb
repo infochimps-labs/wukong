@@ -1,13 +1,11 @@
-require 'bundler/setup' ; Bundler.require(:default, :development, :test)
-require 'rspec/autorun'
-
-if ENV['WUKONG_COV']
-  require 'simplecov'
-  SimpleCov.start
-end
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'wukong'
+require 'spec'
+require 'spec/autorun'
 
-RSpec.configure do |config|
-  config.treat_symbols_as_metadata_keys_with_true_values = true
+Spec::Runner.configure do |config|
+
 end
+

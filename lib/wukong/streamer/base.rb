@@ -66,8 +66,7 @@ module Wukong
       # yours if you override this method.
       #
       def emit record
-        return if record.nil?
-        puts record.to_tsv
+        puts record.to_flat.join("\t")
       end
 
       #

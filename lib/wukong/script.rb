@@ -1,12 +1,6 @@
+require 'pathname'
+require 'wukong/extensions'
 require 'configliere' ; Settings.use(:commandline, :env_var, :define)
-require 'gorillib'
-require 'gorillib/model'
-require 'gorillib/model/positional_fields'
-require 'gorillib/model/serialization'
-require 'gorillib/hash/deep_merge'
-require 'gorillib/type/extended'
-require 'gorillib/datetime/to_flat'
-#
 require 'wukong'
 require 'wukong/script/hadoop_command'
 require 'wukong/script/local_command'
