@@ -1,9 +1,6 @@
---readme   README.textile
+--readme   README.md
 --markup   markdown
---verbose
 -
-VERSION
 CHANGELOG.md
 LICENSE.md
-README.textile
-notes/*.md
+README.md

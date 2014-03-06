@@ -1,0 +1,7 @@
+require 'wukong/widget/filters'
+require 'wukong/widget/serializers'
+require 'wukong/widget/operators'
+require 'wukong/widget/reducers'
+require 'wukong/widget/extract'
+require 'wukong/widget/logger'
+require 'wukong/widget/echo'

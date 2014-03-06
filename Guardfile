@@ -1,7 +1,7 @@
 # -*- ruby -*-
 
 format = 'doc'          # 'doc' for more verbose, 'progress' for less
-tags   = %w[  ]     # builder_spec model_spec
+tags   = %w[ only ]     # builder_spec model_spec
 
 guard 'rspec', :version => 2, :cli => "--format #{format} #{ tags.map{|tag| "--tag #{tag}"}.join(' ')  }" do
   watch(%r{^spec/.+_spec\.rb$})

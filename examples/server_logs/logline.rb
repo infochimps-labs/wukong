@@ -1,4 +1,3 @@
-
 # # Parse logs to TSV
 #
 # bzcat  data/star_wars_kid.log.bz2 | head -n 100200 | tail -n 100 > data/swk-100.log
@@ -18,7 +17,6 @@
 # cat data/swk-100.tsv | ./histograms.rb --map | wu-lign
 # cat data/swk-hist-map.tsv | ./histograms.rb --reduce
 # ./histograms.rb --run data/star_wars_kid.tsv data/star_wars_kid-pages_by_hour.tsv
-
 
 class Logline
   include Gorillib::Model
@@ -43,10 +41,8 @@ class Logline
   #
   # 83.240.154.3 - - [07/Jun/2008:20:37:11 +0000] "GET /faq HTTP/1.1" 200 569 "http://infochimps.org/search?query=CAC" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
   #
-  # fails if the referer string has a '"' in it.
-  #
   LOG_RE = Regexp.compile(%r{\A
-           ([\d\.]+)           # ip             83.240.154.3
+               (\S+)           # ip             83.240.154.3
              \s(\S+)           # j1             -
              \s(\S+)           # j2             -
            \s\[(\d+/\w+/\d+    # date part      [07/Jun/2008
@@ -54,16 +50,13 @@ class Logline
              \s[\+\-]\S*)\]    # timezone       +0000]
         \s\"(?:(\S+)           # http_method    "GET
              \s(\S+)           # path           /faq
-   \s+(HTTP/[\d\.]+)|-)\"      # protocol       HTTP/1.1"
+             \s(\S+)|-)\"      # protocol       HTTP/1.1"
              \s(\d+)           # response_code  200
              \s(\d+|-)         # size           569
            \s\"([^\"]*)\"      # referer        "http://infochimps.org/search?query=CAC"
            \s\"([^\"]*)\"      # ua             "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.0.16) Gecko/2009120208 Firefox/3.0.16"
           \z}x)
   MONTHS = { 'Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12, }
-
-
-
 
   def receive_visit_time(val)
     if %r{(\d+)/(\w+)/(\d+):(\d+):(\d+):(\d+)\s([\+\-]\d\d)(\d\d)} === val
@@ -77,9 +70,8 @@ class Logline
   # Use the regex to break line into fields
   # Emit each record as flat line
   def self.parse(line)
-    match = LOG_RE.match(line.chomp)
-    unless match then warn(line) ; return BadRecord.new('no match', line) ; end
-    new(* match.captures)
+    m = LOG_RE.match(line.chomp) or return BadRecord.new('no match', line)
+    new(* m.captures)
   end
 
   FILE_EXT_RE = %r{\.[^/]+\z}

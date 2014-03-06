@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'wukong'
+Wukong::Local::LocalRunner.run

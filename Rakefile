@@ -1,51 +1,28 @@
-require 'rubygems' unless defined?(Gem)
-require 'bundler/setup'
-Bundler.setup(:default, :development)
-require 'rake'
-
-task :default => :rspec
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:rspec) do |spec|
-  Bundler.setup(:default, :development, :test)
-  spec.pattern = 'spec/**/*_spec.rb'
-end
-
-desc "Run RSpec with code coverage"
-task :cov do
-  ENV['WUKONG_COV'] = "yep"
-  Rake::Task[:rspec].execute
-end
+RSpec::Core::RakeTask.new(:specs)
 
 require 'yard'
-YARD::Rake::YardocTask.new do
-  Bundler.setup(:default, :development, :docs)
+YARD::Rake::YardocTask.new
+
+desc 'Run RSpec with code coverage'
+task :cov do
+  ENV['WUKONG_COV'] = true
+  Rake::Task[:specs].execute
 end
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  Bundler.setup(:default, :development, :test)
-  gem.name        = 'wukong'
-  gem.homepage    = 'https://github.com/infochimps-labs/wukong'
-  gem.license     = 'Apache 2.0'
-  gem.email       = 'coders@infochimps.org'
-  gem.authors     = ['Infochimps']
+task :default => :specs
 
-  gem.summary     = %Q{Hadoop Streaming for Ruby. Wukong makes Hadoop so easy a chimpanzee can use it, yet handles terabyte-scale computation with ease.}
-  gem.description = <<-EOF
-  Treat your dataset like a:
-
-      * stream of lines when it's efficient to process by lines
-      * stream of field arrays when it's efficient to deal directly with fields
-      * stream of lightweight objects when it's efficient to deal with objects
-
-  Wukong is friends with Hadoop the elephant, Pig the query language, and the cat on your command line.
-EOF
-
-  gem.executables = FileList[* %w[bin/wu-lign bin/*.rb]].pathmap('%f')
-  gem.files       = FileList[
-    "README*", "VERSION", "Guardfile", "Rakefile",
-    "\w*", "notes/*.md", "{docpages,examples,lib,spec,utils}/**/*"].
-    reject{|f| f =~ %r{examples/server_logs} }
+desc "Create a TAGS file for this project"
+task :tags do
+  files = [%w[Gemfile Guardfile Rakefile README.md].map { |b| File.join(File.dirname(__FILE__), b) }]
+  %w[bin examples lib spec].each do |dir|
+    files << Dir[File.join(File.dirname(__FILE__), "#{dir}/**/*.rb")]
+  end
+  files.each do |arry|
+    sh "etags", '-a', *arry unless arry.empty?
+  end
 end
-Jeweler::RubygemsDotOrgTasks.new
+
