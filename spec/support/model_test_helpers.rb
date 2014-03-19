@@ -9,7 +9,7 @@ shared_context 'model', :model_spec do
 
   after(:each){ Gorillib::Test.nuke_constants ; Meta::Gorillib::Test.nuke_constants }
 
-  let(:mock_val){ mock('mock value') }
+  let(:mock_val){ double('mock value') }
 
   let(:smurf_class) do
     class Gorillib::Test::Smurf

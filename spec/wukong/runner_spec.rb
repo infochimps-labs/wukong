@@ -90,7 +90,7 @@ describe Wukong::Runner do
       let(:deploy_pack_dir) { examples_dir('ruby_project') }
       before do
         FileUtils.cd(dir)
-        ENV.stub!(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
+        ENV.stub(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
       end
       subject   { generic_runner }
       its(:deploy_pack_dir)  { should == '/'                      }
@@ -103,7 +103,7 @@ describe Wukong::Runner do
       let(:deploy_pack_dir) { examples_dir('deploy_pack') }
       before do
         FileUtils.cd(dir)
-        ENV.stub!(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
+        ENV.stub(:[]).with("BUNDLE_GEMFILE").and_return(File.join(deploy_pack_dir, 'Gemfile'))
       end
       subject   { generic_runner }
       its(:deploy_pack_dir)  { should == deploy_pack_dir.to_s                               }
