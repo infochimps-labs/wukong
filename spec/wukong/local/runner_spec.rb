@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Wukong::Local::LocalRunner do
-  before { EM.stub!(:run) }
+  before { EM.stub(:run) }
 
   describe "choosing a processor name" do
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Wukong::Local::StdioDriver do
-  before { EM.stub!(:stop) }
+  before { EM.stub(:stop) }
   
   let(:driver) { Wukong::Local::StdioDriver.new(:bogus_event_machine_inserted_arg, :identity, {}) }
 
@@ -46,7 +46,7 @@ describe Wukong::Local::StdioDriver do
           driver.should_receive(:send_through_dataflow).with(line) do
             raise Wukong::Error.new(message)
           end
-          driver.log.stub!(:error)
+          driver.log.stub(:error)
         end
         
         it "logs an error message" do
