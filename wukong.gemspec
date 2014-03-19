@@ -25,11 +25,12 @@ EOF
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  gem.add_dependency('configliere',             '>= 0.4.18')
-  gem.add_dependency('multi_json',              '>= 1.3.6')
-  gem.add_dependency('gorillib',                '>= 0.4.2')
-  gem.add_dependency('forgery')
-  gem.add_dependency('uuidtools')
-  gem.add_dependency('eventmachine')
-  gem.add_dependency('log4r')
+  gem.add_dependency('configliere',  '~> 0.4.18')
+  gem.add_dependency('gorillib',     '~> 0.5.0')
+
+  gem.add_dependency('multi_json',   '1.9.0')
+  gem.add_dependency('forgery',      '0.5.0')
+  gem.add_dependency('uuidtools',    '2.1.4')
+  gem.add_dependency('eventmachine', '1.0.3')
+  gem.add_dependency('log4r',        '1.1.10')
 end
