@@ -1,5 +1,12 @@
 shared_examples_for 'a Stage::Builder' do
-  before(:each){ Hanuman::GlobalRegistry.clear! }
+  before(:each) do
+    @registry = Hanuman::GlobalRegistry.show
+    Hanuman::GlobalRegistry.clear!
+  end
+  
+  after(:each) do
+    Hanuman::GlobalRegistry.merge! @registry
+  end
   
   context '.receive' do
     it 'extra arguments are stored in the :args attribute' do
