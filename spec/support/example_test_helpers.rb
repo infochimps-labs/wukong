@@ -28,7 +28,6 @@ RSpec.configure do |config|
 end
 
 shared_context 'wukong', :helpers => true do
-
   RSpec::Matchers.define(:be_in){|expected| match{|actual| expected.include?(actual) } }
 
   def self.be_ish_matcher(handle, regexp)
