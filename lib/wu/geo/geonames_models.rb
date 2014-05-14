@@ -19,7 +19,6 @@
 # "alternatenames":"...","admin1_code":"00","population":"310232863"}}
 
 module Geo
-
   class GeonamesPlace
     include Gorillib::Model
     class_attribute :place_klass ; self.place_klass = ::Geo::Place
@@ -91,6 +90,7 @@ module Geo
   # longitude         : estimated longitude (wgs84)
   # accuracy          : accuracy of lat/lng from 1=estimated to 6=centroid
   class GeonamesPostal
+    include Gorillib::Model
     field :country_id,   String, doc: "iso country code, 2 characters"
     field :postal_id,    String, doc: "varchar(20)"
     field :name,         String, doc: "varchar(180)"

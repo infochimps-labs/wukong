@@ -1,10 +1,9 @@
-require 'gorillib/model/reconcilable'
 # require_relative('./geo_models')
 # require_relative('./geo_json')
 
 module Geo
-
   Place.class_eval do
+    include Gorillib::Model::Indexable
     include Gorillib::Model::Reconcilable
 
     def adopt_alternate_names(that_val, _)
@@ -30,9 +29,9 @@ module Geo
     field :iso_3166_active, :boolean
   end
 
-
   class FullIso3166
     include Gorillib::Model
+    include Gorillib::Model::Indexable
     include Gorillib::Model::Reconcilable
     include Gorillib::Model::LoadFromTsv
     self.tsv_options = self.tsv_options.merge(num_fields: 6..8, pop_headers: true)
@@ -59,7 +58,6 @@ module Geo
         })
     end
   end
-
 end
 
 # cd    Congo (Kinshasa)
@@ -84,29 +82,23 @@ end
 class CountryReconciler
 
   def self.load_reconciled_countries
-
     Geo::FullIso3166.load_tsv([:geo_data, 'iso_codes/full_iso_3166.tsv']) do |raw_country|
       Geo::Country.values << raw_country.to_place
     end
-
-    Wukong::Data::CountryCode.load
-    Wukong::Data::CountryCode.values.each do |raw_country|
+    Geo::CountryCode.load
+    Geo::CountryCode.values.each do |raw_country|
       iso_country = raw_country.to_place
       country = Geo::Country.for_country_id(iso_country.country_id){ Geo::Country.new }
       country.adopt(iso_country)
     end
-
-    Wukong::Data::GeonamesGeoJson.load_json(:geonames_countries) do |raw_feature|
+    Geo::GeonamesGeoJson.load_json(:geonames_countries) do |raw_feature|
       gn_country = raw_feature.properties.to_place
       country = Geo::Country.for_country_id(gn_country.country_id){ Geo::Country.new }
       country.adopt(gn_country)
     end
-
     Geo::Country.values.sort_by!(&:country_id)
   end
 end
-
-
 
 # {
 #   :xx => { :name => 'Iran' },

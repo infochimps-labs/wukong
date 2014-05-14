@@ -3,13 +3,15 @@ require_relative('../../rake_helper')
 Pathname.register_paths(
   geo_data:                  [:data, 'geo'],
   geo_work:                  [:work, 'geo'],
+  geo_gold:                  [:gold, 'geo'],
   geo_code:                  File.dirname(__FILE__),
   #
   iso_3166:                  [:geo_data, 'iso_codes', "iso_3166.tsv"   ],
   geonames_countries:        [:geo_data, 'geonames',  "geonames_countries.json"   ],
   #
-  countries_json:            [:geo_work, "countries.json"   ],
-  country_name_lookup:       [:geo_work, "country_name_lookup.tsv"   ],
+  countries_json:            [:geo_gold, "countries.json"   ],
+  countries_tsv:             [:geo_gold, "countries.tsv"   ],
+  country_gazette:           [:geo_gold, "country_gazette.tsv"   ],
   )
 
 chain :geo do
@@ -17,10 +19,12 @@ chain :geo do
   chain(:countries) do
 
     task(:load) do
-      require_relative('./geo_models')
-      require_relative('./geo_json')
-      require_relative('./geonames_models')
-      require_relative('./iso_codes')
+      require 'wu/model/indexable'
+      require 'wu/model/reconcilable'
+      require('wu/geo/models')
+      require('wu/geo/geo_json')
+      require('wu/geo/geonames_models')
+      require('wu/geo/iso_codes')
       require_relative('./reconcile_countries')
       CountryReconciler.load_reconciled_countries
     end
@@ -30,7 +34,7 @@ chain :geo do
     #   require_relative('./iso_codes')
     #   p Wukong::Data::CountryCode.for_any_name('Bolivia')
     # end
-
+    #
     # step(:geonames_countries, doc: 'load the Geonames countries',
     #   invoke: 'geo:countries:load',
     #   # , after: [code_files, :force]
@@ -45,10 +49,16 @@ chain :geo do
       end
     end
 
+    create_file(:countries_tsv, invoke: 'geo:countries:load', after: [code_files, :force]) do |dest|
+      Geo::Country.values.each do |country|
+        dest << country.to_tsv << "\n"
+      end
+    end
+
     desc 'Add the iso_codes data to the geonames countries'
-    create_file(:country_name_lookup, invoke: 'geo:countries:load', after: [code_files, :force]) do |dest|
+    create_file(:country_gazette, invoke: 'geo:countries:load', after: [code_files, :force]) do |dest|
       Geo::Country.values.each do |ct|
-        ct.names.each do |alt_name| 
+        ct.names.each do |alt_name|
           dest << [ct.country_id, ct.country_al3id, ct.country_numid,
             ct.tld_id, ct.geonames_id,
             ct.name,
@@ -58,14 +68,9 @@ chain :geo do
       end
     end
 
-    # task(:country_name_lookup => :load) do
-    #   Geo::CountryNameLookup.load
-    # end
-
   end
 end
 
 task :default => [
-  # 'geo:countries',
-  'geo:countries:country_name_lookup'
+  'geo:countries',
 ]

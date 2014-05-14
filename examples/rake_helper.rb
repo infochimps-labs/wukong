@@ -19,13 +19,14 @@ Pathname.register_paths(
   code: [:proj_root, 'code'],
   data: [:proj_root, 'data'],
   work: [:proj_root, 'tmp'],
+  gold: ['/data',    'gold'],
   )
 
 require 'rake/name_space'
 module ::Rake
   class NameSpace
     def name
-      @scope.join(':')
+      @scope.path
     end
 
     def direct_tasks
